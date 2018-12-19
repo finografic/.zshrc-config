@@ -1,0 +1,169 @@
+
+# Use emacs keybindings even if our EDITOR is set to vi
+bindkey -e
+
+# Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
+HISTSIZE=1000
+SAVEHIST=1000
+HISTFILE=~/.zsh_history
+
+# Use modern completion system
+autoload -Uz compinit
+compinit
+
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+zstyle ':completion:*' format 'Completing %d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' menu select=2
+eval "$(dircolors -b)"
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
+zstyle ':completion:*' menu select=long
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' use-compctl false
+zstyle ':completion:*' verbose true
+
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+
+################################
+###########  PATHS  ############
+################################
+
+export ZSH=$HOME/.oh-my-zsh
+export PATH=$PATH:$HOME/bin:/usr/local/bin
+
+# SSH PATH
+export SSH_KEY_PATH="~/.ssh/rsa_id"
+
+# MORE PATHS
+export PATH=$PATH:~/.npm-global/bin
+export PATH=$PATH:/usr/local/lib/node_modules
+export PATH=$PATH:~/.eslintrc
+export PATH=$PATH:$HOME/bin:/usr/local/bin
+export PATH=$PATH:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin
+# RUBY PATHS
+export PATH=$PATH:$HOME/bin/caddy
+export PATH="$HOME/.rvm/gems/ruby-2.4.0/bin:$HOME/.rvm/gems/ruby-2.4.0@global/bin$HOME/.rvm/rubies/ruby-2.4.0/bin:$HOME/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/.npm-global/bin:/usr/local/lib/node_modules:$HOME/.eslintrc:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$HOME/.fzf/bin:$HOME/.rvm/bin:$HOME/.vimpkg/bin"
+# RUBY SIMPLE 
+export PATH=$PATH:$HOME/.rbenv/bin
+# CADDY
+export PATH=$PATH:$HOME/bin
+
+# REMOVE DUPLICATES FROM PATH
+export PATH=$(printf %s "$PATH" | awk -vRS=: '!a[$0]++' | paste -s -d:)
+
+#########################################
+################  NVM  ##################
+#########################################
+
+export NVM_DIR=$HOME/.nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+################################
+###########  THEMES  ###########
+################################
+
+# Set name of the theme to load. Optionally, if you set this to "random"
+# ZSH_THEME="robbyrussell"
+# ZSH_THEME="af-magic"
+# ZSH_THEME="fino-time" # buggy
+# ZSH_THEME="obraun"  # TOO LONG, BUT GREAT !
+# ZSH_THEME="sporty_256" # NO FULL PATH :(
+# ZSH_THEME="pure"
+# ZSH_THEME="dpoggi"
+ZSH_THEME="gallois"
+# ZSH_THEME=""
+# ZSH_THEME=""
+# ZSH_THEME=""
+
+# RANDOM
+# ZSH_THEME=random # RANDOM :) !!
+
+## OTHER THEMES
+# ZSH_THEME="muse"
+# ZSH_THEME="xiong-chiamiov-plus"
+# ZSH_THEME="michelebologna"
+
+# THEMES NOT WORKING
+# ZSH_THEME="spaceship"
+
+######################################
+###########  ZSH SETTINGS  ###########
+######################################
+
+source $ZSH/oh-my-zsh.sh
+source "${HOME}/.zgen/zgen.zsh"
+export UPDATE_ZSH_DAYS=7
+CASE_SENSITIVE="false"
+HYPHEN_INSENSITIVE="false"
+ENABLE_CORRECTION="false"
+COMPLETION_WAITING_DOTS="true"
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+HIST_STAMPS="dd/mm/yyyy"
+# ZSH_CUSTOM=/path/to/$HOME/.zgen/init.zshnew-custom-folder
+
+# Compilation flags
+export ARCHFLAGS="-arch x86_64"
+
+################################
+##########  PLUGINS  ###########
+################################
+
+plugins=(
+  git
+  k
+  sudo
+  zsh-completions
+  zsh-syntax-highlighting
+)
+
+# plugins+=(zsh-autosuggestions)
+
+if ! zgen saved; then
+
+  zgen oh-my-zsh
+
+  # list of plugins from zsh I use
+  # see https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins
+
+  # zgen oh-my-zsh plugins/bower
+  # zgen oh-my-zsh plugins/brew
+  zgen oh-my-zsh plugins/colored-man
+  zgen oh-my-zsh plugins/docker
+  zgen oh-my-zsh plugins/emoji
+  zgen oh-my-zsh plugins/git
+  zgen oh-my-zsh plugins/git-extras
+  zgen oh-my-zsh plugins/gitignore
+  zgen oh-my-zsh plugins/go
+  zgen oh-my-zsh plugins/node
+  zgen oh-my-zsh plugins/npm
+  # zgen oh-my-zsh plugins/osx
+  zgen oh-my-zsh plugins/pip
+  zgen oh-my-zsh plugins/python
+  zgen oh-my-zsh plugins/sudo
+  zgen oh-my-zsh plugins/urltools
+  zgen oh-my-zsh plugins/vundle
+  zgen oh-my-zsh plugins/web-search
+  zgen oh-my-zsh plugins/z
+
+  # https://github.com/Tarrasch/zsh-autoenv
+  zgen load Tarrasch/zsh-autoenv
+  # https://github.com/zsh-users/zsh-completions
+  zgen load zsh-users/zsh-completions src
+
+    # ls => k ("git aware" ls)
+    zgen load rimraf/k
+
+    # It takes control, so load last
+    # zgen oh-my-zsh plugins/tmux
+
+    zgen save
+fi
+
+source $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+

@@ -1,0 +1,7 @@
+alias repos="cd $HOME/repos && l"
+alias www="cd /var/www && l"
+alias kpi1="ssh -R 52698:localhost:52698 REDACTED-NAME@REDACTED-IP"
+alias kpi="ssh -R 52698:localhost:52698 REDACTED-NAME@REDACTED-IP"
+#alias kpi="ssh -i $HOME/.ssh/id_rsa.godaddy REDACTED-NAME@REDACTED-IP"
+# alias aws-pro="bash ${HOME}/bin/aws-pro.sh"
+alias aws-pro="ssh -R 52698:localhost:52698  -i $HOME/.ssh/STD-Exoticca-key.pem ubuntu@ec2-18-196-31-66.eu-central-1.compute.amazonaws.com"

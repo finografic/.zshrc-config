@@ -10,7 +10,23 @@ source ~/.rvm/scripts/rvm
 # ONLY FOR FIRST-TIME (??)
 # # source $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+# GIT SYNC ZSHRC AUTOMATICALLY - DANGER ??
+PWD_ORIG=$PWD ;
+cd $HOME/.zshrc-config
+git fetch
+git pull
+# git auto -p
+./node_modules/git-auto/bin/git-auto -p
+cd $PWD_ORIG;
+
+ports;
+pm2 ls;
+echo "\n"
+pydf;
+
 echo "\n\e[35m";
+
+# ASCII GENERATOR: https://www.askapache.com/online-tools/figlet-ascii/
 
 if [[ $IP = $IP_GD ]] then
 
@@ -34,24 +50,18 @@ EOF
 
 else
 
-cat << EOF
-e     eeeee eeee eeeee e     
-8     8  88 8  8 8   8 8     
-8e    8   8 8e   8eee8 8e    
-88    8   8 88   88  8 88    
-88eee 8eee8 88e8 88  8 88eee 
-EOF
+# cat << EOF
+# e     eeeee eeee eeeee e     
+# 8     8  88 8  8 8   8 8     
+# 8e    8   8 8e   8eee8 8e    
+# 88    8   8 88   88  8 88    
+# 88eee 8eee8 88e8 88  8 88eee 
+# EOF
 
 fi
 
 echo "\n"
 HOSTNAME=$(hostname);
-hostname;
-ports;
-pm2 ls;
-echo "\n"
-pydf;
-
 D="\e[36m::\033[0m";
 RESET_STRING="$HOSTNAME $D $IP $D ZSH reset"
 echo "\n\n\e[36m ---=====\e[37m $RESET_STRING \e[36m=====--- \n\n"

@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "ghsync": "^1.0.0",
+    "git-auto": "^1.0.5",
+    "git-auto-pull": "^1.0.9"
+  }
+}

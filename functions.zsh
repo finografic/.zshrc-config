@@ -25,7 +25,7 @@ function config() {
 
   #  TEMP: SAVE CURRENT PATH && CD TO CUSTOM ZSH CONFIG PATH
   PWD_ORIG=$PWD ;
-  cd ${HOME}/__zshrc__/;
+  cd ${HOME}/.zshrc-config;
   # /usr/local/bin/rmate $(fzf --reverse --preview '[[ $(file --mime {}) =~ binary ]] &&
   #                echo {} is a binary file ||
   #                (rougify {} || 
@@ -43,17 +43,20 @@ function config() {
 
 function config_BAK() {
   sudo /usr/local/bin/rmate ${HOME}/.zshrc
-  for f in ${HOME}/__zshrc__/*.zshrc; do
+  for f in ${HOME}/.zshrc-config/*.zshrc; do
       # do some stuff here with "$f"
       # remember to quote it or spaces may misbehave
        sudo /usr/local/bin/rmate ${f}
   done
 }
 
-
 alias reset=". ${HOME}/.zshrc"
 alias update=". ${HOME}/.zshrc; npm cache verify"
-alias zc="cd ${HOME}/__zshrc__ && l"
+alias zc="cd ${HOME}/.zshrc-config && l"
+
+#########################################
+############  FILE LISTINGS  ############
+#########################################
 
 # LIST SYSTEM PATHS
 alias path="tr ':' '\n' <<< '$PATH'"
@@ -72,15 +75,14 @@ alias lc='colorls -lA --sd' # RUBY GEM ls w/ icons :D
 
 # alias l="k -Ah"
 function lk() {
-  k -Ah
-  # lc
+  # k -Ah
+  lc
   if [ -d .git ]
   then
-  own .git
+  # own .git
    _gs
   fi
 }
-
 
 alias l="lk"
 alias ls="eval `dircolors -b ${HOME}/.dircolors` && ls -Alh --color" # list hidden
@@ -94,10 +96,19 @@ alias -5="cd ../../../../../ && l"
 alias t="tree -d"
 alias ta="tree"
 
+########################################
+############  FOLDER FAVES  ############
+########################################
+
 # FOLDER FAVORITES
 alias home="cd ~"
 alias www="cd /var/www/ && l"
 # alias test="cd /var/www/html/test && l"
+
+
+#####################################
+############  UTILITIES  ############
+#####################################
 
 # MISC COM
 alias ip="echo '\n\e[37mLocal IP addess: \e[0;35m$IP\n'"
@@ -108,31 +119,13 @@ alias ports2="echo '\n\e[96m'; grc netstat -plnt; echo '\n\e[0m'";
 alias ports="ports2";
 
 #####################################
-############  FUNCTIONS  ############
-#####################################
-
-run() {
-  # requires "ntl" node package installed globally
-  echo "\n";
-  ntl --info --size 20;
-}
-
-# ALIASES THAT TAKE PARAMETERS
-versions() {
-  npm info "$1" versions
-}
-
-v() {
-  npm info "$1" versions
-}
-
-#####################################
 ##########  FILE UTILS  #############
 #####################################
 
 # TAR
 tz() {
   sudo tar -xzf $1 # COMPRESS
+  #sudo tar zcvf mongodb-BAK-20181221.tar.gz db 
 } 
 
 tuz() {
@@ -144,6 +137,11 @@ f () {
   sudo find . -type f -name "*$@*"
 }
 
+# FILE FIND
+ff () { 
+  sudo fd "*$@*"
+}
+
 # FILE/FOLDER PERMISSIONS
 own () {
   sudo chown -R $USER:$USER $1
@@ -152,9 +150,21 @@ mown () {
   sudo chown -R mongodb:mongodb $1
 }
 
+space(){
+  pydf
+}
+
 #####################################
 ##############  LOGS  ###############
 #####################################
+
+# REPLACT cat WITH bat !!
+# https://github.com/sharkdp/bat
+
+# cat() {
+#   bat $1
+# }
+
 
 lg() {
   if [[ $1 > "" ]] then
@@ -271,6 +281,7 @@ git config --global color.ui true
 git config --global user.name "Justin"
 git config --global user.email "REDACTED-EMAIL"
 # ssh-keygen -t rsa -b 4096 -C "REDACTED-EMAIL"
+git config --global credential.helper 'cache --timeout 3600'
 
 function _gc() {
   if [[ $1 > "" ]] then
@@ -310,14 +321,23 @@ function _gl_ALT() {
 
 function _gs() {
   # RESET GIT PERMISSIONS
-  own .git
-  chgrp -R ${USER} .git/objects
-  chmod -R g+rws .git/objects
+  # own .git
+  # sudo chgrp -R ${USER} .git/objects
+  # sudo chmod -R g+rws .git/objects
   # GIT STATUS
-  git status
+  # git status
 }
-
 
 function _gb() {
-  git branch-select
+  # git branch-select
+  checkout
+  yarn
 }
+
+alias branch='_gb'
+
+function _gr() {
+  # git remote set-url origin https://jbrx@bitbucket.org/exoticca-web/exsecrets.git
+  # git push --set-upstream origin secretescapes.exoticca.com
+}
+

@@ -8,6 +8,8 @@ IP_GD='REDACTED-IP'
 IP_AWS='REDACTED-IP'
 # IP_AWS='REDACTED-IP' # OLD
 
+HOSTNAME=$(hostname);
+
 # NODE VERSION
 NODE_CURRENT=$(nvm current)
 # EDITOR_PREFERRED=nano
@@ -17,7 +19,7 @@ EDITOR_PREFERRED=vi
 if [[ -n $SSH_CONNECTION ]]; then
   # IS REMOTE
   IS_SSH=true
-  export EDITOR="vim"
+  export EDITOR="vi"
   if [[ $IP = $IP_GD ]] then
     code () { sudo "${HOME}/.npm-global/bin/jmate" "$@"; }
   elif [[ $IP = $IP_AWS ]] then
@@ -25,10 +27,11 @@ if [[ -n $SSH_CONNECTION ]]; then
   else
     code () { /usr/share/code/code "$@"; }
   fi
+fi
 # cp $(dirname $(gem which colorls))/yaml/files.yaml ~/.config/colorls/files.yaml`
 
 # DIR COLORS
-eval `dircolors ${HOME}/.dircolors/dircolors-moonshine-master/dircolors.moonshine`
+eval `dircolors ${HOME}/.dircolors/dircolors-moonshine-master/dircolors.moonshine`;
 # eval "$(dircolors /etc/DIR_COLORS)"
 # dircolors --print-database
 # eval "$(dircolors)"

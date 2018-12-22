@@ -1,3 +1,29 @@
+###############################
+############  NPM  ############
+###############################
+
+run() {
+  # requires "ntl" node package installed globally
+  echo "\n";
+  ntl --info --size 20;
+}
+
+# ALIASES THAT TAKE PARAMETERS
+versions() {
+  npm info "$1" versions
+}
+
+v() {
+  npm info "$1" versions
+}
+
+###############################
+############  NODE  ###########
+###############################
+
+alias kn='killall -9 node'
+
+
 #####################################
 #########  DEV + TESTING  ###########
 #####################################
@@ -12,8 +38,6 @@ cx () {
   pm2 start;
   pm2 log cronic;
 }
-
-alias kn='killall -9 node'
 
 
 # CHANGE MODULE/COMPONENT 
@@ -41,9 +65,7 @@ eval $( dircolors -b $HOME/bin/LS_COLORS );
 ####################  COLOR  ###################
 ################################################
 
-
 # https://misc.flogisoft.com/bash/tip_colors_and_formatting
-
 
 
 # Reset

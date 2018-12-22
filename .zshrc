@@ -2,7 +2,7 @@
 ########## INCLUDE CONFIGS FILES  #########
 ###########################################
 
-ZSH_CONFIG=$HOME/__zshrc__;
+ZSH_CONFIG=$HOME/.zshrc-config
 
 source "$ZSH_CONFIG/_zsh-base.zsh";
 source "$ZSH_CONFIG/_zsh-config.zsh";

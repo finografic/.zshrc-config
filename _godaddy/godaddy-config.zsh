@@ -1,4 +1,10 @@
 ##########################################
+###############  IMPORTS  ################
+##########################################
+
+source "$ZSH_CONFIG/_godaddy/godaddy-crons.zsh";
+
+##########################################
 ##########  REMOTE ALIASES: KPI  #########
 ##########################################
 
@@ -32,10 +38,10 @@ alias seus="cd /var/www/secretescapes-us/wmexoticca && l && _gs"
 ########  MISC SYMFONY   #########
 ##################################
 
-alias css="app/console assetic:dump --env=prod"
-alias crons="code /etc/crontab"
-alias feeds="cd src/Exoticca/AppBundle/Resources/views/feed && l"
-alias set="./set_parameters" # for KPI + SE repos
+alias css="app/console alg() {ssetic:dump --env=prod"
+alias crons="code /etc/clg() {rontab"
+alias feeds="cd src/Exotlg() {icca/AppBundle/Resources/views/feed && l"
+alias set="./set_parametlg() {ers" # for KPI + SE repos
 
 ##################################
 ########  SYMFONY CACHE  #########
@@ -93,7 +99,7 @@ cc () {
   sudo chmod -R g+rws ${PROJECT}/.git/objects
   # COMMIT cc (REGENERATED parameters.yml FILE
   git commit -m 'parameters.yml regenerated' app/config/parameters.yml
-  
+
 }
 
 # CLEAR ALL CACHES
@@ -110,7 +116,27 @@ ccall() {
 
 ############################################
 ##########  REMOTE ALIASES: OTHER  #########
+
+
+
+
+
+
+
+
+
+
 ############################################
+
+
+
+
+
+
+
+
+
+
 
 # APACHE ALIASES
 alias sites="cd /etc/apache2/sites-available && l"

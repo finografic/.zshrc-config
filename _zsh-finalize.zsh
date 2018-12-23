@@ -5,19 +5,19 @@
 export LC_ALL=C
 # nvm use v8.11.3 
 # rvm use ruby-2.5.1 # NECESSARY TO SET RUBY PATH
-source $HOME/.rvm/scripts/rvm
-[ -f $HOME/.fzf.zsh ] && source ~/.fzf.zsh
+
+# NODE VERSION
+if hash rvm 2>/dev/null; then
+   source $HOME/.rvm/scripts/rvm
+fi
+
+[ -f $HOME/.fzf.zsh ] && source ${HOME}/.fzf.zsh
 # ONLY FOR FIRST-TIME (??)
 # # source $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # GIT SYNC ZSHRC AUTOMATICALLY - DANGER ??
-PWD_ORIG=$PWD ;
-cd $HOME/.zshrc-config
-# git fetch
-# git pull
-# git auto -p
-./node_modules/git-auto/bin/git-auto -p
-cd $PWD_ORIG;
+git fetch
+cd $HOME/.zshrc-config/node_modules/git-auto/bin/git-auto -p
 
 ports;
 pm2 ls;

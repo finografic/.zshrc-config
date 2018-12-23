@@ -1,5 +1,6 @@
-VERSAL ALIASES  ##########
-#########################################
+#############################################
+############ FUNCTIONS + ALIASES ############
+#############################################
 
 # ZSH CONFIG
 # alias config="sudo ${HOME}/.npm-global/bin/rmate ${HOME}/.zshrc"
@@ -8,47 +9,15 @@ VERSAL ALIASES  ##########
 export FZF_DEFAULT_COMMAND='fd --type f --ignore-file .ignore'
 
 function config() {
-
-  #   local dir=$(
-  #   [ $# = 1 ] && [ -d "$1" ] && cd "$1"
-  #   while true; do
-  #     find "$PWD" -mindepth 1 -maxdepth 1 -type d
-  #     echo "$PWD"
-  #     [ $PWD = / ] && break
-  #     cd ..
-  #   done | fzf --tiebreak=end --height 50% --reverse --preview 'tree -C {} | head -200'
-  # ) && cd "$dir"
-
-  # OPEN MAIN/PARENT.zshrc FILE BY DEFAULT
-  # sudo /usr/local/bin/rmate ${HOME}/.zshrc;
-  # sudo $EDITOR_PREFERRED ${HOME}/.zshrc;
-  # $EDITOR ${HOME}/.zshrc;
-
   #  TEMP: SAVE CURRENT PATH && CD TO CUSTOM ZSH CONFIG PATH
   PWD_ORIG=$PWD ;
   cd ${HOME}/.zshrc-config;
-  # /usr/local/bin/rmate $(fzf --reverse --preview '[[ $(file --mime {}) =~ binary ]] &&
-  #                echo {} is a binary file ||
-  #                (rougify {} || 
-  #                 lnav {} || 
-  #                 cat {}) 2> /dev/null | head -500');
   code $(fzf --reverse --preview '[[ $(file --mime {}) =~ binary ]] &&
                  echo {} is a binary file ||
                  (rougify {} || 
                   lnav {} || 
                   cat {}) 2> /dev/null | head -500');
-  # GO BACK TO ORIGINAL FOLDER
   cd $PWD_ORIG;
-
-}
-
-function config_BAK() {
-  sudo /usr/local/bin/rmate ${HOME}/.zshrc
-  for f in ${HOME}/.zshrc-config/*.zshrc; do
-      # do some stuff here with "$f"
-      # remember to quote it or spaces may misbehave
-       sudo /usr/local/bin/rmate ${f}
-  done
 }
 
 alias reset=". ${HOME}/.zshrc"
@@ -127,11 +96,15 @@ alias ports="ports2";
 # TAR
 tz() {
   sudo tar -xzf $1 # COMPRESS
-  #sudo tar zcvf mongodb-BAK-20181221.tar.gz db 
+  # sudo tar zcvf mongodb-BAK-20181221.tar.gz db 
 } 
 
 tuz() {
-  sudo tar xf $1 # DECOMPRESS 
+  # DECOMPRESS
+  # TODO: USER SELECT FOR *.tar.gz FILES
+  echo '\e[32m'
+  sudo tar xvpf $1 -C . --checkpoint=.100
+  l
 } 
 
 # FILE FIND
@@ -275,6 +248,15 @@ alias mstat='sudo mongostat' # REQUIRES enabledLocalhostAuthBypass TO CREATE FIR
 # INI MONGO_VERSION
 mverSet;
 
+function mbak(){
+  cd /data
+  sudo mongod --shutdown
+  ports
+  sudo tar zcvf "db-BAK-$(date +%F).tar.gz"
+  l
+  server
+}
+
 ##################################
 ##########  GIT REMOTE   #########
 ##################################
@@ -343,5 +325,6 @@ function _gr() {
   # git remote set-url origin https://jbrx@bitbucket.org/exoticca-web/exsecrets.git
   # git push --set-upstream origin secretescapes.exoticca.com
 }
+
 
 

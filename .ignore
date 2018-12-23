@@ -1,0 +1,8 @@
+# FZF IGNORES
+.git
+.gitignore
+.ignore
+node_modules
+package.json
+yarn.lock
+*.bak

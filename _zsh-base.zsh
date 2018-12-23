@@ -6,12 +6,13 @@
 IP=$(curl -s ipinfo.io/ip)
 IP_GD='REDACTED-IP' 
 IP_AWS='REDACTED-IP'
-# IP_AWS='REDACTED-IP' # OLD
-
 HOSTNAME=$(hostname);
 
 # NODE VERSION
-NODE_CURRENT=$(nvm current)
+if hash nvm 2>/dev/null; then
+  NODE_CURRENT=$(nvm current)
+fi
+
 # EDITOR_PREFERRED=nano
 EDITOR_PREFERRED=vi
 # EDITOR_PREFERRED=/usr/bin/code
@@ -28,10 +29,9 @@ if [[ -n $SSH_CONNECTION ]]; then
     code () { /usr/share/code/code "$@"; }
   fi
 fi
+
 # cp $(dirname $(gem which colorls))/yaml/files.yaml ~/.config/colorls/files.yaml`
 
 # DIR COLORS
-eval `dircolors ${HOME}/.dircolors/dircolors-moonshine-master/dircolors.moonshine`;
-# eval "$(dircolors /etc/DIR_COLORS)"
-# dircolors --print-database
-# eval "$(dircolors)"
+# eval `dircolors ${HOME}/.dircolors/dircolors-moonshine-master/dircolors.moonshine`;
+eval `dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark`;

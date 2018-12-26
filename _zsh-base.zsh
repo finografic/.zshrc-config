@@ -8,10 +8,16 @@ IP_GD='REDACTED-IP'
 IP_AWS='REDACTED-IP'
 HOSTNAME=$(hostname);
 
-# NODE VERSION
-if hash nvm 2>/dev/null; then
-  NODE_CURRENT=$(nvm current)
+if [[ $IP = $IP_GD ]] then ZENV='godaddy'
+elif [[ $IP = $IP_AWS ]] then ZENV='aws'
+else ZENV='local'
 fi
+
+# NODE VERSION
+NVM_CURRENT=$(nvm current);
+# if hash nvm 2>/dev/null; then
+#   NODE_CURRENT=$(nvm current)
+# fi
 
 # EDITOR_PREFERRED=nano
 EDITOR_PREFERRED=vi
@@ -24,7 +30,7 @@ if [[ -n $SSH_CONNECTION ]]; then
   if [[ $IP = $IP_GD ]] then
     code () { sudo "${HOME}/.npm-global/bin/jmate" "$@"; }
   elif [[ $IP = $IP_AWS ]] then
-    code () { sudo "${HOME}/.nvm/versions/node/${NODE_CURRENT}/bin/jmate" "$@"; }
+    code () { sudo "${HOME}/.nvm/versions/node/${NVM_CURRENT}/bin/jmate" "$@"; }
   else
     code () { /usr/share/code/code "$@"; }
   fi

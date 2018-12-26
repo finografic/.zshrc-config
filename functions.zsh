@@ -22,7 +22,7 @@ function config() {
 
 alias reset=". ${HOME}/.zshrc"
 alias update=". ${HOME}/.zshrc; npm cache verify"
-alias zc="cd ${HOME}/.zshrc-config && l"
+alias cdz="cd ${HOME}/.zshrc-config && l"
 
 #########################################
 ############  FILE LISTINGS  ############

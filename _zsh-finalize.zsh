@@ -16,47 +16,22 @@ fi
 # # source $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # GIT SYNC ZSHRC AUTOMATICALLY - DANGER ??
-git fetch
-cd $HOME/.zshrc-config/node_modules/git-auto/bin/git-auto -p
+# FOLLOWING REQUIRES 'sudo'
+# cd $ZSH_CONFIG
+# git fetch
+# $HOME/.zshrc-config/node_modules/git-auto/bin/git-auto -p
+
+# INIT DIR
+cd $HOME
 
 ports;
 pm2 ls;
 echo "\n"
 pydf --human-readable;
 
-echo "\e[35m";
-
-# ASCII GENERATOR: https://www.askapache.com/online-tools/figlet-ascii/
-
-if [[ $IP = $IP_GD ]] then
-
-cat << EOF
-   __ _____  ____
-  / //_/ _ \/  _/
- / ,< / ___// /  
-/_/|_/_/  /___/              
-EOF
-
-elif [[ $IP = $IP_AWS ]] then
-
-cat << EOF
-   ___ _      ______
-  / _ | | /| / / __/
- / __ | |/ |/ /\ \  
-/_/ |_|__/|__/___/   
-EOF
-
-else
-
-cat << EOF
-   __   ____  ________   __ 
-  / /  / __ \/ ___/ _ | / / 
- / /__/ /_/ / /__/ __ |/ /__
-/____/\____/\___/_/ |_/____/
-EOF
-
-fi
+# BANNER
+source "$ZSH_CONFIG/_${ZENV}/${ZENV}-banner.zsh";
 
 D="\e[36m::\033[0m";
-RESET_STRING="$HOSTNAME $D $IP $D ZSH reset"
+RESET_STRING="$HOSTNAME $D $IP $D zsh reset"
 echo "\n\e[36m ---=====\e[37m $RESET_STRING \e[36m=====--- \n"

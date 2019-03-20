@@ -3,20 +3,19 @@
 #############################################
 
 # ZSH CONFIG
-# alias config="sudo ${HOME}/.npm-global/bin/rmate ${HOME}/.zshrc"
-# alias config="sudo /usr/local/bin/rmate ${HOME}/.zshrc"
-
 export FZF_DEFAULT_COMMAND='fd --type f --ignore-file .ignore'
 
 function config() {
   #  TEMP: SAVE CURRENT PATH && CD TO CUSTOM ZSH CONFIG PATH
   PWD_ORIG=$PWD ;
   cd ${HOME}/.zshrc-config;
-  code $(fzf --reverse --preview '[[ $(file --mime {}) =~ binary ]] &&
-                 echo {} is a binary file ||
-                 (rougify {} || 
-                  lnav {} || 
-                  cat {}) 2> /dev/null | head -500');
+  # --preview BROKEN !! :()
+  # code $(fzf --reverse --preview '[[ $(file --mime {}) =~ binary ]] &&
+  #                echo {} is a binary file ||
+  #                (rougify {} || 
+  #                 lnav {} || 
+  #                 cat {}) 2> /dev/null | head -500');
+  code $(fzf --reverse);
   cd $PWD_ORIG;
 }
 
@@ -41,7 +40,7 @@ alias ll="ls -la --color -h --group-directories-first" # list hidden
 
 # subl $(dirname $(gem which colorls))/yaml
 alias lc="colorls -lA --sort-dirs --git-status --report && echo \n" # RUBY GEM ls w/ icons :D
-
+alias l2="exa --all --group-directories-first --long --group --modified --time-style long-iso --git" # NEW ALT LS COLOR
 # COLORLS: CHANGE ICONS HERE: subl $(dirname $(gem which colorls))/yaml
 
 function listing() {
@@ -54,9 +53,19 @@ function listing() {
   fi
 }
 
+function lr() {
+  # SORT BY DATE ASC
+  # USEFUL FOR CHECKING LAST MODIFIED
+  # TODO - ADD x num days VARIABLE
+  k -rAth
+}
+
+
+
 # alias l="lk"
 alias l="listing"
 alias ls="eval `dircolors -b ${HOME}/.dircolors` && ls -Alh --color" # list hidden
+alias lr="find $(pwd) -mtime -1 -ls -maxdepth 1"
 alias -1="cd ../ && l"
 alias -2="cd ../../ && l"
 alias -3="cd ../../../ && l"
@@ -109,13 +118,16 @@ tuz() {
 
 # FILE FIND
 f () { 
-  sudo find . -type f -name "*$@*"
+  # OPTION 1.
+  # sudo find . -type f -name "*$@*"
+
+  #OPTION 2. ** BEST OPTION
+  sudo fd "$@"
+
+  # OPTION 3.
+  # sudo ag -i -g "$@" # --depth 5         
 }
 
-# FILE FIND
-ff () { 
-  sudo fd "*$@*"
-}
 
 # FILE/FOLDER PERMISSIONS
 own () {
@@ -128,6 +140,10 @@ mown () {
 
 space(){
   pydf --human-readable
+}
+
+space2(){
+  ncdu;
 }
 
 #####################################
@@ -151,8 +167,8 @@ lg() {
 }
 
 # alias logs="tailc app/logs/prod.log"
-alias alogs="sudo lnav /var/log/apache2/access.log"
-alias elogs="sudo lnav /var/log/apache2/error.log"
+alias logs-aa="sudo lnav /var/log/apache2/access.log"
+alias logs-ae="sudo lnav /var/log/apache2/error.log"
 
 tailc () {
 
@@ -171,7 +187,7 @@ tailc () {
       color='
       // {print "\033[37m" $0 "\033[39m"}
       /(WARN|WARNING)/ {print "\033[1;33m" $0 "\033[0m"}
-      /(ERROR|CRIT)/ {print "\033[1;31m" $0 "\033[0m"}
+      /(ERROR|CRIT)/ {print "\033[1;31m" $ec0 "\033[0m"}
       '
   fi
 
@@ -187,13 +203,34 @@ tailc () {
 
 alias logs='tailc app/logs/prod.log'
 
+# list new/recent logs (1 DAY)
+# alias logsr='sudo find /var/log -mtime -1 -ls'
+function logsr(){
+  # VAR_SINCE={$1}/24);
+  VAR_SINCE=0.5;
+  sudo find /var/log -mtime -$VAR_SINCE -ls;
+}
+
+
+##################################
+##############  PM2   ############
+##################################
+
+function pm2da(){
+  pm2 delete all
+}
+
+function pm2ll(){
+  pm2 list --sort id:asc
+}
+
 ##################################
 ############  MONGODB   ##########
 ##################################
 
 # OLD / ORIG
-# alias mstart="sudo systemctl start mongodb"
-# alias mstop="sudo systemctl stop mongodb"
+# alias mstart="sudo systemctl start mofind . -mtime -1 -printodb"
+# alias mstop="sudo systemctl stop mongfind . -mtime -1 -printb"
 # alias mrs="sudo systemctl restart mongodb"
 # alias mstat="sudo systemctl status mongodb"
 # alias mlog="sudo cat /var/log/mongodb/mongod.log"
@@ -264,8 +301,7 @@ function mbak(){
 # GIT USER (SILENT)
 git config --global color.ui true
 git config --global user.name "Justin"
-git config --global user.email "REDACTED-EMAIL"
-# ssh-keygen -t rsa -b 4096 -C "REDACTED-EMAIL"
+git config --global user.email "justin.blair.rankin@gmail.com"
 git config --global credential.helper 'cache --timeout 3600'
 
 function _gc() {
@@ -325,6 +361,19 @@ function _gr() {
   # git remote set-url origin https://jbrx@bitbucket.org/exoticca-web/exsecrets.git
   # git push --set-upstream origin secretescapes.exoticca.com
 }
+
+
+##################################
+##########  SITES REMOTE   #########
+##################################
+
+function site_enable() {
+  cd /etc/apache2/sites-enabled
+  sudo ln -s "/etc/apache2/sites-available/$1" "/etc/apache2/sites-enabled/$1"
+  l
+}
+
+
 
 
 

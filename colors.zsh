@@ -2,6 +2,9 @@
 ###################  COLORS  ###################
 ################################################
 
+# exa file listing
+# env EXA_COLORS="da=1;34" # brighter blues
+
 # https://misc.flogisoft.com/bash/tip_colors_and_formatting
 
 # Reset

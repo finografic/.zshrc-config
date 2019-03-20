@@ -100,6 +100,7 @@ if ! zgen saved; then
   # zgen oh-my-zsh plugins/bower
   # zgen oh-my-zsh plugins/brew
   zgen oh-my-zsh plugins/colored-man
+  .zgen oh-my-zsh plugins/colored-man-pages
   zgen oh-my-zsh plugins/docker
   zgen oh-my-zsh plugins/emoji
   zgen oh-my-zsh plugins/git
@@ -112,6 +113,7 @@ if ! zgen saved; then
   zgen oh-my-zsh plugins/pip
   zgen oh-my-zsh plugins/python
   zgen oh-my-zsh plugins/sudo
+  zgen oh-my-zsh plugins/ubuntu
   zgen oh-my-zsh plugins/urltools
   zgen oh-my-zsh plugins/vundle
   zgen oh-my-zsh plugins/web-search

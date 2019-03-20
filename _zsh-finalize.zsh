@@ -6,10 +6,14 @@ export LC_ALL=C
 # nvm use v8.11.3 
 # rvm use ruby-2.5.1 # NECESSARY TO SET RUBY PATH
 
-# NODE VERSION
+# RVM VERSION
 if hash rvm 2>/dev/null; then
    source $HOME/.rvm/scripts/rvm
 fi
+
+# FORM rvm
+source ~/.rvm/scripts/rvm
+
 
 [ -f $HOME/.fzf.zsh ] && source ${HOME}/.fzf.zsh
 # ONLY FOR FIRST-TIME (??)
@@ -25,7 +29,7 @@ fi
 cd $HOME
 
 ports;
-pm2 ls;
+pm2 list --sort id:asc;
 echo "\n"
 pydf --human-readable;
 

@@ -2,46 +2,26 @@
 ###############  IMPORTS  ################
 ##########################################
 
-source "$ZSH_CONFIG/_godaddy/godaddy-crons.zsh";
 
-##########################################
-##########  REMOTE ALIASES: KPI  #########
-##########################################
+# TESTING
+alias cs="cd $HOME/cronic && l && _gs"
 
-# KPI FOLDERS
-alias es="cd /var/www/kpi-es/kpi_exoticca && l && _gs"
-alias uk="cd /var/www/kpi-uk/kpi_exoticca && l && _gs"
-alias de="cd /var/www/kpi-de/kpi_exoticca && l && _gs"
-alias fr="cd /var/www/kpi-fr/kpi_exoticca && l && _gs"
-alias us="cd /var/www/kpi-us/kpi_exoticca && l && _gs"
 
-# KPI-RELATED
-alias kpi-config="cd app/config && l"
-alias kpi-configs="cd /var/www/_config-kpi && l"
-alias kfiles="cd src/Exoticca/AppBundle/Resources/views && l"
-alias kfeeds="cd /var/www/_config-kpi-feeds && l"
-alias konfig="cd /var/www/_config-kpi && l"
 
-#########################################
-##########  REMOTE ALIASES: SE  #########
-#########################################
-
-# SECRET ESCAPES FOLDERS
-alias wm="cd /var/www/wm && l"
-alias sees="cd /var/www/secretescapes-es/wmexoticca && l && _gs"
-alias seuk="cd /var/www/secretescapes-uk/wmexoticca && l && _gs"
-alias sede="cd /var/www/secretescapes-de/wmexoticca && l && _gs"
-alias sefr="cd /var/www/secretescapes-fr/wmexoticca && l && _gs"
-alias seus="cd /var/www/secretescapes-us/wmexoticca && l && _gs"
 
 ##################################
-########  MISC SYMFONY   #########
+##############  PM2   ############
 ##################################
 
-alias css="app/console alg() {ssetic:dump --env=prod"
-alias crons="code /etc/clg() {rontab"
-alias feeds="cd src/Exotlg() {icca/AppBundle/Resources/views/feed && l"
-alias set="./set_parametlg() {ers" # for KPI + SE repos
+function pm2lg(){
+  cd $HOME/logs-crons;
+  lnav _crons-daemon.log;
+}
+
+function pm2dl(){
+  delete $HOME/logs-crons/*
+}
+
 
 ##################################
 ########  SYMFONY CACHE  #########
@@ -115,27 +95,8 @@ ccall() {
 }
 
 ############################################
-##########  REMOTE ALIASES: OTHER  #########
-
-
-
-
-
-
-
-
-
-
+##########  REMOTE ALIASES: OTHER  ########
 ############################################
-
-
-
-
-
-
-
-
-
 
 
 # APACHE ALIASES

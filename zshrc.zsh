@@ -17,7 +17,6 @@ source "$ZSH_CONFIG/misc-dev.zsh";
 
 # GET VARIOUS CUSTOM ENVIRONMENTS
 source "$ZSH_CONFIG/_${ZENV}/${ZENV}.zsh"; # $ZENV DEFINED IN _zsh-bash.zsh
-source "$ZSH_CONFIG/_${ZENV}/${ZENV}-config.zsh";
 
 # FINALIZATION OUTPUT
 source "$ZSH_CONFIG/_zsh-finalize.zsh";

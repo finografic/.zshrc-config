@@ -42,9 +42,10 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 # ZSH_THEME="sporty_256" # NO FULL PATH :(
 # ZSH_THEME="pure"
 # ZSH_THEME="dpoggi"
-ZSH_THEME="gallois"
-# ZSH_THEME=""
-# ZSH_THEME=""
+# ZSH_THEME="gallois"
+# ZSH_THEME="powerlevel9k/powerlevel9k"
+# ZSH_THEME="agnoster"
+ZSH_THEME="fino-time"
 # ZSH_THEME=""
 
 # RANDOM
@@ -57,6 +58,9 @@ ZSH_THEME="gallois"
 
 # THEMES NOT WORKING
 # ZSH_THEME="spaceship"
+
+# OUTPUT THEME (by path)
+print $RANDOM_THEME
 
 ######################################
 ###########  ZSH SETTINGS  ###########

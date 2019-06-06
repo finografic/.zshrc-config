@@ -24,7 +24,7 @@ elif [[ $ZENV = 'local'   ]]  then EDITOR_PREFERRED==/usr/bin/code
 fi
 
 # code() COMMAND, USING EDITOR_PREFERRED
-if   [[ $ZENV = 'a2'       ]]  then code () { sudo "${HOME}/.npm-global/bin/jmate" "$@"; }
+if   [[ $ZENV = 'a2'       ]]  then code () { sudo "/usr/local/bin/rmate" "$@"; }
 elif [[ $ZENV = 'local'    ]]  then code () { /usr/share/code/code "$@"; }
 elif [[ -n $SSH_CONNECTION ]]  then code () { vi "$@"; }
 else code () { vi "$@"; }

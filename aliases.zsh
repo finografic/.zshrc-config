@@ -19,9 +19,43 @@ function config() {
   cd $PWD_ORIG;
 }
 
+# TERMINAL MESSAGE: function msg(type, "string")
+msg() { 
+
+  # DEFINE + GET MESSAGE TYPE
+  declare -A TYPES=( 
+    [info]=$_c 
+    [success]=$_g 
+    [warning]=$_y  
+    [warn]=$_y 
+    [danger]=$_r  
+    [error]=$_r  
+    [err]=$_r  
+  )
+  _type=${TYPES[$1]}
+
+  # DETERMINE LENGTH OF MESSAGE IN CHARS
+  FULL_LENGTH=70 
+  STRING_LENGTH=$(expr length $2 + 4) 
+
+  # SUFFIX (REMAINING CHARACTERS OUT OF 80)
+  let SUFFIX_LENGTH=$FULL_LENGTH-$STRING_LENGTH
+  SUFFIX_STRING="${_type}"
+  for ((i=1;i<=$SUFFIX_LENGTH;i++));
+  do 
+    SUFFIX_STRING+="="
+  done
+
+  # FULL MESSAGE OUTPUT
+  MSG="\n${_type}== ${_w}${2} ${SUFFIX_STRING}\n"
+  echo $MSG;
+
+}
+
 alias reset=". ${HOME}/.zshrc"
-alias update=". ${HOME}/.zshrc; npm cache verify"
+alias update_cache=". ${HOME}/.zshrc; npm cache verify"
 alias cdz="cd ${HOME}/.zshrc-config && l"
+alias os="cd ${HOME}/OS_Setup && l"
 
 #########################################
 ############  FILE LISTINGS  ############
@@ -40,11 +74,25 @@ alias ll="ls -la --color -h --group-directories-first" # list hidden
 
 # subl $(dirname $(gem which colorls))/yaml
 alias lc="colorls -lA --sort-dirs --git-status --report && echo \n" # RUBY GEM ls w/ icons :D
-alias l2="exa --all --group-directories-first --long --group --modified --time-style long-iso --git" # NEW ALT LS COLOR
+# alias l2="exa --long --all --group-directories-first --accessed --time-style=long-iso --git" # NEW ALT LS COLOR
 # COLORLS: CHANGE ICONS HERE: subl $(dirname $(gem which colorls))/yaml
+
+# LIST PERMISSIONS -- HOW TO ADD COLOR ??
+alias lp="stat -c '%A  %a  %U:%G  ___  %n' *"    # SIMPLE
+# alias lp="stat -c '%A %a  %U:%G  %F %s -- %n' *"  # with TYPE and SIZE
 
 function listing() {
   k -Ah
+  # lc
+  if [ -d .git ]
+  then
+  # own .git
+   _gs
+  fi
+}
+
+function listing_exa() {
+  exa --long --all --group-directories-first --accessed --time-style=long-iso --git
   # lc
   if [ -d .git ]
   then
@@ -60,12 +108,16 @@ function lr() {
   k -rAth
 }
 
-
-
 # alias l="lk"
-alias l="listing"
+alias l1="listing"
+alias l2="listing_exa"
+alias l="listing_exa"
 alias ls="eval `dircolors -b ${HOME}/.dircolors` && ls -Alh --color" # list hidden
+
+# ???
 alias lr="find $(pwd) -mtime -1 -ls -maxdepth 1"
+
+# CD NAVIGATION
 alias -1="cd ../ && l"
 alias -2="cd ../../ && l"
 alias -3="cd ../../../ && l"
@@ -74,6 +126,8 @@ alias -5="cd ../../../../../ && l"
 
 # TREE LISTING
 alias t="tree -d"
+alias t2="exa --long --tree --all --group-directories-first"
+alias t3="exa --tree --long --all --group-directories-first --accessed --time-style=long-iso --git"
 alias ta="tree"
 
 ########################################
@@ -84,7 +138,6 @@ alias ta="tree"
 alias home="cd ~"
 alias www="cd /var/www/ && l"
 # alias test="cd /var/www/html/test && l"
-
 
 #####################################
 ############  UTILITIES  ############
@@ -116,32 +169,42 @@ tuz() {
   l
 } 
 
-# FILE FIND
-f () { 
+# FIND: FILE
+f() { 
   # OPTION 1.
-  # sudo find . -type f -name "*$@*"
-
-  #OPTION 2. ** BEST OPTION
-  sudo fd "$@"
-
+  # sudo find . -type f -name "$@"
+  # OPTION 2. ** BEST OPTION
+  # sudo fd "$@"
   # OPTION 3.
-  # sudo ag -i -g "$@" # --depth 5         
+  sudo fd --hidden --color 'auto' "$@"
 }
 
+# FIND: APT PACKAGES
+# sudo ag -i -g "$@" # --depth 5    
+
+# FIND: FILE CONTENTS
+contents() { 
+  # OPTION 1.
+  # sudo grep -rnw "." -e "$@"
+  sudo grep -rnl "." -e "$@"
+}
 
 # FILE/FOLDER PERMISSIONS
-own () {
+own() {
   sudo chown -R $USER:$USER $1
 }
 
+# OWN USING mongodb USER
 mown () {
   sudo chown -R mongodb:mongodb $1
 }
 
+# DISK SPACE
 space(){
   pydf --human-readable
 }
 
+# DISK SPACE
 space2(){
   ncdu;
 }
@@ -302,9 +365,14 @@ function mbak(){
 git config --global color.ui true
 git config --global user.name "Justin"
 git config --global user.email "justin.blair.rankin@gmail.com"
-git config --global credential.helper 'cache --timeout 3600'
+git config --global credential.helper 'cache --timeout=1209600' # TWO WEEKS!
+
+function _gcache() {
+  git config credential.helper 'cache --timeout=1209600'    # TWO WEEKS!
+}
 
 function _gc() {
+  _gcache;
   if [[ $1 > "" ]] then
     message="$1"
   else
@@ -315,15 +383,18 @@ function _gc() {
 }
 
 function _gd() {
-  git add -A :/
-  git commit -m "Commit all changes before pull."
-  git push
+  git pull
+}
+
+function _gp() {
+  git pull
 }
 
 function _gu() {
-  git add -A :/
-  git commit -m "Commit all changes before push."
-  git push -f
+  # "UPDATE & UPLOAD"
+  # (commit & push, combined)
+ _gc $1
+ git push -f
 }
 
 # GIT LOG - COLORIZED :)
@@ -346,7 +417,7 @@ function _gs() {
   # sudo chgrp -R ${USER} .git/objects
   # sudo chmod -R g+rws .git/objects
   # GIT STATUS
-  # git status
+  git status
 }
 
 function _gb() {
@@ -374,6 +445,16 @@ function site_enable() {
 }
 
 
+##################################
+#############  MISC  #############
+##################################
+
+function newsh() {
+  NEW_FILE=$1.sh
+  echo "#!/bin/bash" >> $HOME/bin/$NEW_FILE
+  chmod +x $HOME/bin/$NEW_FILE
+  code $HOME/bin/$NEW_FILE
+}
 
 
 

@@ -11,7 +11,8 @@ www-ORIG
 .git-BAK
 node_modules
 .vscode
-.directory
+unused
+
 
 # DATABASES #
 #############

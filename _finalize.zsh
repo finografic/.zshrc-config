@@ -3,8 +3,6 @@
 ################################################
 
 export LC_ALL=C
-nvm use v12.2.0 
-# rvm use ruby-2.5.1 # NECESSARY TO SET RUBY PATH
 
 # FORM rvm // RVM VERSION
 # [ -e /etc/profile.d/rvm.sh ] && source /etc/profile.d/rvm.sh
@@ -27,7 +25,7 @@ cd $HOME
 
 # NEW PM2 COMMAND
 # pm2 list --sort id:asc;
-sudo env PATH=$PATH:/home/REDACTED/.nvm/versions/node/v12.2.0/bin /home/REDACTED/.nvm/versions/node/v12.2.0/lib/node_modules/pm2/bin/pm2 startup systemd -u justin --hp /home/REDACTED
+env PATH=$PATH:/home/REDACTED/.nvm/versions/node/v12.2.0/bin /home/REDACTED/.nvm/versions/node/v12.2.0/lib/node_modules/pm2/bin/pm2 startup systemd -u justin --hp /home/REDACTED
 
 # LIST PORTS
 ports;
@@ -37,8 +35,24 @@ echo "\n"
 pydf --human-readable;
 
 # BANNER
-source "$ZSH_CONFIG/_${ZENV}/${ZENV}-banner.zsh";
+source "$ZSH_CONFIG/zenvs/${ZENV}/${ZENV}-banner.zsh";
 
 D="\e[36m::\033[0m";
 RESET_STRING="$HOSTNAME $D $IP $D zsh reset"
 echo "\n\e[36m ---=====\e[37m $RESET_STRING \e[36m=====--- \n"
+
+
+
+D="${_c}::${_0}";
+RESET_STRING="$HOSTNAME $D ${_w}$IP $D"
+#echo "\n\e[36m ---=====\e[37m $RESET_STRING \e[36m=====--- \n"
+echo "\n${_c} ---=====${_w} $RESET_STRING ${_c}=====--- \n"
+
+# CentOS Version
+echo "${_y}$(uname -o)"
+echo "${_0}\e[36mUsing ${_c}NodeJS $(node --version)"
+echo "${_0}\e[36mUsing ${_c}npm v$(npm --version)\n"
+
+
+
+

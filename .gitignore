@@ -12,6 +12,7 @@ www-ORIG
 node_modules
 .vscode
 unused
+yarn.lock
 
 
 # DATABASES #

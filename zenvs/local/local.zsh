@@ -1,3 +1,11 @@
+# SPECIFIC
+export ZSH_CONFIG="$HOME/.zshrc-config"
+export NVM="true"
+export EDITOR_PREFERRED==/usr/bin/code
+code () { /usr/share/code/code "$@"; }
+eval `dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark`;
+
+
 # UNIVERSAL 
 PROJECTS="$HOME/dev_projects"
 alias dev="cd $PROJECTS && l"
@@ -12,7 +20,7 @@ alias app="cd $PROJECTS/app-axios/ && l"
 alias imatch="cd $PROJECTS/app-imatchination/ && l"
 alias jst="cd $PROJECTS/js-learning/src/ && l"
 alias green="cd $PROJECTS/greenPower/ && l"
-
+alias cratez="cd $PROJECTS/cratez/ && l"
 # REMOTE: A2 HOSTING
 # alias a2="ssh -p 7822 67.209.azs115.154 -l ubuntu"
 alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l ubuntu"
@@ -47,6 +55,9 @@ devil() {
     cd $PROJECTS/devilbox && l
   fi
 }
+
+# LOCAL-ONLY SYS ALIASES
+alias sys="systemsettings5" # K/UBUNTU ONLY
 
 DISP_INT="eDP-1-1"
 DISP_EXT="HDMI-1-1"

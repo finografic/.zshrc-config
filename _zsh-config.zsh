@@ -104,7 +104,7 @@ if ! zgen saved; then
   # zgen oh-my-zsh plugins/bower
   # zgen oh-my-zsh plugins/brew
   zgen oh-my-zsh plugins/colored-man
-  .zgen oh-my-zsh plugins/colored-man-pages
+  zgen oh-my-zsh plugins/colored-man-pages
   zgen oh-my-zsh plugins/docker
   zgen oh-my-zsh plugins/emoji
   zgen oh-my-zsh plugins/git
@@ -117,10 +117,13 @@ if ! zgen saved; then
   zgen oh-my-zsh plugins/pip
   zgen oh-my-zsh plugins/python
   zgen oh-my-zsh plugins/sudo
+  zgen oh-my-zsh plugins/command-not-found
   zgen oh-my-zsh plugins/ubuntu
   zgen oh-my-zsh plugins/urltools
   zgen oh-my-zsh plugins/vundle
   zgen oh-my-zsh plugins/web-search
+  zgen oh-my-zsh plugins/zsh-history-substring-search
+  zgen oh-my-zsh plugins/zsh-syntax-highlighting
   zgen oh-my-zsh plugins/z
 
   # https://github.com/Tarrasch/zsh-autoenv
@@ -128,13 +131,19 @@ if ! zgen saved; then
   # https://github.com/zsh-users/zsh-completions
   zgen load zsh-users/zsh-completions src
 
-    # ls => k ("git aware" ls)
-    zgen load rimraf/k
+  # ls => k ("git aware" ls)
+  zgen load rimraf/k
 
-    # It takes control, so load last
-    # zgen oh-my-zsh plugins/tmux
+  # It takes control, so load last
+  # zgen oh-my-zsh plugins/tmux
 
-    zgen save
+  # NEW TESTING..
+
+  zgen load Tarrasch/zsh-autoenv
+  zgen load junegunn/fzf
+  zgen load bhilburn/powerlevel9k
+
+  zgen save
 fi
 
 source $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

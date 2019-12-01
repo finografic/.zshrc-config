@@ -2,6 +2,9 @@
 ########## FINAL INI + RESET MESSAGE   #########
 ################################################
 
+# CLEAN DUPLICATES IN PATH (AGAIN)
+export PATH=$(printf %s "$PATH" | awk -vRS=: '!a[$0]++' | paste -s -d:);
+
 export LC_ALL=C
 
 # FORM rvm // RVM VERSION
@@ -27,29 +30,25 @@ cd $HOME
 # pm2 list --sort id:asc;
 env PATH=$PATH:/home/REDACTED/.nvm/versions/node/v12.2.0/bin /home/REDACTED/.nvm/versions/node/v12.2.0/lib/node_modules/pm2/bin/pm2 startup systemd -u justin --hp /home/REDACTED
 
-# LIST PORTS
-ports;
-echo "\n"
+# DISK SPACE
+# space;
 
-# SHOW DISK USAGE
-pydf --human-readable;
+# LIST PORTS
+# ports;
+if [ "$ZENV" != "android" ]; then ports; fi;
+
+
+# grc netstat -plnt | grep ":::" -v
 
 # BANNER
-source "$ZSH_CONFIG/zenvs/${ZENV}/${ZENV}-banner.zsh";
-
-D="\e[36m::\033[0m";
-RESET_STRING="$HOSTNAME $D $IP $D zsh reset"
-echo "\n\e[36m ---=====\e[37m $RESET_STRING \e[36m=====--- \n"
-
-
+source "$ZSH_CONFIG/_zenvs/${ZENV}/${ZENV}-banner.zsh";
 
 D="${_c}::${_0}";
-RESET_STRING="$HOSTNAME $D ${_w}$IP $D"
-#echo "\n\e[36m ---=====\e[37m $RESET_STRING \e[36m=====--- \n"
+RESET_STRING="$HOSTNAME $D ${_w}$IP"
 echo "\n${_c} ---=====${_w} $RESET_STRING ${_c}=====--- \n"
 
-# CentOS Version
-echo "${_y}$(uname -o)"
+# VERSIONS: OS, NodeJS, npm... etc
+echo "${_y}$(uname -o) - $(uname -s) $(uname -r)"
 echo "${_0}\e[36mUsing ${_c}NodeJS $(node --version)"
 echo "${_0}\e[36mUsing ${_c}npm v$(npm --version)\n"
 

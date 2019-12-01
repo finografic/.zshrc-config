@@ -200,11 +200,6 @@ mown () {
 }
 
 # DISK SPACE
-space(){
-  pydf --human-readable
-}
-
-# DISK SPACE
 space2(){
   ncdu;
 }

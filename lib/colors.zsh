@@ -40,3 +40,9 @@ setup_color() {
 		RESET=""
 	fi
 }
+
+# 0: RESET
+# 1: Bold/Bright
+# 2: Dim
+# 4: Underlined
+# 5: Blink

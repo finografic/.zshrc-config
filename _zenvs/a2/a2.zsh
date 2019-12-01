@@ -7,7 +7,9 @@ export ZSH_CONFIG="$HOME/.zshrc-config"
 export NVM="true"
 export EDITOR_PREFERRED==vi
 code () { sudo "/usr/local/bin/rmate" "$@"; }
-eval `dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark`;
+
+# DIRCOLORS
+[ -d "${HOME}/.dircolors" ] && eval `dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark`;
 
 alias cv="cd /var/www/finografic.com && l"
 

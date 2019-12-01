@@ -22,6 +22,12 @@ else
    export ZSH_CONFIG=$HOME/.zshrc-config
 fi
 
+
+# TRIGGER START/RESTART: CLEAR CLI + SPINNER
+clear;
+echo '\n'
+node "$ZSH_CONFIG/lib/spinner.js";
+
 # NODE
 export NODE_CURRENT=$(node -v);
 
@@ -31,12 +37,12 @@ source "$ZSH_CONFIG/lib/paths.zsh";
 
 # ADDITIONAL FUNCTIONALITY
 source "$ZSH_CONFIG/lib/colors.zsh";
-source "$ZSH_CONFIG/lib/aliases-common.zsh";
-source "$ZSH_CONFIG/lib/dev-common.zsh";
+source "$ZSH_CONFIG/lib/common-functions.zsh";
+source "$ZSH_CONFIG/lib/common-dev.zsh";
 
 # GET VARIOUS CUSTOM ENVIRONMENTS
-source "$ZSH_CONFIG/zenvs/${ZENV}/${ZENV}.zsh"; # $ZENV DEFINED IN _zsh-bash.zsh
+source "$ZSH_CONFIG/_zenvs/${ZENV}/${ZENV}.zsh"; # $ZENV DEFINED IN _zsh-bash.zsh
 
 # FINALIZATION OUTPUT
-source "$ZSH_CONFIG/_finalize.zsh";
+source "$ZSH_CONFIG/_fin.zsh";
 

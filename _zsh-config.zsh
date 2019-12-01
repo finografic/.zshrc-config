@@ -68,6 +68,7 @@ print $RANDOM_THEME
 
 source $ZSH/oh-my-zsh.sh
 source "${HOME}/.zgen/zgen.zsh"
+[[ -s "/etc/grc.zsh" ]] && source /etc/grc.zsh # GENERIC COLORIZER
 export UPDATE_ZSH_DAYS=7
 CASE_SENSITIVE="false"
 HYPHEN_INSENSITIVE="false"

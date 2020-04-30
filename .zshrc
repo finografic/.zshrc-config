@@ -1,1 +1,1 @@
-source /storage/emulated/0/.zshrc-config/_init.zsh
+source /storage/emulated/0/.zshrc-config/_main.zsh

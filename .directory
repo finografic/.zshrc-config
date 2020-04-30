@@ -2,7 +2,8 @@
 Icon=zsh.png
 
 [Dolphin]
-Timestamp=2019,10,10,22,8,59
+SortOrder=1
+Timestamp=2020,3,31,18,19,21
 Version=4
 ViewMode=1
 VisibleRoles=Details_text,Details_size,Details_modificationtime,Details_creationtime,CustomizedDetails

@@ -148,4 +148,3 @@ if ! zgen saved; then
 fi
 
 source $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-

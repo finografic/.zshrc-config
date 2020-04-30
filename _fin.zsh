@@ -2,10 +2,11 @@
 ########## FINAL INI + RESET MESSAGE   #########
 ################################################
 
-# CLEAN DUPLICATES IN PATH (AGAIN)
-export PATH=$(printf %s "$PATH" | awk -vRS=: '!a[$0]++' | paste -s -d:);
+# ENSURE SYYSTEM LANGUAGE IS en_US
+export LANGUAGE=en_US.UTF-8
 
-export LC_ALL=C
+# CLEAN DUPLICATES IN PATH (AGAIN)
+flatten_PATH;
 
 # FORM rvm // RVM VERSION
 # [ -e /etc/profile.d/rvm.sh ] && source /etc/profile.d/rvm.sh
@@ -24,14 +25,14 @@ export LC_ALL=C
 # $HOME/.zshrc-config/node_modules/git-auto/bin/git-auto -p
 
 # INIT DIR
-cd $HOME
+# cd $HOME
 
 # NEW PM2 COMMAND
 # pm2 list --sort id:asc;
 env PATH=$PATH:/home/REDACTED/.nvm/versions/node/v12.2.0/bin /home/REDACTED/.nvm/versions/node/v12.2.0/lib/node_modules/pm2/bin/pm2 startup systemd -u justin --hp /home/REDACTED
 
 # DISK SPACE
-# space;
+space;
 
 # LIST PORTS
 # ports;
@@ -41,7 +42,7 @@ if [ "$ZENV" != "android" ]; then ports; fi;
 # grc netstat -plnt | grep ":::" -v
 
 # BANNER
-source "$ZSH_CONFIG/_zenvs/${ZENV}/${ZENV}-banner.zsh";
+source "$ZSH_CONFIG/_zenvs/${ZENV}/${ZENV}.banner.zsh";
 
 D="${_c}::${_0}";
 RESET_STRING="$HOSTNAME $D ${_w}$IP"

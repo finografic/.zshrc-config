@@ -1,10 +1,7 @@
 # BANNER
 # ASCII GENERATOR: https://www.askapache.com/online-tools/figlet-ascii/
 
-# echo "\e[35m"; # MAGENTA
-# echo "\e[32m"; # GREEN
-echo "\e[33m"; # YELLOW
-echo "\e[1m"; # BOLD
+echo $_y; # YELLOW
 
 cat << EOF
    __   ____  ________   __ 

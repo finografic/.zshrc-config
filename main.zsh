@@ -43,9 +43,9 @@ export NODE_CURRENT=$(node -v);
 source "$ZSHRC_ROOT/_zsh-config.zsh";
 
 # CORE
+source "$ZSHRC_ROOT/lib/colors.zsh";
 source "$ZSHRC_ROOT/hardware/hardware.zsh";
 source "$ZSHRC_ROOT/lib/paths.zsh";
-source "$ZSHRC_ROOT/lib/colors.zsh";
 
 # COMMON
 source "$ZSHRC_ROOT/lib/functions-sys.zsh";

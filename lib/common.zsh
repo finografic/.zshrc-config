@@ -22,13 +22,11 @@ alias ll="ls -la --color -h --group-directories-first" #
 # subl $(dirname $(gem which colorls))/yaml
 alias lc="colorls -lA --sort-dirs --git-status --report && echo \n" # RUBY GEM ls w/ icons :D
 
-
 # LIST PERMISSIONS -- HOW TO ADD COLOR ??
 alias lp="stat -c '%A  %a  %U:%G  ___  %n' *"    # SIMPLE
 
-
 function listing() {
-    k -Ah
+    k -Ah $1
     # lc
     if [ -d .git ]
     then
@@ -38,7 +36,7 @@ function listing() {
 }
 
 function listing_exa() {
-    exa --long --all --group-directories-first --accessed --time-style=long-iso --git
+    exa --long --all --group-directories-first --accessed --time-style=long-iso --git $1
     # lc
     if [ -d .git ]
     then

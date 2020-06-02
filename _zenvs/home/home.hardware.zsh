@@ -28,10 +28,13 @@ KEYBOARD_LAYOUT_EXT="es";
 setKeyboardLayout $KEYBOARD_LAYOUT_EXT;
 
 # DISPLAYS
-DISP_INT="eDP-1-1"
-DISP_EXT="HDMI-1-1"
+DISPLAY_MAIN="eDP-1-1"
+DISPLAY_EXT="HDMI-1-1"
 export BRIGHTNESS=1.4
 
 # MOUNT EXTERNAL DRIVES
-cd /media/justin/HD1TB_p1/ 2> /dev/null
-cd /media/justin/HD1TB_p2/ 2> /dev/null
+# PATH_ORIG=$(pwd)
+# cd /media/justin/HD1TB_p1/ 2> /dev/null
+# cd /media/justin/HD1TB_p2/ 2> /dev/null
+# cd /media/justin/WALKMAN/MUSIC/ 2> /dev/null
+# cd $PATH_ORIG 2> /dev/null

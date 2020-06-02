@@ -71,6 +71,6 @@ devil() {
 # LOCAL-ONLY SYS ALIASES
 alias sys="systemsettings5" # K/UBUNTU ONLY
 
-DISP_INT="eDP-1-1"
-DISP_EXT="HDMI-1-1"
+DISPLAY_MAIN="eDP-1-1"
+DISPLAY_EXT="HDMI-1-1"
 export BRIGHTNESS=1.4

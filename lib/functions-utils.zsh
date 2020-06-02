@@ -19,6 +19,14 @@ function config() {
     cd $PWD_ORIG;
 }
 
+# ENCHANCED CD ("cd-directory")
+function cdd() {
+  if [ $# -eq 0 ]; then
+    cd $(fd --type directory --max-depth 1 | fzf --cycle --reverse) && listing_exa
+  else
+    cd "$(pwd)/$@";
+  fi
+}
 
 # TERMINAL MESSAGE: function msg(type, "string")
 msg() {
@@ -33,11 +41,11 @@ msg() {
         [err]=$_r
     )
     _type=${TYPES[$1]}
-    
+
     # DETERMINE LENGTH OF MESSAGE IN CHARS
     FULL_LENGTH=70
     STRING_LENGTH=$(expr length $2 + 4)
-    
+
     # SUFFIX (REMAINING CHARACTERS OUT OF 80)
     let SUFFIX_LENGTH=$FULL_LENGTH-$STRING_LENGTH
     SUFFIX_STRING="${_type}"
@@ -45,11 +53,11 @@ msg() {
     do
         SUFFIX_STRING+="="
     done
-    
+
     # FULL MESSAGE OUTPUT
     MSG="\n${_type}== ${_w}${2} ${SUFFIX_STRING}\n"
     echo $MSG;
-    
+
 }
 
 #########################################
@@ -173,29 +181,23 @@ function numberFloor() {
 #########  DISKSPACE  ############
 ##################################
 
-# DEFINE DEFAULT "space" METHOD:
-alias space=space_df_with_temps;
-
 function space_df_brief(){
     echo "\n";
     # NEW !!!  LIST IMPORTANT DRIVES, IGNORE TMPS AND SNAPS etc..
     df -h -x "squashfs" -x "tmpfs" -x "devtmpfs";
-}   
-
+}
 
 function space_df_with_temps(){
     echo "\n";
     # df $(cut -d' ' -f3 /proc/mounts | sort -u | grep -v 'squashfs' | sed 's/^/-t /')
     # df -l -BM -Tx"squashfs"
     df -h -x "squashfs"
-}   
-
+}
 
 # DISK SPACE
 function space_ncdu(){
     ncdu;
 }
-
 
 function space_pydf(){
     # NEW !!!  PYDF - NOW COLOR-CODED :D
@@ -210,29 +212,29 @@ function space_pydf(){
     GREP_CYAN="ms=01;36"
     GREP_YELLOW="ms=01;33"
     GREP_RED="ms=01;31"
-    
+
     echo "\n";
-    
+
     # PYDF HEADER
     export GREP_COLORS=$GREP_BLUE;
     pydf -h | grep "snap" -v --max-count 1 | grep "Filesystem\|Size\|Used\|Avail\|Use%\|Mounted on"
-    
+
     # SET VARIABLES
     METER_MAX=$(pydf -h | grep "snap" -v | expr length "\[(.*?)\]" - 2);
     # METER_VALUE=$(pydf -h | grep 'snap' -v | grep '/ ' | grep -o '#' | wc -l);
     #METER_VALUE=$(pydf -h | grep 'snap' -v | grep '/ ' | grep -o '#' | wc -l);
     # PYDF_RESULT=$(pydf -h | grep 'snap' -v | grep '/');
-    
+
     # ======================================================
-    
+
     # repl() {
     #   if (( $2 > 0 )) printf $1%.s $(eval "echo {1..$(($2))}");
     #   # printf $1%.s $(eval "echo {1..$(($2))}");
     # }
-    
+
     # array=();
     # meter_empty="[$(repl '.' $METER_MAX)]";
-    
+
     # for i in {1..$METER_MAX}; do
     #   value_string=$(repl '#' $i);
     #   free_string=$(repl '.' $(($METER_MAX - $i)));
@@ -240,37 +242,40 @@ function space_pydf(){
     #   echo "$i : $meter_string";
     #   array+=($meter_string)
     # done
-    
+
     VAL_EMPTY=0
     VAL_FULL=$METER_MAX;
-    
+
     VAL_LO_MIN=$(( $VAL_EMPTY + 1)) ;
     VAL_LO_MAX=$(numberRound $(( 0.6 * $METER_MAX )) );
     VAL_HI_MIN=$(( $VAL_LO_MAX + 1)) ;
     VAL_HI_MAX=$(numberFloor $(( 0.9 * $METER_MAX )) );
-    
+
     FREE_LO_MIN=$(( $METER_MAX - $VAL_LO_MAX ));
     FREE_LO_MAX=$(( $METER_MAX - $VAL_LO_MIN ));
     FREE_HI_MIN=$(( $METER_MAX - $VAL_HI_MAX ));
     FREE_HI_MAX=$(( $METER_MAX - $VAL_HI_MIN ));
-    
+
     # EMPTY: 0%
     export GREP_COLORS=$GREP_BLUE;
     pydf -h | grep "/" | grep "/snap" -v | grep "\[[#]\{0\}[.]\{$METER_MAX\}\]"
-    
+
     # LO: 1-60%
     export GREP_COLORS=$GREP_GREEN;
     pydf -h | grep "/" | grep "/snap" -v | grep "\[[#]\{$VAL_LO_MIN,$VAL_LO_MAX\}[.]\{$FREE_LO_MIN,$FREE_LO_MAX\}\]"
-    
+
     # HI: 60-90%
     export GREP_COLORS=$GREP_YELLOW;
     pydf -h | grep "/" | grep "/snap" -v | grep "\[[#]\{$VAL_HI_MIN,$VAL_HI_MAX\}[.]\{$FREE_HI_MIN,$FREE_HI_MAX\}\]"
-    
+
     # FULL: 90% +
     export GREP_COLORS=$GREP_RED;
     pydf -h | grep "/" | grep "/snap" -v | grep "\[[#]\{$METER_MAX\}[.]\{0\}\]"
-    
+
 }
+
+# DEFINE DEFAULT "space" METHOD:
+alias space=space_df_with_temps;
 
 ##################################
 #############  MISC  #############

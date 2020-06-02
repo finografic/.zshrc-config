@@ -1,18 +1,44 @@
+# PROJECTS
+# alias da2="cd $PROJECTS/da2 && l"
+alias cv="cd $PROJECTS/cv && l"
+alias cv2="cd $PROJECTS/___CV2-DEV___/cv-justin-rankin && l"
+alias rock="cd $PROJECTS/devilbox/data/www/rock01baby && l"
+# alias jod="cd $PROJECTS/devilbox/data/www/JODHPUR && l"
+alias oh="cd $PROJECTS/app-test/ && l"
+alias app="cd $PROJECTS/app-axios/ && l"
+# alias imatch="cd $PROJECTS/app-imatchination/ && l"
+alias jst="cd $PROJECTS/js-learning/src/ && l"
+# alias green="cd $PROJECTS/greenPower/ && l"
+alias cratez="cd $PROJECTS/cratez/ && l"
+alias pilot="cd $PROJECTS/auto-pilot/ && l"
+alias esm="cd $PROJECTS/starter-esm/ && l"
+alias apps="cd $HOME/.local/share/applications/ && l"
+
+# REMOTE: A2 HOSTING
+# alias a2="ssh -p 7822 67.209.azs115.154 -l ubuntu"
+alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l ubuntu"
+
 # DEVILBOX
 devil() {
     PWD=`pwd`
     # START UP DEVILBOX
-    if [[ $@ == "ini" || $@ == "init" ]] then
+      if [[ $@ == "ini" || $@ == "init" ]] then
         cd $PROJECTS/devilbox && l
+        # ORIGNAL
         service apache2 stop
         service mysql stop
+        # GO, UP !!
         sudo docker-compose up httpd php mysql
-        # sudo docker-compose up httpd php # mysql
         # ENTER MAIN DOCKER CONTAINER (PHP)
-        elif [[ $@ == "cli" ]] then
+      elif [[ $@ == "cli" ]] then
         cd $PROJECTS/devilbox && l
         ./shell.sh
         # DEFAULT: CD + LIST
+      elif [[ $@ == "stop" || $@ == "clean" ]] then
+        # NEW
+        docker-compose down
+        docker system prune
+        docker network prune
     else
         msg warn "OPTIONAL ARGS" # use my MSG FUNCTION
         echo "${_0}${_w}ini, init ${_y}- start up devilbox${_0}"

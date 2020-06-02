@@ -3,11 +3,10 @@
 #############################################
 
 # FIX FOR KDE PLASMA DISPLAY BUG
-function restart_plasma() {
+function kde_restart_plasma() {
     killall plasmashell;
     kstart5 plasmashell;
 }
 
 alias kde-restart=restart_plasma;
-
-
+alias kde=restart_plasma;

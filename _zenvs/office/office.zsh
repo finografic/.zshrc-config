@@ -1,8 +1,9 @@
 # SPECIFIC
-export ZSH_CONFIG="$HOME/.zshrc-config"
+export ZSHRC_ROOT="$HOME/.zshrc-config"
 export NVM="true"
-export EDITOR_PREFERRED==/usr/bin/code
-code () { /usr/share/code/code "$@"; }
+export IDE="code-insiders"
+export EDITOR="$(which $IDE)"
+code () { "$EDITOR $@"; }
 
 # DIRCOLORS
 [ -d "${HOME}/.dircolors" ] && eval `dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark`;
@@ -50,10 +51,13 @@ devil() {
     # START UP DEVILBOX
     if [[ $@ == "ini" || $@ == "init" ]] then
         cd $PROJECTS/devilbox && l
-        service apache2 stop
-        service mysql stop
+        # LEGACY:
+        # service apache2 stop
+        # service mysql stop
+        # BETTER:
+        docker-compose down
+        # START
         sudo docker-compose up httpd php mysql
-        # sudo docker-compose up httpd php # mysql
         # ENTER MAIN DOCKER CONTAINER (PHP)
         elif [[ $@ == "cli" ]] then
         cd $PROJECTS/devilbox && l

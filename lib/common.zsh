@@ -4,8 +4,9 @@
 
 alias reset=". ${HOME}/.zshrc"
 alias update_cache=". ${HOME}/.zshrc; npm cache verify"
-alias cdz="cd ${ZSH_CONFIG} && l"
+alias cdz="cd ${ZSHRC_ROOT} && l"
 alias os="cd ${HOME}/OS_Setup && l"
+alias ai="sudo apt install -y $1"
 
 #########################################
 ############  FILE LISTINGS  ############
@@ -66,10 +67,8 @@ alias -4="cd ../../../../ && l"
 alias -5="cd ../../../../../ && l"
 
 # TREE LISTING
-alias t="tree -d"
-alias t2="exa --long --tree --all --group-directories-first"
-alias t3="exa --tree --long --all --group-directories-first --accessed --time-style=long-iso --git"
-alias ta="tree"
+alias t="exa --tree --group-directories-first --level 2"
+alias t2="tree --dirsfirst -L 2"
 
 ########################################
 ############  FOLDER FAVES  ############

@@ -1,8 +1,13 @@
+# PLAYGROUND + SANDBOX
+alias play="cd $PROJECTS/___PLAYGROUND___ && l"
+
 # PROJECTS
 # alias da2="cd $PROJECTS/da2 && l"
 alias cv="cd $PROJECTS/cv && l"
 alias cv2="cd $PROJECTS/___CV2-DEV___/cv-justin-rankin && l"
-alias rock="cd $PROJECTS/devilbox/data/www/rock01baby && l"
+alias rock="cd $PROJECTS/devilbox-rock01baby/data/www/rock01baby && l"
+alias gbd="cd $PROJECTS/devilbox/data/www/girlsbitedogs && l"
+alias gbda="cd $PROJECTS/admin.girlsbitedogs.com && l"
 # alias jod="cd $PROJECTS/devilbox/data/www/JODHPUR && l"
 alias oh="cd $PROJECTS/app-test/ && l"
 alias app="cd $PROJECTS/app-axios/ && l"
@@ -13,6 +18,7 @@ alias cratez="cd $PROJECTS/cratez/ && l"
 alias pilot="cd $PROJECTS/auto-pilot/ && l"
 alias esm="cd $PROJECTS/starter-esm/ && l"
 alias apps="cd $HOME/.local/share/applications/ && l"
+
 
 # REMOTE: A2 HOSTING
 # alias a2="ssh -p 7822 67.209.azs115.154 -l ubuntu"
@@ -28,7 +34,7 @@ devil() {
         service apache2 stop
         service mysql stop
         # GO, UP !!
-        sudo docker-compose up httpd php mysql
+        docker-compose up httpd php mysql
         # ENTER MAIN DOCKER CONTAINER (PHP)
       elif [[ $@ == "cli" ]] then
         cd $PROJECTS/devilbox && l

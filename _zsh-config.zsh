@@ -55,12 +55,18 @@ ZSH_THEME="fino-time"
 # ZSH_THEME="muse"
 # ZSH_THEME="xiong-chiamiov-plus"
 # ZSH_THEME="michelebologna"
-
-# THEMES NOT WORKING
 # ZSH_THEME="spaceship"
 
+# POWERLEVEL THEME
+# ZSH_THEME="powerlevel10k" # CONFIG WIZARD: $ p10k configure
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
 # OUTPUT THEME (by path)
-print $RANDOM_THEME
+# print $RANDOM_THEME
 
 ######################################
 ###########  ZSH SETTINGS  ###########
@@ -111,7 +117,7 @@ if ! zgen saved; then
   zgen oh-my-zsh plugins/git
   zgen oh-my-zsh plugins/git-extras
   zgen oh-my-zsh plugins/gitignore
-  zgen oh-my-zsh plugins/go
+  zgen oh-my-zsh plugins/golang
   zgen oh-my-zsh plugins/node
   zgen oh-my-zsh plugins/npm
   # zgen oh-my-zsh plugins/osx

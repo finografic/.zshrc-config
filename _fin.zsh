@@ -9,8 +9,15 @@ export LANGUAGE=en_US.UTF-8
 flatten_PATH;
 
 # SET NODE VERSION
+if [[ $NVM = "true" ]];  then
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+else
+  export PATH=$PATH:$HOME/.npm-global/bin
+fi
 nvm use 12;
-export NODE_CURRENT=$(node --version)
+export NODE_CURRENT_VERSION=$(node --version)
 
 # FORM rvm // RVM VERSION
 # [ -e /etc/profile.d/rvm.sh ] && source /etc/profile.d/rvm.sh
@@ -24,7 +31,7 @@ export NODE_CURRENT=$(node --version)
 
 # GIT SYNC ZSHRC AUTOMATICALLY - DANGER ??
 # FOLLOWING REQUIRES 'sudo'
-# cd $ZSH_CONFIG
+# cd $ZSHRC_ROOT
 # git fetch
 # $HOME/.zshrc-config/node_modules/git-auto/bin/git-auto -p
 
@@ -33,19 +40,20 @@ export NODE_CURRENT=$(node --version)
 
 # NEW PM2 COMMAND
 # pm2 list --sort id:asc;
-env PATH=$PATH:/home/REDACTED/.nvm/versions/node/$NODE_CURRENT/bin /home/REDACTED/.nvm/versions/node/$NODE_CURRENT/lib/node_modules/pm2/bin/pm2 startup systemd -u justin --hp /home/REDACTED
+env PATH=$PATH:/home/REDACTED/.nvm/versions/node/$NODE_CURRENT_VERSION/bin /home/REDACTED/.nvm/versions/node/$NODE_CURRENT_VERSION/lib/node_modules/pm2/bin/pm2 startup systemd -u justin --hp /home/REDACTED
 
-# DISK SPACE
-space;
+# PFETCH
+echo "\n" && PF_COL3=3 PF_COL1=2 PF_COL2=2 PF_INFO="ascii os host kernel uptime pkgs memory" pfetch;
 
 # LIST PORTS
 # ports;
 if [ "$ZENV" != "android" ]; then ports; fi;
 
-# grc netstat -plnt | grep ":::" -v
+# DISK SPACE
+space;
 
 # BANNER
-source "$ZSH_CONFIG/_zenvs/${ZENV}/${ZENV}.banner.zsh";
+source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.banner.zsh";
 
 D="${_c}::${_0}";
 RESET_STRING="$HOSTNAME $D ${_w}$IP"

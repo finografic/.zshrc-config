@@ -12,7 +12,11 @@ run() {
 
 # ALIASES THAT TAKE PARAMETERS
 versions() {
-  npm info "$1" versions
+  # ALL THE SAME ??
+  npm view "$1" versions --json
+  # npm info "$1" versions --json
+  # npm show "$1" versions --json
+  # yarn info "$1" versions
 }
 
 # NPM - GET PACKAGE VERSION
@@ -58,9 +62,10 @@ update() {
 ############  NODE  ###########
 ###############################
 
-alias kn='killall -9 node'
+alias kn='killall -9 node';
 
-
+# NEW -GREAT!!- PAPCKAGE MANAGER
+alias i="pnpm install";
 
 
 ##################################
@@ -103,16 +108,6 @@ function _gu() {
     git push -f
 }
 
-# GIT LOG - COLORIZED :)
-
-# function _gl() {sudo systemctl status mongodb
-#   git log $1 --gsudo systemctl status mongodbh --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'sudo ssudomctl status mongodbabbrev-commit
-# }
-
-function _gl() {
-    git config --glosudo systemcsudotatus mongodb alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold bluesudon>%Creset' --abbrev-commit --date=relative"
-}
-
 function _gs() {
     # RESET GIT PERMISSIONS
     # own .git
@@ -133,6 +128,11 @@ function _go() {
     # ALT (ORIG) git branch-select
     git checkout $1
 }
+
+function _gl_ALT() {
+  git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
+}
+
 
 
 function _gr() {
@@ -195,9 +195,6 @@ function mkmod(){
 ##################  GO LANG   ##################
 ################################################
 
-export GOROOT=/usr/local/go
-export GOPATH=$PROJECTS/go_project
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 export GO111MODULE=on
 
 ################################################
@@ -205,7 +202,6 @@ export GO111MODULE=on
 ################################################
 
 # eval $( dircolors -b $HOME/bin/LS_COLORS );
-
 
 
 #####################################
@@ -284,76 +280,6 @@ function pm2da(){
 
 function pm2ll(){
   pm2 list --sort id:asc
-}
-
-##################################
-############  MONGODB   ##########
-##################################
-
-# OLD / ORIG
-# alias mstart="sudo systemctl start mofind . -mtime -1 -printodb"
-# alias mstop="sudo systemctl stop mongfind . -mtime -1 -printb"
-# alias mrs="sudo systemctl restart mongodb"
-# alias mstat="sudo systemctl status mongodb"
-# alias mlog="sudo cat /var/log/mongodb/mongod.log"
-
-
-# SERVICE or SYSTEMCTL - DEPENDING ON OS + MONGO VERSIONS
-# NOTE: --shutdown RECOMMENDED over "stop"
-
-# OPTION B: >= UBUNTU 16.04 + NEWER MONGO VERSIONS
-# alias mstart="sudo systemctl start mongod";
-# alias mstop="sudo systemctl stop mongod && ports";
-# alias mrs="sudo systemctl restart mongod";
-# alias mstat="sudo systemctl status mongod";
-
-# OPTION C: OLDER UBUNTU + MONGO VERSIONS
-# alias mstart="sudo service mongod start";
-# alias mstop="sudo service mongod stop && ports";
-# alias mrs="sudo service mongod restart";
-# alias mstat="sudo service mongod status";
-
-# NEW
-alias mlog="sudo cat /var/log/mongodb/mongod.log";
-alias mconf="sudo vim /etc/mongod.conf";
-alias mconfig="code /etc/mongod.conf";
-
-# mongod --dbpath /data/db_3.2.21
-# mongod --dbpath /data/db_3.4.18
-
-function mverGet() {
-  echo "\e[96mMongoDB version \e[97mv$MONGO_VERSION\e[0m"
-}
-
-function mverSet() {
-  MONGO_VERSION=$(mongod --version | grep -oP '\d{1,2}[.]\d{1,2}[.]\d{1,2}')
-}
-
-function mstart() {
-  mverGet;
-  echo "\e[32m✔ running";
-  # sudo mongod --config /etc/mongod.conf --auth --logpath /var/log/mongodb.log --dbpath "/data/db_$MONGO_VERSION"
-  sudo mongod --config /etc/mongod.conf --logpath /var/log/mongodb.log --dbpath "/data/db_$MONGO_VERSION"
-}
-
-function mstop() {
-  sudo mongod --shutdown --dbpath "/data/db_$MONGO_VERSION"
-  ports
-}
-
-alias mrs='' # NO RESTART FOR THIS METHOD ?? MUST BE MANUAL ??
-alias mstat='sudo mongostat' # REQUIRES enabledLocalhostAuthBypass TO CREATE FIRST USER (i think!)
-
-# INI MONGO_VERSION
-mverSet;
-
-function mbak(){
-  cd /data
-  sudo mongod --shutdown
-  ports
-  sudo tar zcvf "db-BAK-$(date +%F).tar.gz"
-  l
-  server
 }
 
 

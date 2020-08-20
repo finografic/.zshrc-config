@@ -30,14 +30,14 @@ export ZSHRC_ROOT=$PATH_ZSHRC/.zshrc-config
 
 # START/RESTART: CLEAR CLI + SPINNER
 clear;
-echo '\n'
+echo "\n";
 node "$ZSHRC_ROOT/lib/spinner.js";
 
 # LOCALE (DEFAULT, MAY BE OVERWRITTEN BY ENV)
 export LC_ALL=C
 
 # NODE
-export NODE_CURRENT=$(node -v);
+export NODE_CURRENT_VERSION=$(node -v);
 
 # MAIN ZSH
 source "$ZSHRC_ROOT/_zsh-config.zsh";

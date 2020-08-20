@@ -25,6 +25,9 @@ export _c="$_B\e[36m"        # Cyan
 export _w="$_B\e[37m"        # White
 export _0="\e[0m"            # Reset
 
+# BETTER RESET ???
+# \x1b[0m 
+
 
 # FROM ZGEN:
 setup_color() {

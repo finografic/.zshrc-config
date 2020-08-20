@@ -3,10 +3,11 @@
 ###########################################
 
 # SPECIFIC
-export ZSH_CONFIG="$HOME/.zshrc-config"
+export ZSHRC_ROOT="$HOME/.zshrc-config"
 export NVM="true"
-export EDITOR_PREFERRED==vi
-code () { sudo "/usr/local/bin/rmate" "$@"; }
+export IDE="false"
+export EDITOR="vim"
+code () { sudo "/usr/local/bin/jmate" "$@"; }
 
 # DIRCOLORS
 [ -d "${HOME}/.dircolors" ] && eval `dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark`;
@@ -15,7 +16,7 @@ alias cv="cd /var/www/finografic.com && l"
 
 function gyp-fix(){
 
-  if [[ -f package.json ]] then 
+  if [[ -f package.json ]] then
 
     # IS PROJECT ROOT
     project_root=$PWD;
@@ -30,7 +31,7 @@ function gyp-fix(){
     rm $project_root/node_modules -fr
 
     echo "\n\e[36m ---=====\e[37m reinstall node_modules bases on ncu \e[36m=====--- \n"
-    npm i 
+    npm i
 
     echo "\n\e[36m ---=====\e[37m fix gyp modules \e[36m=====--- \n"
     cd $project_root/node_modules/node-gyp && yarn

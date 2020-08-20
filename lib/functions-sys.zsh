@@ -8,5 +8,5 @@ function kde_restart_plasma() {
     kstart5 plasmashell;
 }
 
-alias kde-restart=restart_plasma;
-alias kde=restart_plasma;
+alias kde-restart=kde_restart_plasma;
+alias kde=kde_restart_plasma;

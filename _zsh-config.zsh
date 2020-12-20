@@ -34,6 +34,8 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 ###########  THEMES  ###########
 ################################
 
+# NEW!! - ZSH_THEME SET BY main.zsh
+
 # Set name of the theme to load. Optionally, if you set this to "random"
 # ZSH_THEME="robbyrussell"
 # ZSH_THEME="af-magic"
@@ -42,17 +44,17 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 # ZSH_THEME="sporty_256" # NO FULL PATH :(
 # ZSH_THEME="pure"
 # ZSH_THEME="dpoggi"
-# ZSH_THEME="gallois"
 # ZSH_THEME="powerlevel9k/powerlevel9k"
 # ZSH_THEME="agnoster"
-ZSH_THEME="fino-time"
+# ZSH_THEME="fino-time"
 # ZSH_THEME=""
 
 # RANDOM
 # ZSH_THEME=random # RANDOM :) !!
 
-## OTHER THEMES
+## OTHER FAVE THEMES
 # ZSH_THEME="muse"
+# ZSH_THEME="gallois"
 # ZSH_THEME="xiong-chiamiov-plus"
 # ZSH_THEME="michelebologna"
 # ZSH_THEME="spaceship"
@@ -73,7 +75,7 @@ ZSH_THEME="fino-time"
 ######################################
 
 source $ZSH/oh-my-zsh.sh
-source "${HOME}/.zgen/zgen.zsh"
+# source "${HOME}/.zgen/zgen.zsh"
 [[ -s "/etc/grc.zsh" ]] && source /etc/grc.zsh # GENERIC COLORIZER
 export UPDATE_ZSH_DAYS=7
 CASE_SENSITIVE="false"
@@ -101,6 +103,8 @@ plugins=(
 
 # plugins+=(zsh-autosuggestions)
 
+: <<'ZGEN_PLUGINS'
+
 if ! zgen saved; then
 
   zgen oh-my-zsh
@@ -118,6 +122,7 @@ if ! zgen saved; then
   zgen oh-my-zsh plugins/git-extras
   zgen oh-my-zsh plugins/gitignore
   zgen oh-my-zsh plugins/golang
+  zgen oh-my-zsh plugins/k
   zgen oh-my-zsh plugins/node
   zgen oh-my-zsh plugins/npm
   # zgen oh-my-zsh plugins/osx
@@ -129,6 +134,7 @@ if ! zgen saved; then
   zgen oh-my-zsh plugins/urltools
   zgen oh-my-zsh plugins/vundle
   zgen oh-my-zsh plugins/web-search
+  zgen oh-my-zsh plugins/zsh-completions
   zgen oh-my-zsh plugins/zsh-history-substring-search
   zgen oh-my-zsh plugins/zsh-syntax-highlighting
   zgen oh-my-zsh plugins/z
@@ -152,5 +158,9 @@ if ! zgen saved; then
 
   zgen save
 fi
+
+...
+ZGEN_PLUGINS
+
 
 source $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

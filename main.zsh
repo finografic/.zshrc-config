@@ -15,18 +15,32 @@ if [ $IP = $IP_A2 ]
 then
     # SERVER: REMOVE(A2)
     export ZENV='a2'
+    export ZSH_THEME="gallois"
 elif [ $OS = 'Android' ]
 then
     # MOBILE: (ANDROID + TMUX)
     export ZENV='android'
+    export ZSH_THEME="gallois"
     export STORAGE_ROOT="/storage/emulated/0/termux" # would $(pwd) WORK IN THIS CASE ??
     export PATH_ZSHRC=$STORAGE_ROOT/.zshrc-config
 else
     # DEFAULT: LOCAL (HOME)
     export ZENV='home'
+    export ZSH_THEME="fino-time"
 fi
 
 export ZSHRC_ROOT=$PATH_ZSHRC/.zshrc-config
+
+# SET NODE VERSION
+if [[ $NVM = "true" ]];  then
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+else
+  export PATH=$PATH:$HOME/.npm-global/bin
+fi
+nvm use 12;
+export NODE_CURRENT_VERSION=$(node --version)
 
 # START/RESTART: CLEAR CLI + SPINNER
 clear;
@@ -36,15 +50,12 @@ node "$ZSHRC_ROOT/lib/spinner.js";
 # LOCALE (DEFAULT, MAY BE OVERWRITTEN BY ENV)
 export LC_ALL=C
 
-# NODE
-export NODE_CURRENT_VERSION=$(node -v);
-
 # MAIN ZSH
 source "$ZSHRC_ROOT/_zsh-config.zsh";
+source "$ZSHRC_ROOT/lib/k.plugin.sh"; # LOAD 'k' LOCALLY 😁
 
 # CORE
 source "$ZSHRC_ROOT/lib/colors.zsh";
-source "$ZSHRC_ROOT/hardware/hardware.zsh";
 source "$ZSHRC_ROOT/lib/paths.zsh";
 
 # COMMON
@@ -55,8 +66,6 @@ source "$ZSHRC_ROOT/lib/common-dev.zsh";
 
 # GET CURRENT ENVIRONMENT
 source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.zsh";
-source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.hardware.zsh";
-source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.dev.zsh";
 
 # FINALIZATION OUTPUT
 source "$ZSHRC_ROOT/_fin.zsh";

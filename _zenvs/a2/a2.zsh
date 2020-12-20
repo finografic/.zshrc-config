@@ -7,10 +7,76 @@ export ZSHRC_ROOT="$HOME/.zshrc-config"
 export NVM="true"
 export IDE="false"
 export EDITOR="vim"
-code () { sudo "/usr/local/bin/jmate" "$@"; }
+code () { ~/.nvm/versions/node/v12.0.0/bin/jmate "$@"; }
 
 # DIRCOLORS
 [ -d "${HOME}/.dircolors" ] && eval `dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark`;
+
+# SSH-SPECIFIC:
+alias logout="~."
+alias lo="~."
+
+# ENHANCED FOLDER LISTINGS
+alias llh="ls -ld .?*" # list hidden
+alias ll="ls -la --color -h --group-directories-first" #
+
+# LIST PERMISSIONS -- HOW TO ADD COLOR ??
+alias lp="stat -c '%A  %a  %U:%G  ___  %n' *"    # SIMPLE
+
+function listing_ALT() {
+  ls -lAh --color $1
+  # lc
+  if [ -d .git ]
+  then
+      # own .git
+      _gs
+  fi
+}
+
+
+function listing() {
+  k -Ah $1
+  # lc
+  if [ -d .git ]
+  then
+      # own .git
+      _gs
+  fi
+}
+
+
+function lr() {
+    k -rAth
+}
+
+# alias l="lk"
+alias l1="listing"
+alias l2="listing_exa"
+alias l="listing"
+# alias ls="eval `dircolors -b ${HOME}/.dircolors` && ls -Alh --color" # list hidden
+
+# ???
+alias lr1="find $(pwd) -mtime -1 -ls -maxdepth 1"
+alias lr2="k -rAth"
+
+# TODO: HARDWARE (OR MOST?) SHOULD BE ENV-SPECIFIC
+source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.hardware.zsh";
+source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.dev.zsh";
+
+
+
+
+
+
+
+
+
+
+
+
+
+####################################################
+
 
 alias cv="cd /var/www/finografic.com && l"
 
@@ -72,76 +138,7 @@ function pm2dl(){
 }
 
 
-##################################
-########  SYMFONY CACHE  #########
-##################################
 
-# PATH-SPECIFIC FUNCTIONS
-PWD=`pwd`
-
-# COMPOSER CACHE CLEAR
-cc () {
-
-  if [[ $PWD = *'kpi-es'* ]] then
-    /var/www/kpi-es/kpi_exoticca/set_parameters
-    PROJECT=/var/www/kpi-es/kpi_exoticca
-  elif [[ $PWD = *'kpi-uk'* ]] then
-    /var/www/kpi-uk/kpi_exoticca/set_parameters
-    PROJECT=/var/www/kpi-uk/kpi_exoticca
-  elif [[ $PWD = *'kpi-us'* ]] then
-    /var/www/kpi-us/kpi_exoticca/set_parameters
-    PROJECT=/var/www/kpi-us/kpi_exoticca
-  elif [[ $PWD = *'kpi-fr'* ]] then
-    /var/www/kpi-fr/kpi_exoticca/set_parameters
-    PROJECT=/var/www/kpi-fr/kpi_exoticca
-  elif [[ $PWD = *'kpi-de'* ]] then
-    /var/www/kpi-de/kpi_exoticca/set_parameters
-    PROJECT=/var/www/kpi-de/kpi_exoticca
-  elif [[ $PWD = *'kpi-us'* ]] then
-    /var/www/kpi-us/kpi_exoticca/set_parameters
-    PROJECT=/var/www/kpi-us/kpi_exoticca
-  elif [[ $PWD = *'secretescapes-es/wmexoticca'* ]] then
-    /var/www/secretescapes-es/wmexoticca/set-parameters
-    PROJECT=/var/www/secretescapes-es/wmexoticca
-  elif [[ $PWD = *'secretescapes-uk/wmexoticca'* ]] then
-    /var/www/secretescapes-uk/wmexoticca/set-parameters
-    PROJECT=/var/www/secretescapes-uk/wmexoticca
-  elif [[ $PWD = *'secretescapes-fr/wmexoticca'* ]] then
-    /var/www/secretescapes-fr/wmexoticca/set-parameters
-    PROJECT=/var/www/secretescapes-fr/wmexoticca
-  elif [[ $PWD = *'secretescapes-de/wmexoticca'* ]] then
-    /var/www/secretescapes-de/wmexoticca/set-parameters
-    PROJECT=/var/www/secretescapes-de/wmexoticca
-  elif [[ $PWD = *'secretescapes-us/wmexoticca'* ]] then
-    /var/www/secretescapes-us/wmexoticca/set-parameters
-    PROJECT=/var/www/secretescapes-us/wmexoticca
-  else
-    echo "Your path is invalid for this function."
-  fi
-
-  # CLEAR CACHE
-  sudo php ${PROJECT}/app/console cache:clear --env=prod;
-  sudo chown -R www-data:${USER} ${PROJECT}/app/cache;
-  sudo chmod -R 775  ${PROJECT}/app/cache;
-  # RESET GIT PERMISSIONS
-  sudo chgrp -R ${USER} ${PROJECT}/.git/objects
-  sudo chmod -R g+rws ${PROJECT}/.git/objects
-  # COMMIT cc (REGENERATED parameters.yml FILE
-  git commit -m 'parameters.yml regenerated' app/config/parameters.yml
-
-}
-
-# CLEAR ALL CACHES
-ccall() {
-  declare -a locales=("es" "uk" "de" "fr" "us");
-  arraylength=${#locales[@]}
-  for (( i=1; i<${arraylength}+1; i++ ))
-  do
-    echo "\n\e[32mClearing CACHE for \e[36mkpi-${locales[i]}\e[37m...\n"
-    cd /var/www/kpi-${locales[i]}/kpi_exoticca
-    cc
-  done
-}
 
 ############################################
 ##########  REMOTE ALIASES: OTHER  ########

@@ -5,6 +5,7 @@
 # SYS PATHS
 export PATH=$PATH:/usr/local/lib/node_modules
 export PATH=$PATH:$HOME/bin:/usr/local/bin
+export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/bin
 
 # SSH PATH

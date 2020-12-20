@@ -19,10 +19,8 @@ alias pilot="cd $PROJECTS/auto-pilot/ && l"
 alias esm="cd $PROJECTS/starter-esm/ && l"
 alias apps="cd $HOME/.local/share/applications/ && l"
 
-
 # REMOTE: A2 HOSTING
-# alias a2="ssh -p 7822 67.209.azs115.154 -l ubuntu"
-alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l ubuntu"
+alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
 
 # DEVILBOX
 devil() {

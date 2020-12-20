@@ -8,17 +8,6 @@ export LANGUAGE=en_US.UTF-8
 # CLEAN DUPLICATES IN PATH (AGAIN)
 flatten_PATH;
 
-# SET NODE VERSION
-if [[ $NVM = "true" ]];  then
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-else
-  export PATH=$PATH:$HOME/.npm-global/bin
-fi
-nvm use 12;
-export NODE_CURRENT_VERSION=$(node --version)
-
 # FORM rvm // RVM VERSION
 # [ -e /etc/profile.d/rvm.sh ] && source /etc/profile.d/rvm.sh
 # [ -e ${HOME}/.rvm/scripts/rvm ] && source ${HOME}/.rvm/scripts/rvm

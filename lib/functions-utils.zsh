@@ -74,12 +74,13 @@ alias PATH="tr ':' '\n' <<< '$PATH'"
 
 # MISC COM
 alias ip="echo '\n\e[37mLocal IP addess: \e[0;35m$IP\n'"
-# alias ports="sudo lsof -i -P -n | grep LISTEN"
-# alias ports="echo '\n\e[0m\e[36m'; sudo netstat -plnte; echo '\n';"
 alias ports1="echo '\n\e[96m'; sudo grc netstat -ltnp; echo '\e[0m'";
 alias ports2="echo '\e[96m'; grc netstat -plnt; echo '\e[0m'";
 alias ports3="grc netstat -plnt | grep --invert-match -; echo '\e[0m'";
-alias ports="ports2";
+
+# DYNAMICALLY SET ALIAS, DEPENDING ON ENV
+alias ports="lsof -i -P -n | grep LISTEN"
+[ -e /usr/bin/grc ] && alias ports="ports2";
 
 # TO MAKE PORT LIST MORE COMPACT:
 # EDIT: sudo vi /usr/share/grc/conf.netstat

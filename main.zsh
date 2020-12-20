@@ -32,15 +32,23 @@ fi
 export ZSHRC_ROOT=$PATH_ZSHRC/.zshrc-config
 
 # SET NODE VERSION
-if [[ $NVM = "true" ]];  then
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-else
-  export PATH=$PATH:$HOME/.npm-global/bin
-fi
+
+# if [[ $NVM = "true" ]];  then
+#   export NVM_DIR="$HOME/.nvm"
+#   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# else
+#   export PATH=$PATH:$HOME/.npm-global/bin
+# fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm 
+
 nvm use 12;
 export NODE_CURRENT_VERSION=$(node --version)
+# export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/lib/node_modules/
+export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/bin
 
 # START/RESTART: CLEAR CLI + SPINNER
 clear;

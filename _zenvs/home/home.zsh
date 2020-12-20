@@ -3,7 +3,7 @@ export ZSHRC_ROOT="$HOME/.zshrc-config"
 export NVM="true"
 export IDE="code-insiders"
 export EDITOR="$(which $IDE)"
-# code () { sudo "/usr/local/bin/jmate" "$@"; }
+# code () { eval "$(which jmate) $@"; }
 code () { sudo $IDE "$@"; }
 
 # DIRCOLORS

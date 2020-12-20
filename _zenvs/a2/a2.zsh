@@ -7,7 +7,7 @@ export ZSHRC_ROOT="$HOME/.zshrc-config"
 export NVM="true"
 export IDE="false"
 export EDITOR="vim"
-code () { ~/.nvm/versions/node/v12.0.0/bin/jmate "$@"; }
+code () { eval "$(which jmate) $@"; }
 
 # DIRCOLORS
 [ -d "${HOME}/.dircolors" ] && eval `dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark`;

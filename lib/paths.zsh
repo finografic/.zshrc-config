@@ -7,6 +7,12 @@ export PATH=$PATH:/usr/local/lib/node_modules
 export PATH=$PATH:$HOME/bin:/usr/local/bin
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/bin
+export PATH=$PATH:$NPM_GLOBALS
+
+# GLOBALIZE IMPORTANT BINARIES (now included in repo)
+export PATH=$PATH:$ZSHRC_ROOT/bin/pfetch
+export PATH=$PATH:$ZSHRC_ROOT/bin/lsof
+# export PATH=$PATH:$ZSHRC_ROOT/node_modules/
 
 # SSH PATH
 export SSH_KEY_PATH="~/.ssh/rsa_id"
@@ -14,9 +20,11 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 # MISC PROGRAMS + CONFIGS
 export PATH=$PATH:/snap/bin
 export PATH=$PATH:$HOME/.eslintrc # NECESSARY ??
+export PATH=$PATH:$HOME/.vimpkg/bin # VIM EXTENSIONS !!
 
-# YARN
+# ESSENTIALS
 export PATH=$PATH:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin
+export PATH=$PATH:$(which curl) 
 
 # RUBY SIMPLE 
 # export PATH=$PATH:$HOME/.rbenv/bin

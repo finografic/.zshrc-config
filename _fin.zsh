@@ -24,12 +24,9 @@ flatten_PATH;
 # git fetch
 # $HOME/.zshrc-config/node_modules/git-auto/bin/git-auto -p
 
-# INIT DIR
-# cd $HOME
-
 # NEW PM2 COMMAND
-# pm2 list --sort id:asc;
-env PATH=$PATH:/home/REDACTED/.nvm/versions/node/$NODE_CURRENT_VERSION/bin /home/REDACTED/.nvm/versions/node/$NODE_CURRENT_VERSION/lib/node_modules/pm2/bin/pm2 startup systemd -u justin --hp /home/REDACTED
+# [ -e ${NPM_GLOBALS}/pm2 ] && eval "env PATH=\$PATH:${NPM_GLOBALS}/pm2 startup systemd -u ${USER} --hp ${HOME}";
+[ -e ${NPM_GLOBALS}/pm2 ] && eval "${NPM_GLOBALS}/pm2 list --sort id:asc";
 
 # PFETCH
 echo "\n" && PF_COL3=3 PF_COL1=2 PF_COL2=2 PF_INFO="ascii os host kernel uptime pkgs memory" pfetch;
@@ -50,7 +47,7 @@ echo "\n${_c} ---=====${_w} $RESET_STRING ${_c}=====--- \n"
 
 # VERSIONS: OS, NodeJS, npm... etc
 echo "${_y}$(uname -o) - $(uname -s) $(uname -r)"
-echo "${_y}$(env -i bash -c '. /etc/os-release; echo $PRETTY_NAME')"
+[ -e /etc/os-release ] &&  echo "${_y}$(env -i bash -c '. /etc/os-release; echo $PRETTY_NAME')"
 echo "${_c}NodeJS $(node --version)"
 echo "${_c}npm v$(npm --version)\n${_0}"
 

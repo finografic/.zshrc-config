@@ -19,8 +19,7 @@ OS_NAME_LOWER=$(echo $OS_NAME | awk '{print tolower($0)}');
 export HOSTNAME=$(hostname);
 
 # GET IP ADDRESS
-# [[ $(ipconfig 2> /dev/null) ]] && export IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
-[[ $(ipconfig getifaddr en0 2> /dev/null) ]] && export IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
+[[ $(ipconfig 2> /dev/null) ]] && IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
 export IP_HOME='REDACTED-IP';
 export IP_A2='REDACTED-IP';
 export IP_OFFICE_MAC='REDACTED-IP';
@@ -32,17 +31,16 @@ if [ $IP = $IP_A2 ]; then
     export OS_NAME='Linux';
     export ZENV='a2'
     export ZSH_THEME="gallois"
-    elif [ $OS_NAME = 'MacOS' ]; then
+elif [ $OS_NAME = 'MacOS' ]; then
     # OFFICE: (MACOS)
     export ZENV='office-mac'
     export ZSH_THEME="gallois"
-    elif [ $OS_NAME = 'Android' ]; then
+elif [ $OS_NAME = 'Android' ]; then
     # MOBILE: (ANDROID + TMUX)
     export ZENV='android'
     export ZSH_THEME="gallois"
-    # export STORAGE_ROOT="/storage/emulated/0/termux" # would $(pwd) WORK IN THIS CASE ??
-    export STORAGE_ROOT="/data/data/con.termux/files/home" # would $(pwd) WORK IN THIS CASE ??
-    export PATH_ZSHRC=$STORAGE_ROOT
+    export STORAGE_ROOT=$(pwd) # would $(pwd) WORK IN THIS CASE ??
+    export PATH_ZSHRC=$STORAGE_ROOT/.zshrc-config
 else
     # DEFAULT: LOCAL (HOME)
     export OS_NAME='Linux';
@@ -54,6 +52,7 @@ export ZSHRC_ROOT=$PATH_ZSHRC/.zshrc-config
 
 # SET NODE VERSION
 export NVM_DIR="$HOME/.nvm"
+[ $OS_NAME = 'Android' ] && unset PREFIX;
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm
 

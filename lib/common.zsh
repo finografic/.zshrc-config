@@ -7,6 +7,7 @@ alias update_cache=". ${HOME}/.zshrc; npm cache verify"
 alias cdz="cd ${ZSHRC_ROOT} && l"
 alias os="cd ${HOME}/OS_Setup && l"
 alias ai="sudo apt install -y $1"
+alias npmls="npm ls -g --depth=0"
 
 #########################################
 ############  FILE LISTINGS  ############

@@ -3,22 +3,22 @@ export ZSH=$HOME/.oh-my-zsh
 # Use emacs keybindings even if our EDITOR is set to vi
 bindkey -e
 
-# Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
-HISTSIZE=1000
-SAVEHIST=1000
+# Keep 1000 (DEFAULT) lines of history within the shell and save it to ~/.zsh_history:
+HISTSIZE=2000
+SAVEHIST=2000
 HISTFILE=~/.zsh_history
 
 # Use modern completion system
 autoload -Uz compinit
 compinit
 
+[[ $(dircolors -b  2> /dev/null) ]] && eval "$(dircolors -b)";
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' auto-description 'specify: %d'
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' format 'Completing %d'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' menu select=2
-eval "$(dircolors -b)"
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
 zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
@@ -94,73 +94,29 @@ export ARCHFLAGS="-arch x86_64"
 ################################
 
 plugins=(
+  brew
+  docker
+  docker-compose
+  emoji
+  fd
+  fzf
   git
+  git-extras
   k
+  node
+  npm
+  npx
+  osx
+  urltools
   sudo
+  vscode
+  yarn
   zsh-completions
+  zsh-history-substring-search
+  zsh-nvm
+  zsh-autosuggestions
   zsh-syntax-highlighting
-)
-
-# plugins+=(zsh-autosuggestions)
-
-: <<'ZGEN_PLUGINS'
-
-if ! zgen saved; then
-
-  zgen oh-my-zsh
-
-  # list of plugins from zsh I use
-  # see https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins
-
-  # zgen oh-my-zsh plugins/bower
-  # zgen oh-my-zsh plugins/brew
-  zgen oh-my-zsh plugins/colored-man
-  zgen oh-my-zsh plugins/colored-man-pages
-  zgen oh-my-zsh plugins/docker
-  zgen oh-my-zsh plugins/emoji
-  zgen oh-my-zsh plugins/git
-  zgen oh-my-zsh plugins/git-extras
-  zgen oh-my-zsh plugins/gitignore
-  zgen oh-my-zsh plugins/golang
-  zgen oh-my-zsh plugins/k
-  zgen oh-my-zsh plugins/node
-  zgen oh-my-zsh plugins/npm
-  # zgen oh-my-zsh plugins/osx
-  zgen oh-my-zsh plugins/pip
-  zgen oh-my-zsh plugins/python
-  zgen oh-my-zsh plugins/sudo
-  zgen oh-my-zsh plugins/command-not-found
-  zgen oh-my-zsh plugins/ubuntu
-  zgen oh-my-zsh plugins/urltools
-  zgen oh-my-zsh plugins/vundle
-  zgen oh-my-zsh plugins/web-search
-  zgen oh-my-zsh plugins/zsh-completions
-  zgen oh-my-zsh plugins/zsh-history-substring-search
-  zgen oh-my-zsh plugins/zsh-syntax-highlighting
-  zgen oh-my-zsh plugins/z
-
-  # https://github.com/Tarrasch/zsh-autoenv
-  zgen load Tarrasch/zsh-autoenv
-  # https://github.com/zsh-users/zsh-completions
-  zgen load zsh-users/zsh-completions src
-
-  # ls => k ("git aware" ls)
-  zgen load rimraf/k
-
-  # It takes control, so load last
-  # zgen oh-my-zsh plugins/tmux
-
-  # NEW TESTING..
-
-  zgen load Tarrasch/zsh-autoenv
-  zgen load junegunn/fzf
-  zgen load bhilburn/powerlevel9k
-
-  zgen save
-fi
-
-...
-ZGEN_PLUGINS
-
+  z
+);
 
 source $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

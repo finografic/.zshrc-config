@@ -2,60 +2,57 @@
 ########## INCLUDE CONFIGS FILES  #########
 ###########################################
 
-# WHICH SYS/OS ARE WE ON ??
-if [[ $(sw_vers -productName 2> /dev/null) ]]; then
-    [[ $(sw_vers -productName) = "Mac OS X" ]] && export OS_NAME="MacOS" || export OS_NAME=$(sw_vers -productName);
-    export OS_VERSION=$(sw_vers -productVersion);
-    export OS_KERNEL=$(sw_vers -buildVersion); # NOT ACTUALLY "KERNEL" ON MacOS HERE
-else
-    [[ $(uname -o) = "GNU/Linux" ]] && export OS_NAME="Linux" || export OS_NAME=$(uname -o);
-    export OS_VERSION=$(uname -s);
-    export OS_KERNEL=$(uname -r);
-fi;
+# GET SYS/OS
+if [[ $(sw_vers -productName) == "Mac OS X" ]]; then export OS_NAME="MacOS";
+else export OS_NAME=$(uname -o);
+fi
 
-OS_NAME_LOWER=$(echo $OS_NAME | awk '{print tolower($0)}');
-
-# HOSTNAME
 export HOSTNAME=$(hostname);
-
-# GET IP ADDRESS
-# [[ $(ipconfig 2> /dev/null) ]] && export IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
-[[ $(ipconfig getifaddr en0 2> /dev/null) ]] && export IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
+export IP=$(curl -s ipinfo.io/ip);
 export IP_HOME='REDACTED-IP';
 export IP_A2='REDACTED-IP';
 export IP_OFFICE_MAC='REDACTED-IP';
 export PATH_ZSHRC=$HOME; # DEFAULT - $(pwd) COULD BE USED ??
 
 # DETERMINE ENVIRONMENT and POINT
-if [ $IP = $IP_A2 ]; then
+if [ $IP = $IP_A2 ]
+then
     # SERVER: REMOVE(A2)
-    export OS_NAME='Linux';
     export ZENV='a2'
     export ZSH_THEME="gallois"
-    elif [ $OS_NAME = 'MacOS' ]; then
+elif [ $IP = $IP_OFFICE_MAC ]
+then
     # OFFICE: (MACOS)
     export ZENV='office-mac'
     export ZSH_THEME="gallois"
-    elif [ $OS_NAME = 'Android' ]; then
+elif [ $OS_NAME = 'Android' ]
+then
     # MOBILE: (ANDROID + TMUX)
     export ZENV='android'
     export ZSH_THEME="gallois"
-    # export STORAGE_ROOT="/storage/emulated/0/termux" # would $(pwd) WORK IN THIS CASE ??
-    export STORAGE_ROOT="/data/data/con.termux/files/home" # would $(pwd) WORK IN THIS CASE ??
-    export PATH_ZSHRC=$STORAGE_ROOT
+    export STORAGE_ROOT="/storage/emulated/0/termux" # would $(pwd) WORK IN THIS CASE ??
+    export PATH_ZSHRC=$STORAGE_ROOT/.zshrc-config
 else
     # DEFAULT: LOCAL (HOME)
-    export OS_NAME='Linux';
     export ZENV='home'
     export ZSH_THEME="fino-time"
-fi;
+fi
 
 export ZSHRC_ROOT=$PATH_ZSHRC/.zshrc-config
 
 # SET NODE VERSION
+
+# if [[ $NVM = "true" ]];  then
+#   export NVM_DIR="$HOME/.nvm"
+#   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# else
+#   export PATH=$PATH:$HOME/.npm-global/bin
+# fi
+
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm 
 
 nvm use 12;
 export NODE_CURRENT_VERSION=$(node --version)
@@ -75,10 +72,11 @@ source "$ZSHRC_ROOT/_zsh-config.zsh";
 source "$ZSHRC_ROOT/lib/k.plugin.sh"; # LOAD 'k' LOCALLY 😁
 
 # CORE
-source "$ZSHRC_ROOT/lib/paths-${OS_NAME_LOWER}.zsh";
 source "$ZSHRC_ROOT/lib/colors.zsh";
+source "$ZSHRC_ROOT/lib/paths.zsh";
 
 # COMMON
+source "$ZSHRC_ROOT/lib/functions-sys.zsh";
 source "$ZSHRC_ROOT/lib/functions-utils.zsh";
 source "$ZSHRC_ROOT/lib/common.zsh";
 source "$ZSHRC_ROOT/lib/common-dev.zsh";
@@ -88,3 +86,4 @@ source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.zsh";
 
 # FINALIZATION OUTPUT
 source "$ZSHRC_ROOT/_fin.zsh";
+

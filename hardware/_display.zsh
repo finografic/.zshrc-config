@@ -94,7 +94,7 @@ function get_dim_hdmi() {
   # HDMI: LEFT-50
   LEFT_X=$((DISPLAY_MAIN_W));
   LEFT_Y=$((HDMI_PAD_TOP));
-  export HDMI_LEFT_HALF="$LEFT_X,0,$HALF_W,$HALF_H"
+  export HDMI_LEFT_HALF="$LEFT_X,$LEFT_Y,$HALF_W,$HALF_H"
 
   # HDMI: RIGHT-50
   RIGHT_X=$((DISPLAY_MAIN_W + $HALF_W));
@@ -112,7 +112,6 @@ function get_dim_hdmi() {
   RIGHT_Y=$((HDMI_PAD_TOP));
   export HDMI_RIGHT_66="$RIGHT_X,$RIGHT_Y,$HALF_W,$HALF_H"
 
-
 }
 
 function get_dim_desktop() {
@@ -129,8 +128,6 @@ function get_dim_desktop() {
   # 2  - DG: 5120x1800  VP: 0,0  WA: 0,40 4954x1724  [ 2 ]
   # "WA" APPEARS TO BE SPACE/POSITION AVAILABLE, TAKING INTO ACCOUNT DOCKED PANELS
 }
-
-
 
 # ADJUST DISPALYS + THEIR APP WINDOWS
 function displays() {
@@ -166,15 +163,10 @@ function displays() {
 
 }
 
-
-
 # RUN BATCH DISPLAY SCRIPTS
 get_displays;
 get_dim_display_main;
 get_dim_hdmi;
 # get_dim_total;
 displays "hdmi";
-
-
-
 

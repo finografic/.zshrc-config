@@ -5,8 +5,8 @@
 # ENSURE SYYSTEM LANGUAGE IS en_US
 export LANGUAGE=en_US.UTF-8
 
-# CLEAN DUPLICATES IN PATH (AGAIN)
-flatten_PATH;
+# CLEAN DUPLICATES IN PATH (AGAIN?)
+# flatten_PATH;
 
 # FORM rvm // RVM VERSION
 # [ -e /etc/profile.d/rvm.sh ] && source /etc/profile.d/rvm.sh
@@ -24,32 +24,43 @@ flatten_PATH;
 # git fetch
 # $HOME/.zshrc-config/node_modules/git-auto/bin/git-auto -p
 
-# NEW PM2 COMMAND
-# [ -e ${NPM_GLOBALS}/pm2 ] && eval "env PATH=\$PATH:${NPM_GLOBALS}/pm2 startup systemd -u ${USER} --hp ${HOME}";
-[ -e ${NPM_GLOBALS}/pm2 ] && eval "${NPM_GLOBALS}/pm2 list --sort id:asc";
+# PM2 CHECK + DISPLAY
+[ -e ${NPM_GLOBALS}/pm2 ] && eval "${NPM_GLOBALS}/pm2 list";
 
 # PFETCH
 echo "\n" && PF_COL3=3 PF_COL1=2 PF_COL2=2 PF_INFO="ascii os host kernel uptime pkgs memory" pfetch;
 
 # LIST PORTS
 # ports;
-if [ "$ZENV" != "android" ]; then ports; fi;
+# if [ "$ZENV" != "android" ]; then ports; fi;
+# DETERMINE ENVIRONMENT and POINT
+if [ $OS_NAME = 'Linux' ]; then ports;
+elif [ $OS_NAME = 'MacOS' ]; then ports; # ports4;
+elif [ $OS_NAME = 'Android' ]; then # NADA
+else ports; # DEFAULT ALIAS
+fi;
 
 # DISK SPACE
-space;
+# DETERMINE ENVIRONMENT and POINT
+if [ $OS_NAME = 'Linux' ]; then diskspace_df_with_temps;
+elif [ $OS_NAME = 'MacOS' ]; then diskspace_df_mac;
+elif [ $OS_NAME = 'Android' ]; then diskspace_df_with_temps;
+else space; # DEFAULT ALIAS
+fi;
 
 # BANNER
 source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.banner.zsh";
 
 D="${_c}::${_0}";
 RESET_STRING="$HOSTNAME $D ${_w}$IP"
+
 echo "\n${_c} ---=====${_w} $RESET_STRING ${_c}=====--- \n"
 
 # VERSIONS: OS, NodeJS, npm... etc
-echo "${_y}$(uname -o) - $(uname -s) $(uname -r)"
+echo "${_y}$OS_NAME \tv$OS_VERSION $([[ $OS = "Linux" ]] && echo $OS_KERNEL)"
 [ -e /etc/os-release ] &&  echo "${_y}$(env -i bash -c '. /etc/os-release; echo $PRETTY_NAME')"
-echo "${_c}NodeJS $(node --version)"
-echo "${_c}npm v$(npm --version)\n${_0}"
+echo "${_c}NodeJS \t$(node --version)"
+echo "${_c}npm \tv$(npm --version)\n${_0}"
 
 
 

@@ -77,10 +77,11 @@ alias ip="echo '\n\e[37mLocal IP addess: \e[0;35m$IP\n'"
 alias ports1="echo '\n\e[96m'; sudo grc netstat -ltnp; echo '\e[0m'";
 alias ports2="echo '\e[96m'; grc netstat -plnt; echo '\e[0m'";
 alias ports3="grc netstat -plnt | grep --invert-match -; echo '\e[0m'";
+alias ports4="grc netstat -AaLnW; echo '\e[0m'";
 
 # DYNAMICALLY SET ALIAS, DEPENDING ON ENV
 alias ports="lsof -i -P -n | grep LISTEN"
-[ -e /usr/bin/grc ] && alias ports="ports2";
+# [ -e /usr/bin/grc ] && alias ports="ports2";
 
 # TO MAKE PORT LIST MORE COMPACT:
 # EDIT: sudo vi /usr/share/grc/conf.netstat
@@ -182,25 +183,29 @@ function numberFloor() {
 #########  DISKSPACE  ############
 ##################################
 
-function space_df_brief(){
+function diskspace_df_brief(){
     echo "\n";
-    # NEW !!!  LIST IMPORTANT DRIVES, IGNORE TMPS AND SNAPS etc..
+    # LIST IMPORTANT DRIVES, IGNORE TMPS AND SNAPS etc..
     df -h -x "squashfs" -x "tmpfs" -x "devtmpfs";
 }
 
-function space_df_with_temps(){
-    # echo "\n";
-    # df $(cut -d' ' -f3 /proc/mounts | sort -u | grep -v 'squashfs' | sed 's/^/-t /')
-    # df -l -BM -Tx"squashfs"
+function diskspace_df_with_temps(){
     df -h -x "squashfs"
 }
 
+function diskspace_df_mac(){
+    # LIST IMPORTANT DRIVES ONLY
+    # HEADERS (CYAN)
+    echo "\n\e[36m$(df -b -H -ailn | grep "" --max-count 1)\e[0m";
+    df -b -H -ailn | sed -n '1!p'
+}
+
 # DISK SPACE
-function space_ncdu(){
+function diskspace_ncdu(){
     ncdu;
 }
 
-function space_pydf(){
+function diskspace_pydf(){
     # NEW !!!  PYDF - NOW COLOR-CODED :D
     # 0: RESET
     # 1: Bold/Bright
@@ -276,7 +281,7 @@ function space_pydf(){
 }
 
 # DEFINE DEFAULT "space" METHOD:
-alias space=space_df_with_temps;
+alias space=diskspace_df_with_temps;
 
 ##################################
 #############  MISC  #############

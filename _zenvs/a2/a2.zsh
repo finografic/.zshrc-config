@@ -128,6 +128,11 @@ alias cs="cd $HOME/cronic && l && _gs"
 ##############  PM2   ############
 ##################################
 
+# INCLUDE PM2
+# PM2 startup DOCS: https://pm2.keymetrics.io/docs/usage/startup/
+[ -e ${NPM_GLOBALS}/pm2 ] && eval "env PATH=\$PATH:${NPM_GLOBALS}/pm2 startup systemd -u ${USER} --hp ${HOME}";
+
+
 function pm2lg(){
   cd $HOME/logs-crons;
   lnav _crons-daemon.log;
@@ -136,8 +141,6 @@ function pm2lg(){
 function pm2dl(){
   delete $HOME/logs-crons/*
 }
-
-
 
 
 ############################################

@@ -1,9 +1,11 @@
+#!/bin/bash
+
 ###########################################
 ########## INCLUDE CONFIGS FILES  #########
 ###########################################
 
 # WHICH SYS/OS ARE WE ON ??
-if [[ $(sw_vers -productName 2> /dev/null) ]]; then
+if [ "$(sw_vers -productName 2> /dev/null)" ]; then
     [[ $(sw_vers -productName) = "Mac OS X" ]] && export OS_NAME="MacOS" || export OS_NAME=$(sw_vers -productName);
     export OS_VERSION=$(sw_vers -productVersion);
     export OS_KERNEL=$(sw_vers -buildVersion); # NOT ACTUALLY "KERNEL" ON MacOS HERE
@@ -20,9 +22,10 @@ export HOSTNAME=$(hostname);
 
 # GET IP ADDRESS
 # [[ $(ipconfig 2> /dev/null) ]] && export IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
-[[ $(ipconfig getifaddr en0 2> /dev/null) ]] && export IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
+[ $(ipconfig getifaddr en0 2> /dev/null) ] && export IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
 export IP_HOME='REDACTED-IP';
 export IP_A2='REDACTED-IP';
+export IP_ROCK='REDACTED-IP';
 export IP_OFFICE_MAC='REDACTED-IP';
 export PATH_ZSHRC=$HOME; # DEFAULT - $(pwd) COULD BE USED ??
 
@@ -32,6 +35,11 @@ if [ $IP = $IP_A2 ]; then
     export OS_NAME='Linux';
     export ZENV='a2'
     export ZSH_THEME="gallois"
+    elif [ $IP = $IP_ROCK ]; then
+    # SERVER: REMOVE(A2)
+    export OS_NAME='Linux';
+    export ZENV='a2-rock'
+    export ZSH_THEME="gallois"
     elif [ $OS_NAME = 'MacOS' ]; then
     # OFFICE: (MACOS)
     export ZENV='office-mac'
@@ -40,8 +48,7 @@ if [ $IP = $IP_A2 ]; then
     # MOBILE: (ANDROID + TMUX)
     export ZENV='android'
     export ZSH_THEME="gallois"
-    # export STORAGE_ROOT="/storage/emulated/0/termux" # would $(pwd) WORK IN THIS CASE ??
-    export STORAGE_ROOT="/data/data/con.termux/files/home" # would $(pwd) WORK IN THIS CASE ??
+    export STORAGE_ROOT="${HOME}"
     export PATH_ZSHRC=$STORAGE_ROOT
 else
     # DEFAULT: LOCAL (HOME)
@@ -54,10 +61,18 @@ export ZSHRC_ROOT=$PATH_ZSHRC/.zshrc-config
 
 # SET NODE VERSION
 export NVM_DIR="$HOME/.nvm"
+[ OS_NAME="Android" ] && unset PREFIX;
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm
 
-nvm use 12;
+# DETERMINE ENVIRONMENT and POINT
+if [ $OS_NAME = 'Linux' ]; then nvm use 12;
+    elif [ $OS_NAME = 'MacOS' ]; then nvm use 14; # ports4;
+    elif [ $OS_NAME = 'Android' ]; then nvm use 14;# NADA
+else nvm use 12; # DEFAULT ALIAS
+fi;
+
 export NODE_CURRENT_VERSION=$(node --version)
 # export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/lib/node_modules/
 export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/bin

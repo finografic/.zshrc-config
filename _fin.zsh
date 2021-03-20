@@ -5,6 +5,11 @@
 # ENSURE SYYSTEM LANGUAGE IS en_US
 export LANGUAGE=en_US.UTF-8
 
+
+
+# export PATH="/Users/REDACTED/.nvm/versions/node/v12.20.2/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/REDACTED/bin:/usr/local/bin:/Users/REDACTED/.nvm/versions/node/v12.20.2/bin:/Users/REDACTED/.zshrc-config/bin/pfetch:/Users/REDACTED/.zshrc-config/bin/lsof:/Users/REDACTED/.eslintrc:/Users/REDACTED/.vimpkg/bin:/Users/REDACTED/.yarn/bin:/Users/REDACTED/.config/yarn/global/node_modules/.bin:/usr/bin/curl:/Users/REDACTED/.nvm/versions/node/v12.20.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/lib/node_modules:/Users/REDACTED/bin:/snap/bin:/Users/REDACTED/.eslintrc:/Users/REDACTED/.yarn/bin:/Users/REDACTED/.config/yarn/global/node_modules/.bin:/Users/REDACTED/bin/caddy:/Users/REDACTED/.fzf/bin:/Users/REDACTED/.vimpkg/bin:/usr/local/opt/fzf/bin:/Users/REDACTED/.vimpkg/bin"
+
+
 # CLEAN DUPLICATES IN PATH (AGAIN?)
 # flatten_PATH;
 
@@ -42,10 +47,11 @@ fi;
 
 # DISK SPACE
 # DETERMINE ENVIRONMENT and POINT
-if [ $OS_NAME = 'Linux' ]; then diskspace_df_with_temps;
+# if [ $OS_NAME = 'Linux' ]; then diskspace_df_with_temps;
+if [ $OS_NAME = 'Linux' ]; then diskspace_df_brief;
 elif [ $OS_NAME = 'MacOS' ]; then diskspace_df_mac;
-elif [ $OS_NAME = 'Android' ]; then diskspace_df_with_temps;
-else space; # DEFAULT ALIAS
+elif [ $OS_NAME = 'Android' ]; then diskspace_df_mac 2> /dev/null;
+else diskspace_df_brief; # DEFAULT ALIAS
 fi;
 
 # BANNER
@@ -57,13 +63,7 @@ RESET_STRING="$HOSTNAME $D ${_w}$IP"
 echo "\n${_c} ---=====${_w} $RESET_STRING ${_c}=====--- \n"
 
 # VERSIONS: OS, NodeJS, npm... etc
-echo "${_y}$OS_NAME \tv$OS_VERSION $([[ $OS = "Linux" ]] && echo $OS_KERNEL)"
+echo "${_y}$OS_NAME \t $([[ $OS != "Android" ]] && echo "v$OS_VERSION") $([[ $OS = "Linux" ]] && echo $OS_KERNEL)"
 [ -e /etc/os-release ] &&  echo "${_y}$(env -i bash -c '. /etc/os-release; echo $PRETTY_NAME')"
 echo "${_c}NodeJS \t$(node --version)"
 echo "${_c}npm \tv$(npm --version)\n${_0}"
-
-
-
-
-
-

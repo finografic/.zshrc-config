@@ -21,12 +21,13 @@ alias apps="cd $HOME/.local/share/applications/ && l"
 
 # REMOTE: A2 HOSTING
 alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
+alias a2rock="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
 
 # DEVILBOX
 devil() {
     PWD=`pwd`
     # START UP DEVILBOX
-      if [[ $@ == "ini" || $@ == "init" ]] then
+    if [[ $@ == "ini" || $@ == "init" ]] then
         cd $PROJECTS/devilbox && l
         # ORIGNAL
         service apache2 stop
@@ -34,11 +35,11 @@ devil() {
         # GO, UP !!
         docker-compose up httpd php mysql
         # ENTER MAIN DOCKER CONTAINER (PHP)
-      elif [[ $@ == "cli" ]] then
+        elif [[ $@ == "cli" ]] then
         cd $PROJECTS/devilbox && l
         ./shell.sh
         # DEFAULT: CD + LIST
-      elif [[ $@ == "stop" || $@ == "clean" ]] then
+        elif [[ $@ == "stop" || $@ == "clean" ]] then
         # NEW
         docker-compose down
         docker system prune

@@ -10,8 +10,7 @@ export PATH=$PATH:$HOME/bin
 export PATH=$PATH:$NPM_GLOBALS
 
 # GLOBALIZE IMPORTANT BINARIES (now included in repo)
-export PATH=$PATH:$ZSHRC_ROOT/bin/pfetch
-export PATH=$PATH:$ZSHRC_ROOT/bin/lsof
+export PATH=$PATH:$ZSHRC_ROOT/bin
 # export PATH=$PATH:$ZSHRC_ROOT/node_modules/
 
 # SSH PATH
@@ -24,9 +23,9 @@ export PATH=$PATH:$HOME/.vimpkg/bin # VIM EXTENSIONS !!
 
 # ESSENTIALS
 export PATH=$PATH:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin
-export PATH=$PATH:$(which curl) 
+export PATH=$PATH:$(which curl)
 
-# RUBY SIMPLE 
+# RUBY SIMPLE
 # export PATH=$PATH:$HOME/.rbenv/bin
 
 # CADDY

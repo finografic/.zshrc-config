@@ -60,6 +60,14 @@ msg() {
 
 }
 
+#########################################
+############  FILE LISTINGS  ############
+#########################################
+
+# LIST SYSTEM PATHS
+alias path="tr ':' '\n' <<< '$PATH'"
+alias PATH="tr ':' '\n' <<< '$PATH'"
+
 #####################################
 ############  UTILITIES  ############
 #####################################
@@ -178,12 +186,11 @@ function numberFloor() {
 function diskspace_df_brief(){
     echo "\n";
     # LIST IMPORTANT DRIVES, IGNORE TMPS AND SNAPS etc..
-    df -h;
+    df -h -x "squashfs" -x "tmpfs" -x "devtmpfs";
 }
 
 function diskspace_df_with_temps(){
-    echo "\n\e[36m$(df -H -ai | grep "" --max-count 1)\e[0m";
-    df -H -ai | sed -n '1!p'
+    df -h -x "squashfs"
 }
 
 function diskspace_df_mac(){
@@ -205,7 +212,7 @@ function diskspace_ncdu(){
     ncdu;
 }
 
-function diskspace_pydf(){ # PYTHON & SNAP REQUIRED !!
+function diskspace_pydf(){
     # NEW !!!  PYDF - NOW COLOR-CODED :D
     # 0: RESET
     # 1: Bold/Bright
@@ -305,3 +312,10 @@ function numberRound() {
 function numberFloor() {
     printf ${$(($1))%.*}
 }
+
+
+
+
+
+
+

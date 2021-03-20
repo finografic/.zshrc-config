@@ -6,8 +6,7 @@
 export PATH=$PATH:$NPM_GLOBALS
 
 # GLOBALIZE IMPORTANT BINARIES (now included in repo)
-export PATH=$PATH:$ZSHRC_ROOT/bin/pfetch
-export PATH=$PATH:$ZSHRC_ROOT/bin/lsof
+export PATH=$PATH:$ZSHRC_ROOT/bin
 
 # REMOVE DUPLICATES FROM PATH
 function flatten_PATH(){

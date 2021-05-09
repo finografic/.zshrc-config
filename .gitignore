@@ -9,6 +9,7 @@ www-ORIG
 .gitignore-starter
 .git-bak
 .git-BAK
+.ftpconfig
 node_modules
 .vscode
 unused

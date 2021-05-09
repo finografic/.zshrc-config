@@ -6,11 +6,11 @@ echo ""; # NEWLINE SPACE
 
 # KEYBOARDS: LAYOUTS + INPUTS
 
-# export LC_ALL=es_ES.UTF-8 
+# export LC_ALL=es_ES.UTF-8
 export LC_ALL=en_US.UTF-8 # TEST THIS... ABOVE es_ES IS AFFECTING CLI LANGUAGE
 export LANGUAGE=en_US.UTF-8
 
-# TESTING COMMAND "locales"... 
+# TESTING COMMAND "locales"...
 # STILL GETTING ALL en_US.UTF-8 :(
 export EN="en_US.UTF-8"
 export EU="en_IE.UTF-8"
@@ -33,11 +33,11 @@ export LC_ALL=$EN
 
 # BEFORE CHANGE:
 #xkb_keymap {
-  #xkb_keycodes  { include "evdev+aliases(qwerty)" };
-  #xkb_types     { include "complete"      };
-  #xkb_compat    { include "complete"      };
-  #xkb_symbols   { include "pc+es(winkeys)+eu:2+inet(evdev)"       };
-  #xkb_geometry  { include "pc(pc104)"     };
+#xkb_keycodes  { include "evdev+aliases(qwerty)" };
+#xkb_types     { include "complete"      };
+#xkb_compat    { include "complete"      };
+#xkb_symbols   { include "pc+es(winkeys)+eu:2+inet(evdev)"       };
+#xkb_geometry  { include "pc(pc104)"     };
 #};
 
 # xkb_keymap {
@@ -50,7 +50,8 @@ export LC_ALL=$EN
 
 # DEFAULT KEYBOARD LAYOUTS + VAIRANTS
 KEYBOARD_LAYOUT="us";
-KEYBOARD_LAYOUT_EXT="es";
+# KEYBOARD_LAYOUT_EXT="es";
+KEYBOARD_LAYOUT_EXT="en";
 
 # SET KEYBOARD LAYOUT
 setKeyboardLayout $KEYBOARD_LAYOUT_EXT;

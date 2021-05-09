@@ -52,3 +52,8 @@ devil() {
         cd $PROJECTS/devilbox && l
     fi
 }
+
+git config --global color.ui true
+git config --global user.name "Justin"
+git config --global user.email "justin.blair.rankin@gmail.com"
+git config --global credential.helper 'cache --timeout=1209600' # TWO WEEKS!

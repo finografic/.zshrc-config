@@ -1,3 +1,5 @@
+# NEW! UPDATE oh-my-zsh // TODO: RUN ONCE/WEEK
+omz update &>/dev/null
 export ZSH=$HOME/.oh-my-zsh
 
 # Use emacs keybindings even if our EDITOR is set to vi
@@ -102,13 +104,20 @@ plugins=(
   fzf
   git
   git-extras
+  git-prompt
+  github
+  grc
   k
   node
   npm
   npx
+  nvm
   osx
+  tig
   urltools
+  rsync
   sudo
+  vim-interaction
   vscode
   yarn
   zsh-completions

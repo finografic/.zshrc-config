@@ -40,8 +40,8 @@ echo "\n" && PF_COL3=3 PF_COL1=2 PF_COL2=2 PF_INFO="ascii os host kernel uptime 
 # if [ "$ZENV" != "android" ]; then ports; fi;
 # DETERMINE ENVIRONMENT and POINT
 if [ $OS_NAME = 'Linux' ]; then ports;
-elif [ $OS_NAME = 'MacOS' ]; then ports; # ports4;
-elif [ $OS_NAME = 'Android' ]; then # NADA
+  elif [ $OS_NAME = 'macOS' ]; then ports; # ports4;
+  elif [ $OS_NAME = 'Android' ]; then # NADA
 else ports; # DEFAULT ALIAS
 fi;
 
@@ -49,8 +49,8 @@ fi;
 # DETERMINE ENVIRONMENT and POINT
 # if [ $OS_NAME = 'Linux' ]; then diskspace_df_with_temps;
 if [ $OS_NAME = 'Linux' ]; then diskspace_df_brief;
-elif [ $OS_NAME = 'MacOS' ]; then diskspace_df_mac;
-elif [ $OS_NAME = 'Android' ]; then diskspace_df_mac 2> /dev/null;
+  elif [ $OS_NAME = 'macOS' ]; then diskspace_df_mac;
+  elif [ $OS_NAME = 'Android' ]; then diskspace_df_mac 2> /dev/null;
 else diskspace_df_brief; # DEFAULT ALIAS
 fi;
 

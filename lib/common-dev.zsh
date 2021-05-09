@@ -73,10 +73,6 @@ alias i="pnpm install";
 ##################################
 
 # GIT USER (SILENT)
-git config --global color.ui true
-git config --global user.name "Justin"
-git config --global user.email "justin.blair.rankin@gmail.com"
-git config --global credential.helper 'cache --timeout=1209600' # TWO WEEKS!
 
 function _gcache() {
     git config credential.helper 'cache --timeout=1209600' # TWO WEEKS!
@@ -176,12 +172,12 @@ cx () {
 }
 
 
-# CHANGE MODULE/COMPONENT 
+# CHANGE MODULE/COMPONENT
 # from: { index.js}
 # to: { Component.js, package.json }
 function mkmod(){
   if [ -f index.js ] && [ ! -f package.json ]; then
-    this_dir=$(basename "$PWD") 
+    this_dir=$(basename "$PWD")
     mv index.js ${this_dir}.js
     echo -e "{\n  \"name\": \"${this_dir}\"\n  \"main\": \"./${this_dir}.js\"\n}" >> package.json
     l

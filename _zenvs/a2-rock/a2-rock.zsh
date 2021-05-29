@@ -23,35 +23,7 @@ alias ll="ls -la --color -h --group-directories-first" #
 # LIST PERMISSIONS -- HOW TO ADD COLOR ??
 alias lp="stat -c '%A  %a  %U:%G  ___  %n' *"    # SIMPLE
 
-function listing_ALT() {
-  ls -lAh --color $1
-  # lc
-  if [ -d .git ]
-  then
-      # own .git
-      _gs
-  fi
-}
-
-
-function listing() {
-  k -Ah $1
-  # lc
-  if [ -d .git ]
-  then
-      # own .git
-      _gs
-  fi
-}
-
-
-function lr() {
-    k -rAth
-}
-
-# alias l="lk"
-alias l1="listing"
-alias l2="listing_exa"
+# MAIN DIRECTORY LISTER FOR THIS ENV
 alias l="listing"
 # alias ls="eval `dircolors -b ${HOME}/.dircolors` && ls -Alh --color" # list hidden
 
@@ -67,35 +39,35 @@ source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.dev.zsh";
 
 function gyp-fix(){
 
-  if [[ -f package.json ]] then
+    if [[ -f package.json ]] then
 
-    # IS PROJECT ROOT
-    project_root=$PWD;
+        # IS PROJECT ROOT
+        project_root=$PWD;
 
-    echo "\n\e[36m ---=====\e[37m ncu updating \e[36m=====--- \n"
-    ncu && ncu -u
-    echo 'current node version: '
-    nvm current
+        echo "\n\e[36m ---=====\e[37m ncu updating \e[36m=====--- \n"
+        ncu && ncu -u
+        echo 'current node version: '
+        nvm current
 
-    echo "\n\e[36m ---=====\e[37m delete node_modules \e[36m=====--- \n"
-    rm $project_root/package-lock.json
-    rm $project_root/node_modules -fr
+        echo "\n\e[36m ---=====\e[37m delete node_modules \e[36m=====--- \n"
+        rm $project_root/package-lock.json
+        rm $project_root/node_modules -fr
 
-    echo "\n\e[36m ---=====\e[37m reinstall node_modules bases on ncu \e[36m=====--- \n"
-    npm i
+        echo "\n\e[36m ---=====\e[37m reinstall node_modules bases on ncu \e[36m=====--- \n"
+        npm i
 
-    echo "\n\e[36m ---=====\e[37m fix gyp modules \e[36m=====--- \n"
-    cd $project_root/node_modules/node-gyp && yarn
-    cd $project_root/node_modules/node-pre-gyp && yarn
+        echo "\n\e[36m ---=====\e[37m fix gyp modules \e[36m=====--- \n"
+        cd $project_root/node_modules/node-gyp && yarn
+        cd $project_root/node_modules/node-pre-gyp && yarn
 
-    echo "\n\e[36m ---=====\e[37m final main yarn \e[36m=====--- \n"
-    cd $project_root && yarn
+        echo "\n\e[36m ---=====\e[37m final main yarn \e[36m=====--- \n"
+        cd $project_root && yarn
 
-  else
+    else
 
-    echo 'Not project root!'
+        echo 'Not project root!'
 
-  fi
+    fi
 
 }
 
@@ -120,12 +92,12 @@ alias cs="cd $HOME/cronic && l && _gs"
 
 
 function pm2lg(){
-  cd $HOME/logs-crons;
-  lnav _crons-daemon.log;
+    cd $HOME/logs-crons;
+    lnav _crons-daemon.log;
 }
 
 function pm2dl(){
-  delete $HOME/logs-crons/*
+    delete $HOME/logs-crons/*
 }
 
 

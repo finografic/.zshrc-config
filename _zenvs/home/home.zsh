@@ -10,6 +10,7 @@ code () { sudo $IDE "$@"; }
 [ -d "${HOME}/.dircolors" ] && eval `dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark`;
 
 # UNIVERSAL
+alias python="$(which python3) $@"
 alias dls="cd $HOME/Downloads && l"
 alias www="cd /var/www && l"
 

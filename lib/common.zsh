@@ -5,7 +5,7 @@
 alias reset=". ${HOME}/.zshrc"
 alias update_cache=". ${HOME}/.zshrc; npm cache verify"
 alias cdz="cd ${ZSHRC_ROOT} && l"
-alias os="cd ${HOME}/OS_Setup && l"
+alias os="cd ${HOME}/os-setup && l"
 alias ai="sudo apt install -y $1"
 alias npmls="npm ls -g --depth=0"
 
@@ -28,30 +28,20 @@ alias lc="colorls -lA --sort-dirs --git-status --report && echo \n" # RUBY GEM l
 alias lp="stat -c '%A  %a  %U:%G  ___  %n' *"    # SIMPLE
 
 function listing() {
-    k -Ah $1
-    # lc
-    if [ -d .git ]
-    then
-        # own .git
-        _gs
-    fi
+  k -Ah $1
+  [ -d .git ] && git status;
 }
 
 function listing_exa() {
-    exa --long --all --group-directories-first --accessed --time-style=long-iso --git $1
-    # lc
-    if [ -d .git ]
-    then
-        # own .git
-        _gs
-    fi
+  exa --long --all --group-directories-first --accessed --time-style=long-iso --git $1
+  [ -d .git ] && git status;
 }
 
 function lr() {
-    k -rAth
+  k -rAth
 }
 
-# alias l="lk"
+# DEFAULT MAIN DIRECTORY LISTERS
 alias l1="listing"
 alias l2="listing_exa"
 alias l="listing_exa"

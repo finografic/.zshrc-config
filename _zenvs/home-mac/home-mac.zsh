@@ -26,4 +26,4 @@ source $HOME/.iterm2_shell_integration.zsh
 source $HOME/.nvmrc
 
 # INSIDE VSCODE ??
-[ $TERM_PROGRAM != 'vscode' ] && source "${ZENV_PATH}/${ZENV}.backups.zsh";
+# [ $TERM_PROGRAM != 'vscode' ] && source "${ZENV_PATH}/${ZENV}.backups.zsh";

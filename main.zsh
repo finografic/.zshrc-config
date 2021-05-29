@@ -90,6 +90,9 @@ export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/bin
 # LOCALE (DEFAULT, MAY BE OVERWRITTEN BY ENV)
 export LC_ALL=C
 
+# INIT FZF (moved from _fin.zsh)
+[ -e ${HOME}/.fzf.zsh ] && source ${HOME}/.fzf.zsh
+
 # INSIDE VSCODE ??
 if [ $TERM_PROGRAM = 'vscode' ]; then
   # CORE

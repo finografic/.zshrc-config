@@ -72,6 +72,12 @@ alias i="pnpm install";
 ##########  GIT REMOTE   #########
 ##################################
 
+function checkout() {
+  # REQUIRES NPM PACKAGE: gitcheckout-cli
+  # https://www.npmjs.com/package/gitcheckout-cli
+  gitcheckout -l
+}
+
 # GIT USER (SILENT)
 
 function _gcache() {

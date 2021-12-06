@@ -24,7 +24,7 @@ export LANGUAGE=en_US.UTF-8
 # $HOME/.zshrc-config/node_modules/git-auto/bin/git-auto -p
 
 # PM2 CHECK + DISPLAY
-[ -e ${NPM_GLOBALS}/pm2 ] && eval "${NPM_GLOBALS}/pm2 list";
+# [ -e ${NPM_GLOBALS}/pm2 ] && eval "${NPM_GLOBALS}/pm2 list";
 
 # PFETCH
 echo "\n" && PF_COL3=3 PF_COL1=2 PF_COL2=2 PF_INFO="ascii os host kernel uptime pkgs memory" pfetch;
@@ -57,7 +57,7 @@ RESET_STRING="$HOSTNAME $D ${_w}$IP"
 echo "\n${_c} ---=====${_w} $RESET_STRING ${_c}=====--- \n"
 
 # VERSIONS: OS, NodeJS, npm... etc
-echo "${_y}$OS_NAME \t $([[ $OS != "Android" ]] && echo "v$OS_VERSION") $([[ $OS = "Linux" ]] && echo $OS_KERNEL)"
+echo "${_y}$OS_NAME \t $([[ $OS != "Android" ]] && echo "$OS_VERSION") $([[ $OS = "Linux" ]] && echo $OS_KERNEL)"
 [ -e /etc/os-release ] &&  echo "${_y}$(env -i bash -c '. /etc/os-release; echo $PRETTY_NAME')"
 echo "${_c}NodeJS \t$(node --version)"
 echo "${_c}npm \tv$(npm --version)\n${_0}"

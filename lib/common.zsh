@@ -33,7 +33,9 @@ function listing() {
 }
 
 function listing_exa() {
-  exa --long --all --group-directories-first --accessed --time-style=long-iso --git $1
+  # exa --long --all --group-directories-first --accessed --time-style=long-iso --git $1
+  EXA_IGNORES=".DS_Store|Icon*|.directory";
+  exa --long --all --ignore-glob="${EXA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
   [ -d .git ] && git status;
 }
 

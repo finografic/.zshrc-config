@@ -9,7 +9,6 @@ code () { "$EDITOR $@"; }
 
 # UNIVERSAL
 alias dls="cd $HOME/Downloads && l"
-alias www="cd /var/www && l"
 
 # GET CURRENT ENVIRONMENT - ADDITIONAL CONFIGS
 # source "${ZENV_PATH}//${ZENV}.hardware.zsh";
@@ -23,7 +22,12 @@ source $HOME/.iterm2_shell_integration.zsh
 # PM2 startup DOCS: https://pm2.keymetrics.io/docs/usage/startup/
 # [ -e ${NPM_GLOBALS}/pm2 ] && eval "sudo env PATH=\$PATH:${NPM_GLOBALS}/../lib/node_modules/pm2/bin/pm2 startup launchd -u ${USER} --hp ${HOME}";
 
-source $HOME/.nvmrc
-
 # INSIDE VSCODE ??
 [ $TERM_PROGRAM != 'vscode' ] && source "${ZENV_PATH}/${ZENV}.backups.zsh";
+
+# FIX for MOOM APP AT macOS STARTUP
+osascript -e 'tell application "Moom" to set visible of front window to false'
+
+# iTerm2 PROFILES > ADVANCED > SMART-SELECTION > ADD: 
+# (REGEX for IGNORING CLI PROMPT WHEN SELECTING VIA TRIPLE-CLICK):
+# \b[^\]\$]*$

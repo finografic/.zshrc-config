@@ -3,6 +3,7 @@
 ###########################################
 ########## INCLUDE CONFIGS FILES  #########
 ###########################################
+source "$HOME/.zshrc-config/.env";
 export ZSH_DISABLE_COMPFIX="true";
 
 # WHICH SYS/OS ARE WE ON ??
@@ -25,43 +26,48 @@ export HOSTNAME=$(hostname);
 # GET IP ADDRESS
 # [[ $(ipconfig 2> /dev/null) ]] && export IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
 [ $(ipconfig getifaddr en0 2> /dev/null) ] && export IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
-IP_HOME='REDACTED-IP'; # OLD HOME IP ??
-IP_HOME_MAC='REDACTED-IP';
 IP_A2='REDACTED-IP';
 IP_ROCK='REDACTED-IP';
 IP_OFFICE_MAC='REDACTED-IP';
+IP_HOME='REDACTED-IP'; # OLD HOME IP ??
+IP_HOME_MAC='REDACTED-IP';
+
 export PATH_ZSHRC=$HOME; # DEFAULT - $(pwd) COULD BE USED ??
 
 # DETERMINE ENVIRONMENT and POINT
-if [ $IP = $IP_A2 ]; then
-  # SERVER: REMOVE(A2)
-  export OS_NAME='Linux';
-  export ZENV='a2'
-  export ZSH_THEME="gallois"
-  elif [ $OS_NAME = 'macOS' ] && [ $IP = $IP_HOME_MAC ]; then
-  # HOME: (MACOS)
-  export ZENV='home-mac'
-  export ZSH_THEME="gallois"
+if [ $IS_HOME ]; then
+    # DEFAULT FROM .env: HOME (MACOS)
+    export ZENV='home-mac'
+    export ZSH_THEME="gallois"
+  elif [ $IP = $IP_A2 ]; then
+    # SERVER: REMOVE(A2)
+    export OS_NAME='Linux';
+    export ZENV='a2'
+    export ZSH_THEME="gallois"
   elif [ $OS_NAME = 'macOS' ]; then
-  # OFFICE: (MACOS)
-  export ZENV='office-mac'
-  export ZSH_THEME="gallois"
+    # OFFICE: (MACOS)
+    export ZENV='office-mac'
+    export ZSH_THEME="gallois"
   elif [ $IP = $IP_ROCK ]; then
-  # SERVER: REMOVE(A2)
-  export OS_NAME='Linux';
-  export ZENV='a2-rock'
-  export ZSH_THEME="gallois"
+    # SERVER: REMOVE(A2)
+    export OS_NAME='Linux';
+    export ZENV='a2-rock'
+    export ZSH_THEME="gallois"
   elif [ $OS_NAME = 'Android' ]; then
-  # MOBILE: (ANDROID + TMUX)
-  export ZENV='android'
-  export ZSH_THEME="gallois"
-  export STORAGE_ROOT="${HOME}"
-  export PATH_ZSHRC=$STORAGE_ROOT
+    # MOBILE: (ANDROID + TMUX)
+    export ZENV='android'
+    export ZSH_THEME="gallois"
+    export STORAGE_ROOT="${HOME}"
+    export PATH_ZSHRC=$STORAGE_ROOT
+  elif [ $OS_NAME = 'Android' ]; then
+    # HOME: (LINUX)
+    export OS_NAME='Linux';
+    export ZENV='home'
+    export ZSH_THEME="fino-time"
 else
-  # DEFAULT: LOCAL (HOME)
-  export OS_NAME='Linux';
-  export ZENV='home'
-  export ZSH_THEME="fino-time"
+    # DEFAULT: HOME (MACOS)
+    export ZENV='home-mac'
+    export ZSH_THEME="gallois"
 fi;
 
 # MAIN ZSH
@@ -73,15 +79,20 @@ source "$ZSHRC_ROOT/lib/k.plugin.sh"; # LOAD 'k' LOCALLY 😁
 export NVM_DIR="$HOME/.nvm"
 [ OS_NAME="Android" ] && unset PREFIX;
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm
 
-# DETERMINE ENVIRONMENT and POINT
-if [ $OS_NAME = 'Linux' ]; then nvm use 14;
-  elif [ $OS_NAME = 'macOS' ]; then nvm use 14; # ports4;
-  elif [ $OS_NAME = 'Android' ]; then nvm use 14;# NADA
-else nvm use 12; # DEFAULT ALIAS
+# NVM home-mac ONLY - TODO: FIX WITH ABOVE!
+if [ $ZENV = 'home-mac'  ]; then
+  [ -s "$(brew --prefix)/opt/nvm/nvm.sh" ] && . "$(brew --prefix)/opt/nvm/nvm.sh";
+  [ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && . "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm";
 fi;
+
+# DETERMINE ENVIRONMENT and POINT
+NODE_VERSION_PREFERRED=16; # DEFAULT ALIAS
+[ $OS_NAME = 'Linux'  ] && NODE_VERSION_PREFERRED=16;
+[ $OS_NAME = 'macOS'  ] && NODE_VERSION_PREFERRED=16;
+[ $OS_NAME = 'Android' ]&&  NODE_VERSION_PREFERRED=14;
+nvm use $NODE_VERSION_PREFERRED;
 
 export NODE_CURRENT_VERSION=$(node --version)
 # export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/lib/node_modules/
@@ -95,38 +106,43 @@ export LC_ALL=C
 
 # INSIDE VSCODE ??
 if [ $TERM_PROGRAM = 'vscode' ]; then
+
+  export ZENV='home-vscode'
+  export ZSH_THEME="gallois"
+
   # CORE
   source "$ZSHRC_ROOT/lib/paths-${OS_NAME_LOWER}.zsh";
   source "$ZSHRC_ROOT/lib/colors.zsh";
-  
+
   # COMMON
   source "$ZSHRC_ROOT/lib/functions-utils.zsh";
   source "$ZSHRC_ROOT/lib/common.zsh";
   source "$ZSHRC_ROOT/lib/common-dev.zsh";
-  
+
   # GET CURRENT ENVIRONMENT
   source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.zsh";
+  
 else
+
   # START/RESTART: CLEAR CLI + SPINNER
   clear;
   echo "\n";
   node "$ZSHRC_ROOT/lib/spinner.js";
-  
+
   # DETERMINE ENVIRONMENT and POINT
   # CORE
   source "$ZSHRC_ROOT/lib/paths-${OS_NAME_LOWER}.zsh";
   source "$ZSHRC_ROOT/lib/colors.zsh";
-  
+
   # COMMON
   source "$ZSHRC_ROOT/lib/functions-utils.zsh";
   source "$ZSHRC_ROOT/lib/common.zsh";
   source "$ZSHRC_ROOT/lib/common-dev.zsh";
-  
+
   # GET CURRENT ENVIRONMENT
   source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.zsh";
-  
+
   # FINALIZATION OUTPUT
   source "$ZSHRC_ROOT/_fin.zsh";
+
 fi;
-
-

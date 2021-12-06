@@ -1,11 +1,3 @@
-# CORE HARDWARE CONNECTIONS
-source "$ZSHRC_ROOT/hardware/_keyboard.zsh";
-source "$ZSHRC_ROOT/hardware/_display.zsh";
-source "$ZSHRC_ROOT/hardware/_audio.zsh";
-echo ""; # NEWLINE SPACE
-
-# KEYBOARDS: LAYOUTS + INPUTS
-
 # export LC_ALL=es_ES.UTF-8
 export LC_ALL=en_US.UTF-8 # TEST THIS... ABOVE es_ES IS AFFECTING CLI LANGUAGE
 export LANGUAGE=en_US.UTF-8
@@ -50,8 +42,7 @@ export LC_ALL=$EN
 
 # DEFAULT KEYBOARD LAYOUTS + VAIRANTS
 KEYBOARD_LAYOUT="us";
-# KEYBOARD_LAYOUT_EXT="es";
-KEYBOARD_LAYOUT_EXT="en";
+KEYBOARD_LAYOUT_EXT="es";
 
 # SET KEYBOARD LAYOUT
 setKeyboardLayout $KEYBOARD_LAYOUT_EXT;
@@ -67,8 +58,3 @@ export BRIGHTNESS=1.4
 # cd /media/justin/HD1TB_p2/ 2> /dev/null
 # cd /media/justin/WALKMAN/MUSIC/ 2> /dev/null
 # cd $PATH_ORIG 2> /dev/null
-
-# KEYBOARD CONFIG - Satechi MX Keyboards
-# SET: SWAP WIN-KEYS for CTRL-KEYS
-setxkbmap -symbols "pc+us(mac)+us(altgr-intl):2+es(mac):3+inet(evdev)+ctrl(swap_lwin_lctl)+ctrl(swap_rwin_rctl)"
-

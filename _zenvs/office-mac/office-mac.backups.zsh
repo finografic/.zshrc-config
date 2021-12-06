@@ -3,8 +3,8 @@ echo "Backing up to OneDrive..."
 echo $_0;
 
 # DEFINE PATHS
-export ONEDRIVE_APP_CONFIGS="${HOME}/OneDrive - Sage Software, Inc/Apps";
-export LOCAL_APP_CONFIGS="${HOME}/.config";
+export APP_CONFIGS_SOURCE="${HOME}/.config";
+export APP_CONFIGS_DEST="${HOME}/OneDrive - Sage Software, Inc/Apps";
 
 # BACKUP APP CONFIGS LOCATED IN $HOME/.config
 
@@ -15,10 +15,10 @@ declare -a configFiles=(
 )
 
 for configFile in "${configFiles[@]}"; do
-    if [ -f "${LOCAL_APP_CONFIGS}/${configFile}" ]; then
+    if [ -f "${APP_CONFIGS_SOURCE}/${configFile}" ]; then
         echo "\n ======= $configFile ======== \n";
-        rm -fr "${ONEDRIVE_APP_CONFIGS}/${configFile}"
-        cp -R "${LOCAL_APP_CONFIGS}/${configFile}" ${ONEDRIVE_APP_CONFIGS};
+        rm -fr "${APP_CONFIGS_DEST}/${configFile}"
+        cp -R "${APP_CONFIGS_SOURCE}/${configFile}" ${APP_CONFIGS_DEST};
     fi
 done
 
@@ -31,13 +31,22 @@ declare -a configFiles=(
 
 for configFile in "${configFiles[@]}"; do
     if [ -f "$configFile" ]; then
-        rm -fr "${ONEDRIVE_APP_CONFIGS}/${configFile}"
-        cp -R "${configFile}" ${ONEDRIVE_APP_CONFIGS};
+        rm -fr "${APP_CONFIGS_DEST}/${configFile}"
+        cp -R "${configFile}" ${APP_CONFIGS_DEST};
     fi
-
 done
 
 # BACKUP OTHER MISC APP CONFIGS
-cp $HOME/Documents/configs_apps/.gitconfig ${ONEDRIVE_APP_CONFIGS};
-cp $HOME/Documents/configs_apps/*.* ${ONEDRIVE_APP_CONFIGS};
-defaults export com.manytricks.Moom ${ONEDRIVE_APP_CONFIGS}/Moom.plist
+cp $HOME/Documents/configs_apps/.gitconfig ${APP_CONFIGS_DEST};
+cp $HOME/Documents/configs_apps/*.* ${APP_CONFIGS_DEST};
+
+# Atom
+cp $HOME/.atom/styles.less ${APP_CONFIGS_DEST}/.atom;
+cp $HOME/.atom/config.cson ${APP_CONFIGS_DEST}/.atom;
+cp $HOME/.atom/keymap.cson ${APP_CONFIGS_DEST}/.atom;
+cp -r $HOME/.atom/packages ${APP_CONFIGS_DEST}/.atom;
+
+# Moom
+defaults export com.manytricks.Moom ${APP_CONFIGS_DEST}/Moom.plist
+# Moom: to import exported settings, quit app and run:
+# defaults import com.manytricks.Moom ./Moom.plist

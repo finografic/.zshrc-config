@@ -73,9 +73,9 @@ alias i="pnpm install";
 ##################################
 
 function checkout() {
-  # REQUIRES NPM PACKAGE: gitcheckout-cli
-  # https://www.npmjs.com/package/gitcheckout-cli
-  gitcheckout -l
+  # REQUIRES NPM PACKAGE: git-branch-select
+  # https://www.npmjs.com/package/git-branch-select
+  git branch-select -l
 }
 
 # GIT USER (SILENT)
@@ -118,6 +118,9 @@ function _gs() {
     # GIT STATUS
     git status
 }
+
+alias .="git status"
+alias s="git status"
 
 function _gb() {
     # git branch-select

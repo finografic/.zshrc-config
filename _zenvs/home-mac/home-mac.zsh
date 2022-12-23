@@ -24,11 +24,14 @@ source $HOME/.iterm2_shell_integration.zsh
 # [ -e ${NPM_GLOBALS}/pm2 ] && eval "sudo env PATH=\$PATH:${NPM_GLOBALS}/../lib/node_modules/pm2/bin/pm2 startup launchd -u ${USER} --hp ${HOME}";
 
 # INSIDE VSCODE ??
-[ $TERM_PROGRAM != 'vscode' ] && source "${ZENV_PATH}/${ZENV}.backups.zsh";
+[ $TERM_PROGRAM != 'vscode' ] && source "${ZENV_PATH}/${ZENV}.backups.zsh"; # TODO: FIX BACKUP SCRIPTS !!!
+[ $TERM_PROGRAM != 'vscode' ] && source "${ZENV_PATH}/${ZENV}.clean.zsh";
 
 # 1. MOOM at macOS STARTUP - MINIMIZE MOOM with AUTOMATOR + CLOSE AUTOMATOR
-osascript -e 'tell application "Moom" to set visible of front window to false' && killall -9 Automator
 
-# iTerm2 PROFILES > ADVANCED > SMART-SELECTION > ADD: 
+# ⚠️ TODO: disable temporarily to see if still necessary.
+# osascript -e 'tell application "Moom" to set visible of front window to false' && killall -9 Automator
+
+# iTerm2 PROFILES > ADVANCED > SMART-SELECTION > ADD:
 # (REGEX for IGNORING CLI PROMPT WHEN SELECTING VIA TRIPLE-CLICK):
 # \b[^\]\$]*$

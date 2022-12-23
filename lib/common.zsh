@@ -49,6 +49,9 @@ alias l2="listing_exa"
 alias l="listing_exa"
 # alias ls="eval `dircolors -b ${HOME}/.dircolors` && ls -Alh --color" # list hidden
 
+# NEW 202220
+alias ls="du -ch -d=0 *"
+
 # ???
 alias lr="find $(pwd) -mtime -1 -ls -maxdepth 1"
 
@@ -71,11 +74,3 @@ alias t2="tree --dirsfirst -L 2"
 alias home="cd ~"
 alias www="cd /var/www/ && l"
 # alias test="cd /var/www/html/test && l"
-
-
-
-
-
-
-
-

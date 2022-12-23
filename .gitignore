@@ -2,6 +2,7 @@
 #############
 www-ORIG
 .env
+_clean.zsh
 
 # MY IGNORES #
 ##############

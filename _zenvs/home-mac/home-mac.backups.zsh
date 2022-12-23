@@ -7,7 +7,8 @@ export APP_CONFIGS_SOURCE="${HOME}/.config";
 export APP_CONFIGS_DEST_1="/Volumes/GoogleDrive/My Drive/⚙️ configs-macos";
 export APP_CONFIGS_DEST_2="${HOME}/os-setup/__configs-macos";
 
-# BACKUP APP CONFIGS LOCATED IN $HOME/.config
+
+# BACKUP APP CONFIGS LOCATED IN $HOME/.config ================================ #
 
 declare -a configFiles=(
     "iterm2"
@@ -19,15 +20,20 @@ for configFile in "${configFiles[@]}"; do
     if [ -f "${APP_CONFIGS_SOURCE}/${configFile}" ]; then
         echo "\n ======= $configFile ======== \n";
         # DESTINATION 1
-        rm -fr "${APP_CONFIGS_DEST_1}/${configFile}"
-        cp -R "${APP_CONFIGS_SOURCE}/${configFile}" ${APP_CONFIGS_DEST_1};
+        if [[ -d "$APP_CONFIGS_DEST_1" ]]; then
+          rm -fr "${APP_CONFIGS_DEST_1}/${configFile}"
+          cp -R "${APP_CONFIGS_SOURCE}/${configFile}" ${APP_CONFIGS_DEST_1};
+        fi
         # DESTINATION 2
-        rm -fr "${APP_CONFIGS_DEST_2}/${configFile}"
-        cp -R "${APP_CONFIGS_SOURCE}/${configFile}" ${APP_CONFIGS_DEST_2};
+        if [[ -d "$APP_CONFIGS_DEST_2" ]]; then
+          rm -fr "${APP_CONFIGS_DEST_2}/${configFile}"
+          cp -R "${APP_CONFIGS_SOURCE}/${configFile}" ${APP_CONFIGS_DEST_2};
+        fi
     fi
 done
 
-# BACKUP APP CONFIGS LOCATED IN OTHER PATHS
+
+# BACKUP APP CONFIGS LOCATED IN OTHER PATHS ================================== #
 
 declare -a configFiles=(
     "${HOME}/.zshrc"
@@ -37,32 +43,61 @@ declare -a configFiles=(
 for configFile in "${configFiles[@]}"; do
     if [ -f "$configFile" ]; then
         # DESTINATION 1
-        rm -fr "${APP_CONFIGS_DEST_1}/${configFile}"
-        cp -R "${configFile}" ${APP_CONFIGS_DEST_1};
+        if [[ -d "$APP_CONFIGS_DEST_1" ]]; then
+          rm -fr "${APP_CONFIGS_DEST_1}/${configFile}"
+          cp -R "${configFile}" ${APP_CONFIGS_DEST_1};
+        fi
         # DESTINATION 2
-        rm -fr "${APP_CONFIGS_DEST_2}/${configFile}"
-        cp -R "${configFile}" ${APP_CONFIGS_DEST_2};
+        if [[ -d "$APP_CONFIGS_DEST_2" ]]; then
+          rm -fr "${APP_CONFIGS_DEST_2}/${configFile}"
+          cp -R "${configFile}" ${APP_CONFIGS_DEST_2};
+        fi
     fi
 done
 
-# BACKUP OTHER MISC APP CONFIGS
-cp $HOME/Documents/configs-apps/.gitconfig ${APP_CONFIGS_DEST_1};
-cp $HOME/Documents/configs-apps/.gitconfig ${APP_CONFIGS_DEST_2};
-cp $HOME/Documents/configs-apps/*.* ${APP_CONFIGS_DEST_1};
-cp $HOME/Documents/configs-apps/*.* ${APP_CONFIGS_DEST_2};
 
-# Atom
-cp $HOME/.atom/styles.less ${APP_CONFIGS_DEST_1}/.atom;
-cp $HOME/.atom/config.cson ${APP_CONFIGS_DEST_1}/.atom;
-cp $HOME/.atom/keymap.cson ${APP_CONFIGS_DEST_1}/.atom;
-cp -r $HOME/.atom/packages ${APP_CONFIGS_DEST_1}/.atom;
-cp $HOME/.atom/styles.less ${APP_CONFIGS_DEST_2}/.atom;
-cp $HOME/.atom/config.cson ${APP_CONFIGS_DEST_2}/.atom;
-cp $HOME/.atom/keymap.cson ${APP_CONFIGS_DEST_2}/.atom;
-cp -r $HOME/.atom/packages ${APP_CONFIGS_DEST_2}/.atom;
+# BACKUP OTHER MISC APP CONFIGS ============================================== #
 
-# Moom
-defaults export com.manytricks.Moom ${APP_CONFIGS_DEST_1}/Moom.plist
-defaults export com.manytricks.Moom ${APP_CONFIGS_DEST_2}/Moom.plist
+# DESTINATION 1
+if [[ -d "$APP_CONFIGS_DEST_1" ]]; then
+  cp $HOME/Documents/configs-apps/.gitconfig ${APP_CONFIGS_DEST_1};
+  cp $HOME/Documents/configs-apps/*.* ${APP_CONFIGS_DEST_1};
+fi
+# DESTINATION 2
+if [[ -d "$APP_CONFIGS_DEST_2" ]]; then
+  cp $HOME/Documents/configs-apps/.gitconfig ${APP_CONFIGS_DEST_2};
+  cp $HOME/Documents/configs-apps/*.* ${APP_CONFIGS_DEST_2};
+fi
+
+
+# Atom ======================================================================= #
+
+# DESTINATION 1
+if [[ -d "$APP_CONFIGS_DEST_1" ]]; then
+  cp $HOME/.atom/styles.less ${APP_CONFIGS_DEST_1}/.atom;
+  cp $HOME/.atom/config.cson ${APP_CONFIGS_DEST_1}/.atom;
+  cp $HOME/.atom/keymap.cson ${APP_CONFIGS_DEST_1}/.atom;
+  cp -r $HOME/.atom/packages ${APP_CONFIGS_DEST_1}/.atom;
+fi
+# DESTINATION 2
+if [[ -d "$APP_CONFIGS_DEST_2" ]]; then
+  cp $HOME/.atom/styles.less ${APP_CONFIGS_DEST_2}/.atom;
+  cp $HOME/.atom/config.cson ${APP_CONFIGS_DEST_2}/.atom;
+  cp $HOME/.atom/keymap.cson ${APP_CONFIGS_DEST_2}/.atom;
+  cp -r $HOME/.atom/packages ${APP_CONFIGS_DEST_2}/.atom;
+fi
+
+
+# Moom ======================================================================= #
+
+# DESTINATION 1
+if [[ -d "$APP_CONFIGS_DEST_1" ]]; then
+  defaults export com.manytricks.Moom ${APP_CONFIGS_DEST_1}/Moom.plist
+fi
+# DESTINATION 2
+if [[ -d "$APP_CONFIGS_DEST_2" ]]; then
+  defaults export com.manytricks.Moom ${APP_CONFIGS_DEST_2}/Moom.plist
+fi
+
 # Moom: to import exported settings, quit app and run:
 # defaults import com.manytricks.Moom ./Moom.plist

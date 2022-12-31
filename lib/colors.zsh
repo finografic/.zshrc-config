@@ -9,24 +9,38 @@ export env EXA_COLORS="da=1;34" # brighter blues
 # https://misc.flogisoft.com/bash/tip_colors_and_formatting
 
 
-# MY COLORS !! :)
+# MY COLORS ================================== #
+
+# UTILITY EFFECTS
 export _B="\e[1m";           # BOLD
 export _D="\e[2m";           # DIMMED
-# export _grey="$_D\e[37m"   # Grey (dim white)
-# export _gray="$_D\e[37m"   # Grey (dim white)
-export _grey="$_B\e[30m"     # Grey (bold black)
-export _gray="$_B\e[30m"     # Grey (bold black)
+
+export _black="$_D\e[30m"    # Grey (dim white)
+export _white="$_B\e[37m"    # White
+export _grey="$_D\e[37m"     # Grey (dim white)
+export _gray="$_D\e[37m"     # Grey (bold black)
+
+
+# BOLD (DEFALUT)
 export _r="$_B\e[31m"        # Red
 export _g="$_B\e[32m"        # Green
 export _y="$_B\e[33m"        # Yellow
 export _b="$_B\e[34m"        # Blue
 export _p="$_B\e[35m"        # Purple
 export _c="$_B\e[36m"        # Cyan
-export _w="$_B\e[37m"        # White
-export _0="\e[0m"            # Reset
 
-# BETTER RESET ???
-# \x1b[0m 
+
+# DIMMED
+export __r="$_D\e[31m"        # Red
+export __g="$_D\e[32m"        # Green
+export __y="$_D\e[33m"        # Yellow
+export __b="$_D\e[34m"        # Blue
+export __p="$_D\e[35m"        # Purple
+export __c="$_D\e[36m"        # Cyan
+
+# RESET
+export _0="\e[0m"            # Reset
+# \x1b[0m # BETTER RESET ???
 
 
 # FROM ZGEN:

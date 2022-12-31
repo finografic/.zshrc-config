@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# $PATH for BREW
+PATH="$PATH:/opt/homebrew/bin";
+
 ###########################################
 ########## INCLUDE CONFIGS FILES  #########
 ###########################################
@@ -30,6 +33,9 @@ IP_A2='REDACTED-IP';
 IP_ROCK='REDACTED-IP';
 IP_OFFICE_MAC='REDACTED-IP';
 IP_HOME='REDACTED-IP'; # OLD HOME IP ??
+IP_HOME_MAC_2018_ORIG='REDACTED-IP';
+IP_HOME_MAC_2018='REDACTED-IP';
+IP_HOME_MAC_ORIG='REDACTED-IP';
 IP_HOME_MAC='REDACTED-IP';
 
 export PATH_ZSHRC=$HOME; # DEFAULT - $(pwd) COULD BE USED ??
@@ -38,6 +44,10 @@ export PATH_ZSHRC=$HOME; # DEFAULT - $(pwd) COULD BE USED ??
 if [ $IS_HOME ]; then
     # DEFAULT FROM .env: HOME (MACOS)
     export ZENV='home-mac'
+    export ZSH_THEME="gallois"
+  elif [ $IP = $IP_HOME_MAC_2018 ]; then
+    # DEFAULT FROM .env: HOME (MACOS)
+    export ZENV='home-mac-2018'
     export ZSH_THEME="gallois"
   elif [ $IP = $IP_A2 ]; then
     # SERVER: REMOVE(A2)
@@ -78,13 +88,23 @@ source "$ZSHRC_ROOT/lib/k.plugin.sh"; # LOAD 'k' LOCALLY 😁
 # SET NODE VERSION
 export NVM_DIR="$HOME/.nvm"
 [ OS_NAME="Android" ] && unset PREFIX;
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm
+  # V1: ORIG
+  # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm
+  # V2: NEW (CONTIONAL, BELOW..)
+  # export NVM_DIR="$HOME/.nvm"
+  # [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  # [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 # NVM home-mac ONLY - TODO: FIX WITH ABOVE!
 if [ $ZENV = 'home-mac'  ]; then
-  [ -s "$(brew --prefix)/opt/nvm/nvm.sh" ] && . "$(brew --prefix)/opt/nvm/nvm.sh";
-  [ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && . "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm";
+  # V1: ORIG
+  # [ -s "$(brew --prefix)/opt/nvm/nvm.sh" ] && . "$(brew --prefix)/opt/nvm/nvm.sh";
+  # [ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && . "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm";
+  # V2: NEW
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 fi;
 
 # DETERMINE ENVIRONMENT and POINT
@@ -102,6 +122,8 @@ export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/bin
 export LC_ALL=C
 
 # INIT FZF (moved from _fin.zsh)
+set rtp+=/opt/homebrew/opt/fzf
+# NEW BIN FILE: /opt/homebrew/bin/fzf
 [ -e ${HOME}/.fzf.zsh ] && source ${HOME}/.fzf.zsh
 
 # INSIDE VSCODE ??
@@ -121,7 +143,7 @@ if [ $TERM_PROGRAM = 'vscode' ]; then
 
   # GET CURRENT ENVIRONMENT
   source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.zsh";
-  
+
 else
 
   # START/RESTART: CLEAR CLI + SPINNER

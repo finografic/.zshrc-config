@@ -1,103 +1,83 @@
-echo $_g; # GREEN
-echo "Backing up to Google Drive..."
-echo $_0;
+# ============================================================================ #
+# DEFINE CONFIG SOUCRES + DESTINATIONS ======================================= #
+# ============================================================================ #
 
-# DEFINE PATHS
-export APP_CONFIGS_SOURCE="${HOME}/.config";
-export APP_CONFIGS_DEST_1="/Volumes/GoogleDrive/My Drive/⚙️ configs-macos";
-export APP_CONFIGS_DEST_2="${HOME}/os-setup/__configs-macos";
-
-
-# BACKUP APP CONFIGS LOCATED IN $HOME/.config ================================ #
-
-declare -a configFiles=(
-    "iterm2"
-    "karabiner"
-    "verdaccio",
-)
-
-for configFile in "${configFiles[@]}"; do
-    if [ -f "${APP_CONFIGS_SOURCE}/${configFile}" ]; then
-        echo "\n ======= $configFile ======== \n";
-        # DESTINATION 1
-        if [[ -d "$APP_CONFIGS_DEST_1" ]]; then
-          rm -fr "${APP_CONFIGS_DEST_1}/${configFile}"
-          cp -R "${APP_CONFIGS_SOURCE}/${configFile}" ${APP_CONFIGS_DEST_1};
-        fi
-        # DESTINATION 2
-        if [[ -d "$APP_CONFIGS_DEST_2" ]]; then
-          rm -fr "${APP_CONFIGS_DEST_2}/${configFile}"
-          cp -R "${APP_CONFIGS_SOURCE}/${configFile}" ${APP_CONFIGS_DEST_2};
-        fi
-    fi
-done
-
-
-# BACKUP APP CONFIGS LOCATED IN OTHER PATHS ================================== #
-
-declare -a configFiles=(
+configurations=(
+    # FOLDERS
+    "${HOME}/.config/.iterm2"
+    "${HOME}/.config/karabiner"
+    "${HOME}/.config/verdaccio"
+    "${HOME}/configs/configs-apps"
+    # FILES
     "${HOME}/.zshrc"
-    "${HOME}/Documents/configs-apps/*.*"
-)
+    "${HOME}/.gitconfig"
+);
 
-for configFile in "${configFiles[@]}"; do
-    if [ -f "$configFile" ]; then
-        # DESTINATION 1
-        if [[ -d "$APP_CONFIGS_DEST_1" ]]; then
-          rm -fr "${APP_CONFIGS_DEST_1}/${configFile}"
-          cp -R "${configFile}" ${APP_CONFIGS_DEST_1};
-        fi
-        # DESTINATION 2
-        if [[ -d "$APP_CONFIGS_DEST_2" ]]; then
-          rm -fr "${APP_CONFIGS_DEST_2}/${configFile}"
-          cp -R "${configFile}" ${APP_CONFIGS_DEST_2};
-        fi
-    fi
-done
+destinations=(
+    "/Volumes/GoogleDrive/My Drive/⚙️ configs-macos"
+    "${HOME}/os-setup/__configs-macos"
+);
 
+# ============================================================================ #
+# CONDITIONAL TITLE MESSAGE ================================================== #
+# ============================================================================ #
 
-# BACKUP OTHER MISC APP CONFIGS ============================================== #
+matches=$((0));
 
-# DESTINATION 1
-if [[ -d "$APP_CONFIGS_DEST_1" ]]; then
-  cp $HOME/Documents/configs-apps/.gitconfig ${APP_CONFIGS_DEST_1};
-  cp $HOME/Documents/configs-apps/*.* ${APP_CONFIGS_DEST_1};
-fi
-# DESTINATION 2
-if [[ -d "$APP_CONFIGS_DEST_2" ]]; then
-  cp $HOME/Documents/configs-apps/.gitconfig ${APP_CONFIGS_DEST_2};
-  cp $HOME/Documents/configs-apps/*.* ${APP_CONFIGS_DEST_2};
-fi
+for DESTINATION in "${destinations[@]}"; do
+  for CONFIG in "${configurations[@]}"; do
+    [[ -d "${DESTINATION}" && -d "${CONFIG}" ]] && matches=$(($matches + 1));
+    [[ -d "${DESTINATION}" && -f "${CONFIG}" ]] && matches=$(($matches + 1));
+  done;
+done;
 
+(($matches > 0)) && echo $_grey;
+(($matches > 0)) && echo "Backing up to Google Drive..."
+(($matches > 0)) && echo $_0;
 
-# Atom ======================================================================= #
+# ============================================================================ #
+# BACKUP APP CONFIGS ========================================================= #
+# ============================================================================ #
 
-# DESTINATION 1
-if [[ -d "$APP_CONFIGS_DEST_1" ]]; then
-  cp $HOME/.atom/styles.less ${APP_CONFIGS_DEST_1}/.atom;
-  cp $HOME/.atom/config.cson ${APP_CONFIGS_DEST_1}/.atom;
-  cp $HOME/.atom/keymap.cson ${APP_CONFIGS_DEST_1}/.atom;
-  cp -r $HOME/.atom/packages ${APP_CONFIGS_DEST_1}/.atom;
-fi
-# DESTINATION 2
-if [[ -d "$APP_CONFIGS_DEST_2" ]]; then
-  cp $HOME/.atom/styles.less ${APP_CONFIGS_DEST_2}/.atom;
-  cp $HOME/.atom/config.cson ${APP_CONFIGS_DEST_2}/.atom;
-  cp $HOME/.atom/keymap.cson ${APP_CONFIGS_DEST_2}/.atom;
-  cp -r $HOME/.atom/packages ${APP_CONFIGS_DEST_2}/.atom;
-fi
+for DESTINATION in "${destinations[@]}"; do
+  if [ -d "${DESTINATION}" ]; then
+    # CONFIG - FOLDERS
+    for CONFIG in "${configurations[@]}"; do
+      if [ -d "${CONFIG}" ]; then
+        rm -fr "${DESTINATION}/${CONFIG}"
+        cp -R "${CONFIG}" "${DESTINATION}";
+      fi
+    done;
+    # CONFIG - FILES
+    for CONFIG in "${configurations[@]}"; do
+      if [ -f "${CONFIG}" ]; then
+        rm -fr "${DESTINATION}/${CONFIG}"
+        cp -R "${CONFIG}" "${DESTINATION}";
+      fi
+    done;
+  fi
+done;
 
 
-# Moom ======================================================================= #
+# ============================================================================ #
+# ATOM CONFIG ================================================================ #
+# ============================================================================ #
 
-# DESTINATION 1
-if [[ -d "$APP_CONFIGS_DEST_1" ]]; then
-  defaults export com.manytricks.Moom ${APP_CONFIGS_DEST_1}/Moom.plist
-fi
-# DESTINATION 2
-if [[ -d "$APP_CONFIGS_DEST_2" ]]; then
-  defaults export com.manytricks.Moom ${APP_CONFIGS_DEST_2}/Moom.plist
-fi
+for DESTINATION in "${destinations[@]}"; do
+  if [ -d "${DESTINATION}" ]; then
+    cp $HOME/.atom/styles.less ${DESTINATION}/.atom;
+    cp $HOME/.atom/config.cson ${DESTINATION}/.atom;
+    cp $HOME/.atom/keymap.cson ${DESTINATION}/.atom;
+    cp -r $HOME/.atom/packages ${DESTINATION}/.atom;
+  fi
+done;
 
-# Moom: to import exported settings, quit app and run:
-# defaults import com.manytricks.Moom ./Moom.plist
+# ============================================================================ #
+# MOOM CONFIG ================================================================ #
+# ============================================================================ #
+
+for DESTINATION in "${destinations[@]}"; do
+  if [ -d "${DESTINATION}" ]; then
+    defaults export com.manytricks.Moom "${DESTINATION}/Moom.plist";
+  fi
+done;

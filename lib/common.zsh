@@ -50,7 +50,7 @@ alias l="listing_exa"
 # alias ls="eval `dircolors -b ${HOME}/.dircolors` && ls -Alh --color" # list hidden
 
 # NEW 202220
-alias ls="du -ch -d=0 *"
+# alias ls="du -ch -d=0 *"
 
 # ???
 alias lr="find $(pwd) -mtime -1 -ls -maxdepth 1"

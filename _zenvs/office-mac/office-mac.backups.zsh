@@ -26,7 +26,7 @@ done
 
 declare -a configFiles=(
     "${HOME}/.zshrc"
-    "${HOME}/Documents/configs_apps/*.*"
+    "${HOME}/Documents/configs-apps/*.*"
 )
 
 for configFile in "${configFiles[@]}"; do
@@ -37,8 +37,8 @@ for configFile in "${configFiles[@]}"; do
 done
 
 # BACKUP OTHER MISC APP CONFIGS
-cp $HOME/Documents/configs_apps/.gitconfig ${APP_CONFIGS_DEST};
-cp $HOME/Documents/configs_apps/*.* ${APP_CONFIGS_DEST};
+cp $HOME/Documents/configs-apps/.gitconfig ${APP_CONFIGS_DEST};
+cp $HOME/Documents/configs-apps/*.* ${APP_CONFIGS_DEST};
 
 # Atom
 cp $HOME/.atom/styles.less ${APP_CONFIGS_DEST}/.atom;

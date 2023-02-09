@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 cd "${HOME}/.zshrc-config";
 ./update-config.sh;

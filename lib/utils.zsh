@@ -6,10 +6,8 @@
 export FZF_DEFAULT_COMMAND='fd --type f --ignore-file .ignore'
 
 function config() {
-  # MUCH EASIER & MORE CONCISE !!
-  atom ${HOME}/.zshrc-config;
+  open $HOME/.zshrc-config/zshrc-config.code-workspace
 }
-
 
 function config_V1_FZF() {
   #  TEMP: SAVE CURRENT PATH && CD TO CUSTOM ZSH CONFIG PATH
@@ -23,6 +21,10 @@ function config_V1_FZF() {
   #                 cat {}) 2> /dev/null | head -500');
   $EDITOR $(fzf --reverse);
   cd $PWD_ORIG;
+}
+
+function nv() {
+  node --version;
 }
 
 # ENCHANCED CD ("cd-directory")
@@ -398,7 +400,7 @@ fi;
 
 function newsh() {
   NEW_FILE=$1.sh
-  echo "#!/bin/bash" >> $HOME/bin/$NEW_FILE
+  echo "#!/bin/zsh" >> $HOME/bin/$NEW_FILE
   chmod +x $HOME/bin/$NEW_FILE
   code $HOME/bin/$NEW_FILE
 }

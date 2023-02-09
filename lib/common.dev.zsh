@@ -4,14 +4,14 @@ PROJECTS="$HOME/dev_projects"
 ############  NPM  ############
 ###############################
 
-run() {
+function run() {
   # requires "ntl" node package installed globally
   echo "\n";
   ntl --info --size 20;
 }
 
 # ALIASES THAT TAKE PARAMETERS
-versions() {
+function versions() {
   # ALL THE SAME ??
   npm view "$1" versions --json
   # npm info "$1" versions --json
@@ -20,7 +20,7 @@ versions() {
 }
 
 # NPM - GET PACKAGE VERSION
-v() {
+function v() {
   CURRENT_VERSION=$($1 --version);
   LATEST_VERSION=$(latest-version $1);
   if [[ $CURRENT_VERSION < $LATEST_VERSION ]] then
@@ -32,11 +32,11 @@ v() {
   fi
 }
 
-latest() {
+function latest() {
   latest-version $1;
 }
 
-update() {
+function update() {
 
   # GET VERSIONS
   CURRENT_VERSION=$($1 --version);
@@ -66,85 +66,6 @@ alias kn='killall -9 node';
 
 # NEW -GREAT!!- PAPCKAGE MANAGER
 alias i="pnpm install";
-
-
-##################################
-##########  GIT REMOTE   #########
-##################################
-
-function checkout() {
-  # REQUIRES NPM PACKAGE: git-branch-select
-  # https://www.npmjs.com/package/git-branch-select
-  git branch-select -l
-}
-
-# GIT USER (SILENT)
-
-function _gcache() {
-    git config credential.helper 'cache --timeout=1209600' # TWO WEEKS!
-}
-
-function _gc() {
-    _gcache;
-    if [[ $1 > "" ]] then
-        message="$1"
-    else
-        message="Commit all changes"
-    fi
-    git add -A :/
-    git commit -m $message
-}
-
-function _gd() {
-    git pull
-}
-
-function _gp() {
-    git pull
-}
-
-function _gu() {
-    # "UPDATE & UPLOAD"
-    # (commit & push, combined)
-    _gc $1
-    git push -f
-}
-
-function _gs() {
-    # RESET GIT PERMISSIONS
-    # own .git
-    # sudo chgrp -R ${USER} .git/objects
-    # sudo chmod -R g+rws .git/objects
-    # GIT STATUS
-    git status
-}
-
-alias .="git status"
-alias s="git status"
-
-function _gb() {
-    # git branch-select
-    checkout
-    yarn
-}
-alias branch='_gb'
-
-function _go() {
-    # ALT (ORIG) git branch-select
-    git checkout $1
-}
-
-function _gl_ALT() {
-  git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
-}
-
-
-
-function _gr() {
-    # git remote set-url origin https://jbrx@bitbucket.org/exoticca-web/exsecrets.git
-    # git push --set-upstream origin secretescapes.exoticca.com
-}
-
 
 #####################################
 #########  PROJECT DEPLOY  ##########
@@ -194,7 +115,6 @@ function mkmod(){
     echo 'Error!'
   fi
 }
-
 
 ################################################
 ##################  GO LANG   ##################
@@ -286,6 +206,3 @@ function pm2da(){
 function pm2ll(){
   pm2 list --sort id:asc
 }
-
-
-

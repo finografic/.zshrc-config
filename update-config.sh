@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 git add .
 git commit -m "updated from: ${ZENV}";

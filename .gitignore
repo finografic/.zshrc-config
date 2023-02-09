@@ -2,7 +2,6 @@
 #############
 www-ORIG
 .env
-_clean.zsh
 
 # MY IGNORES #
 ##############
@@ -15,7 +14,6 @@ _clean.zsh
 node_modules
 .vscode
 unused
-yarn.lock
 
 
 # DATABASES #
@@ -68,6 +66,9 @@ yarn.lock
 ######################
 .DS_Store
 .DS_Store?
+*.DS_Store
+.AppleDouble
+.LSOverride
 Icon?
 ._*
 .Spotlight-V100

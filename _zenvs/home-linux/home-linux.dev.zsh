@@ -4,11 +4,6 @@ alias play="cd $PROJECTS/___PLAYGROUND___ && l"
 # PROJECTS
 # alias da2="cd $PROJECTS/da2 && l"
 alias cv="cd $PROJECTS/cv && l"
-alias cv2="cd $PROJECTS/___CV2-DEV___/cv-justin-rankin && l"
-alias rock="cd $PROJECTS/devilbox-rock01baby/data/www/rock01baby && l"
-alias gbd="cd $PROJECTS/devilbox/data/www/girlsbitedogs && l"
-alias gbda="cd $PROJECTS/admin.girlsbitedogs.com && l"
-# alias jod="cd $PROJECTS/devilbox/data/www/JODHPUR && l"
 alias oh="cd $PROJECTS/app-test/ && l"
 alias app="cd $PROJECTS/app-axios/ && l"
 # alias imatch="cd $PROJECTS/app-imatchination/ && l"
@@ -20,7 +15,6 @@ alias apps="cd $HOME/.local/share/applications/ && l"
 
 # REMOTE: A2 HOSTING
 alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
-alias a2rock="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
 
 # DEVILBOX
 devil() {

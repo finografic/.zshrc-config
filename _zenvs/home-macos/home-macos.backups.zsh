@@ -1,68 +1,35 @@
-echo $_g; # GREEN
-echo "Backing up to Google Drive..."
-echo $_0;
 
-# DEFINE PATHS
-export APP_CONFIGS_SOURCE="$HOME/.config";
-export APP_CONFIGS_DEST_1="/Volumes/GoogleDrive/My Drive/⚙️ configs-macos";
-export APP_CONFIGS_DEST_2="$HOME/os-setup/__configs-macos";
-
-# BACKUP APP CONFIGS LOCATED IN $HOME/.config
-
-declare -a configFiles=(
-    "iterm2"
-    "karabiner"
-    "verdaccio",
+# DEFINE PATHS: DISTINATION
+declare -a CONFIG_DESTINATIONS=(
+  "/Volumes/GoogleDrive/My Drive/⚙️ configs-macos"
+  "$HOME/os-setup/__configs-macos"
+  "$HOME/Documents/configs"
 )
 
-for configFile in "${configFiles[@]}"; do
-    if [ -f "$APP_CONFIGS_SOURCE/${configFile}" ]; then
-        echo "\n ======= $configFile ======== \n";
-        # DESTINATION 1
-        rm -fr "$APP_CONFIGS_DEST_1/${configFile}"
-        cp -R "$APP_CONFIGS_SOURCE/${configFile}" $APP_CONFIGS_DEST_1;
-        # DESTINATION 2
-        rm -fr "$APP_CONFIGS_DEST_2/${configFile}"
-        cp -R "$APP_CONFIGS_SOURCE/${configFile}" $APP_CONFIGS_DEST_2;
-    fi
-done
+for CONFIG_DESTINATION in "${CONFIG_DESTINATIONS[@]}"; do
+  if [ -d "$CONFIG_DESTINATION" ]; then
 
-# BACKUP APP CONFIGS LOCATED IN OTHER PATHS
+    echo "${_gray}Making config back-ups to... ${_g}$CONFIG_DESTINATION${_0}";
 
-declare -a configFiles=(
-    "$HOME/.zshrc"
-    "$HOME/Documents/configs/*.*"
-)
+    declare -a configFiles=(
+      "$HOME/.zshrc"
+      "$HOME/.config/iterm2"
+      "$HOME/.config/karabiner"
+      # "$HOME/Documents/configs/*.*"
+      # "$HOME/Documents/configs"
+    )
 
-for configFile in "${configFiles[@]}"; do
-    if [ -f "$configFile" ]; then
-        # DESTINATION 1
-        rm -fr "$APP_CONFIGS_DEST_1/${configFile}"
-        cp -R "${configFile}" $APP_CONFIGS_DEST_1;
-        # DESTINATION 2
-        rm -fr "$APP_CONFIGS_DEST_2/${configFile}"
-        cp -R "${configFile}" $APP_CONFIGS_DEST_2;
-    fi
-done
+    # echo "\n ======= $CONFIG_DESTINATION ======== \n"
 
-# BACKUP OTHER MISC APP CONFIGS
-cp $HOME/Documents/configs/.gitconfig $APP_CONFIGS_DEST_1;
-cp $HOME/Documents/configs/.gitconfig $APP_CONFIGS_DEST_2;
-cp $HOME/Documents/configs/*.* $APP_CONFIGS_DEST_1;
-cp $HOME/Documents/configs/*.* $APP_CONFIGS_DEST_2;
+    for configFile in "${configFiles[@]}"; do
+      if [ -d "$configFile" ]; then
+        rm -fr "$CONFIG_DESTINATION/$configFile";
+        cp -R "$configFile" "$CONFIG_DESTINATION";
+      elif [ -f "$configFile" ]; then
+        rm -fr "$CONFIG_DESTINATION/$configFile";
+        cp -R "$configFile" $CONFIG_DESTINATION;
+      fi
+    done
 
-# Atom - DEPRECATED
-# cp $HOME/.atom/styles.less $APP_CONFIGS_DEST_1/.atom;
-# cp $HOME/.atom/config.cson $APP_CONFIGS_DEST_1/.atom;
-# cp $HOME/.atom/keymap.cson $APP_CONFIGS_DEST_1/.atom;
-# cp -r $HOME/.atom/packages $APP_CONFIGS_DEST_1/.atom;
-# cp $HOME/.atom/styles.less $APP_CONFIGS_DEST_2/.atom;
-# cp $HOME/.atom/config.cson $APP_CONFIGS_DEST_2/.atom;
-# cp $HOME/.atom/keymap.cson $APP_CONFIGS_DEST_2/.atom;
-# cp -r $HOME/.atom/packages $APP_CONFIGS_DEST_2/.atom;
-
-# Moom
-defaults export com.manytricks.Moom $APP_CONFIGS_DEST_1/Moom.plist
-defaults export com.manytricks.Moom $APP_CONFIGS_DEST_2/Moom.plist
-# Moom: to import exported settings, quit app and run:
-# defaults import com.manytricks.Moom ./Moom.plist
+  fi;
+done;

@@ -12,10 +12,10 @@ export env EXA_COLORS="da=1;34" # brighter blues
 # MY COLORS !! :)
 export _B="\e[1m";           # BOLD
 export _D="\e[2m";           # DIMMED
-# export _grey="$_D\e[37m"   # Grey (dim white)
-# export _gray="$_D\e[37m"   # Grey (dim white)
-export _grey="$_B\e[30m"     # Grey (bold black)
-export _gray="$_B\e[30m"     # Grey (bold black)
+export _grey="$_D\e[37m"   # Grey (dim white)
+export _gray="$_D\e[37m"   # Grey (dim white)
+# export _grey="$_B\e[30m"     # Grey (bold black)
+# export _gray="$_B\e[30m"     # Grey (bold black)
 export _r="$_B\e[31m"        # Red
 export _g="$_B\e[32m"        # Green
 export _y="$_B\e[33m"        # Yellow
@@ -26,7 +26,7 @@ export _w="$_B\e[37m"        # White
 export _0="\e[0m"            # Reset
 
 # BETTER RESET ???
-# \x1b[0m 
+# \x1b[0m
 
 
 # FROM ZGEN:

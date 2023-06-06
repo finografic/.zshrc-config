@@ -12,6 +12,17 @@ alias my="cd $HOME/repos-my && l"
 
 # COMMANDS
 
+# JEST - UNIT TESTING ALIAS !!!
+# from: { index.js}
+# to: { Component.js, package.json }
+function j() {
+  if [[ "$1" > "" ]] then
+      jest "$1" --watch -t "$2";
+  else
+      npm run test:coverage -- --maxWorkers=4
+  fi
+}
+
 function repos() {
   # msg err "PLEASE USE ALIAS 'dev'" # use my MSG FUNCTION
   # MOVED !!

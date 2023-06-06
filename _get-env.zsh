@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+# NEW!! - attempt to fix VSCode better resolving shell environment
+export NODE_OPTIONS="$NODE_OPTIONS --max_old_space_size=4096";
+
 # DETERMINE OS + IP ========================================================== #
 
 # WHICH SYS/OS ARE WE ON ??
@@ -31,14 +34,15 @@ export PATH_ZSHRC=$HOME; # DEFAULT - $(pwd) COULD BE USED ??
 
 # DETERMINE ENVIRONMENT ====================================================== #
 
-if [ $IS_HOME ]; then
+if [ $IS_HOME = true ]; then
     # DEFAULT FROM .env: HOME (MACOS)
     export ZENV='home-macos'
     export ZSH_THEME="gallois"
-  elif [ $IS_OFFICE ]; then
+  elif [ $IS_OFFICE = true ]; then
     # OFFICE: (MACOS)
     export ZENV='office-macos'
     export ZSH_THEME="gallois"
+echo "IS_OFFICE = $IS_OFFICE";
   elif [ $IP = $IP_A2 ]; then
     # SERVER: REMOVE(A2)
     export OS_NAME='Linux';

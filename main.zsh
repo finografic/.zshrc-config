@@ -1,35 +1,42 @@
 #!/bin/zsh
 
-source "$HOME/.zshrc-config/.env";
 export ZSH_DISABLE_COMPFIX="true";
-
 export ZSHRC_ROOT=$HOME/.zshrc-config
 
 # DETERMINE OS + IP and DETERMINE ENVIRONMENT ================================ #
 
+source "$HOME/.zshrc-config/.env";
 source "$ZSHRC_ROOT/_get-env.zsh";
 
 # MAIN ZSH =================================================================== #
+
 source "$ZSHRC_ROOT/_zsh-config.zsh";
 source "$ZSHRC_ROOT/lib/k.plugin.sh"; # LOAD 'k' LOCALLY 😁
 
 # SET NODE VERSION =========================================================== #
+
 source "$ZSHRC_ROOT/lib/nvm.zsh";
+
+# INIT FZF (moved from _fin.zsh) ============================================= #
+
+source "$ZSHRC_ROOT/lib/fzf.zsh";
+source "$ZSHRC_ROOT/lib/fzf.custom.zsh";
+
 # ============================================================================ #
 
 # LOCALE (DEFAULT, MAY BE OVERWRITTEN BY ENV)
 export LC_ALL=C
+export LANGUAGE=en_US.UTF-8
 
-# INIT FZF (moved from _fin.zsh)
-[ -e ${HOME}/.fzf.zsh ] && source "$HOME/.fzf.zsh";
+# COMMON UNIVERSALS ========================================================== #
+
+source "$ZSHRC_ROOT/lib/common.git.zsh";
 
 # INSIDE VSCODE ?? =========================================================== #
 
 if [ $TERM_PROGRAM = 'vscode' ]; then
-
   export ZENV='vscode'
   source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh";
-
 else
 
   # DEFAULT START (not VSCode!) ============================================== #
@@ -47,7 +54,6 @@ else
   source "$ZSHRC_ROOT/lib/utils.zsh";
   source "$ZSHRC_ROOT/lib/common.zsh";
   source "$ZSHRC_ROOT/lib/common.dev.zsh";
-  source "$ZSHRC_ROOT/lib/common.git.zsh";
 
   # GET CURRENT ENVIRONMENT
   source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh";

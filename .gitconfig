@@ -1,0 +1,50 @@
+[user]
+	name = Justin Rankin
+	email = justin.blair.rankin@gmail.com
+
+[init]
+	defaultBranch = master
+
+[core]
+	autocrlf = false
+	filemode = false
+
+[credential]
+	helper = cache --timeout=1209600
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[color]
+	ui = true
+
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan
+
+[alias]
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  b = branch-select
+
+[rerere]
+	enabled = true
+	autoupdate = true
+
+[tig "bind"]
+	main = = !git commit --fixup=%(commit)
+	main = <ctrl-r> !git rebase --autosquash -i %(commit)

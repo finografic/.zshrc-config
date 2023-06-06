@@ -6,7 +6,7 @@
 export FZF_DEFAULT_COMMAND='fd --type f --ignore-file .ignore'
 
 function config() {
-  open $HOME/.zshrc-config/zshrc-config.code-workspace
+  open -a "/Applications/Visual Studio Code.app" "$ZSHRC_ROOT/zshrc-config.code-workspace"
 }
 
 function config_V1_FZF() {

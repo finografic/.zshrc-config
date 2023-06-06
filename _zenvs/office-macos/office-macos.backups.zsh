@@ -1,58 +1,35 @@
-echo $_g; # GREEN
-echo "Backing up to OneDrive..."
-echo $_0;
 
-
-# TODO: CHECK IF DEST FOLDER EXISTS + CREATE, IF NOT !!!!
-
-# DEFINE PATHS
-export APP_CONFIGS_SOURCE="$HOME/.config";
-export APP_CONFIGS_DEST="$HOME/OneDrive - Sage Software, Inc/Apps";
-
-export APP_CONFIGS_USER_SOURCE="$HOME/Documents/configs"
-# export APP_CONFIGS_USER_DEST="$HOME/OneDrive - Sage Software, Inc/Apps";
-
-# BACKUP APP CONFIGS LOCATED IN $HOME/.config
-
-declare -a configFiles=(
-    "iterm2"
-    "karabiner"
-    "verdaccio",
+# DEFINE PATHS: DISTINATION
+declare -a CONFIG_DESTINATIONS=(
+  "$HOME/OneDrive - Sage Software, Inc/Apps"
+  "$HOME/os-setup/__configs-macos"
+  "$HOME/Documents/configs"
 )
 
-for configFile in "${configFiles[@]}"; do
-    if [ -f "$APP_CONFIGS_SOURCE/${configFile}" ]; then
-        echo "\n ======= $configFile ======== \n";
-        rm -fr "$APP_CONFIGS_DEST/${configFile}"
-        cp -R "$APP_CONFIGS_SOURCE/${configFile}" $APP_CONFIGS_DEST;
-    fi
-done
+for CONFIG_DESTINATION in "${CONFIG_DESTINATIONS[@]}"; do
+  if [ -d "$CONFIG_DESTINATION" ]; then
 
-# BACKUP APP CONFIGS LOCATED IN OTHER PATHS
+    echo "${_gray}Making config back-ups to... ${_g}$CONFIG_DESTINATION${_0}";
 
-declare -a configFiles=(
-    "$HOME/.zshrc"
-    "${APP_CONFIGS_USER_SOURCE}/*.*"
-)
+    declare -a configFiles=(
+      "$HOME/.zshrc"
+      "$HOME/.config/iterm2"
+      "$HOME/.config/karabiner"
+      # "$HOME/Documents/configs/*.*"
+      # "$HOME/Documents/configs"
+    )
 
-for configFile in "${configFiles[@]}"; do
-    if [ -f "$configFile" ]; then
-        rm -fr "$APP_CONFIGS_DEST/${configFile}"
-        cp -R "${configFile}" $APP_CONFIGS_DEST;
-    fi
-done
+    # echo "\n ======= $CONFIG_DESTINATION ======== \n"
 
-# BACKUP OTHER MISC APP CONFIGS
-cp ${APP_CONFIGS_USER_SOURCE}/.gitconfig $APP_CONFIGS_DEST;
-cp ${APP_CONFIGS_USER_SOURCE}/*.* $APP_CONFIGS_DEST;
+    for configFile in "${configFiles[@]}"; do
+      if [ -d "$configFile" ]; then
+        rm -fr "$CONFIG_DESTINATION/$configFile";
+        cp -R "$configFile" "$CONFIG_DESTINATION";
+      elif [ -f "$configFile" ]; then
+        rm -fr "$CONFIG_DESTINATION/$configFile";
+        cp -R "$configFile" $CONFIG_DESTINATION;
+      fi
+    done
 
-# Atom - DEPRECATED
-# cp $HOME/.atom/styles.less $APP_CONFIGS_DEST/.atom;
-# cp $HOME/.atom/config.cson $APP_CONFIGS_DEST/.atom;
-# cp $HOME/.atom/keymap.cson $APP_CONFIGS_DEST/.atom;
-# cp -r $HOME/.atom/packages $APP_CONFIGS_DEST/.atom; # TAKES TOO LONG !!!
-
-# Moom
-defaults export com.manytricks.Moom $APP_CONFIGS_DEST/Moom.plist
-# Moom: to import exported settings, quit app and run:
-# defaults import com.manytricks.Moom ./Moom.plist
+  fi;
+done;

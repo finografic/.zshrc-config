@@ -1,0 +1,52 @@
+echo $_grey;
+echo "Cleaning Downloads..."
+echo $_0;
+
+# IMPORTANT - DISABLE ZSH GLOB MATCH ERROR OUTPUT
+setopt no_nomatch
+
+
+# DOWNLOADS CLEAN (RENAME)
+PATH_DOWNLOADS=$HOME/Downloads
+
+for file in $PATH_DOWNLOADS/**/*.mp4.mp4; do
+  [[ "$file" = "$PATH_DOWNLOADS/**/*.mp4.mp4" ]] && continue;
+  mv $file "`echo $file | sed -E 's/.mp4.mp4/.mp4/'`";
+done
+
+
+# FIREFOX CLEAN
+
+# setopt extendedglob - CAUTION !!
+
+PATH_FIREFOX_STORAGE="$HOME/Library/Application Support/Firefox/Profiles/3qn4h86i.dev-edition-default/storage/default";
+PATH_FIREFOX_STORAGE_TEMP="$PATH_FIREFOX_STORAGE/__TEMP";
+
+# BACKUP APP CONFIGS LOCATED IN $HOME/.config ================================ #
+
+# IGNORE THESE CACHES
+declare -a cleanIgnores=(
+  "https+++mail.google.com"
+  "https+++calendar.google.com"
+  "https+++drive.google.com"
+  "https+++www.youtube.com"
+  "https+++www.bing.com"
+)
+
+[[ ! -d "$PATH_FIREFOX_STORAGE_TEMP" ]] && mkdir "$PATH_FIREFOX_STORAGE_TEMP";
+
+for ignored in "${cleanIgnores[@]}"; do
+    [[ -d "$PATH_FIREFOX_STORAGE/$ignored" ]] && mv "$PATH_FIREFOX_STORAGE/$ignored" "$PATH_FIREFOX_STORAGE_TEMP";
+done
+
+
+rm -fr "$PATH_FIREFOX_STORAGE"/https+++*
+
+
+# RETURN IGNORED
+mv "$PATH_FIREFOX_STORAGE_TEMP"/* "$PATH_FIREFOX_STORAGE";
+rm -fr "$PATH_FIREFOX_STORAGE_TEMP";
+
+
+# IMPORTANT - RE-ENABLE ZSH GLOB MATCH ERROR OUTPUT
+setopt nomatch

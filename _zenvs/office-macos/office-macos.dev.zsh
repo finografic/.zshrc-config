@@ -13,21 +13,30 @@ alias misc="cd $HOME/repos-misc && l";
 alias apps="cd $HOME/repos-apps && l";
 alias my="cd $HOME/repos-my && l";
 
-# SAGE REPOS (CURRENTLY RELEVANT)
+# MIRO REPOS
 alias rui="cd $PROJECTS_REPORTING/sbc.accounting.reporting.ui/ && l";
+alias admin="cd $PROJECTS_SBC/sbc.core.support.ui/ && l";
+alias dash="cd $PROJECTS_SBC/sbc.accounting.dashboard.ui/ && l";
 alias poc="cd $PROJECTS_REPORTING/sbc.poc.data-visualization.ui/ && l";
+
+# SBC REPOS (others..)
+alias carbon="cd $PROJECTS_SBC/carbon/ && l";
+alias tokens="cd $PROJECTS_SBC/design-tokens/ && l";
 alias cm="cd $PROJECTS_SBC/sbc.accountants.clientmanagement.ui/ && l";
 alias notes="cd $PROJECTS_SBC/sbc.common.notes.ui/ && l";
-
-# SAGE REPOS
 alias tui="cd $PROJECTS_SBC/sbc.template.ui/ && l";
-alias oui="cd $PROJECTS_SBC/sbc.core.orghub.ui/ && l";
 alias org="cd $PROJECTS_SBC/sbc.core.orghub.ui/ && l";
 alias aui="cd $PROJECTS_SBC/sbc.accounting.ui/ && l";
 alias cui="cd $PROJECTS_SBC/sbc.accounting.compliance.ui/ && l";
 
 # UNIVERSAL - DEV ALIAS TO **CURRENT** PROJECT
 alias dev="echo 'CHOOSE AN ALIAS!'"
+
+# LOUPEDECK
+alias loupe="cd $HOME/.local/share/Loupedeck/ && l";
+alias loop="cd $HOME/.local/share/Loupedeck/ && l";
+alias l2="cd $HOME/.local/share && l";
+
 
 # COMMANDS
 function repos() {
@@ -62,9 +71,12 @@ function j() {
   if [[ "$1" > "" ]] then
       jest "$1" --watch -t "$2";
   else
-      npm run test:coverage -- --maxWorkers=4
+      npm run test:coverage -- --maxWorkers=2
   fi
 }
+
+# JEST - CLEAR CACHE ON INIT
+jest --clearCache
 
 # ============================================================================ #
 

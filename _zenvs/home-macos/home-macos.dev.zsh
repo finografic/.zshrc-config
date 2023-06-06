@@ -10,16 +10,12 @@ alias misc="cd $HOME/repos-misc && l"
 alias apps="cd $HOME/repos-apps && l"
 alias my="cd $HOME/repos-my && l"
 
-# alias api="cd $PROJECTS/apnaes-api && l"
-# alias api="cd $HOME/repos-api/apnaes-api && l" # TEMP !!
-alias api="cd $HOME/repos-api/feathers-ts && l" # TEMP !!
-alias web="cd $PROJECTS/apnaes-web && l"
-alias admin="cd $PROJECTS/apnaes-admin && l"
-alias db="cd $PROJECTS/apnaes-db && l"
+alias api="cd $HOME/repos-apnaes/apnaes-api && l"
+alias web="cd $HOME/repos-apnaes/apnaes-web-admin && l"
+alias admin="cd $HOME/repos-apnaes/apnaes-web-admin && l"
 
 # REMOTE: A2 HOSTING
 alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
-alias a2rock="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
 
 # COMMANDS
 
@@ -27,6 +23,20 @@ function repos() {
   # msg err "PLEASE USE ALIAS 'dev'" # use my MSG FUNCTION
   # MOVED !!
   cd "$PROJECTS" && l;
+}
+
+# NOTE: OVERRIDES COMMON git commit WITH ADD + COMMENT...
+function _gc() {
+  # _gcache; # TODO: NEEDED / USEFUL ??
+  if [[ $1 > "" ]] then
+      message="$1"
+      # git add -A :/ # NOTE: REMOVED FOR SAFETY
+      git add . && git commit -m "$message"
+  else
+    # NOTE: DON'T USE FOR OFFICE - DO NOTHING HERE !!
+    # message="Commit all changes"
+    echo "\n${_y}⚠️   NO COMMIT MESSAGE SUPPLIED\n";
+  fi
 }
 
 function npmi() {

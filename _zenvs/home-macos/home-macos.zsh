@@ -2,11 +2,9 @@
 export ZSHRC_ROOT="$HOME/.zshrc-config"
 export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
 export NVM="true"
-export IDE="vim"
-# export IDE="Visual Studio Code - Insiders.app"
-# export IDE="/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin"
-export EDITOR="$(which $IDE)"
-code () { "$EDITOR $@"; }
+
+# EDITOR + IDE OVERRIDES (set originally in main.zsh)
+# ...
 
 # UNIVERSAL
 alias dls="cd $HOME/Downloads && l"

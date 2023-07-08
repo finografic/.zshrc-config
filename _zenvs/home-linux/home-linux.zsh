@@ -1,10 +1,9 @@
 # SPECIFIC
 export ZSHRC_ROOT="$HOME/.zshrc-config"
 export NVM="true"
-export IDE="code-insiders"
-export EDITOR="$(which $IDE)"
-# code () { eval "$(which jmate) $@"; }
-code () { sudo $IDE "$@"; }
+
+# EDITOR + IDE OVERRIDES (set originally in main.zsh)
+# ...
 
 # DIRCOLORS
 [ -d "${HOME}/.dircolors" ] && eval `dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark`;

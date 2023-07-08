@@ -14,6 +14,12 @@ alias api="cd $HOME/repos-apnaes/apnaes-api && l"
 alias web="cd $HOME/repos-apnaes/apnaes-web-admin && l"
 alias admin="cd $HOME/repos-apnaes/apnaes-web-admin && l"
 
+alias loupe="cd $HOME/.local/share/Loupedeck && ls -lAh"
+alias luup="cd $HOME/.local/share/Loupedeck && ls -lAh"
+
+alias chat="cd $HOME/repos-apnaes/feathers-chat-ts && l"
+alias api2="cd $HOME/repos-apnaes/apnaes-api-ts-V2 && l"
+
 # REMOTE: A2 HOSTING
 alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
 
@@ -28,7 +34,7 @@ function repos() {
 # NOTE: OVERRIDES COMMON git commit WITH ADD + COMMENT...
 function _gc() {
   # _gcache; # TODO: NEEDED / USEFUL ??
-  if [[ $1 > "" ]] then
+  if [[ $1 > "" ]]; then
       message="$1"
       # git add -A :/ # NOTE: REMOVED FOR SAFETY
       git add . && git commit -m "$message"

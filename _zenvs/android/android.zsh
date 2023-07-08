@@ -2,9 +2,12 @@
 export STORAGE_ROOT="/storage/emulated/0/termux" # ANDROID ONLY !!
 export SSH_CONFIG="$STORAGE_ROOT/.zshrc-config"
 export NVM="false"
-export IDE="false"
+
+# EDITOR + IDE OVERRIDES (set originally in main.zsh)
 export EDITOR="vi"
-code () { "$EDITOR $@"; }
+export IDE="false"
+edit () { "$EDITOR $@"; }
+code () { "$IDE $@"; }
 
 STORAGE="/storage/emulated/0/termux"
 alias x="cd $STORAGE"

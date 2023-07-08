@@ -28,15 +28,23 @@ alias tui="cd $PROJECTS_SBC/sbc.template.ui/ && l";
 alias org="cd $PROJECTS_SBC/sbc.core.orghub.ui/ && l";
 alias aui="cd $PROJECTS_SBC/sbc.accounting.ui/ && l";
 alias cui="cd $PROJECTS_SBC/sbc.accounting.compliance.ui/ && l";
+alias acc="cd $PROJECTS_SBC/sbc.accounting.accounts.ui/ && l";
 
 # UNIVERSAL - DEV ALIAS TO **CURRENT** PROJECT
 alias dev="echo 'CHOOSE AN ALIAS!'"
 
 # LOUPEDECK
-alias loupe="cd $HOME/.local/share/Loupedeck/ && l";
-alias loop="cd $HOME/.local/share/Loupedeck/ && l";
-alias l2="cd $HOME/.local/share && l";
+function loupe() {
+ cd $HOME/.local/share/Loupedeck;
+  # exa --long --all --group-directories-first --accessed --time-style=long-iso --git $1
 
+  # NOTE: BELOW - COMMENTED-OUT, DUE TO LONG PROCESS TIMES :()
+  # EXA_IGNORES=".DS_Store|Icon*|.directory";
+  # exa --long --all --ignore-glob="${EXA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
+  # [ -d .git ] && git status -uno;
+}
+alias luup=loupe;
+alias l2="cd $HOME/.local/share && l";
 
 # COMMANDS
 function repos() {
@@ -55,7 +63,7 @@ function prep() {
 }
 
 function bots() {
-  # CM USES LABELS TO ALLOW THIS... OTHER METHODS EXISTS
+  # CM USES LABELS TO ALLOW THIS... OTHER METHODS EXIST
   if [[ $@ == "--json" ]];
     then gh pr list --label dependencies --json number,title,url;
     else gh pr list --label dependencies;
@@ -65,11 +73,11 @@ function bots() {
 }
 
 # JEST - UNIT TESTING ALIAS !!!
-# from: { index.js}
-# to: { Component.js, package.json }
 function j() {
-  if [[ "$1" > "" ]] then
-      jest "$1" --watch -t "$2";
+  if [[ "$2" > "" ]] then
+      jest --config="./jest.config.js" "$1" --watch -t "$2";
+  elif [[ "$1" > "" ]] then
+      jest --config="./jest.config.js" "$1" --watch;
   else
       npm run test:coverage -- --maxWorkers=2
   fi

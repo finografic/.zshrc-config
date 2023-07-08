@@ -29,14 +29,14 @@ alias lp="stat -c '%A  %a  %U:%G  ___  %n' *"    # SIMPLE
 
 function listing() {
   k -Ah $1
-  [ -d .git ] && git status;
+  [ -d .git ] && git status -uno;
 }
 
 function listing_exa() {
   # exa --long --all --group-directories-first --accessed --time-style=long-iso --git $1
   EXA_IGNORES=".DS_Store|Icon*|.directory";
   exa --long --all --ignore-glob="${EXA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
-  [ -d .git ] && git status;
+  [ -d .git ] && git status -uno;
 }
 
 function lr() {

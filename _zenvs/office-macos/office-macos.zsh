@@ -2,10 +2,9 @@
 export ZSHRC_ROOT="$HOME/.zshrc-config"
 export ZENV_PATH="$ZSHRC_ROOT/_zenvs/${ZENV}"
 export NVM="true"
-export IDE="vim"
-# export IDE="code-insiders"
-export EDITOR="$(which $IDE)"
-code () { "$EDITOR $@"; }
+
+# EDITOR + IDE OVERRIDES (set originally in main.zsh)
+# ...
 
 # GET: ARTIFACTORY_NPM_TOKEN
 source $HOME/.nvmrc

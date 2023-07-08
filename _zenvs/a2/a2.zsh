@@ -5,8 +5,11 @@
 # SPECIFIC
 export ZSHRC_ROOT="$HOME/.zshrc-config"
 export NVM="true"
-export IDE="false"
+
+# EDITOR + IDE OVERRIDES (set originally in main.zsh)
 export EDITOR="vim"
+export IDE="false"
+edit () { "$EDITOR $@"; }
 code () { eval "$(which jmate) $@"; }
 
 # DIRCOLORS
@@ -34,18 +37,6 @@ alias lr2="k -rAth"
 # TODO: HARDWARE (OR MOST?) SHOULD BE ENV-SPECIFIC
 source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.hardware.zsh";
 source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.dev.zsh";
-
-
-
-
-
-
-
-
-
-
-
-
 
 ####################################################
 

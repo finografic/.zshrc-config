@@ -28,6 +28,14 @@ source "$ZSHRC_ROOT/lib/fzf.custom.zsh";
 export LC_ALL=C
 export LANGUAGE=en_US.UTF-8
 
+# ============================================================================ #
+
+# LOCALE (DEFAULT, MAY BE OVERWRITTEN BY ENV)
+export EDITOR="vim"
+export IDE="code-insiders"
+edit () { "$EDITOR $@"; }
+code () { "$IDE $@"; }
+
 # COMMON UNIVERSALS ========================================================== #
 
 source "$ZSHRC_ROOT/lib/common.git.zsh";

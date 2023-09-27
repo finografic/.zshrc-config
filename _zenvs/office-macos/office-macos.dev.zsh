@@ -25,10 +25,14 @@ alias tokens="cd $PROJECTS_SBC/design-tokens/ && l";
 alias cm="cd $PROJECTS_SBC/sbc.accountants.clientmanagement.ui/ && l";
 alias notes="cd $PROJECTS_SBC/sbc.common.notes.ui/ && l";
 alias tui="cd $PROJECTS_SBC/sbc.template.ui/ && l";
+alias template="cd $PROJECTS_SBC/sbc.template.ui/ && l";
 alias org="cd $PROJECTS_SBC/sbc.core.orghub.ui/ && l";
 alias aui="cd $PROJECTS_SBC/sbc.accounting.ui/ && l";
+alias nav="cd $PROJECTS_SBC/sbc.accounting.ui/ && l";
 alias cui="cd $PROJECTS_SBC/sbc.accounting.compliance.ui/ && l";
 alias acc="cd $PROJECTS_SBC/sbc.accounting.accounts.ui/ && l";
+alias dim="cd $PROJECTS_SBC/sbc.common.dimensions.ui/ && l";
+
 
 # UNIVERSAL - DEV ALIAS TO **CURRENT** PROJECT
 alias dev="echo 'CHOOSE AN ALIAS!'"
@@ -75,8 +79,10 @@ function bots() {
 # JEST - UNIT TESTING ALIAS !!!
 function j() {
   if [[ "$2" > "" ]] then
-      jest --config="./jest.config.js" "$1" --watch -t "$2";
+      # jest --config="./jest.config.js" "$1" -t "$2" --runInBand --watch;
+      jest --config="./jest.config.js" "$1" -t "$2" --watch;
   elif [[ "$1" > "" ]] then
+      # jest --config="./jest.config.js" "$1" --runInBand --watch;
       jest --config="./jest.config.js" "$1" --watch;
   else
       npm run test:coverage -- --maxWorkers=2

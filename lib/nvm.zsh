@@ -18,7 +18,13 @@ NODE_VERSION_PREFERRED=16; # DEFAULT ALIAS
 [ $OS_NAME = 'macOS'      ] && NODE_VERSION_PREFERRED=16;
 [ $OS_NAME = 'Android'    ] && NODE_VERSION_PREFERRED=14;
 [ $ZENV    = 'office-macos' ] && NODE_VERSION_PREFERRED=18;
-nvm use $NODE_VERSION_PREFERRED;
+
+if test -f "$HOME/.nvmrc"; then
+  NODE_VERSION_NVMRC=$(cat $HOME/.nvmrc)
+  nvm use $NODE_VERSION_NVMRC;
+else
+  nvm use $NODE_VERSION_PREFERRED;
+fi
 
 export NODE_CURRENT_VERSION=$(node --version)
 # export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/lib/node_modules/

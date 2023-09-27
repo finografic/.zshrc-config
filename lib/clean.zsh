@@ -5,18 +5,18 @@ echo $_0;
 # IMPORTANT - DISABLE ZSH GLOB MATCH ERROR OUTPUT
 setopt no_nomatch
 
+# IGNORE THESE CACHES
+declare -a FOLDERS_TO_CLEAN=(
+  $HOME/Downloads/**/*.mp4.mp4
+  $HOME/dwhelper/**/*.mp4.mp4
+)
 
-# DOWNLOADS CLEAN (RENAME)
-PATH_DOWNLOADS=$HOME/Downloads
-
-for file in $PATH_DOWNLOADS/**/*.mp4.mp4; do
+for file in "${FOLDERS_TO_CLEAN[@]}"; do
   [[ "$file" = "$PATH_DOWNLOADS/**/*.mp4.mp4" ]] && continue;
   mv $file "`echo $file | sed -E 's/.mp4.mp4/.mp4/'`";
 done
 
-
 # FIREFOX CLEAN
-
 # setopt extendedglob - CAUTION !!
 
 PATH_FIREFOX_STORAGE="$HOME/Library/Application Support/Firefox/Profiles/3qn4h86i.dev-edition-default/storage/default";

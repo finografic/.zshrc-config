@@ -53,25 +53,6 @@ function rebase() {
 #   gh pr checkout $1;
 # };
 
-function pr() {
-  gh pr checkout $1;
-  npm ci;
-};
-
-
-function _gc() {
-  # _gcache; # TODO: NEEDED / USEFUL ??
-  if [[ $1 > "" ]] then
-      message="$1"
-      # git add -A :/ # NOTE: REMOVED FOR SAFETY
-      git commit -m "$message"
-  else
-    # NOTE: DON'T USE FOR OFFICE - DO NOTHING HERE !!
-    # message="Commit all changes"
-    echo "\n${_y}⚠️   NO COMMIT MESSAGE SUPPLIED\n";
-  fi
-}
-
 function _gs() {
     # RESET GIT PERMISSIONS
     # own .git
@@ -82,14 +63,35 @@ function _gs() {
 }
 
 function _gb() {
-    # git branch-select
-    checkout
+  if [[ $1 > "" ]] then
+      branch="$1"
+      # git add . # NOTE: REMOVED FROM THIS COMMON / SHARED INSTANCE OF _gc
+      git checkout -b "$branch"
+  else
+    echo "\n${_y}⚠️   NO BRANCH NAME SUPPLIED\n";
+    checkout  # git branch-select
+  fi
 }
 
 function _go() {
     # ALT (ORIG) git branch-select
     git checkout $1
 }
+
+function _gc() {
+  if [[ $1 > "" ]] then
+      message="$1"
+      # git add . # NOTE: REMOVED FROM THIS COMMON / SHARED INSTANCE OF _gc
+      git commit -m "$message"
+  else
+    echo "\n${_y}⚠️   NO COMMIT MESSAGE SUPPLIED\n";
+  fi
+}
+
+function pr() {
+  gh pr checkout $1;
+  npm ci;
+};
 
 # "glog" - GIT LOG, BUT PRETTY-PRINTED !!
 alias glog='git log --graph --abbrev-commit --decorate --date=relative --all'

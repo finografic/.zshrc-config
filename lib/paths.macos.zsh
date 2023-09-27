@@ -3,7 +3,7 @@
 #######################################
 
 # SYS PATHS
-export PATH="/opt/homebrew/bin:/opt/local/bin:/opt/local/sbin:$PATH"
+export PATH="/opt/homebrew/binnpm:/opt/local/bin:/opt/local/sbin:$PATH"
 export PATH=$PATH:$HOME/bin:/usr/local/bin
 export PATH=$PATH:$NPM_GLOBALS
 

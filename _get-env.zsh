@@ -35,32 +35,43 @@ export PATH_ZSHRC=$HOME; # DEFAULT - $(pwd) COULD BE USED ??
 # DETERMINE ENVIRONMENT ====================================================== #
 
 if [ $IS_HOME = true ]; then
+
     # DEFAULT FROM .env: HOME (MACOS)
     export ZENV='home-macos'
     export ZSH_THEME="gallois"
+
   elif [ $IS_OFFICE = true ]; then
+
     # OFFICE: (MACOS)
     export ZENV='office-macos'
     export ZSH_THEME="gallois"
-echo "IS_OFFICE = $IS_OFFICE";
+
   elif [ $IP = $IP_A2 ]; then
+
     # SERVER: REMOVE(A2)
     export OS_NAME='Linux';
     export ZENV='a2'
     export ZSH_THEME="gallois"
+
   elif [ $OS_NAME = 'Android' ]; then
+
     # MOBILE: (ANDROID + TMUX)
     export ZENV='android'
     export ZSH_THEME="gallois"
     export STORAGE_ROOT="${HOME}"
     export PATH_ZSHRC=$STORAGE_ROOT
+
   elif [ $OS_NAME = 'Android' ]; then
+
     # HOME: (LINUX)
     export OS_NAME='Linux';
     export ZENV='home'
     export ZSH_THEME="fino-time"
+
 else
+
     # DEFAULT: HOME (MACOS)
     export ZENV='home-macos'
     export ZSH_THEME="gallois"
+
 fi;

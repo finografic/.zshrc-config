@@ -17,11 +17,9 @@ alias admin="cd $HOME/repos-apnaes/apnaes-web-admin && l"
 alias loupe="cd $HOME/.local/share/Loupedeck && ls -lAh"
 alias luup="cd $HOME/.local/share/Loupedeck && ls -lAh"
 
-alias chat="cd $HOME/repos-apnaes/feathers-chat-ts && l"
-alias api2="cd $HOME/repos-apnaes/apnaes-api-ts-V2 && l"
-
 # REMOTE: A2 HOSTING
-alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
+# alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
+alias a2="ssh -i ~/.ssh/a2_rsa.pub -p 7822  apnaesor@apnaesor.wwwnl1-ts106.a2hosted.com"
 
 # COMMANDS
 
@@ -33,14 +31,11 @@ function repos() {
 
 # NOTE: OVERRIDES COMMON git commit WITH ADD + COMMENT...
 function _gc() {
-  # _gcache; # TODO: NEEDED / USEFUL ??
   if [[ $1 > "" ]]; then
       message="$1"
-      # git add -A :/ # NOTE: REMOVED FOR SAFETY
-      git add . && git commit -m "$message"
+      git add .
+      git commit -m "$message"
   else
-    # NOTE: DON'T USE FOR OFFICE - DO NOTHING HERE !!
-    # message="Commit all changes"
     echo "\n${_y}⚠️   NO COMMIT MESSAGE SUPPLIED\n";
   fi
 }

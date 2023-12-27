@@ -13,18 +13,18 @@ if [ $ZENV = 'home-macos'  ]; then
 fi;
 
 # DETERMINE ENVIRONMENT and POINT
-NODE_VERSION_PREFERRED=16; # DEFAULT ALIAS
-[ $OS_NAME = 'Linux'      ] && NODE_VERSION_PREFERRED=16;
-[ $OS_NAME = 'macOS'      ] && NODE_VERSION_PREFERRED=16;
-[ $OS_NAME = 'Android'    ] && NODE_VERSION_PREFERRED=14;
-[ $ZENV    = 'office-macos' ] && NODE_VERSION_PREFERRED=18;
+NODE_VERSION_PREFERRED="16"; # DEFAULT ALIAS
+[ $OS_NAME = 'Linux'      ] && NODE_VERSION_PREFERRED="16";
+[ $OS_NAME = 'macOS'      ] && NODE_VERSION_PREFERRED="16";
+[ $OS_NAME = 'Android'    ] && NODE_VERSION_PREFERRED="14";
+[ $ZENV    = 'office-macos' ] && NODE_VERSION_PREFERRED="18.18.2";
 
-if test -f "$HOME/.nvmrc"; then
-  NODE_VERSION_NVMRC=$(cat $HOME/.nvmrc)
-  nvm use $NODE_VERSION_NVMRC;
-else
-  nvm use $NODE_VERSION_PREFERRED;
-fi
+# if test -f "$HOME/.nvmrc"; then
+#   NODE_VERSION_NVMRC=$(cat $HOME/.nvmrc)
+#   nvm use $NODE_VERSION_NVMRC;
+# else
+#   nvm use $NODE_VERSION_PREFERRED;
+# fi
 
 export NODE_CURRENT_VERSION=$(node --version)
 # export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/lib/node_modules/

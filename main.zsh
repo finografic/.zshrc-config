@@ -35,6 +35,7 @@ export EDITOR="vim"
 export IDE="code-insiders"
 edit () { "$EDITOR $@"; }
 code () { "$IDE $@"; }
+alias code-insiders="/Applications/Visual\ Studio\ Code\ -\ Insiders.app/Contents/MacOS/Electron"
 
 # COMMON UNIVERSALS ========================================================== #
 

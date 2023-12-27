@@ -15,6 +15,9 @@ alias my="cd $HOME/repos-my && l";
 
 # MIRO REPOS
 alias rui="cd $PROJECTS_REPORTING/sbc.accounting.reporting.ui/ && l";
+alias MASTER="cd $PROJECTS_REPORTING/MASTER/ && l";
+alias docs="cd $PROJECTS_SBC/sbc.accounting.tradedocs.ui/ && l";
+alias trade="cd $PROJECTS_REPORTING/sbc.accounting.tradeentity.ui/ && l";
 alias admin="cd $PROJECTS_SBC/sbc.core.support.ui/ && l";
 alias dash="cd $PROJECTS_SBC/sbc.accounting.dashboard.ui/ && l";
 alias poc="cd $PROJECTS_REPORTING/sbc.poc.data-visualization.ui/ && l";
@@ -32,22 +35,11 @@ alias nav="cd $PROJECTS_SBC/sbc.accounting.ui/ && l";
 alias cui="cd $PROJECTS_SBC/sbc.accounting.compliance.ui/ && l";
 alias acc="cd $PROJECTS_SBC/sbc.accounting.accounts.ui/ && l";
 alias dim="cd $PROJECTS_SBC/sbc.common.dimensions.ui/ && l";
-
+alias api="cd $PROJECTS_SBC/sbc.reporting.reportengine.service/ && l";
 
 # UNIVERSAL - DEV ALIAS TO **CURRENT** PROJECT
 alias dev="echo 'CHOOSE AN ALIAS!'"
-
-# LOUPEDECK
-function loupe() {
- cd $HOME/.local/share/Loupedeck;
-  # exa --long --all --group-directories-first --accessed --time-style=long-iso --git $1
-
-  # NOTE: BELOW - COMMENTED-OUT, DUE TO LONG PROCESS TIMES :()
-  # EXA_IGNORES=".DS_Store|Icon*|.directory";
-  # exa --long --all --ignore-glob="${EXA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
-  # [ -d .git ] && git status -uno;
-}
-alias luup=loupe;
+alias loup="cd $HOME/.local/share/Loupedeck && ls -lAh"
 alias l2="cd $HOME/.local/share && l";
 
 # COMMANDS

@@ -14,8 +14,7 @@ alias api="cd $HOME/repos-apnaes/apnaes-api && l"
 alias web="cd $HOME/repos-apnaes/apnaes-web-admin && l"
 alias admin="cd $HOME/repos-apnaes/apnaes-web-admin && l"
 
-alias loupe="cd $HOME/.local/share/Loupedeck && ls -lAh"
-alias luup="cd $HOME/.local/share/Loupedeck && ls -lAh"
+alias loup="cd $HOME/.local/share/Loupedeck && ls -lAh"
 
 # REMOTE: A2 HOSTING
 # alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"

@@ -30,3 +30,10 @@ source $HOME/.iterm2_shell_integration.zsh
 # iTerm2 PROFILES > ADVANCED > SMART-SELECTION > ADD:
 # (REGEX for IGNORING CLI PROMPT WHEN SELECTING VIA TRIPLE-CLICK):
 # \b[^\]\$]*$
+
+
+# Setting PATH for Python 3.11
+# The original version is saved in .zprofile.pysave
+export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.11/bin
+
+eval "$(/usr/local/bin/brew shellenv)"

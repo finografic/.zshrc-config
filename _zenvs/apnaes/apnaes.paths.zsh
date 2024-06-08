@@ -13,8 +13,6 @@ export PATH=$PATH:$NPM_GLOBALS
 export PATH=$PATH:$ZSHRC_ROOT/bin
 # export PATH=$PATH:$ZSHRC_ROOT/node_modules/
 
-
-
 # SSH PATH
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 
@@ -22,14 +20,10 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 export PATH=$PATH:/snap/bin
 export PATH=$PATH:$HOME/.eslintrc # NECESSARY ??
 export PATH=$PATH:$HOME/.vimpkg/bin # VIM EXTENSIONS !!
-export PATH=$PATH:$HOME/.fzf
-export PATH=$PATH:$ZSHRC_ROOT/zupdate
-
 
 # ESSENTIALS
 export PATH=$PATH:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin
 export PATH=$PATH:$(which curl)
-export PATH=$PATH:$HOME/.cargo/bin
 
 # RUBY SIMPLE
 # export PATH=$PATH:$HOME/.rbenv/bin
@@ -49,8 +43,7 @@ export GOROOT=/usr/local/go/bin
 export PATH=$PATH:$GOROOT
 
 # MISC PATHS (ANY DUPLICATES, REMOVED BELOW)
-export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/lib/node_modules:$HOME/bin:/snap/bin:$HOME/.eslintrc:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$HOME/bin/caddy:$HOME/.fzf/bin:$HOME/.vimpkg/bin
-
+export PATH=$PATH:$HOME/.nvm/versions/node/$NODE_CURRENT_VERSION/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/lib/node_modules:$HOME/bin:/snap/bin:$HOME/.eslintrc:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$HOME/bin/caddy:$HOME/.fzf/bin:$HOME/.vimpkg/bin
 
 # REMOVE DUPLICATES FROM PATH
 function flatten_PATH(){

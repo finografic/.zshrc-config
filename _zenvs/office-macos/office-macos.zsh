@@ -15,7 +15,9 @@ alias dls="cd $HOME/Downloads && l"
 # GET CURRENT ENVIRONMENT - ADDITIONAL CONFIGS
 # source "${ZENV_PATH}//${ZENV}.hardware.zsh";
 
-source "$ZENV_PATH/$ZENV.dev.zsh";
+source "$ZENV_PATH/$ZENV.paths.zsh"
+source "$ZENV_PATH/$ZENV.aliases.zsh"
+source "$ZENV_PATH/$ZENV.dev.zsh"
 
 # iTERM SHELL INTEGRATION
 source $HOME/.iterm2_shell_integration.zsh
@@ -30,7 +32,6 @@ source $HOME/.iterm2_shell_integration.zsh
 # iTerm2 PROFILES > ADVANCED > SMART-SELECTION > ADD:
 # (REGEX for IGNORING CLI PROMPT WHEN SELECTING VIA TRIPLE-CLICK):
 # \b[^\]\$]*$
-
 
 # Setting PATH for Python 3.11
 # The original version is saved in .zprofile.pysave

@@ -1,68 +1,53 @@
 # MAIN REPOS / PRJOECTS FOLDER
 export PROJECTS_REPORTING="$HOME/repos-reporting"
-export PROJECTS_SBC="$HOME/repos-sbc"
-
-# CURRENT REPO - THIS WILL BE REPLACED WITH A NEW SCRIPT :D
-REPO_CURRENT="$PROJECTS_REPORTING/sbc.accounting.reporting.ui";
-
-# PROJECTS_REPORTING
-alias repos="cd $PROJECTS_REPORTING && l";
-alias sbc="cd $PROJECTS_SBC && l";
-alias repo="cd $REPO_CURRENT && l";
-alias misc="cd $HOME/repos-misc && l";
-alias apps="cd $HOME/repos-apps && l";
-alias my="cd $HOME/repos-my && l";
-
-# MIRO REPOS
-alias rui="cd $PROJECTS_REPORTING/sbc.accounting.reporting.ui/ && l";
-alias MASTER="cd $PROJECTS_REPORTING/MASTER/ && l";
-alias docs="cd $PROJECTS_SBC/sbc.accounting.tradedocs.ui/ && l";
-alias trade="cd $PROJECTS_REPORTING/sbc.accounting.tradeentity.ui/ && l";
-alias admin="cd $PROJECTS_SBC/sbc.core.support.ui/ && l";
-alias dash="cd $PROJECTS_SBC/sbc.accounting.dashboard.ui/ && l";
-alias poc="cd $PROJECTS_REPORTING/sbc.poc.data-visualization.ui/ && l";
-
-# SBC REPOS (others..)
-alias carbon="cd $PROJECTS_SBC/carbon/ && l";
-alias tokens="cd $PROJECTS_SBC/design-tokens/ && l";
-alias cm="cd $PROJECTS_SBC/sbc.accountants.clientmanagement.ui/ && l";
-alias notes="cd $PROJECTS_SBC/sbc.common.notes.ui/ && l";
-alias tui="cd $PROJECTS_SBC/sbc.template.ui/ && l";
-alias template="cd $PROJECTS_SBC/sbc.template.ui/ && l";
-alias org="cd $PROJECTS_SBC/sbc.core.orghub.ui/ && l";
-alias aui="cd $PROJECTS_SBC/sbc.accounting.ui/ && l";
-alias nav="cd $PROJECTS_SBC/sbc.accounting.ui/ && l";
-alias cui="cd $PROJECTS_SBC/sbc.accounting.compliance.ui/ && l";
-alias acc="cd $PROJECTS_SBC/sbc.accounting.accounts.ui/ && l";
-alias dim="cd $PROJECTS_SBC/sbc.common.dimensions.ui/ && l";
-alias api="cd $PROJECTS_SBC/sbc.reporting.reportengine.service/ && l";
-
-# UNIVERSAL - DEV ALIAS TO **CURRENT** PROJECT
-alias dev="echo 'CHOOSE AN ALIAS!'"
-alias loup="cd $HOME/.local/share/Loupedeck && ls -lAh"
-alias l2="cd $HOME/.local/share && l";
 
 # COMMANDS
 function repos() {
-    # msg err "PLEASE USE ALIAS 'dev'" # zsh
-    # use my MSG FUNCTION
-    # MOVED !!
-    cd "$PROJECTS_REPORTING" && l;
+  # msg err "PLEASE USE ALIAS 'dev'" # zsh
+  # use my MSG FUNCTION
+  # MOVED !!
+  cd "$PROJECTS_REPORTING" && l
 }
 
 # TIME-SAVERS
 function prep() {
-  npm ci;
-  npm run format;
-  npm run lint;
-  npm run test:coverage;
+  npm ci
+  npm run format
+  npm run lint
+  npm run test:coverage
+}
+
+function confirm() {
+  # read -r -p "Are you sure? [y/N] " response
+  read -r "Are you sure? [y/N] " response
+  response="${response,,}" # tolower
+  if [[ ! $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    # do_something
+    # echo "\n${_g} $response"
+    echo "\n $response"
+  else
+    # do_something_else
+    # echo "\n${_r} $response"
+    echo "\n $response"
+  fi
+}
+
+function rebase() {
+  CURRENT_GIT_BRANCH="$(git branch --show-current)"
+  PREVIOUS_GIT_COMMIT_MESSAGE="$(git log --pretty=format:'%s' -n 1)"
+
+  git add .
+  git commit -m "${PREVIOUS_GIT_COMMIT_MESSAGE}" --no-verify
+  git fetch && git rebase -i origin/master
+  git push -u origin "${CURRENT_GIT_BRANCH}" --force-with-lease
 }
 
 function bots() {
   # CM USES LABELS TO ALLOW THIS... OTHER METHODS EXIST
-  if [[ $@ == "--json" ]];
-    then gh pr list --label dependencies --json number,title,url;
-    else gh pr list --label dependencies;
+  if [[ $@ == "--json" ]]; then
+    gh pr list --label dependencies --json number,title,url
+  else
+    gh pr list --label dependencies
   fi
 
   # gh pr list --label dependencies --search "status:success review:required"
@@ -70,14 +55,14 @@ function bots() {
 
 # JEST - UNIT TESTING ALIAS !!!
 function j() {
-  if [[ "$2" > "" ]] then
-      # jest --config="./jest.config.js" "$1" -t "$2" --runInBand --watch;
-      jest --config="./jest.config.js" "$1" -t "$2" --watch;
-  elif [[ "$1" > "" ]] then
-      # jest --config="./jest.config.js" "$1" --runInBand --watch;
-      jest --config="./jest.config.js" "$1" --watch;
+  if [[ "$2" > "" ]]; then
+    # jest --config="./jest.config.js" "$1" -t "$2" --runInBand --watch;
+    jest --config="./jest.config.js" "$1" -t "$2" --watch
+  elif [[ "$1" > "" ]]; then
+    # jest --config="./jest.config.js" "$1" --runInBand --watch;
+    jest --config="./jest.config.js" "$1" --watch
   else
-      npm run test:coverage -- --maxWorkers=2
+    npm run test:coverage -- --maxWorkers=2
   fi
 }
 

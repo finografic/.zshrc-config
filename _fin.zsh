@@ -7,40 +7,18 @@
 # export LANGUAGE=en_US.UTF-8
 
 # ============ #
-
-# CLEAN DUPLICATES IN PATH (AGAIN?)
-# flatten_PATH;
-
-# ONLY FOR FIRST-TIME (??)
-# # source $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# GIT SYNC ZSHRC AUTOMATICALLY - DANGER ??
-# FOLLOWING REQUIRES 'sudo'
-# cd $ZSHRC_ROOT
-# git fetch
-# $HOME/.zshrc-config/node_modules/git-auto/bin/git-auto -p
-
-# PM2 CHECK + DISPLAY
-# [ -e ${NPM_GLOBALS}/pm2 ] && eval "${NPM_GLOBALS}/pm2 list";
-
 # PFETCH
 echo "\n" && PF_COL3=3 PF_COL1=2 PF_COL2=2 PF_INFO="ascii os host kernel uptime pkgs memory" pfetch;
 
 # LIST PORTS
-# DETERMINE ENVIRONMENT and POINT
-if [ $OS_NAME = 'macOS' ]; then ports;
-  elif [ $OS_NAME = 'Linux' ]; then ports # NADA;
-  elif [ $OS_NAME = 'Android' ]; then # NADA
-  else ports; # DEFAULT ALIAS
-fi;
+[[ $OS_NAME = 'Linux'] && [$ZENV != "apnaes" ]] && ports
+[ $OS_NAME = 'macOS' ] && ports
+[ $OS_NAME = 'Android' ] && ports 2> /dev/null
 
 # DISK SPACE
-# DETERMINE ENVIRONMENT and POINT
-if [ $OS_NAME = 'macOS' ]; then diskspace_df_mac;
-  elif [ $OS_NAME = 'Linux' ]; then diskspace_df_brief;
-  elif [ $OS_NAME = 'Android' ]; then diskspace_df_mac 2> /dev/null;
-  else diskspace_df_brief; # DEFAULT ALIAS
-fi;
+[[ $OS_NAME = 'Linux'] && [$ZENV != "apnaes" ]] && diskspace_df_brief
+[ $OS_NAME = 'macOS' ] && diskspace_df_mac
+[ $OS_NAME = 'Android' ] && diskspace_df_mac 2> /dev/null
 
 # BANNER
 source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.banner.zsh";

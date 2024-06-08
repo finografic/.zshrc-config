@@ -56,15 +56,14 @@ else
   node "$ZSHRC_ROOT/lib/spinner.js";
 
   # CORE
-  source "$ZSHRC_ROOT/lib/paths.$OS_NAME_LOWER.zsh";
   source "$ZSHRC_ROOT/lib/colors.zsh";
+  source "$ZSHRC_ROOT/lib/paths.$OS_NAME_LOWER.zsh";
 
   # COMMON
   source "$ZSHRC_ROOT/lib/utils.zsh";
   source "$ZSHRC_ROOT/lib/common.zsh";
   source "$ZSHRC_ROOT/lib/common.dev.zsh";
 
-  # GET CURRENT ENVIRONMENT
   source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh";
 
   # FINALIZATION OUTPUT

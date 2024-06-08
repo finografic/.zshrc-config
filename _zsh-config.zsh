@@ -102,6 +102,7 @@ plugins=(
   emoji
   fd
   fzf
+  fzf-zsh-plugin
   git
   git-extras
   git-prompt
@@ -123,6 +124,7 @@ plugins=(
   zsh-completions
   zsh-history-substring-search
   zsh-nvm
+  zsh-fzf-history-search
   zsh-autosuggestions
   zsh-syntax-highlighting
   z

@@ -65,7 +65,8 @@ function _gs() {
 function _gb() {
   if [[ $1 > "" ]] then
       branch="$1"
-      # git add . # NOTE: REMOVED FROM THIS COMMON / SHARED INSTANCE OF _gc
+            # NOTE: DO NOT AUTO-ADD FOR OFFICE..
+      [ $ZENV != "office-macos" ] && git add .
       git checkout -b "$branch"
   else
     echo "\n${_y}⚠️   NO BRANCH NAME SUPPLIED\n";
@@ -81,7 +82,8 @@ function _go() {
 function _gc() {
   if [[ $1 > "" ]] then
       message="$1"
-      # git add . # NOTE: REMOVED FROM THIS COMMON / SHARED INSTANCE OF _gc
+      # NOTE: DO NOT AUTO-ADD FOR OFFICE..
+      [ $ZENV != "office-macos" ] && git add .
       git commit -m "$message"
   else
     echo "\n${_y}⚠️   NO COMMIT MESSAGE SUPPLIED\n";
@@ -98,3 +100,10 @@ alias glog='git log --graph --abbrev-commit --decorate --date=relative --all'
 alias b="branch"
 alias .="git status"
 alias s="git status"
+
+if [ $ZENV != "office-macos" ]; then
+  git config --global color.ui true
+  git config --global user.name "Justin"
+  git config --global user.email "justin.blair.rankin@gmail.com"
+  git config --global credential.helper 'cache --timeout=1209600' # TWO WEEKS!
+fi;

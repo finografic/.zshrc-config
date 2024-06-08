@@ -386,6 +386,8 @@ function diskspace_pydf(){ # PYTHON & SNAP REQUIRED !!
 
 }
 
+
+
 # DEFINE DEFAULT "space" METHOD:
 if [ $OS_NAME = 'Linux' ]; then alias space=diskspace_df_brief;
   elif [ $OS_NAME = 'macOS' ]; then  alias space=diskspace_df_mac;
@@ -393,6 +395,12 @@ if [ $OS_NAME = 'Linux' ]; then alias space=diskspace_df_brief;
 else alias space=diskspace_df_android; # DEFAULT ALIAS
 fi;
 
+function newsh() {
+  NEW_FILE=$1.sh
+  echo "#!/bin/zsh" >> $HOME/bin/$NEW_FILE
+  chmod +x $HOME/bin/$NEW_FILE
+  code $HOME/bin/$NEW_FILE
+}
 
 ##################################
 #############  MISC  #############

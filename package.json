@@ -6,7 +6,9 @@
   },
   "dependencies": {
     "chalk": "^2.4.2",
+    "git-branch-select": "^4.0.5",
     "jmate": "^0.0.3",
-    "ora": "^4.0.2"
+    "ora": "^4.0.2",
+    "pfetch": "^0.0.0-reserved"
   }
 }

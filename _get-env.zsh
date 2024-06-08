@@ -25,7 +25,7 @@ export HOSTNAME=$(hostname);
 # GET IP ADDRESS
 # [[ $(ipconfig 2> /dev/null) ]] && export IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
 [ $(ipconfig getifaddr en0 2> /dev/null) ] && export IP=$(ipconfig getifaddr en0) || export IP=$(curl -s ipinfo.io/ip);
-IP_A2='REDACTED-IP';
+IP_APNAES='REDACTED-IP';
 IP_OFFICE_MAC='REDACTED-IP';
 IP_HOME='REDACTED-IP'; # OLD HOME IP ??
 IP_HOME_MAC='REDACTED-IP';
@@ -46,11 +46,15 @@ if [ $IS_HOME = true ]; then
     export ZENV='office-macos'
     export ZSH_THEME="gallois"
 
-  elif [ $IP = $IP_A2 ]; then
-
-    # SERVER: REMOVE(A2)
-    export OS_NAME='Linux';
-    export ZENV='a2'
+  elif [ $IS_SERVER = true ]; then
+    # SERVER: APNAES
+    export OS_NAME='Linux'
+    export ZENV='apnaes'
+    export ZSH_THEME="gallois"
+  elif [ $IP = $IP_APNAES ]; then
+    # SERVER: APNAES
+    export OS_NAME='Linux'
+    export ZENV='apnaes'
     export ZSH_THEME="gallois"
 
   elif [ $OS_NAME = 'Android' ]; then
@@ -64,7 +68,7 @@ if [ $IS_HOME = true ]; then
   elif [ $OS_NAME = 'Android' ]; then
 
     # HOME: (LINUX)
-    export OS_NAME='Linux';
+    export OS_NAME='Linux'
     export ZENV='home'
     export ZSH_THEME="fino-time"
 

@@ -54,13 +54,26 @@ function bots() {
 }
 
 # JEST - UNIT TESTING ALIAS !!!
-function j() {
+function j__ORIG() {
   if [[ "$2" > "" ]]; then
     # jest --config="./jest.config.js" "$1" -t "$2" --runInBand --watch;
     jest --config="./jest.config.js" "$1" -t "$2" --watch
   elif [[ "$1" > "" ]]; then
     # jest --config="./jest.config.js" "$1" --runInBand --watch;
     jest --config="./jest.config.js" "$1" --watch
+  else
+    npm run test:coverage -- --maxWorkers=2
+  fi
+}
+
+# JEST - UNIT TESTING ALIAS !!!
+function j() {
+  if [[ "$2" > "" ]]; then
+    # jest --config="./jest.config.js" "$1" -t "$2" --runInBand --watch;
+    node 'node_modules/.bin/jest' "$1" -t "$2" --watch
+  elif [[ "$1" > "" ]]; then
+    # jest --config="./jest.config.js" "$1" --runInBand --watch;
+    node 'node_modules/.bin/jest' "$1" --watch
   else
     npm run test:coverage -- --maxWorkers=2
   fi

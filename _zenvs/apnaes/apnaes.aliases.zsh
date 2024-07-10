@@ -27,17 +27,9 @@ alias ws="cd /usr/local/lsws && l"
 
 alias example="cd /usr/local/lsws/Example && l"
 
-# LOGS...
-LSWS_LOGS_PATH="/usr/local/lsws/logs"
-# alias logs="lnav /usr/local/lsws/admin/logs/access.log"
-# alias errs="lnav /usr/local/lsws/admin/logs/error.log"
-# alias access="sudo ${LSWS_LOGS_PATH}/access.log"
-alias access="sudo /usr/local/lsws/api/logs/access.log"
-alias errs="sudo ${LSWS_LOGS_PATH}/error.log"
-alias logs="sudo ${LSWS_LOGS_PATH}/stderr.log"
-
-
 # APNAES USER:
-alias api2="cd /home/apnaes/api/html && l"
+alias api="cd /usr/local/lsws/api && l"
+alias admin="cd /usr/local/lsws/Example && l"
+alias adminV1="cd /usr/local/lsws/Example/apnaes-web && l"
 # alias lsws="cd /usr/local/lsws && l"
 # alias ws="cd /usr/local/lsws && l"

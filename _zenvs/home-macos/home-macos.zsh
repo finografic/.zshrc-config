@@ -1,7 +1,9 @@
 # SPECIFIC ===================================================== #
+
 export ZSHRC_ROOT="$HOME/.zshrc-config"
 export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
 export NVM="true"
+
 # ============================================================== #
 
 # BUN - https://bun.sh
@@ -13,14 +15,14 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 # INCLUDES..
 # source "$ZENV_PATH//$ZENV.hardware.zsh";
-source "$ZENV_PATH/$ZENV.paths.zsh";
-source "$ZENV_PATH/$ZENV.aliases.zsh";
-source "$ZENV_PATH/$ZENV.dev.zsh";
+source "$ZENV_PATH/$ZENV.paths.zsh"
+source "$ZENV_PATH/$ZENV.aliases.zsh"
+source "$ZENV_PATH/$ZENV.dev.zsh"
 source $HOME/.iterm2_shell_integration.zsh
 
 # INCLUDES - if NOT in VSCode environment
-[ $TERM_PROGRAM != 'vscode' ] && source "$ZSHRC_ROOT/lib/clean.zsh";
-[ $TERM_PROGRAM != 'vscode' ] && source "$ZENV_PATH/$ZENV.backups.zsh";
+[ $TERM_PROGRAM != 'vscode' ] && source "$ZSHRC_ROOT/lib/clean.zsh"
+[ $TERM_PROGRAM != 'vscode' ] && source "$ZENV_PATH/$ZENV.backups.zsh"
 
 # ============================================================== #
 

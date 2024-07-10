@@ -10,5 +10,8 @@
     "jmate": "^0.0.3",
     "ora": "^4.0.2",
     "pfetch": "^0.0.0-reserved"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.2"
   }
 }

@@ -184,7 +184,7 @@ tailc () {
 
 }
 
-alias logs='tailc app/logs/prod.log'
+# alias logs='tailc app/logs/prod.log'
 
 # list new/recent logs (1 DAY)
 # alias logsr='sudo find /var/log -mtime -1 -ls'

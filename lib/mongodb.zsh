@@ -9,7 +9,6 @@
 # alias mstat="sudo systemctl status mongodb"
 # alias mlog="sudo cat /var/log/mongodb/mongod.log"
 
-
 # SERVICE or SYSTEMCTL - DEPENDING ON OS + MONGO VERSIONS
 # NOTE: --shutdown RECOMMENDED over "stop"
 
@@ -26,9 +25,9 @@
 # alias mstat="sudo service mongod status";
 
 # NEW
-alias mlog="sudo cat /var/log/mongodb/mongod.log";
-alias mconf="sudo vim /etc/mongod.conf";
-alias mconfig="code /etc/mongod.conf";
+alias mlog="sudo cat /var/log/mongodb/mongod.log"
+alias mconf="sudo vim /etc/mongod.conf"
+alias mconfig="code /etc/mongod.conf"
 
 # mongod --dbpath /data/db_3.2.21
 # mongod --dbpath /data/db_3.4.18
@@ -42,8 +41,8 @@ function mverSet() {
 }
 
 function mstart() {
-  mverGet;
-  echo "\e[32m✔ running";
+  mverGet
+  echo "\e[32m✔ running"
   # sudo mongod --config /etc/mongod.conf --auth --logpath /var/log/mongodb.log --dbpath "/data/db_$MONGO_VERSION"
   sudo mongod --config /etc/mongod.conf --logpath /var/log/mongodb.log --dbpath "/data/db_$MONGO_VERSION"
 }
@@ -53,13 +52,13 @@ function mstop() {
   ports
 }
 
-alias mrs='' # NO RESTART FOR THIS METHOD ?? MUST BE MANUAL ??
+alias mrs=''                 # NO RESTART FOR THIS METHOD ?? MUST BE MANUAL ??
 alias mstat='sudo mongostat' # REQUIRES enabledLocalhostAuthBypass TO CREATE FIRST USER (i think!)
 
 # INI MONGO_VERSION
-mverSet;
+mverSet
 
-function mbak(){
+function mbak() {
   cd /data
   sudo mongod --shutdown
   ports
@@ -69,7 +68,6 @@ function mbak(){
 }
 
 # OWN USING mongodb USER
-mown () {
+mown() {
   sudo chown -R mongodb:mongodb $1
 }
-

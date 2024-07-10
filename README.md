@@ -9,11 +9,12 @@ source "$HOME/.zshrc-config/main.zsh";
 ```
 
 **Fixing the `zsh compinit: insecure directories` error/warning message on macOS:**
-https://github.com/zsh-users/zsh-completions/issues/433#issuecomment-390600994
+<https://github.com/zsh-users/zsh-completions/issues/433#issuecomment-390600994>
+
 ```sh
-$ compaudit # list directories thought unsecure
-$ sudo chown -R username TARGET_DIRECTORY
-$ sudo chmod -R 755 TARGET_DIRECTORY
+compaudit # list directories thought unsecure
+sudo chown -R username TARGET_DIRECTORY
+sudo chmod -R 755 TARGET_DIRECTORY
 ```
 
 ---

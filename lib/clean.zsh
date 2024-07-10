@@ -1,6 +1,6 @@
-echo $_grey;
+echo $_grey
 echo "Cleaning Downloads..."
-echo $_0;
+echo $_0
 
 # IMPORTANT - DISABLE ZSH GLOB MATCH ERROR OUTPUT
 setopt no_nomatch
@@ -12,15 +12,14 @@ declare -a FOLDERS_TO_CLEAN=(
 )
 
 for file in "${FOLDERS_TO_CLEAN[@]}"; do
-  [[ "$file" = "$PATH_DOWNLOADS/**/*.mp4.mp4" ]] && continue;
-  mv $file "`echo $file | sed -E 's/.mp4.mp4/.mp4/'`";
+  $(mv $file "$(echo $file | sed -E 's/.mp4.mp4/.mp4/')" 2>/dev/null)
 done
 
 # FIREFOX CLEAN
 # setopt extendedglob - CAUTION !!
 
-PATH_FIREFOX_STORAGE="$HOME/Library/Application Support/Firefox/Profiles/3qn4h86i.dev-edition-default/storage/default";
-PATH_FIREFOX_STORAGE_TEMP="$PATH_FIREFOX_STORAGE/__TEMP";
+PATH_FIREFOX_STORAGE="$HOME/Library/Application Support/Firefox/Profiles/3qn4h86i.dev-edition-default/storage/default"
+PATH_FIREFOX_STORAGE_TEMP="$PATH_FIREFOX_STORAGE/__TEMP"
 
 # BACKUP APP CONFIGS LOCATED IN $HOME/.config ================================ #
 
@@ -33,20 +32,17 @@ declare -a cleanIgnores=(
   "https+++www.bing.com"
 )
 
-[[ ! -d "$PATH_FIREFOX_STORAGE_TEMP" ]] && mkdir "$PATH_FIREFOX_STORAGE_TEMP";
+[[ ! -d "$PATH_FIREFOX_STORAGE_TEMP" ]] && $(mkdir "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null)
 
 for ignored in "${cleanIgnores[@]}"; do
-    [[ -d "$PATH_FIREFOX_STORAGE/$ignored" ]] && mv "$PATH_FIREFOX_STORAGE/$ignored" "$PATH_FIREFOX_STORAGE_TEMP";
+  [[ -d "$PATH_FIREFOX_STORAGE/$ignored" ]] && $(mv "$PATH_FIREFOX_STORAGE/$ignored" "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null)
 done
 
-
-rm -fr "$PATH_FIREFOX_STORAGE"/https+++*
-
+$(rm -fr "$PATH_FIREFOX_STORAGE"/https+++* 2>/dev/null)
 
 # RETURN IGNORED
-mv "$PATH_FIREFOX_STORAGE_TEMP"/* "$PATH_FIREFOX_STORAGE";
-rm -fr "$PATH_FIREFOX_STORAGE_TEMP";
-
+$(mv "$PATH_FIREFOX_STORAGE_TEMP"/* "$PATH_FIREFOX_STORAGE" 2>/dev/null)
+$(rm -fr "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null)
 
 # IMPORTANT - RE-ENABLE ZSH GLOB MATCH ERROR OUTPUT
 setopt nomatch

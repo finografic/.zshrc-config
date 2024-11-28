@@ -25,6 +25,32 @@ function npmi() {
   fi
 }
 
+function _gc() {
+  if [[ $1 > "" ]]; then
+    message="$1"
+    # NOTE: DO NOT AUTO-ADD FOR OFFICE..
+    git add .
+    git commit -m "$message"
+
+    echo "\n${_g} ✅ DONE\n"
+  else
+    echo "\n${_y}⚠️   NO COMMIT MESSAGE SUPPLIED\n"
+  fi
+}
+
+function _gclean() {
+  [ ! -d "./.git" ] && return
+  echo "\n${_y}CLEAN / DELETE LOCAL GIT BRANCHES.. sure to proceed? (y/n)\n${_0}"
+  read -r response
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    echo "\n${_grey}Proceeding to delete local branches..\n${_0}"
+    git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
+  else
+    echo "Operation aborted."
+    exit 1
+  fi
+}
+
 # ========================================================================= #
 # NOTE: APNAES - RSYNC TRANSFERS, BACKUPS, and PUBLISHING..
 

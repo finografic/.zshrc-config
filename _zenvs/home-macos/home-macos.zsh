@@ -7,22 +7,32 @@ export NVM="true"
 # ============================================================== #
 
 # BUN - https://bun.sh
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+# TODO: CAUSING ERROR IN $PATH !!
+# [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+# export BUN_INSTALL="$HOME/.bun"
+# export PATH="$BUN_INSTALL/bin:$PATH"
 
 # ============================================================== #
 
-# INCLUDES..
+# INCLUDES: DEFAULT
+source "$ZSHRC_ROOT/lib/dev.git.zsh"
+source "$ZSHRC_ROOT/lib/dev.jest.zsh"
+
+# INCLUDES: HOME-macOS
 # source "$ZENV_PATH//$ZENV.hardware.zsh";
 source "$ZENV_PATH/$ZENV.paths.zsh"
 source "$ZENV_PATH/$ZENV.aliases.zsh"
 source "$ZENV_PATH/$ZENV.dev.zsh"
+
+# iTERM SHELL INTEGRATION
 source $HOME/.iterm2_shell_integration.zsh
 
 # INCLUDES - if NOT in VSCode environment
 [ $TERM_PROGRAM != 'vscode' ] && source "$ZSHRC_ROOT/lib/clean.zsh"
 [ $TERM_PROGRAM != 'vscode' ] && source "$ZENV_PATH/$ZENV.backups.zsh"
+
+# ENSURE LOUPDECK POINTS to CORRECT $HOME FOLDER
+sh $HOME/.local/share/Loupedeck/_Loupedeck_DEV/scripts/loupedeck/setHomeUserPaths.sh
 
 # ============================================================== #
 

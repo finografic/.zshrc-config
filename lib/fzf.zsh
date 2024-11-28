@@ -7,7 +7,7 @@
 if [ $OS_NAME = 'macOS' ]; then
   # V1 - MacStudio M1
   if [[ ! "$PATH" == */opt/homebrew/* ]]; then
-  set rtp+=/opt/homebrew/opt/fzf
+    set rtp+=/opt/homebrew/opt/fzf
   fi
   # V2 - MacStudio M1
   if [[ ! "$PATH" == */opt/homebrew/bin* ]]; then
@@ -25,13 +25,16 @@ if [ $OS_NAME = 'Linux' ]; then
   [[ ! "$(which lnav)" ]] && apt get lnav
 fi
 
+# Main
+# ------------------------------------------------------------------------------
+[ -f ~/.fzf.zsh ] && source $HOME/.fzf.zsh
+
 # Auto-completion
 # ------------------------------------------------------------------------------
-[[ $- == *i* ]] && source "$HOME/.fzf/shell/completion.bash" 2> /dev/null
+[[ $- == *i* ]] && source "$HOME/.fzf/shell/completion.bash" 2>/dev/null
 
 # Key bindings
 # ------------------------------------------------------------------------------
 source "$HOME/.fzf/shell/key-bindings.zsh"
-
 
 plugins=(... zsh-fzf-history-search)

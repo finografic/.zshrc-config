@@ -18,6 +18,8 @@ alias dls="cd $HOME/Downloads && l"
 source "$ZENV_PATH/$ZENV.paths.zsh"
 source "$ZENV_PATH/$ZENV.aliases.zsh"
 source "$ZENV_PATH/$ZENV.dev.zsh"
+source "$ZSHRC_ROOT/lib/dev.git.zsh"
+source "$ZSHRC_ROOT/lib/dev.jest.zsh"
 
 # iTERM SHELL INTEGRATION
 source $HOME/.iterm2_shell_integration.zsh
@@ -33,8 +35,14 @@ source $HOME/.iterm2_shell_integration.zsh
 # (REGEX for IGNORING CLI PROMPT WHEN SELECTING VIA TRIPLE-CLICK):
 # \b[^\]\$]*$
 
+# ENSURE LOUPDECK POINTS to CORRECT $HOME FOLDER
+sh $HOME/.local/share/Loupedeck/_Loupedeck_DEV/scripts/loupedeck/setHomeUserPaths.sh
+
 # Setting PATH for Python 3.11
 # The original version is saved in .zprofile.pysave
 export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.11/bin
 
 eval "$(/usr/local/bin/brew shellenv)"
+
+git config --global user.name "Justin Rankin"
+git config --global user.email "REDACTED-EMAIL"

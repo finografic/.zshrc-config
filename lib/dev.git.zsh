@@ -39,6 +39,16 @@ function rebase() {
   git rebase i origin/master
 }
 
+function commit() {
+  if [[ $1 > "" ]]; then
+    message="$1"
+    git add .
+    git commit -m "$message" --no-verify
+  else
+    echo "\n${_y}⚠️   NO COMMIT MESSAGE SUPPLIED\n"
+  fi
+}
+
 # TODO: THIS CAUSES *HOT* ERROR (without hitting Enter):
 # "Fatal: No rebase in progress..." - WHY / HOW is this HOT ?????
 # function continue() {
@@ -82,8 +92,9 @@ function _gc() {
   if [[ $1 > "" ]]; then
     message="$1"
     # NOTE: DO NOT AUTO-ADD FOR OFFICE..
-    [ $ZENV != "office-macos" ] && git add .
+    [ $ZENV != "office-macos" ] && git add .˚˚
     git commit -m "$message"
+    echo "\n${_grey}⚠️ DONE\n"
   else
     echo "\n${_y}⚠️   NO COMMIT MESSAGE SUPPLIED\n"
   fi
@@ -91,9 +102,23 @@ function _gc() {
 
 function _gf() {
   [ ! -d "./.git" ] && return
-  echo "\n${_m}fetching and pulling..\n"
+  echo "\n${_m}fetching and pulling..\n${_0}"
   git fetch
   git pull
+}
+
+function _gro() {
+  [ ! -d "./.git" ] && return
+  echo "\n${_y}RESET HEAD with Origin.. sure to proceed? (y/n)\n${_0}"
+  read -r response
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    echo "\n${_grey}Proceeding to reset head with origin..\n${_0}"
+    git fetch origin
+    git reset --hard origin/HEAD
+  else
+    echo "Operation aborted."
+    exit 1
+  fi
 }
 
 function pr() {

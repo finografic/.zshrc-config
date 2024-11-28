@@ -11,12 +11,12 @@ SAVEHIST=2000
 HISTFILE=~/.zsh_history
 
 # Use modern completion system
-autoload -Uz compinit
+# autoload -Uz compinit # MOVED TI
 compinit
 
 [ "$(dircolors -b  2> /dev/null)" ] && eval "$(dircolors -b)";
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' auto-description 'specify: %%d'
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' format 'Completing %d'
 zstyle ':completion:*' group-name ''
@@ -76,7 +76,7 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 ###########  ZSH SETTINGS  ###########
 ######################################
 
-# source $ZSH/oh-my-zsh.sh // TODO: MOVE TO BOTTOM ??
+
 # source "${HOME}/.zgen/zgen.zsh"
 [[ -s "/etc/grc.zsh" ]] && source /etc/grc.zsh # GENERIC COLORIZER
 export UPDATE_ZSH_DAYS=7
@@ -86,7 +86,7 @@ ENABLE_CORRECTION="false"
 COMPLETION_WAITING_DOTS="true"
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 HIST_STAMPS="dd/mm/yyyy"
-# ZSH_CUSTOM=/path/to/$HOME/.zgen/init.zshnew-custom-folder
+# ZSH_CUSTOM=/path/to/$HOME/.zgen/init.zsh/new-custom-folder
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
@@ -100,7 +100,7 @@ plugins=(
   # docker
   # docker-compose
   emoji
-  # fd
+  fd
   fzf
   fzf-zsh-plugin
   git
@@ -131,7 +131,7 @@ plugins=(
   z
 );
 
-# source $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # AT END, AFTER PLUGINS
 source $ZSH/oh-my-zsh.sh

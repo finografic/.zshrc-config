@@ -42,6 +42,18 @@ function rebase() {
   git push -u origin "${CURRENT_GIT_BRANCH}" --force-with-lease
 }
 
+function commit() {
+  if [[ $1 > "" ]]; then
+    message="$1"
+    git add .
+    git commit -m "$message" --no-verify
+  else
+    echo "\n${_y}⚠️   NO COMMIT MESSAGE SUPPLIED\n"
+  fi
+}
+
+# ============================================================================ #
+
 function bots() {
   # CM USES LABELS TO ALLOW THIS... OTHER METHODS EXIST
   if [[ $@ == "--json" ]]; then
@@ -52,35 +64,6 @@ function bots() {
 
   # gh pr list --label dependencies --search "status:success review:required"
 }
-
-# JEST - UNIT TESTING ALIAS !!!
-function j__ORIG() {
-  if [[ "$2" > "" ]]; then
-    # jest --config="./jest.config.js" "$1" -t "$2" --runInBand --watch;
-    jest --config="./jest.config.js" "$1" -t "$2" --watch
-  elif [[ "$1" > "" ]]; then
-    # jest --config="./jest.config.js" "$1" --runInBand --watch;
-    jest --config="./jest.config.js" "$1" --watch
-  else
-    npm run test:coverage -- --maxWorkers=2
-  fi
-}
-
-# JEST - UNIT TESTING ALIAS !!!
-function j() {
-  if [[ "$2" > "" ]]; then
-    # jest --config="./jest.config.js" "$1" -t "$2" --runInBand --watch;
-    node 'node_modules/.bin/jest' "$1" -t "$2" --watch
-  elif [[ "$1" > "" ]]; then
-    # jest --config="./jest.config.js" "$1" --runInBand --watch;
-    node 'node_modules/.bin/jest' "$1" --watch
-  else
-    npm run test:coverage -- --maxWorkers=2
-  fi
-}
-
-# JEST - CLEAR CACHE ON INIT
-jest --clearCache
 
 # ============================================================================ #
 

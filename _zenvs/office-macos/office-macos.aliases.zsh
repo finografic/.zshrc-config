@@ -5,8 +5,11 @@ alias repo="cd $REPO_CURRENT && l"
 alias misc="cd $HOME/repos-misc && l"
 alias apps="cd $HOME/repos-apps && l"
 alias my="cd $HOME/repos-my && l"
+alias pf="cd $HOME/repos-pioneer && l"
 
 alias obs="cd $HOME/Documents/OFFICE_VAULT 🔒 && l"
+
+alias json="cd $PROJECTS_PR/$PROJECTS_PF_JSON_WALKER/ && l"
 
 # MIRO REPOS
 alias rui="cd $PROJECTS_REPORTING/sbc.accounting.reporting.ui/ && l"
@@ -17,13 +20,14 @@ alias trade="cd $PROJECTS_TRADE/sbc.accounting.tradeentity.ui/ && l"
 alias vat="cd $PROJECTS_SBC/sbc.accountants.vat-centre.ui/ && l"
 alias admin="cd $PROJECTS_SBC/sbc.core.support.ui/ && l"
 alias dash="cd $PROJECTS_SBC/sbc.accounting.dashboard.ui/ && l"
-alias poc="cd $PROJECTS_REPORTING/sbc.poc.data-visualization.ui/ && l"
+alias poc="cd $PROJECTS_REPORTING/sbc.accounting.reporting.ui_POCs/ && l"
 
 # SBC REPOS (others..)
 alias carbon="cd $PROJECTS_SBC/carbon/ && l"
 alias tokens="cd $PROJECTS_SBC/design-tokens/ && l"
 alias tui="cd $PROJECTS_SBC/sbc.template.ui/ && l"
 alias template="cd $PROJECTS_SBC/sbc.template.ui/ && l"
+alias cop="cd $PROJECTS_SBC/sbc.common.copilot.ui/ && l"
 
 alias cm="cd $PROJECTS_SBC/sbc.accountants.clientmanagement.ui/ && l"
 alias notes="cd $PROJECTS_SBC/sbc.common.notes.ui/ && l"

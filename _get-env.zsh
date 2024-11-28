@@ -54,6 +54,7 @@ elif [ $IS_SERVER = true ]; then
   export OS_NAME='Linux'
   export ZENV='apnaes'
   export ZSH_THEME="gallois"
+
 elif [ $IP = $IP_APNAES ]; then
   # SERVER: APNAES
   export OS_NAME='Linux'

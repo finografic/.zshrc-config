@@ -19,5 +19,29 @@ sudo chmod -R 755 TARGET_DIRECTORY
 
 ---
 
+## Antidote setup
+
+```sh
+# 1. Clone Antidote
+git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+
+# 2. Add to .zshrc
+echo 'source ${ZDOTDIR:-~}/.antidote/antidote.zsh' >> ${ZDOTDIR:-~}/.zshrc
+
+# 3. Create initial plugins file
+touch ${ZDOTDIR:-~}/.zsh_plugins.txt
+
+# 4. Add plugin load command to .zshrc
+echo 'antidote load ${ZDOTDIR:-~}/.zsh_plugins.txt' >> ${ZDOTDIR:-~}/.zshrc
+
+
+# THEN..
+# 1. Set up preferred plugins in .zsh_plugins.txt
+# 2. Configure how to integrate .zsh-config
+# 3. Consider static loading for better performance
+# 4. Explore plugin update strategies
+
+```
+
 *Submitted by* **Justin Rankin**
 [justin.blair.rankin@gmail.com](justin.blair.rankin@gmail.com)

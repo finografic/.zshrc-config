@@ -2,6 +2,9 @@
 ###########  GIT DEV  ############
 ##################################
 
+# Git prompt styling
+source "$ZSHRC_ROOT/themes/prompt.zsh"
+
 function master() {
   git checkout master
   # NOTE: OPT-OUT auto ci build
@@ -88,15 +91,48 @@ function _go() {
   git checkout $1
 }
 
-function _gc() {
-  if [[ $1 > "" ]]; then
+function _gc__V1() {
+  if [[ -n "$1" ]]; then
     message="$1"
-    # NOTE: DO NOT AUTO-ADD FOR OFFICE..
-    [ $ZENV != "office-macos" ] && git add .˚˚
+
+    # Only run git add . if not in office environment
+    if [[ "$ZENV" != "office-macos" ]]; then
+      git add .
+    fi
+
     git commit -m "$message"
-    echo "\n${_grey}⚠️ DONE\n"
+    echo "\n${_g}✅ DONE\n"
   else
-    echo "\n${_y}⚠️   NO COMMIT MESSAGE SUPPLIED\n"
+    echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
+  fi
+}
+
+# NEW: GIT COMMIT (already staged files only)
+function _gc() {
+  if [[ -n "$1" ]]; then
+    message="$1"
+
+    git commit -m "$message"
+    echo "\n${_g}✅ DONE\n"
+  else
+    echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
+  fi
+}
+
+# NEW: GIT COMMIT ALL (stages files first, then commits)
+function _gca() {
+  if [[ -n "$1" ]]; then
+    message="$1"
+
+    # Only run git add . if not in office environment
+    if [[ "$ZENV" != "office-macos" ]]; then
+      git add .
+    fi
+
+    git commit -m "$message"
+    echo "\n${_g}✅ DONE\n"
+  else
+    echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
   fi
 }
 

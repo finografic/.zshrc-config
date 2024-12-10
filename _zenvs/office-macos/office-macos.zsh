@@ -22,7 +22,7 @@ source "$ZSHRC_ROOT/lib/dev.git.zsh"
 source "$ZSHRC_ROOT/lib/dev.jest.zsh"
 
 # iTERM SHELL INTEGRATION
-source $HOME/.iterm2_shell_integration.zsh
+source $ZSHRC_ROOT/.iterm2_shell_integration.zsh
 
 # INCLUDE PM2 USING macOS "lanchd" // NOTE: MAY REQUIRE "sudo"
 # PM2 startup DOCS: https://pm2.keymetrics.io/docs/usage/startup/
@@ -35,8 +35,9 @@ source $HOME/.iterm2_shell_integration.zsh
 # (REGEX for IGNORING CLI PROMPT WHEN SELECTING VIA TRIPLE-CLICK):
 # \b[^\]\$]*$
 
+# TODO: NOT EVERY LAUNCH - ESPECIALLY IF NOT ON M1
 # ENSURE LOUPDECK POINTS to CORRECT $HOME FOLDER
-sh $HOME/.local/share/Loupedeck/_Loupedeck_DEV/scripts/loupedeck/setHomeUserPaths.sh
+# sh $HOME/.local/share/Loupedeck/_Loupedeck_DEV/scripts/loupedeck/setHomeUserPaths.sh
 
 # Setting PATH for Python 3.11
 # The original version is saved in .zprofile.pysave

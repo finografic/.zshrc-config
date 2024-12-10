@@ -17,7 +17,7 @@ alias www="cd /var/www && l"
 source "${ZENV_PATH}/${ZENV}.dev.zsh";
 
 # iTERM SHELL INTEGRATION
-source $HOME/.iterm2_shell_integration.zsh
+source $ZSHRC_ROOT/.iterm2_shell_integration.zsh
 
 # INCLUDE PM2 USING macOS "lanchd" // NOTE: MAY REQUIRE "sudo"
 # PM2 startup DOCS: https://pm2.keymetrics.io/docs/usage/startup/

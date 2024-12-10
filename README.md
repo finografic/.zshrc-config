@@ -43,5 +43,41 @@ echo 'antidote load ${ZDOTDIR:-~}/.zsh_plugins.txt' >> ${ZDOTDIR:-~}/.zshrc
 
 ```
 
+
+## Profiling
+
+**basic:**
+
+```sh
+# Before static loading
+time zsh -i -c exit
+
+# After static loading
+time zsh -i -c exit
+```
+
+**detailed (saved in `.zshrc`):**
+
+```sh
+# Add this to the very top:
+zmodload zsh/zprof
+
+# And this at the very bottom:
+zprof
+```
+
+## `hyperfine` - for MORE profiling
+
+```sh
+# Install hyperfine
+brew install hyperfine
+
+# Then test
+hyperfine 'zsh -i -c exit'
+```
+
+---
+
+
 *Submitted by* **Justin Rankin**
 [justin.blair.rankin@gmail.com](justin.blair.rankin@gmail.com)

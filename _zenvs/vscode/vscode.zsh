@@ -15,7 +15,7 @@ source "$ZSHRC_ROOT/lib/dev.git.zsh"
 source "$ZSHRC_ROOT/lib/dev.jest.zsh"
 
 # iTERM SHELL INTEGRATION
-source $HOME/.iterm2_shell_integration.zsh
+source $ZSHRC_ROOT/.iterm2_shell_integration.zsh
 
 # SPECIFIC
 export ZSHRC_ROOT=$HOME/.zshrc-config

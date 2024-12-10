@@ -9,9 +9,10 @@ function config() {
   open -a "/Applications/Visual Studio Code.app" "$ZSHRC_ROOT/zshrc-config.code-workspace"
 }
 
-# REMOVE DUPLICATES FROM PATH
+# REMOVE DUPLICATES FROM PATH - while preserving order
 function flatten_PATH() {
-  export PATH=$(printf %s "$PATH" | awk -vRS=: '!a[$0]++' | paste -s -d: -)
+  typeset -U PATH
+  PATH="${PATH}"
 }
 
 function config_V1_FZF() {

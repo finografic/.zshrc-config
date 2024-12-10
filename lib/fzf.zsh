@@ -1,40 +1,32 @@
-#!/bin/zsh
-
-# Setup fzf - macOS
-# ------------------------------------------------------------------------------
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
-if [ $OS_NAME = 'macOS' ]; then
-  # V1 - MacStudio M1
-  if [[ ! "$PATH" == */opt/homebrew/* ]]; then
-    set rtp+=/opt/homebrew/opt/fzf
+# FZF Configuration
+if [ "$OS_NAME" = "macOS" ]; then
+  # Add Homebrew FZF to path if not present
+  if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
+    export PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"
   fi
-  # V2 - MacStudio M1
-  if [[ ! "$PATH" == */opt/homebrew/bin* ]]; then
-    export PATH="${PATH:+${PATH}:}/opt/homebrew/bin/fzf"
-  fi
+elif [ "$OS_NAME" = "Linux" ]; then
+  # Auto-install FZF if missing
+  [ ! -d "$HOME/.fzf" ] && git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
 fi
 
-# Setup fzf - Linux
-# ------------------------------------------------------------------------------
+# Optional: Custom FZF settings
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+# Controls:
+# - Window height (40% of terminal)
+# - Reverse layout (results appear above prompt)
+# - Adds a border around the window
 
-if [ $OS_NAME = 'Linux' ]; then
-  # MISSING INSTALLS..
-  [ ! -d "~/.fzf" ] && git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
-  # MISSING INSTALLS..
-  [[ ! "$(which lnav)" ]] && apt get lnav
-fi
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+# Controls default file search:
+# - Uses 'fd' instead of 'find' (faster)
+# - Shows hidden files
+# - Follows symlinks
+# - Excludes .git directory
 
-# Main
-# ------------------------------------------------------------------------------
-[ -f ~/.fzf.zsh ] && source $HOME/.fzf.zsh
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+# Uses same settings for CTRL+T file search
 
-# Auto-completion
-# ------------------------------------------------------------------------------
-[[ $- == *i* ]] && source "$HOME/.fzf/shell/completion.bash" 2>/dev/null
-
-# Key bindings
-# ------------------------------------------------------------------------------
-source "$HOME/.fzf/shell/key-bindings.zsh"
-
-plugins=(... zsh-fzf-history-search)
+export FZF_ALT_C_COMMAND="fd --type d . --hidden"
+# Controls directory search with ALT+C:
+# - Only shows directories
+# - Includes hidden directories

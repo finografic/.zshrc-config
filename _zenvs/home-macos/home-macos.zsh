@@ -25,14 +25,15 @@ source "$ZENV_PATH/$ZENV.aliases.zsh"
 source "$ZENV_PATH/$ZENV.dev.zsh"
 
 # iTERM SHELL INTEGRATION
-source $HOME/.iterm2_shell_integration.zsh
+source $ZSHRC_ROOT/.iterm2_shell_integration.zsh
 
 # INCLUDES - if NOT in VSCode environment
 [ $TERM_PROGRAM != 'vscode' ] && source "$ZSHRC_ROOT/lib/clean.zsh"
 [ $TERM_PROGRAM != 'vscode' ] && source "$ZENV_PATH/$ZENV.backups.zsh"
 
+# TODO: NOT EVERY LAUNCH - ESPECIALLY IF NOT ON M1
 # ENSURE LOUPDECK POINTS to CORRECT $HOME FOLDER
-sh $HOME/.local/share/Loupedeck/_Loupedeck_DEV/scripts/loupedeck/setHomeUserPaths.sh
+# sh $HOME/.local/share/Loupedeck/_Loupedeck_DEV/scripts/loupedeck/setHomeUserPaths.sh
 
 # ============================================================== #
 

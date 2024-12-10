@@ -44,5 +44,7 @@ alias api="cd $PROJECTS_SBC/sbc.reporting.reportengine.service/ && l"
 
 # UNIVERSAL - DEV ALIAS TO **CURRENT** PROJECT
 alias dev="echo 'CHOOSE AN ALIAS!'"
-alias loup="cd $HOME/.local/share/Loupedeck && ls -lAh"
+# alias loup="cd $HOME/.local/share/Loupedeck && ls -lAh"
+# alias loup='cd "~/Library/Application\ Support/Logi/LogiPluginService" && ls -lAh'
+alias loup='cd ~/Library/Application\ Support/Logi/LogiPluginService && ls -lAh'
 alias l2="cd $HOME/.local/share && l"

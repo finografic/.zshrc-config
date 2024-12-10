@@ -1,39 +1,34 @@
-#!/bin/zsh
-
-# SET NODE VERSION
+# NVM Configuration
 export NVM_DIR="$HOME/.nvm"
-[ $OS_NAME = "Android" ] && unset PREFIX
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm
+export NVM_LAZY_LOAD=true  # Faster shell startup
+export NVM_COMPLETION=true # Enable completion
 
-# NVM home-mac ONLY - TODO: FIX WITH ABOVE!
-if [ $ZENV = 'home-macos' ]; then
-  [ -s "$(brew --prefix)/opt/nvm/nvm.sh" ] && . "$(brew --prefix)/opt/nvm/nvm.sh"
-  [ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && . "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm"
+# Node version preferences by environment
+NODE_VERSION_PREFERRED="16" # Default
+case "$OS_NAME" in
+"Linux" | "macOS") NODE_VERSION_PREFERRED="16" ;;
+"Android") NODE_VERSION_PREFERRED="14" ;;
+esac
+
+# Override for specific environments
+case "$ZENV" in
+"office-macos") NODE_VERSION_PREFERRED="20.11.0" ;;
+"apnaes") NODE_VERSION_PREFERRED="20.14.0" ;;
+esac
+
+# Load NVM if it exists
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Set default Node version (only if nvm is available)
+if command -v nvm >/dev/null 2>&1; then
+  nvm use $NODE_VERSION_PREFERRED >/dev/null 2>&1
+  nvm alias default $NODE_VERSION_PREFERRED >/dev/null 2>&1
 fi
 
-# DETERMINE ENVIRONMENT and POINT
-NODE_VERSION_PREFERRED="16" # DEFAULT ALIAS
-[ $OS_NAME = 'Linux' ] && NODE_VERSION_PREFERRED="16"
-[ $OS_NAME = 'macOS' ] && NODE_VERSION_PREFERRED="16"
-[ $OS_NAME = 'Android' ] && NODE_VERSION_PREFERRED="14"
-# [ $ZENV    = 'office-macos' ] && NODE_VERSION_PREFERRED="18.18.2";
-[ $ZENV = 'office-macos' ] && NODE_VERSION_PREFERRED="20.11.0"
-[ $ZENV = 'apnaes' ] && NODE_VERSION_PREFERRED="20.14.0"
-
-# if test -f "$HOME/.nvmrc"; then
-#   NODE_VERSION_NVMRC=$(cat $HOME/.nvmrc)
-#   nvm use $NODE_VERSION_NVMRC;
-# else
-#   nvm use $NODE_VERSION_PREFERRED;
-# fi
-
-
-if [ $ZENV != 'apnaes' ]; then
-
-  export NODE_CURRENT_VERSION=$(node --version)
-  # export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/lib/node_modules/
-  export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/bin
-
+# Export globals path (excluding apnaes environment)
+if [ "$ZENV" != 'apnaes' ]; then
+  if command -v node >/dev/null 2>&1; then
+    export NODE_CURRENT_VERSION=$(node --version)
+    export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/bin
+  fi
 fi
-

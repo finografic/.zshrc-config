@@ -4,16 +4,16 @@ export NVM_LAZY_LOAD=true  # Faster shell startup
 export NVM_COMPLETION=true # Enable completion
 
 # Node version preferences by environment
-NODE_VERSION_PREFERRED="16" # Default
+NODE_VERSION_PREFERRED="20.18.1" # Default
 case "$OS_NAME" in
-"Linux" | "macOS") NODE_VERSION_PREFERRED="16" ;;
-"Android") NODE_VERSION_PREFERRED="14" ;;
+"Linux" | "macOS") NODE_VERSION_PREFERRED="20.18.1" ;;
+"Android") NODE_VERSION_PREFERRED="20.18.1" ;;
 esac
 
 # Override for specific environments
 case "$ZENV" in
-"office-macos") NODE_VERSION_PREFERRED="20.11.0" ;;
-"apnaes") NODE_VERSION_PREFERRED="20.14.0" ;;
+"office-macos") NODE_VERSION_PREFERRED="20.18.1" ;;
+"apnaes") NODE_VERSION_PREFERRED="20.18.1" ;;
 esac
 
 # Load NVM if it exists

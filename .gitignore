@@ -2,6 +2,8 @@
 #############
 www-ORIG
 .env
+# antidote generates new version on intialisation
+.zsh_plugins.generated.zsh
 
 # MY IGNORES #
 ##############

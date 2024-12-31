@@ -58,6 +58,78 @@ function update() {
   fi
 }
 
+#########################################
+#########  CLEAN node_modules  ##########
+#########################################
+
+# DELETE ALL node_modules RECURSIVELY
+clean-node-modules() {
+  echo "\033[90m🔍 Finding node_modules directories...\033[0m"
+
+  # Get directories and sort by path depth (shortest first)
+  dirs=($(fd -H -I "^node_modules$" -t d | awk '{print length, $0}' | sort -n | cut -d" " -f2-))
+
+  # Track total size and failed deletions
+  failed_dirs=()
+
+  # If no directories found
+  if [ ${#dirs[@]} -eq 0 ]; then
+    echo "\033[90mNo node_modules directories found.\033[0m"
+    return 0
+  fi
+
+  # Show total count
+  echo "\033[90mFound ${#dirs[@]} node_modules directories.\033[0m"
+
+  # Process each directory
+  for dir in "${dirs[@]}"; do
+    if [ -d "$dir" ]; then
+      # Get size before deletion attempt
+      size=$(du -sh "$dir" 2>/dev/null | cut -f1)
+      size_bytes=$(du -s "$dir" 2>/dev/null | cut -f1)
+
+      if [ ! -z "$size" ]; then
+        echo "\033[90m🗑️  Removing $dir (size: $size)\033[0m"
+
+        # Try to remove with sudo if normal remove fails
+        if ! rm -rf "$dir" 2>/dev/null; then
+          echo "\033[93m⚠️  Permission denied, trying with sudo...\033[0m"
+          sudo rm -rf "$dir" || {
+            echo "\033[91m❌ Failed to remove: $dir\033[0m"
+            failed_dirs+=("$dir")
+          }
+        fi
+      fi
+    fi
+  done
+
+  # Final summary
+  echo "\n\033[92m✨ Cleanup complete!\033[0m\n"
+
+  # Report any failures
+  if [ ${#failed_dirs[@]} -gt 0 ]; then
+    echo "\033[93m\nWarning: The following directories had permission issues:\033[0m"
+    for failed in "${failed_dirs[@]}"; do
+      echo "\033[93m  - $failed\033[0m"
+    done
+    echo "\033[93mYou might need to remove these manually with sudo\033[0m"
+  fi
+}
+
+# ORIG - ALIAS
+# alias clean-node-modules='fd -H "^node_modules$" -t d -x rm -rf {}'
+
+## OTHER fd USES..
+
+# List matches first (safe preview)
+# fd -H '^node_modules$' -t d
+
+# Show size of each node_modules before deleting
+# fd -H '^node_modules$' -t d -x du -sh {}
+
+# Exclude specific paths
+# fd -H '^node_modules$' -t d --exclude path/to/keep
+
 ###############################
 ############  NODE  ###########
 ###############################

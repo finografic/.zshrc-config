@@ -44,31 +44,21 @@ function cdd() {
 
 # MISC COM
 alias ip="echo '\n\e[37mLocal IP addess: \e[0;35m$IP\n'"
-alias ports1="echo '\n\e[96m'; sudo grc netstat -ltnp; echo '\e[0m'"
-alias ports2="echo '\e[96m'; grc netstat -plnt; echo '\e[0m'"
-alias ports3="grc netstat -plnt | grep --invert-match -; echo '\e[0m'"
-alias ports4="grc netstat -AaLnW; echo '\e[0m'"
 
-# DYNAMICALLY SET ALIAS, DEPENDING ON ENV
-alias ports="lsof -i -P -n | grep LISTEN"
-# [ -e /usr/bin/grc ] && alias ports="ports2";
-
-# TO MAKE PORT LIST MORE COMPACT:
-# EDIT: sudo vi /usr/share/grc/conf.netstat
-
-# NEW: COMPACT COLUMNS
-# regexp=Recv-Q Send-Q
-# replace=
-# colours=unchanged
-# =======
-# # NEW: COMPACT COLUMNS
-# regexp=     0      0
-# replace=
-# colours=unchanged
-# =======
-# # NEW: COMPACT LIST
-# regexp=:::
-# skip=yes
+# NEW!! 2024-12-12
+ports() {
+  lsof -i -P -n | grep LISTEN | grep -E '127\.0\.0\.1:|[::1]:' | awk '{
+    gsub(/\\x20./, " ", $1);
+    if ($9 ~ /\[.*\]:/) {
+      split($9, addr, "]:");
+      addr[1] = addr[1]"]";
+    } else {
+      split($9, addr, ":");
+    }
+    printf "\033[95m%-15s %-5s\033[35m %-15s %-5s \033[35m%s:\033[95m%s\033[0m\n", $1, $2, $3, $5, addr[1], addr[2]
+  }'
+  tput sgr0
+}
 
 #####################################
 ##########  FILE UTILS  #############

@@ -46,5 +46,10 @@ alias api="cd $PROJECTS_SBC/sbc.reporting.reportengine.service/ && l"
 alias dev="echo 'CHOOSE AN ALIAS!'"
 # alias loup="cd $HOME/.local/share/Loupedeck && ls -lAh"
 # alias loup='cd "~/Library/Application\ Support/Logi/LogiPluginService" && ls -lAh'
-alias loup='cd ~/Library/Application\ Support/Logi/LogiPluginService && ls -lAh'
+# alias loup='cd ~/Library/Application\ Support/Logi/LogiPluginService && ls -lAh'
+# alias loup="cd $HOME/.local/share/Loupedeck && ls -lAh"
+alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls -lAh'
 alias l2="cd $HOME/.local/share && l"
+
+# COMMON ALIASES
+source="$ZSHRC_ROOT/lib/aliases.common.zsh"

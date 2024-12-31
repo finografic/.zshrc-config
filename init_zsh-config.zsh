@@ -12,9 +12,10 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 # Set environment and theme..
 export ZENV=$(determine_environment)
-export ZSH_THEME="gallois-custom" # Using consistent theme across environments
-source "$ZSHRC_ROOT/themes/prompt.zsh"
-source "$ZSHRC_ROOT/themes/themes.functions.zsh"
+# TODO: TESTING DEFAULT THEME
+# export ZSH_THEME="gallois-custom" # Using consistent theme across environments
+# source "$ZSHRC_ROOT/themes/prompt.zsh"
+# source "$ZSHRC_ROOT/themes/themes.functions.zsh"
 
 # ZSH SETTINGS ============================
 

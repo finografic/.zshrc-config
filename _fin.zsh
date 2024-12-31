@@ -20,8 +20,23 @@ echo "\n"
 
 # NOTE: REMOVED IN FAVOR OF `fastfetch`
 # echo "\n" && PF_COL3=3 PF_COL1=2 PF_COL2=2 PF_INFO="ascii os host kernel uptime pkgs memory" pfetch
-$ZSHRC_ROOT/bin-$OS_ARCH/fastfetch
-# echo "\n"
+# NOTE: REMOVED IN FAVOR OF NEW: clause below..
+# $ZSHRC_ROOT/bin-$OS_ARCH/fastfetch
+
+# ========================================================================= #
+# NEW: FASTFETCH or NEOFETCH, based on SYSTEM ARCHITECTURE
+
+# Check architecture and use appropriate binary
+if [ $ZENV = "apnaes" ]; then
+  # $ZSHRC_ROOT/bin-$OS_ARCH/neofetch
+  # command -v neofetch >/dev/null && neofetch || echo "neofetch not found"
+  command -v $ZSHRC_ROOT/bin-$OS_ARCH/neofetch >/dev/null && $ZSHRC_ROOT/bin-$OS_ARCH/neofetch || echo "neofetch not found"
+else
+  # Original x86_64 logic
+  # $ZSHRC_ROOT/bin-$OS_ARCH/fastfetch
+  # command -v fastfetch >/dev/null && fastfetch || echo "fastfetch not found"
+  command -v $ZSHRC_ROOT/bin-$OS_ARCH/fastfetch >/dev/null && $ZSHRC_ROOT/bin-$OS_ARCH/fastfetch || echo "fastfetch not found"
+fi
 
 # ========================================================================= #
 # DISK SPACE

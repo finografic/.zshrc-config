@@ -52,4 +52,4 @@ alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls 
 alias l2="cd $HOME/.local/share && l"
 
 # COMMON ALIASES
-source="$ZSHRC_ROOT/lib/aliases.common.zsh"
+source "$ZSHRC_ROOT/lib/aliases.common.zsh"

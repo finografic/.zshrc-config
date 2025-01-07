@@ -37,4 +37,4 @@ alias @shared="cd $PROJECT_IOX_LOUPEDECK/packages/shared && l"
 alias vt="cd /Users/REDACTED/repos-apnaes/apnaes-vite-chat && l"
 
 # COMMON ALIASES
-source="$ZSHRC_ROOT/lib/aliases.common.zsh"
+source "$ZSHRC_ROOT/lib/aliases.common.zsh"

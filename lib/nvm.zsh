@@ -12,7 +12,7 @@ esac
 
 # Override for specific environments
 case "$ZENV" in
-"office-macos") NODE_VERSION_PREFERRED="20.18.1" ;;
+"office-macos") NODE_VERSION_PREFERRED="20.11.0" ;;
 "apnaes") NODE_VERSION_PREFERRED="20.18.1" ;;
 esac
 

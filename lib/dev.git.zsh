@@ -2,9 +2,6 @@
 ###########  GIT DEV  ############
 ##################################
 
-# Git prompt styling
-source "$ZSHRC_ROOT/themes/prompt.zsh"
-
 # GIT STATUS
 _g() {
   # RESET GIT PERMISSIONS
@@ -15,15 +12,15 @@ _g() {
   git status
 }
 
-
 # GIT LOG, BUT PRETTY-PRINTED !!
 _glog() {
   git log --graph --abbrev-commit --decorate --date=relative --all
 }
 
-_grm(){
+# GIT UNTRACK FILE / FOLDERS
+_grm() {
   if [[ $1 > "" ]]; then
-   git rm --cached "$1"
+    git rm --cached "$1"
   else
     echo "\n${_y}⚠️   NO FILE SPECIFIED TO UN-TRACK\n"
   fi
@@ -44,18 +41,8 @@ master() {
 }
 
 # Function to get the current git branch
-_current_git_branch() {
+_gcurrent() {
   git branch --show-current
-}
-
-branch__V1() {
-  if [[ $1 > "" ]]; then
-    NEW_BRANCH="$1"
-    # REPLACE: FOR OPTIONAL "SBS-" PREFIX
-    git checkout -b "SBS-${NEW_BRANCH}"
-  else
-    git branch-select -l
-  fi
 }
 
 branch() {
@@ -67,18 +54,21 @@ branch() {
   fi
 }
 
-
-
 alias glog=''
 alias b="branch"
 alias .="git status"
 alias s="git status"
 
-
 # ========================================================================= #
 
+# NOTE: V1
 rebase() {
-  git rebase i origin/master
+  git rebase -i origin/master
+}
+
+# NOTE: V2
+_grb() {
+  git fetch && git rebase -i origin/master
 }
 
 commit() {
@@ -92,17 +82,6 @@ commit() {
 }
 
 # TODO: THIS CAUSES *HOT* ERROR (without hitting Enter):
-# "Fatal: No rebase in progress..." - WHY / HOW is this HOT ?????
-# function continue() {
-#   git rebase --continue
-# }
-
-# GIT USER (SILENT)
-
-# function _pr() {
-#   # USEING GITHUB DESKTOP
-#   gh pr checkout $1;
-# };
 
 # NEW BRANCH (CHECKOUT)
 _gb() {
@@ -135,7 +114,7 @@ _gc() {
   fi
 }
 
-# NEW: GIT COMMIT ALL (stages files first, then commits)
+# NEW: GIT ADD ALL + COMMIT (stages files first, then commits)
 _gca() {
   if [[ -n "$1" ]]; then
     message="$1"
@@ -153,60 +132,6 @@ _gca() {
 }
 
 # Function to fetch and rebase, then push if no conflicts
-_gpl__v1() {
-  # Check if inside a git repository
-  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    echo "Not inside a git repository."
-    return 1
-  fi
-
-  local CURRENT_GIT_BRANCH=$(_current_git_branch)
-
-  git fetch && git rebase origin/master
-
-  if [ $? -eq 0 ]; then
-    echo -e "\033[0;35mAbout to --force-with-lease $CURRENT_GIT_BRANCH to origin/master..\nAre you sure? (y/n)\033[0m"
-    read -r response
-    if [[ "$response" =~ ^[Yy]$ ]]; then
-      git push -u origin "$CURRENT_GIT_BRANCH" --force-with-lease
-      echo "\n${_g}✅ DONE\n"
-    else
-      echo "\n${_y}⚠️  Aborted."
-    fi
-  else
-    echo "\n${_y}⚠️  Rebase conflicts detected. Resolve them before pushing."
-  fi
-}
-
-# Function to fetch and rebase, then push if no conflicts
-_gpl__V2() {
-  # Check if inside a git repository
-  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    echo "Not inside a git repository."
-    return 1
-  fi
-
-  local CURRENT_GIT_BRANCH=$(_current_git_branch)
-
-  # Fetch and rebase with squash
-  git fetch && git rebase -i origin/master
-
-  if [ $? -eq 0 ]; then
-    echo -e "\033[0;35mAbout to --force-with-lease $CURRENT_GIT_BRANCH to origin/master..\nAre you sure? (Y/n)\033[0m"
-    read -r response
-    response=${response:-Y}
-    if [[ "$response" =~ ^[Yy]$ ]]; then
-      git push -u origin "$CURRENT_GIT_BRANCH" --force-with-lease
-      echo "\n${_g}✅ DONE\n"
-    else
-      echo "\n${_y}⚠️  Aborted."
-    fi
-  else
-    echo "\n${_y}⚠️  Rebase conflicts detected. Resolve them before pushing."
-  fi
-}
-
-# Function to fetch and rebase, then push if no conflicts
 _gpl() {
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -216,7 +141,7 @@ _gpl() {
 
   # Fetch and rebase with squash
   git fetch
-  local CURRENT_GIT_BRANCH=$(_current_git_branch)
+  local CURRENT_GIT_BRANCH=$(_gcurrent)
   local COMMIT_COUNT=$(git rev-list --count origin/master..HEAD)
 
   if [ "$COMMIT_COUNT" -gt 1 ]; then
@@ -245,6 +170,93 @@ _gpl() {
   fi
 }
 
+# Function to safely push submodule changes and update parent repository
+_gps() {
+  # Check if inside a git repository
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "Not inside a git repository."
+    return 1
+  fi
+
+  # Get parent repository path
+  local PARENT_REPO=$(git rev-parse --show-superproject-working-tree)
+  if [ -z "$PARENT_REPO" ]; then
+    echo "⚠️  Warning: This doesn't appear to be a submodule."
+    echo "Are you sure you want to continue? (Y/n)"
+    read -r response
+    response=${response:-Y}
+    if [[ ! "$response" =~ ^[Yy]$ ]]; then
+      echo "Aborted."
+      return 1
+    fi
+  fi
+
+  # Get current branch (should be master for submodules)
+  local CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  if [ "$CURRENT_BRANCH" != "master" ]; then
+    echo "⚠️  Warning: You're not on master branch (current: $CURRENT_BRANCH)"
+    echo "Submodules typically use master branch. Continue? (Y/n)"
+    read -r response
+    response=${response:-Y}
+    if [[ ! "$response" =~ ^[Yy]$ ]]; then
+      echo "Aborted."
+      return 1
+    fi
+  fi
+
+  # Check for uncommitted changes
+  if ! git diff-index --quiet HEAD --; then
+    echo "⚠️  You have uncommitted changes. Commit them first."
+    return 1
+  fi
+
+  # Push submodule changes
+  echo "📦 Pushing submodule changes to origin master..."
+  if ! git push origin master; then
+    echo "❌ Submodule push failed!"
+    return 1
+  fi
+  echo "✅ Submodule push successful!"
+
+  # If this is a submodule, update parent repository
+  if [ -n "$PARENT_REPO" ]; then
+    echo -e "\n🔄 Updating parent repository..."
+
+    # Store current path
+    local SUBMODULE_PATH=$(git rev-parse --show-prefix)
+
+    # Change to parent repository
+    cd "$PARENT_REPO"
+
+    # Add submodule changes
+    git add "${SUBMODULE_PATH}"
+
+    # Check if there are changes to commit
+    if git diff --cached --quiet; then
+      echo "ℹ️  No changes to commit in parent repository"
+    else
+      # Commit and push if there are changes
+      if git commit -m "chore: update eslint-config submodule"; then
+        echo "✅ Parent repository commit successful!"
+
+        # Push parent repository changes
+        echo -e "\n🚀 Pushing parent repository changes..."
+        if git push; then
+          echo "✅ Parent repository push successful!"
+        else
+          echo "❌ Parent repository push failed!"
+          return 1
+        fi
+      else
+        echo "❌ Parent repository commit failed!"
+        return 1
+      fi
+    fi
+  fi
+
+  echo -e "\n✨ All done! Both submodule and parent repository are up to date."
+}
+
 # GIT FETCH + PULL
 _gf() {
   [ ! -d "./.git" ] && return
@@ -254,7 +266,7 @@ _gf() {
 }
 
 # GIT RESET HEAD with ORIGIN
-_gro() {
+_greset() {
   [ ! -d "./.git" ] && return
   echo "\n${_y}RESET HEAD with Origin.. sure to proceed? (y/n)\n${_0}"
   read -r response

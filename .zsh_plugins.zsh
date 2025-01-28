@@ -2,9 +2,9 @@
 ohmyzsh/ohmyzsh path:lib/git.zsh
 
 # Theme
-ohmyzsh/ohmyzsh path:themes/gallois.zsh-theme
+# ohmyzsh/ohmyzsh path:themes/gallois.zsh-theme
 # starship/starship kind:fpathk
-# romkatv/powerlevel10k
+romkatv/powerlevel10k
 
 # Core plugins and completions (load first)
 zsh-users/zsh-completions

@@ -47,3 +47,15 @@ eval "$(/usr/local/bin/brew shellenv)"
 
 git config --global user.name "Justin Rankin"
 git config --global user.email "REDACTED-EMAIL"
+
+# ============================================================== #
+# NOTE: START colima / docker..
+
+if ! colima status &>/dev/null; then
+  echo "${_grey}Starting Colima...${_0}"
+  colima start &>/dev/null &
+  while ! colima status &>/dev/null; do
+    sleep 1
+  done
+  echo "${_g}Colima is ready${_0}"
+fi

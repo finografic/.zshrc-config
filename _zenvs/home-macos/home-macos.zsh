@@ -27,6 +27,9 @@ source "$ZENV_PATH/$ZENV.dev.zsh"
 # iTERM SHELL INTEGRATION
 source $ZSHRC_ROOT/.iterm2_shell_integration.zsh
 
+# PM2 + VERDACCIO
+# sudo env PATH=$PATH:/Users/REDACTED/.nvm/versions/node/v20.18.2/bin /Users/REDACTED/.nvm/versions/node/v20.18.2/lib/node_modules/pm2/bin/pm2 startup launchd -u justin --hp /Users/REDACTED
+
 # INCLUDES - if NOT in VSCode environment
 [ $TERM_PROGRAM != 'vscode' ] && source "$ZSHRC_ROOT/lib/clean.zsh"
 [ $TERM_PROGRAM != 'vscode' ] && source "$ZENV_PATH/$ZENV.backups.zsh"
@@ -44,3 +47,15 @@ source $ZSHRC_ROOT/.iterm2_shell_integration.zsh
 # INCLUDE PM2 USING macOS "lanchd" // NOTE: MAY REQUIRE "sudo"
 # PM2 startup DOCS: https://pm2.keymetrics.io/docs/usage/startup/
 # [ -e ${NPM_GLOBALS}/pm2 ] && eval "sudo env PATH=\$PATH:${NPM_GLOBALS}/../lib/node_modules/pm2/bin/pm2 startup launchd -u ${USER} --hp ${HOME}";
+
+# ============================================================== #
+# NOTE: START colima / docker..
+
+if ! colima status &>/dev/null; then
+  echo "${_grey}Starting Colima...${_0}"
+  colima start &>/dev/null &
+  while ! colima status &>/dev/null; do
+    sleep 1
+  done
+  echo "${_g}Colima is ready${_0}"
+fi

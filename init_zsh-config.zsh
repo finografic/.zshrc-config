@@ -8,15 +8,6 @@ zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
-# THEME + PROMPT ============================
-
-# Set environment and theme..
-export ZENV=$(determine_environment)
-# TODO: TESTING DEFAULT THEME
-# export ZSH_THEME="gallois-custom" # Using consistent theme across environments
-# source "$ZSHRC_ROOT/themes/prompt.zsh"
-# source "$ZSHRC_ROOT/themes/themes.functions.zsh"
-
 # ZSH SETTINGS ============================
 
 # Load core configurations..

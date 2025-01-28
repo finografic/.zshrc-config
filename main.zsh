@@ -8,17 +8,34 @@ export ZSHRC_ROOT=$HOME/.zshrc-config
 # 1. Environment detection (needed by everything)
 source "$ZSHRC_ROOT/init_get-env.zsh"
 
-# 2. Core Zsh configuration (should be available everywhere)
+# 2. PLUGINS ================================================================= #
+
+source "$ZSHRC_ROOT/.zsh_plugins.zsh"
+
+# 3. THEME + PROMPT ========================================================== #
+
+export ZENV=$(determine_environment)
+# TODO: TESTING DEFAULT THEME
+# export ZSH_THEME="gallois-custom" # Using consistent theme across environments
+# source "$ZSHRC_ROOT/themes/prompt.zsh"
+source "$ZSHRC_ROOT/themes/default.theme.zsh"
+source "$ZSHRC_ROOT/themes/themes.functions.zsh"
+
+# 4. Core Zsh configuration (should be available everywhere) ================= #
+
 source "$ZSHRC_ROOT/init_zsh-config.zsh"
 
-# 3. Locale settings (fundamental)
+# 5. Locale settings (fundamental) =========================================== #
+
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
 
-# 4. VSCode check - exit to minimal config if needed
+# 6. VSCode check - exit to minimal config if needed ========================= #
+
 if [ "$TERM_PROGRAM" = "vscode" ]; then
-  source "$ZSHRC_ROOT/_vscode.zsh"
+  # source "$ZSHRC_ROOT/_zenvs/vscode/vscode.V2.zsh"
+  source "$ZSHRC_ROOT/_zenvs/vscode/vscode.zsh"
   return 0
 fi
 

@@ -16,13 +16,12 @@ source "$ZSHRC_ROOT/lib/keybindings.zsh"
 
 # ANTIDOTE SETTINGS ============================
 
-# VERY CORE FEATURES !!!!
+# VERY CORE FEATURES !!
+setopt autocd
 # Enable autocd - allows changing directories without typing 'cd':
 # - Type a directory path directly: ~/Documents
 # - Drag & drop folders from Finder/Explorer
 # - Use .. to go up a directory
-
-setopt autocd
 
 setopt auto_pushd        # Push the current directory visited on the stack
 setopt pushd_ignore_dups # Do not store duplicates in the stack

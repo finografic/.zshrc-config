@@ -18,25 +18,25 @@ alias path="tr ':' '\n' <<< '$PATH'"
 alias PATH="tr ':' '\n' <<< '$PATH'"
 
 # ENHANCED FOLDER LISTINGS
-alias llh="ls -ld .?*" # list hidden
+alias llh="ls -ld .?*"                                 # list hidden
 alias ll="ls -la --color -h --group-directories-first" #
 
 # subl $(dirname $(gem which colorls))/yaml
 alias lc="colorls -lA --sort-dirs --git-status --report && echo \n" # RUBY GEM ls w/ icons :D
 
 # LIST PERMISSIONS -- HOW TO ADD COLOR ??
-alias lp="stat -c '%A  %a  %U:%G  ___  %n' *"    # SIMPLE
+alias lp="stat -c '%A  %a  %U:%G  ___  %n' *" # SIMPLE
 
 function listing() {
   k -Ah $1
-  [ -d .git ] && git status -uno;
+  [ -d .git ] && git status -uno
 }
 
 function listing_exa() {
   # exa --long --all --group-directories-first --accessed --time-style=long-iso --git $1
-  EXA_IGNORES=".DS_Store|Icon*|.directory";
+  EXA_IGNORES=".DS_Store|Icon*|.directory"
   exa --long --all --ignore-glob="${EXA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
-  [ -d .git ] && git status -uno;
+  [ -d .git ] && git status -uno
 }
 
 function lr() {
@@ -68,14 +68,18 @@ alias t2="tree --dirsfirst -L 2"
 ########################################
 
 # FOLDER FAVORITES
-alias home="cd ~"
+alias home="cd $HOME && l"
 alias www="cd /var/www/ && l"
 # alias test="cd /var/www/html/test && l"
 
+########################################
+##########  UPDATE GHOSTTY  ############
+########################################
 
+GHOSTTY_CONFIG_FILE_PATH="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
 
+update_ghostty_config() {
+  cp -a "$ZSHRC_ROOT/configs/ghostty.config" "$GHOSTTY_CONFIG_FILE_PATH"
+}
 
-
-
-
-
+alias ztty="update_ghostty_config"

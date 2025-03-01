@@ -10,14 +10,13 @@ jest --clearCache >/dev/null 2>&1
 # to: { Component.js, package.json }
 
 function j() {
-  if [[ "$2" > "" ]]; then
-    # jest --config="./jest.config.js" "$1" -t "$2" --runInBand --watch;
-    node 'node_modules/.bin/jest' "$1" -t "$2" --watch
-  elif [[ "$1" > "" ]]; then
-    # jest --config="./jest.config.js" "$1" --runInBand --watch;
-    node 'node_modules/.bin/jest' "$1" --watch
+  jest_cmd=$([[ -f "node_modules/.bin/jest" ]] && echo 'node_modules/.bin/jest' || echo 'npx jest')
+
+  if [[ "$2" != "" ]]; then
+    $jest_cmd "$1" -t "$2" --watch
+  elif [[ "$1" != "" ]]; then
+    $jest_cmd "$1" --watch
   else
-    # npm run test:coverage -- --maxWorkers=2
     npm run test:coverage -- --runInBand
   fi
 }

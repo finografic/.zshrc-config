@@ -6,7 +6,7 @@ export ZSHRC_ROOT=$HOME/.zshrc-config
 # ============================================================================ #
 
 # 1. Environment detection (needed by everything)
-source "$ZSHRC_ROOT/init_get-env.zsh"
+source "$ZSHRC_ROOT/main-get-env.zsh"
 
 # 2. PLUGINS ================================================================= #
 
@@ -23,7 +23,7 @@ source "$ZSHRC_ROOT/themes/themes.functions.zsh"
 
 # 4. Core Zsh configuration (should be available everywhere) ================= #
 
-source "$ZSHRC_ROOT/init_zsh-config.zsh"
+source "$ZSHRC_ROOT/main-zsh-config.zsh"
 
 # 5. Locale settings (fundamental) =========================================== #
 
@@ -42,7 +42,7 @@ fi
 # 5. Full environment setup continues...
 source "$ZSHRC_ROOT/lib/fzf.zsh"
 # source "$ZSHRC_ROOT/lib/nvm.zsh"
-source "$ZSHRC_ROOT/_vendor.zsh" # pnpm and other package managers
+source "$ZSHRC_ROOT/main-vendor.zsh" # pnpm and other package managers
 
 # ============================================================================ #
 
@@ -87,7 +87,7 @@ source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
 source "$ZSHRC_ROOT/lib/nvm.zsh"
 
 # FINALIZATION OUTPUT
-source "$ZSHRC_ROOT/_fin.zsh"
+source "$ZSHRC_ROOT/main-fin.zsh"
 
 # REMOVE DUPLICATES FROM PATH ================================================ #
 

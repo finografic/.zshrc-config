@@ -12,6 +12,15 @@ _g() {
   git status
 }
 
+# GIT CLONE
+_c() {
+  if [[ $1 > "" ]]; then
+    git clone "$1"
+  else
+    echo "\n${_y}⚠️   NO REPO NAME SUPPLIED\n"
+  fi
+}
+
 # GIT LOG, BUT PRETTY-PRINTED !!
 _glog() {
   git log --graph --abbrev-commit --decorate --date=relative --all
@@ -259,15 +268,21 @@ _gps() {
 
 # GIT FETCH + PULL
 _gf() {
-  [ ! -d "./.git" ] && return
+  if [[ ! -d "./.git" ]]; then
+    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
+    return 1
+  fi
   echo "\n${_m}fetching and pulling..\n${_0}"
   git fetch
   git pull
 }
 
 # GIT RESET HEAD with ORIGIN
-_greset() {
-  [ ! -d "./.git" ] && return
+_greset_origin() {
+  if [[ ! -d "./.git" ]]; then
+    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
+    return 1
+  fi
   echo "\n${_y}RESET HEAD with Origin.. sure to proceed? (y/n)\n${_0}"
   read -r response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -277,6 +292,38 @@ _greset() {
   else
     echo "Operation aborted."
     exit 1
+  fi
+}
+
+# GIT RESET TO SPECIFIC COMMIT
+_greset() {
+  if [[ ! -d "./.git" ]]; then
+    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
+    return 1
+  fi
+
+  if [[ -z "$1" ]]; then
+    echo "\n${_y}⚠️  No commit hash provided\n${_0}"
+    return 1
+  fi
+
+  # Check if hash exists and get commit details
+  if commit_info=$(git show --no-patch --format="%H%n%an <%ae>%n%ad%n%n    %s" "$1" 2>/dev/null); then
+    echo "\n${_m}Found commit:${_0}\n"
+    echo "$commit_info\n"
+
+    echo "${_y}Reset HEAD to this commit? (y/n)${_0}"
+    read -r response
+    if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      echo "\n${_grey}Resetting to commit $1..${_0}"
+      git reset --hard "$1"
+      echo "\n${_g}✅ Reset complete${_0}"
+    else
+      echo "\n${_y}Operation aborted.${_0}"
+    fi
+  else
+    echo "\n${_r}❌ Invalid commit hash or commit not found${_0}"
+    return 1
   fi
 }
 

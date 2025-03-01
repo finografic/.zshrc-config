@@ -11,7 +11,7 @@ function repos() {
   cd "$PROJECTS" && l
 }
 
-function npmi() {
+npmi() {
   if [[ -n "$@" ]]; then
     # ARGS PASSED: INSTALL PACKAGES AND UPDATE package-lock.json
     git update-index --no-assume-unchanged -- package-lock.json
@@ -25,7 +25,7 @@ function npmi() {
   fi
 }
 
-function _gclean() {
+_gclean__ORIG() {
   [ ! -d "./.git" ] && return
   echo "\n${_y}CLEAN / DELETE LOCAL GIT BRANCHES.. sure to proceed? (y/n)\n${_0}"
   read -r response
@@ -35,6 +35,26 @@ function _gclean() {
   else
     echo "Operation aborted."
     exit 1
+  fi
+}
+
+_gclean() {
+  local pattern=$1
+  [ ! -d "./.git" ] && return
+
+  if [ -z "$pattern" ]; then
+    echo "\n${_y}Error: Please provide a pattern (e.g., 'T*' for branches starting with T)\n${_0}"
+    return 1
+  fi
+
+  echo "\n${_y}CLEAN / DELETE LOCAL GIT BRANCHES MATCHING '$pattern'.. sure to proceed? (y/n)\n${_0}"
+  read -r response
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    echo "\n${_grey}Proceeding to delete local branches matching '$pattern'..\n${_0}"
+    git branch --merged | grep -E "^[[:space:]]*$pattern$" | xargs git branch -d
+  else
+    echo "Operation aborted."
+    return 1
   fi
 }
 
@@ -54,14 +74,14 @@ export REMOTE_API="/usr/local/lsws/api"
 alias h="ssh -i ~/.ssh/id_hostinger.pub -p 22 $ROOT_ACCESS"
 alias a="ssh -i ~/.ssh/id_hostinger.pub -p 22 apnaes@REDACTED-IP"
 
-function h_get_all() {
+h_get_all() {
   echo "${_c}\nDownloading FULL 'lsws' folder + contents from remote...\n${_0}"
   rsync -avz --progress -e "ssh -p 22" $ROOT_ACCESS:/usr/local/lsws ~/Public
 
   echo "${_g}\nfull 'lsws' folder downloaded to ~/Public\n${_0}"
 }
 
-function h_pub_web() {
+h_pub_web() {
   echo "${_y}\nPublishing WEB: LOCAL -> REMOTE...\n${_0}"
   rsync -avz --progress --no-perms --no-owner --no-group $LOCAL_WEB/dist/ $ROOT_ACCESS:$REMOTE_WEB/html/
 

@@ -5,12 +5,12 @@
 # ZSH CONFIG
 export FZF_DEFAULT_COMMAND='fd --type f --ignore-file .ignore'
 
-function config() {
+config() {
   open -a "/Applications/Visual Studio Code.app" "$ZSHRC_ROOT/zshrc-config.code-workspace"
 }
 
 # REMOVE DUPLICATES FROM PATH - while preserving order
-function flatten_PATH() {
+flatten_PATH() {
   typeset -U PATH
   PATH="${PATH}"
 }
@@ -30,7 +30,7 @@ function config_V1_FZF() {
 }
 
 # ENCHANCED CD ("cd-directory")
-function cdd() {
+cdd() {
   if [ $# -eq 0 ]; then
     cd $(fd --type directory --max-depth 1 | fzf --cycle --reverse) && listing_exa
   else
@@ -109,7 +109,7 @@ own() {
 # }
 
 # IMAGES
-function convert-heic() {
+convert-heic() {
   for f in *.heic; do
     echo "Working on file $f"
     heif-convert $f $f.jpg
@@ -120,14 +120,14 @@ function convert-heic() {
 #############  MISC  #############
 ##################################
 
-function newsh() {
+newsh() {
   NEW_FILE=$1.sh
   echo "#!/bin/zsh" >>$HOME/bin/$NEW_FILE
   chmod +x $HOME/bin/$NEW_FILE
   code $HOME/bin/$NEW_FILE
 }
 
-function numberRound() {
+numberRound() {
   printf "%.0f\n" $1
 }
 

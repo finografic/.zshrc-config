@@ -1,5 +1,7 @@
 PROJECTS="$HOME/dev_projects"
 
+export CPATH=$(xcrun --show-sdk-path)/usr/include
+
 ###############################
 ############  NPM  ############
 ###############################

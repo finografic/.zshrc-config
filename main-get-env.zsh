@@ -3,6 +3,8 @@
 # Load environment variables
 if [[ -f "$HOME/.zshrc-config/.env" ]]; then
   source "$HOME/.zshrc-config/.env"
+  # export GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2)
+  export $(cat source | grep -v '^#' | xargs)
 else
   echo "Warning: .env file not found in ~/.zshrc-config/"
 fi

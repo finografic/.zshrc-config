@@ -5,6 +5,7 @@ export NVM_COMPLETION=true # Enable completion
 
 # Node version preferences by environment
 NODE_VERSION_PREFERRED="20.18.2" # Default
+
 case "$OS_NAME" in
 "Linux" | "macOS") NODE_VERSION_PREFERRED="20.18.2" ;;
 "Android") NODE_VERSION_PREFERRED="20.18.2" ;;
@@ -32,3 +33,31 @@ if [ "$ZENV" != 'apnaes' ]; then
     export NPM_GLOBALS=$NVM_DIR/versions/node/$NODE_CURRENT_VERSION/bin
   fi
 fi
+
+# ============================================================================ #
+# NOTE: NVM AUTOLOAD - ref: https://github.com/nvm-sh/nvm?tab=readme-ov-file#zsh
+
+# place this after nvm initialization!
+autoload -U add-zsh-hook
+
+load-nvmrc() {
+  local nvmrc_path
+  nvmrc_path="$(nvm_find_nvmrc)"
+
+  if [ -n "$nvmrc_path" ]; then
+    local nvmrc_node_version
+    nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+    if [ "$nvmrc_node_version" = "N/A" ]; then
+      nvm install
+    elif [ "$nvmrc_node_version" != "$(nvm version)" ]; then
+      nvm use
+    fi
+  elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
+    echo "Reverting to nvm default version"
+    nvm use default
+  fi
+}
+
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc

@@ -33,3 +33,6 @@ supercrabtree/k
 # These must be last (order matters)
 zsh-users/zsh-history-substring-search
 zsh-users/zsh-syntax-highlighting
+
+# MORE..
+zsh-users/zsh-autosuggestions

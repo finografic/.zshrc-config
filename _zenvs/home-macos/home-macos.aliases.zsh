@@ -1,7 +1,3 @@
-# UNIVERSAL ALIASES
-alias dls="cd $HOME/Downloads && l"
-alias www="cd /var/www && l"
-
 # MY PROJECTS
 PROJECTS="$HOME/repos"
 alias repos="cd $PROJECTS && l"
@@ -25,7 +21,7 @@ PROJECT_APNAES="$HOME/repos-apnaes/apnaes-monorepo"
 PROJECT_ESLINT="$HOME/repos-apnaes/@finografic-eslint-config"
 
 alias vcc="cd $HOME/verdaccio && l"
-alias fino="cd $PROJECTS_MY_NEXT/fino-monorepo && l"
+alias fnx="cd $PROJECTS_MY_NEXT/fnx-monorepo && l"
 alias iox="cd $PROJECT_IOX_LOUPEDECK && l"
 alias apnaes="cd $PROJECT_APNAES && l"
 alias admin="cd $PROJECT_APNAES/apps/client && l"
@@ -69,6 +65,11 @@ find_monorepo_root() {
 @globals() {
   local monorepo=$(find_monorepo_root)
   cd "$monorepo/packages/globals" && l
+}
+
+@editor() {
+  local monorepo=$(find_monorepo_root)
+  cd "$monorepo/packages/plate-editor" && l
 }
 
 @i18n() {

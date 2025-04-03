@@ -1,4 +1,4 @@
-PROJECTS="$HOME/dev_projects"
+REPOS="$HOME/dev_projects"
 
 export CPATH=$(xcrun --show-sdk-path)/usr/include
 
@@ -142,11 +142,11 @@ alias kn='killall -9 node'
 alias i="pnpm install"
 
 #####################################
-#########  PROJECT DEPLOY  ##########
+#########  REPO DEPLOY  ##########
 #####################################
 
 # DEPLOYMENT FOR REACT --> FINOGRAFIC-DEV.COM
-# RUN FROM PROJECT ROOT
+# RUN FROM REPO ROOT
 alias deploy="cross-env GENERATE_SOURCEMAP=false react-scripts build && mv build finografic-dev.com && rsync -avru --delete-before -e 'ssh -p 7822' ./finografic-dev.com ubuntu@REDACTED-IP:/var/www && rm finografic-dev.com -fr"
 
 ##################################
@@ -167,7 +167,7 @@ function site_enable() {
 cx() {
   pm2 stop cronic
   pm2 delete cronic
-  cd $PROJECTS/cronic
+  cd $REPOS/cronic
   rm log/access.log
   rm log/error.log
   pm2 start

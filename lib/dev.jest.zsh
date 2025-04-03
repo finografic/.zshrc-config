@@ -11,11 +11,23 @@ jest --clearCache >/dev/null 2>&1
 
 function j() {
   jest_cmd=$([[ -f "node_modules/.bin/jest" ]] && echo 'node_modules/.bin/jest' || echo 'npx jest')
-
+  # jest --silent --verbose=false --bail
   if [[ "$2" != "" ]]; then
-    $jest_cmd "$1" -t "$2" --watch
+    $jest_cmd "$1" -t "$2" --watch --verbose=false
   elif [[ "$1" != "" ]]; then
-    $jest_cmd "$1" --watch
+    $jest_cmd "$1" --watch --verbose=false
+  else
+    npm run test:coverage -- --runInBand
+  fi
+}
+
+function js() {
+  jest_cmd=$([[ -f "node_modules/.bin/jest" ]] && echo 'node_modules/.bin/jest' || echo 'npx jest')
+  # jest --silent --verbose=false --bail
+  if [[ "$2" != "" ]]; then
+    $jest_cmd "$1" -t "$2" --watch --silent
+  elif [[ "$1" != "" ]]; then
+    $jest_cmd "$1" --watch --silent
   else
     npm run test:coverage -- --runInBand
   fi

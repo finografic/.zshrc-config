@@ -721,7 +721,7 @@
   typeset -g POWERLEVEL9K_RANGER_FOREGROUND=178
   # Custom icon.
   # typeset -g POWERLEVEL9K_RANGER_VISUAL_IDENTIFIER_EXPANSION='⭐'
-  
+
   ####################[ yazi: yazi shell (https://github.com/sxyazi/yazi) ]#####################
   # Yazi shell color.
   typeset -g POWERLEVEL9K_YAZI_FOREGROUND=178
@@ -1041,7 +1041,7 @@
   # Node version color.
   typeset -g POWERLEVEL9K_NODE_VERSION_FOREGROUND=70
   # Show node version only when in a directory tree containing package.json.
-  typeset -g POWERLEVEL9K_NODE_VERSION_PROJECT_ONLY=true
+  typeset -g POWERLEVEL9K_NODE_VERSION_REPO_ONLY=true
   # Custom icon.
   # typeset -g POWERLEVEL9K_NODE_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
@@ -1049,7 +1049,7 @@
   # Go version color.
   typeset -g POWERLEVEL9K_GO_VERSION_FOREGROUND=37
   # Show go version only when in a go project subdirectory.
-  typeset -g POWERLEVEL9K_GO_VERSION_PROJECT_ONLY=true
+  typeset -g POWERLEVEL9K_GO_VERSION_REPO_ONLY=true
   # Custom icon.
   # typeset -g POWERLEVEL9K_GO_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
@@ -1057,7 +1057,7 @@
   # Rust version color.
   typeset -g POWERLEVEL9K_RUST_VERSION_FOREGROUND=37
   # Show rust version only when in a rust project subdirectory.
-  typeset -g POWERLEVEL9K_RUST_VERSION_PROJECT_ONLY=true
+  typeset -g POWERLEVEL9K_RUST_VERSION_REPO_ONLY=true
   # Custom icon.
   # typeset -g POWERLEVEL9K_RUST_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
@@ -1065,7 +1065,7 @@
   # .NET version color.
   typeset -g POWERLEVEL9K_DOTNET_VERSION_FOREGROUND=134
   # Show .NET version only when in a .NET project subdirectory.
-  typeset -g POWERLEVEL9K_DOTNET_VERSION_PROJECT_ONLY=true
+  typeset -g POWERLEVEL9K_DOTNET_VERSION_REPO_ONLY=true
   # Custom icon.
   # typeset -g POWERLEVEL9K_DOTNET_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
@@ -1073,7 +1073,7 @@
   # PHP version color.
   typeset -g POWERLEVEL9K_PHP_VERSION_FOREGROUND=99
   # Show PHP version only when in a PHP project subdirectory.
-  typeset -g POWERLEVEL9K_PHP_VERSION_PROJECT_ONLY=true
+  typeset -g POWERLEVEL9K_PHP_VERSION_REPO_ONLY=true
   # Custom icon.
   # typeset -g POWERLEVEL9K_PHP_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
@@ -1087,7 +1087,7 @@
   # Java version color.
   typeset -g POWERLEVEL9K_JAVA_VERSION_FOREGROUND=32
   # Show java version only when in a java project subdirectory.
-  typeset -g POWERLEVEL9K_JAVA_VERSION_PROJECT_ONLY=true
+  typeset -g POWERLEVEL9K_JAVA_VERSION_REPO_ONLY=true
   # Show brief version.
   typeset -g POWERLEVEL9K_JAVA_VERSION_FULL=false
   # Custom icon.
@@ -1177,7 +1177,7 @@
   # Perlbrew color.
   typeset -g POWERLEVEL9K_PERLBREW_FOREGROUND=67
   # Show perlbrew version only when in a perl project subdirectory.
-  typeset -g POWERLEVEL9K_PERLBREW_PROJECT_ONLY=true
+  typeset -g POWERLEVEL9K_PERLBREW_REPO_ONLY=true
   # Don't show "perl-" at the front.
   typeset -g POWERLEVEL9K_PERLBREW_SHOW_PREFIX=false
   # Custom icon.
@@ -1450,27 +1450,27 @@
   #   -------------------------|--------------------------------------------------------------------
   #   P9K_GCLOUD_CONFIGURATION | gcloud config configurations list --format='value(name)'
   #   P9K_GCLOUD_ACCOUNT       | gcloud config get-value account
-  #   P9K_GCLOUD_PROJECT_ID    | gcloud config get-value project
-  #   P9K_GCLOUD_PROJECT_NAME  | gcloud projects describe $P9K_GCLOUD_PROJECT_ID --format='value(name)'
+  #   P9K_GCLOUD_REPO_ID    | gcloud config get-value project
+  #   P9K_GCLOUD_REPO_NAME  | gcloud projects describe $P9K_GCLOUD_REPO_ID --format='value(name)'
   #
   # Note: ${VARIABLE//\%/%%} expands to ${VARIABLE} with all occurrences of '%' replaced with '%%'.
   #
   # Obtaining project name requires sending a request to Google servers. This can take a long time
-  # and even fail. When project name is unknown, P9K_GCLOUD_PROJECT_NAME is not set and gcloud
-  # prompt segment is in state PARTIAL. When project name gets known, P9K_GCLOUD_PROJECT_NAME gets
+  # and even fail. When project name is unknown, P9K_GCLOUD_REPO_NAME is not set and gcloud
+  # prompt segment is in state PARTIAL. When project name gets known, P9K_GCLOUD_REPO_NAME gets
   # set and gcloud prompt segment transitions to state COMPLETE.
   #
   # You can customize the format, icon and colors of gcloud segment separately for states PARTIAL
   # and COMPLETE. You can also hide gcloud in state PARTIAL by setting
   # POWERLEVEL9K_GCLOUD_PARTIAL_VISUAL_IDENTIFIER_EXPANSION and
   # POWERLEVEL9K_GCLOUD_PARTIAL_CONTENT_EXPANSION to empty.
-  typeset -g POWERLEVEL9K_GCLOUD_PARTIAL_CONTENT_EXPANSION='${P9K_GCLOUD_PROJECT_ID//\%/%%}'
-  typeset -g POWERLEVEL9K_GCLOUD_COMPLETE_CONTENT_EXPANSION='${P9K_GCLOUD_PROJECT_NAME//\%/%%}'
+  typeset -g POWERLEVEL9K_GCLOUD_PARTIAL_CONTENT_EXPANSION='${P9K_GCLOUD_REPO_ID//\%/%%}'
+  typeset -g POWERLEVEL9K_GCLOUD_COMPLETE_CONTENT_EXPANSION='${P9K_GCLOUD_REPO_NAME//\%/%%}'
 
   # Send a request to Google (by means of `gcloud projects describe ...`) to obtain project name
   # this often. Negative value disables periodic polling. In this mode project name is retrieved
   # only when the current configuration, account or project id changes.
-  typeset -g POWERLEVEL9K_GCLOUD_REFRESH_PROJECT_NAME_SECONDS=60
+  typeset -g POWERLEVEL9K_GCLOUD_REFRESH_REPO_NAME_SECONDS=60
 
   # Custom icon.
   # typeset -g POWERLEVEL9K_GCLOUD_VISUAL_IDENTIFIER_EXPANSION='⭐'
@@ -1505,7 +1505,7 @@
   #
   #   typeset -g POWERLEVEL9K_GOOGLE_APP_CRED_TEST_FOREGROUND=28
   #   typeset -g POWERLEVEL9K_GOOGLE_APP_CRED_TEST_VISUAL_IDENTIFIER_EXPANSION='⭐'
-  #   typeset -g POWERLEVEL9K_GOOGLE_APP_CRED_TEST_CONTENT_EXPANSION='$P9K_GOOGLE_APP_CRED_PROJECT_ID'
+  #   typeset -g POWERLEVEL9K_GOOGLE_APP_CRED_TEST_CONTENT_EXPANSION='$P9K_GOOGLE_APP_CRED_REPO_ID'
   typeset -g POWERLEVEL9K_GOOGLE_APP_CRED_CLASSES=(
       # '*:*prod*:*'  PROD    # These values are examples that are unlikely
       # '*:*test*:*'  TEST    # to match your needs. Customize them as needed.
@@ -1523,11 +1523,11 @@
   #   Parameter                        | JSON key file field
   #   ---------------------------------+---------------
   #   P9K_GOOGLE_APP_CRED_TYPE         | type
-  #   P9K_GOOGLE_APP_CRED_PROJECT_ID   | project_id
+  #   P9K_GOOGLE_APP_CRED_REPO_ID   | project_id
   #   P9K_GOOGLE_APP_CRED_CLIENT_EMAIL | client_email
   #
   # Note: ${VARIABLE//\%/%%} expands to ${VARIABLE} with all occurrences of '%' replaced by '%%'.
-  typeset -g POWERLEVEL9K_GOOGLE_APP_CRED_DEFAULT_CONTENT_EXPANSION='${P9K_GOOGLE_APP_CRED_PROJECT_ID//\%/%%}'
+  typeset -g POWERLEVEL9K_GOOGLE_APP_CRED_DEFAULT_CONTENT_EXPANSION='${P9K_GOOGLE_APP_CRED_REPO_ID//\%/%%}'
 
   ##############[ toolbox: toolbox name (https://github.com/containers/toolbox) ]###############
   # Toolbox color.

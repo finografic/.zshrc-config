@@ -27,14 +27,8 @@ fi
 
 # Antidote plugins
 source ${ZDOTDIR:-~}/.antidote/antidote.zsh
-antidote bundle <${ZDOTDIR:-~}/.zshrc-config/.zsh_plugins.zsh >${ZDOTDIR:-~}/.zshrc-config/.zsh_plugins.generated.zsh
-
-# Load generated plugins based on OS
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  source ${ZDOTDIR:-~}/.zshrc-config/.zsh_plugins.generated.linux.zsh
-else
-  source ${ZDOTDIR:-~}/.zshrc-config/.zsh_plugins.generated.macos.zsh
-fi
+antidote bundle <${ZDOTDIR:-~}/.zshrc-config/plugins/.zsh_plugins.zsh >${ZDOTDIR:-~}/.zshrc-config/plugins/.zsh_plugins.generated.zsh
+source ~/.zshrc-config/plugins/.zsh_plugins.generated.zsh
 
 # ============================================================= #
 # NOTE: 4. PROMPT p10k

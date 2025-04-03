@@ -1,12 +1,12 @@
 # MAIN REPOS / PRJOECTS FOLDER
-export PROJECTS_REPORTING="$HOME/repos-reporting"
+export REPOS_REPORTING="$HOME/repos-reporting"
 
 # COMMANDS
 function repos() {
   # msg err "PLEASE USE ALIAS 'dev'" # zsh
   # use my MSG FUNCTION
   # MOVED !!
-  cd "$PROJECTS_REPORTING" && l
+  cd "$REPOS_REPORTING" && l
 }
 
 # TIME-SAVERS

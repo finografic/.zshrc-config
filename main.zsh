@@ -48,9 +48,9 @@ source "$ZSHRC_ROOT/main-vendor.zsh" # pnpm and other package managers
 
 # LOCALE (DEFAULT, MAY BE OVERWRITTEN BY ENV)
 # Editors and IDEs
-export EDITOR="vim"
-export VISUAL="vim" # Some programs check this instead of EDITOR
-export IDE="code"   # or "code-insiders" if you prefer
+export EDITOR="nvim"
+export VISUAL="nvim" # Some programs check this instead of EDITOR
+export IDE="code"    # or "code-insiders" if you prefer
 
 # Editor function (simplified)
 edit() { $EDITOR "$@"; }

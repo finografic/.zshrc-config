@@ -37,7 +37,7 @@ source "$ZENV_PATH/$ZENV.dev.zsh"
 # source $ZSHRC_ROOT/.iterm2_shell_integration.zsh
 
 # PM2 + VERDACCIO
-# sudo env PATH=$PATH:/Users/REDACTED/.nvm/versions/node/v20.18.2/bin /Users/REDACTED/.nvm/versions/node/v20.18.2/lib/node_modules/pm2/bin/pm2 startup launchd -u justin --hp /Users/REDACTED
+# sudo env PATH=$PATH:/Users/REDACTED/.nvm/versions/node/v22.1.0/bin /Users/REDACTED/.nvm/versions/node/v22.1.0/lib/node_modules/pm2/bin/pm2 startup launchd -u justin --hp /Users/REDACTED
 
 # iTerm2 PROFILES > ADVANCED > SMART-SELECTION > ADD:
 # (REGEX for IGNORING CLI PROMPT WHEN SELECTING VIA TRIPLE-CLICK):

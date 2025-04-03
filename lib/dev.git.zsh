@@ -1,30 +1,39 @@
-##################################
-###########  GIT DEV  ############
-##################################
+# ========================================================================= #
+# GIT DEV
+# ========================================================================= #
 
-# GIT STATUS
+# NOTE: GIT CHECKOUT BRANCH and/or STATUS (no args = status)
+
 _g() {
-  # RESET GIT PERMISSIONS
-  # own .git
-  # sudo chgrp -R ${USER} .git/objects
-  # sudo chmod -R g+rws .git/objects
-  # GIT STATUS
-  git status
-}
-
-# GIT CLONE
-_c() {
-  if [[ $1 > "" ]]; then
-    git clone "$1"
+  if [[ -z "$1" ]]; then
+    git status
   else
-    echo "\n${_y}⚠️   NO REPO NAME SUPPLIED\n"
+    git checkout "$1" && git status
   fi
 }
 
+# ========================================================================= #
+
+master() {
+  git checkout master
+  [[ "$1" == "ci" ]] && npm ci
+}
+
+# ========================================================================= #
+# REBASE
+
+_grb() {
+  git fetch && git rebase -i origin/master
+}
+
+# ========================================================================= #
 # GIT LOG, BUT PRETTY-PRINTED !!
+
 _glog() {
   git log --graph --abbrev-commit --decorate --date=relative --all
 }
+
+# ========================================================================= #
 
 # GIT UNTRACK FILE / FOLDERS
 _grm() {
@@ -35,21 +44,9 @@ _grm() {
   fi
 }
 
-checkout() {
-  # REQUIRES NPM PACKAGE: git-branch-select
-  # https://www.npmjs.com/package/git-branch-select
-  git branch-select -l
-}
-
-master() {
-  git checkout master
-  # NOTE: OPT-OUT auto ci build
-  # [[ "$1" != "--skip" ]] && npm ci;
-  # NOTE: OPT-IN auto ci build
-  [[ "$1" == "ci" ]] && npm ci
-}
-
+# ========================================================================= #
 # Function to get the current git branch
+
 _gcurrent() {
   git branch --show-current
 }
@@ -69,30 +66,8 @@ alias .="git status"
 alias s="git status"
 
 # ========================================================================= #
-
-# NOTE: V1
-rebase() {
-  git rebase -i origin/master
-}
-
-# NOTE: V2
-_grb() {
-  git fetch && git rebase -i origin/master
-}
-
-commit() {
-  if [[ $1 > "" ]]; then
-    message="$1"
-    git add .
-    git commit -m "$message" --no-verify
-  else
-    echo "\n${_y}⚠️   NO COMMIT MESSAGE SUPPLIED\n"
-  fi
-}
-
-# TODO: THIS CAUSES *HOT* ERROR (without hitting Enter):
-
 # NEW BRANCH (CHECKOUT)
+
 _gb() {
   if [[ $1 > "" ]]; then
     branch="$1"
@@ -111,36 +86,59 @@ _go() {
   git checkout $1
 }
 
+# ========================================================================= #
+
 # NEW: GIT COMMIT (already staged files only)
 _gc() {
   if [[ -n "$1" ]]; then
     message="$1"
+    shift # Remove first argument (message)
 
-    git commit -m "$message"
-    echo "\n${_g}✅ DONE\n"
+    if git commit -m "$message" "$@"; then
+      echo "\n${_g}✅ DONE\n"
+    fi
   else
     echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
   fi
 }
 
+# ========================================================================= #
 # NEW: GIT ADD ALL + COMMIT (stages files first, then commits)
+
 _gca() {
   if [[ -n "$1" ]]; then
     message="$1"
+    shift # Remove first argument (message)
 
     # Only run git add . if not in office environment
     if [[ "$ZENV" != "office-macos" ]]; then
       git add .
     fi
 
-    git commit -m "$message"
-    echo "\n${_g}✅ DONE\n"
+    if git commit -m "$message" "$@"; then
+      echo "\n${_g}✅ DONE\n"
+    fi
   else
     echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
   fi
 }
 
+# ========================================================================= #
+# GIT FETCH + PULL
+
+_gf() {
+  if [[ ! -d "./.git" ]]; then
+    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
+    return 1
+  fi
+  echo "\n${_m}fetching and pulling..\n${_0}"
+  git fetch
+  git pull
+}
+
+# ========================================================================= #
 # Function to fetch and rebase, then push if no conflicts
+
 _gpl() {
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -179,7 +177,119 @@ _gpl() {
   fi
 }
 
-# Function to safely push submodule changes and update parent repository
+# ========================================================================= #
+# NOTE: GIT MERGE INTO MASTER - ALTERNATIVE (OVERWRITES master WITH SOURCE BRANCH)
+
+_gmm() {
+  if [[ ! -d "./.git" ]]; then
+    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
+    return 1
+  fi
+
+  if [[ -z "$1" ]]; then
+    echo "\n${_y}⚠️  No source branch specified\n${_0}"
+    return 1
+  fi
+
+  local SOURCE_BRANCH="$1"
+  local TARGET_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+  # Check if source branch exists
+  if ! git rev-parse --verify "$SOURCE_BRANCH" >/dev/null 2>&1; then
+    echo "\n${_r}❌ Source branch '$SOURCE_BRANCH' does not exist${_0}"
+    return 1
+  fi
+
+  echo "\n${_y}⚠️  WARNING: This will completely overwrite '$TARGET_BRANCH' with contents from '$SOURCE_BRANCH'${_0}"
+  echo "${_y}⚠️  All files in '$TARGET_BRANCH' will be replaced with files from '$SOURCE_BRANCH'${_0}"
+  echo "\n${_m}Are you sure? (y/N)${_0}"
+  read -r response
+
+  if [[ "$response" =~ ^[Yy]$ ]]; then
+    echo "\n${_grey}Proceeding with overwrite...${_0}"
+
+    # Stash any uncommitted changes
+    git stash push -m "Temporary stash before branch overwrite"
+
+    # Hard reset to source branch
+    if ! git reset --hard "$SOURCE_BRANCH"; then
+      echo "\n${_r}❌ Failed to reset to $SOURCE_BRANCH${_0}"
+      return 1
+    fi
+
+    echo "\n${_g}✅ Successfully overwrote $TARGET_BRANCH with contents of $SOURCE_BRANCH${_0}"
+    echo "${_m}To push these changes to remote, use: git push -f origin $TARGET_BRANCH${_0}"
+  else
+    echo "\n${_y}Operation aborted.${_0}"
+    return 1
+  fi
+}
+
+# ========================================================================= #
+# GIT RESET HEAD with ORIGIN
+
+_greset_origin() {
+  if [[ ! -d "./.git" ]]; then
+    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
+    return 1
+  fi
+  echo "\n${_y}RESET HEAD with Origin.. sure to proceed? (y/n)\n${_0}"
+  read -r response
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    echo "\n${_grey}Proceeding to reset head with origin..\n${_0}"
+    git fetch origin
+    git reset --hard origin/HEAD
+  else
+    echo "Operation aborted."
+    exit 1
+  fi
+}
+
+# ========================================================================= #
+# GIT RESET TO SPECIFIC COMMIT
+
+_greset() {
+  if [[ ! -d "./.git" ]]; then
+    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
+    return 1
+  fi
+
+  if [[ -z "$1" ]]; then
+    echo "\n${_y}⚠️  No commit hash provided\n${_0}"
+    return 1
+  fi
+
+  # Check if hash exists and get commit details
+  if commit_info=$(git show --no-patch --format="%H%n%an <%ae>%n%ad%n%n    %s" "$1" 2>/dev/null); then
+    echo "\n${_m}Found commit:${_0}\n"
+    echo "$commit_info\n"
+
+    echo "${_y}Reset HEAD to this commit? (y/n)${_0}"
+    read -r response
+    if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      echo "\n${_grey}Resetting to commit $1..${_0}"
+      git reset --hard "$1"
+      echo "\n${_g}✅ Reset complete${_0}"
+    else
+      echo "\n${_y}Operation aborted.${_0}"
+    fi
+  else
+    echo "\n${_r}❌ Invalid commit hash or commit not found${_0}"
+    return 1
+  fi
+}
+
+# ========================================================================= #
+
+# GIT CHECKOUT PR + NPM CI
+pr() {
+  gh pr checkout $1
+  npm ci
+}
+
+# ========================================================================= #
+# NOTE: SUBMODULE - function to safely push submodule changes and update parent repository
+
 _gps() {
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -266,72 +376,20 @@ _gps() {
   echo -e "\n✨ All done! Both submodule and parent repository are up to date."
 }
 
-# GIT FETCH + PULL
-_gf() {
-  if [[ ! -d "./.git" ]]; then
-    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
-    return 1
-  fi
-  echo "\n${_m}fetching and pulling..\n${_0}"
-  git fetch
-  git pull
+# ========================================================================= #
+
+_g_PERMISSIONS() {
+  # TODO: ??
+  # RESET GIT PERMISSIONS
+  # own .git
+  # sudo chgrp -R ${USER} .git/objects
+  # sudo chmod -R g+rws .git/objects
+  # GIT STATUS
+  git status
 }
 
-# GIT RESET HEAD with ORIGIN
-_greset_origin() {
-  if [[ ! -d "./.git" ]]; then
-    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
-    return 1
-  fi
-  echo "\n${_y}RESET HEAD with Origin.. sure to proceed? (y/n)\n${_0}"
-  read -r response
-  if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-    echo "\n${_grey}Proceeding to reset head with origin..\n${_0}"
-    git fetch origin
-    git reset --hard origin/HEAD
-  else
-    echo "Operation aborted."
-    exit 1
-  fi
-}
-
-# GIT RESET TO SPECIFIC COMMIT
-_greset() {
-  if [[ ! -d "./.git" ]]; then
-    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
-    return 1
-  fi
-
-  if [[ -z "$1" ]]; then
-    echo "\n${_y}⚠️  No commit hash provided\n${_0}"
-    return 1
-  fi
-
-  # Check if hash exists and get commit details
-  if commit_info=$(git show --no-patch --format="%H%n%an <%ae>%n%ad%n%n    %s" "$1" 2>/dev/null); then
-    echo "\n${_m}Found commit:${_0}\n"
-    echo "$commit_info\n"
-
-    echo "${_y}Reset HEAD to this commit? (y/n)${_0}"
-    read -r response
-    if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-      echo "\n${_grey}Resetting to commit $1..${_0}"
-      git reset --hard "$1"
-      echo "\n${_g}✅ Reset complete${_0}"
-    else
-      echo "\n${_y}Operation aborted.${_0}"
-    fi
-  else
-    echo "\n${_r}❌ Invalid commit hash or commit not found${_0}"
-    return 1
-  fi
-}
-
-# GIT CHECKOUT PR + NPM CI
-pr() {
-  gh pr checkout $1
-  npm ci
-}
+# ========================================================================= #
+# ========================================================================= #
 
 if [ $ZENV != "office-macos" ]; then
   git config --global color.ui true

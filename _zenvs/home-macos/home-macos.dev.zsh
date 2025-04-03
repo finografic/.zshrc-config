@@ -1,6 +1,6 @@
-export PROJECTS="$HOME/repos"
+export REPOS="$HOME/repos"
 
-# UNIVERSAL - DEV ALIAS TO **CURRENT** PROJECT
+# UNIVERSAL - DEV ALIAS TO **CURRENT** REPO
 alias dev="echo 'CHOOSE AN ALIAS!'"
 
 # COMMANDS
@@ -8,7 +8,7 @@ alias dev="echo 'CHOOSE AN ALIAS!'"
 function repos() {
   # msg err "PLEASE USE ALIAS 'dev'" # use my MSG FUNCTION
   # MOVED !!
-  cd "$PROJECTS" && l
+  cd "$REPOS" && l
 }
 
 npmi() {

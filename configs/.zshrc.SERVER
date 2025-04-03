@@ -1,7 +1,3 @@
-export CYPRESS_SBS_USER_PASSWORD=
-export CYPRESS_CF_ACCESS_CLIENT_ID=
-export CYPRESS_CF_ACCESS_CLIENT_SECRET=
-
 # ============================================================= #
 # NOTE: 1. PRE-INIT
 
@@ -30,9 +26,15 @@ fi
 # NOTE: 3. INIT ANTIDOTE + PLUGINS
 
 # Antidote plugins
-source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
-antidote bundle <${ZDOTDIR:-~}/.zshrc-config/.zsh_plugins.zsh >${ZDOTDIR:-~}/.zshrc-config/.zsh_plugins.generated.zsh
-source ~/.zshrc-config/.zsh_plugins.generated.zsh
+source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+antidote bundle <${ZDOTDIR:-~}/.zshrc-config/plugins/.zsh_plugins.zsh >${ZDOTDIR:-~}/.zshrc-config/plugins/.zsh_plugins.generated.zsh
+
+# Load generated plugins based on OS
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  source ${ZDOTDIR:-~}/.zshrc-config/plugins/.zsh_plugins.generated.linux.zsh
+else
+  source ${ZDOTDIR:-~}/.zshrc-config/plugins/.zsh_plugins.generated.macos.zsh
+fi
 
 # ============================================================= #
 # NOTE: 4. PROMPT p10k

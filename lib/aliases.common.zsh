@@ -65,9 +65,10 @@ pn() {
   fi
 }
 
-pnpm() {
-  pn "$@"
-}
+# wrapper for scripts calling `pnpm``
+# pnpm() {
+#   pn "$@"
+# }
 
 pnr() {
   pn remove "$@"

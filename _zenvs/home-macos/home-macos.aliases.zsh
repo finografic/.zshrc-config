@@ -1,33 +1,49 @@
-# MY PROJECTS
-PROJECTS="$HOME/repos"
-alias repos="cd $PROJECTS && l"
-alias misc="cd $HOME/repos-misc && l"
-alias apps="cd $HOME/repos-apps && l"
-alias my="cd $HOME/repos-my && l"
+# MY REPOS
+REPOS="$HOME/repos"
+REPOS_FINO="$HOME/repos-finografic"
+REPOS_NEXT="$HOME/repos-next"
+REPOS_SERVER="$HOME/repos-server"
+REPOS_LOUPEDECK="$HOME/repos-loupedeck"
+REPOS_APNAES="$HOME/repos-apnaes"
 
-alias api="cd $HOME/repos-apnaes/apnaes-api && l"
-alias vite="cd $HOME/repos-apnaes/apnaes-web--VITE && l"
-alias json="cd $PROJECTS/repos-dev-next-my/json-walker && l"
-
-alias driz="cd $HOME/repos-db-api-services/__DRIZZLE__/api-fastify-drizzle && l"
+alias repos="cd $REPOS && l"
+alias misc="cd $REPOS/repos-various && l"
+alias apps="cd $REPOS/repos-x-apps && l"
+alias my="cd $REPOS_FINO && l"
+alias json="cd $REPOS_NEXT/json-walker && l"
+alias driz="cd $REPOS_SERVER/__DRIZZLE__/api-fastify-drizzle && l"
 alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls -lAh'
 
 # ========================================================================= #
-# MY PROJECTS (NEXT!)
+# MY REPOS (NEXT!)
 
-PROJECTS_MY_NEXT="$HOME/repos-my-next"
-PROJECT_IOX_LOUPEDECK="$HOME/repos-loupedeck/iox-loupedeck"
-PROJECT_APNAES="$HOME/repos-apnaes/apnaes-monorepo"
-PROJECT_ESLINT="$HOME/repos-apnaes/@finografic-eslint-config"
+REPO_ESLINT="$REPOS_FINO/@finografic-eslint-config"
+REPO_PLATE="$REPOS_FINO/@finografic-plate-editor"
+REPO_APNAES="$REPOS_APNAES/apnaes-monorepo"
 
-alias vcc="cd $HOME/verdaccio && l"
-alias fnx="cd $PROJECTS_MY_NEXT/fnx-monorepo && l"
-alias iox="cd $PROJECT_IOX_LOUPEDECK && l"
-alias apnaes="cd $PROJECT_APNAES && l"
-alias admin="cd $PROJECT_APNAES/apps/client && l"
+REPO_IOX_LOUPEDECK="$REPOS_FINO/iox-loupedeck"
+REPO_FNX_MONOREPO="$REPOS_FINO/fnx-monorepo"
+
+alias fnx="cd $REPO_FNX_MONOREPO && l"
+alias iox="cd $REPO_IOX_LOUPEDECK && l"
+
+# APNAES
+alias apnaes="cd $REPO_APNAES && l"
+alias mono="cd $REPO_APNAES && l"
+alias admin="cd $REPO_APNAES/apps/client && l"
+alias api="cd $REPOS_APNAES/apnaes-api && l"
+alias vite="cd $REPOS_APNAES/apnaes-web--VITE && l"
+
+@fino() {
+  cd "$REPOS_FINO" && l
+}
 
 @eslint() {
-  cd "$PROJECT_ESLINT" && l
+  cd "$REPO_ESLINT" && l
+}
+
+@plate() {
+  cd "$REPO_PLATE" && l
 }
 
 # ========================================================================= #
@@ -43,7 +59,7 @@ find_monorepo_root() {
     fi
     current=$(dirname "$current")
   done
-  echo "$PROJECT_APNAES"
+  echo "$REPO_APNAES"
   return 1
 }
 

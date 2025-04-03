@@ -1,10 +1,10 @@
-# PROJECTS
-PROJECTS="/home/apnaes/repos"
+# REPOS
+REPOS="/home/apnaes/repos"
 
-alias repos="cd $PROJECTS && l"
-# alias web="cd $PROJECTS/apnaes-web && l"
-# alias admin="cd $PROJECTS/apnaes-web && l"
-# alias api="cd $PROJECTS/apnaes-api && l"
+alias repos="cd $REPOS && l"
+# alias web="cd $REPOS/apnaes-web && l"
+# alias admin="cd $REPOS/apnaes-web && l"
+# alias api="cd $REPOS/apnaes-api && l"
 
 # ========================================================================= #
 # TODO: RUN COMMANDS AS USER `lsadm`..

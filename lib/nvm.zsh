@@ -6,12 +6,13 @@ export NVM_COMPLETION=true # Enable completion
 # Node version preferences by environment
 NODE_VERSION_PREFERRED="20.18.2" # Default
 
+# NOTE: HOME
 case "$OS_NAME" in
-"Linux" | "macOS") NODE_VERSION_PREFERRED="20.18.2" ;;
+"Linux" | "macOS") NODE_VERSION_PREFERRED="22.1.0" ;;
 "Android") NODE_VERSION_PREFERRED="20.18.2" ;;
 esac
 
-# Override for specific environments
+# NOTE: OFFICE + SERVER
 case "$ZENV" in
 "office-macos") NODE_VERSION_PREFERRED="20.11.0" ;;
 "apnaes") NODE_VERSION_PREFERRED="20.18.2" ;;

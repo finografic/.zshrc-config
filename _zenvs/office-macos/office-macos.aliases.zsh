@@ -15,6 +15,8 @@ alias MASTER="cd $REPOS_REPORTING/MASTER/ && l"
 
 # REPOS INVOICING
 alias inv="cd $REPOS_INVOICING/sbc.accounting.invoicing.ui/ && l"
+alias inv2="cd $REPOS_INVOICING/INV_PR_GREEN/ && l"
+alias biz="cd $REPOS_INVOICING/sbc.core.manage-business.ui/ && l"
 
 # REPOS TRADEDOCS + ENTITY
 alias docs="cd $REPOS_TRADE/sbc.accounting.tradedocs.ui/ && l"
@@ -33,9 +35,13 @@ alias tui="cd $REPOS_SBC/sbc.template.ui/ && l"
 alias template="cd $REPOS_SBC/sbc.template.ui/ && l"
 alias cop="cd $REPOS_SBC/sbc.common.copilot.ui/ && l"
 
+@root() {
+  cd "$REPOS_SBC/sbc.core.root-config.ui" && l
+}
+
 alias cm="cd $REPOS_SBC/sbc.accountants.clientmanagement.ui/ && l"
 alias notes="cd $REPOS_SBC/sbc.common.notes.ui/ && l"
-alias glob="cd $REPOS_SBC/sbc.core.globalnav.ui/ && l"
+alias global="cd $REPOS_SBC/sbc.core.globalnav.ui/ && l"
 alias org="cd $REPOS_SBC/sbc.core.orghub.ui/ && l"
 alias aui="cd $REPOS_SBC/sbc.accounting.ui/ && l"
 alias nav="cd $REPOS_SBC/sbc.accounting.ui/ && l"
@@ -50,6 +56,7 @@ alias api="cd $REPOS_SBC/sbc.reporting.reportengine.service/ && l"
 alias vcc="cd $HOME/verdaccio && l"
 alias dev="echo '${_y}CHOOSE AN ALIAS!${_0}'"
 # alias loup="cd $HOME/.local/share/Loupedeck && ls -lAh"
+# /Users/REDACTED/Library/Application Support/Logi/LogiPluginService
 alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls -lAh'
 alias l2="cd $HOME/.local/share && l"
 

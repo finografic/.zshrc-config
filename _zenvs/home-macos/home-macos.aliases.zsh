@@ -18,11 +18,13 @@ alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls 
 # MY REPOS (NEXT!)
 
 REPO_ESLINT="$REPOS_FINO/@finografic-eslint-config"
+REPO_SCRIPTS="$REPOS_FINO/@finografic-project-scripts"
 REPO_PLATE="$REPOS_FINO/@finografic-plate-editor"
 REPO_APNAES="$REPOS_APNAES/apnaes-monorepo"
 
 REPO_IOX_LOUPEDECK="$REPOS_FINO/iox-loupedeck"
 REPO_FNX_MONOREPO="$REPOS_FINO/fnx-monorepo"
+REPO_TOUCH_MONOREPO="$REPOS_FINO/touch-monorepo"
 
 alias fnx="cd $REPO_FNX_MONOREPO && l"
 alias iox="cd $REPO_IOX_LOUPEDECK && l"
@@ -42,8 +44,16 @@ alias vite="cd $REPOS_APNAES/apnaes-web--VITE && l"
   cd "$REPO_ESLINT" && l
 }
 
+@scripts() {
+  cd "$REPO_SCRIPTS" && l
+}
+
 @plate() {
   cd "$REPO_PLATE" && l
+}
+
+@touch() {
+  cd "$REPO_TOUCH_MONOREPO" && l
 }
 
 # ========================================================================= #

@@ -2,6 +2,9 @@
 ########## FINAL INI + RESET MESSAGE   #########
 ################################################
 
+# CLEAN PATH
+export PATH=$(echo "$PATH" | awk -v RS=':' '!a[$1]++{if(NR>1)printf":";printf $1}')
+
 # TODO: MOVED TO main.zsh
 # ENSURE SYYSTEM LANGUAGE IS en_US
 # export LANGUAGE=en_US.UTF-8

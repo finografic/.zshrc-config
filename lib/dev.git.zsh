@@ -23,7 +23,96 @@ master() {
 # REBASE
 
 _grb() {
+  # Fetch and rebase
   git fetch && git rebase -i origin/master
+
+  # Exit if rebase fails
+  if [ $? -ne 0 ]; then
+    echo "\n${_y}⚠️  Rebase conflicts detected. Resolve them before proceeding.${_0}"
+    return 1
+  fi
+
+  # Get the current branch name
+  local CURRENT_BRANCH=$(_gcurrent)
+
+  # Prompt for force-push
+  echo -e "${_m}Force-push with lease? ${_grey}(y/N)${_0}"
+  read -r response
+  response=${response:-N}
+
+  if [[ "$response" =~ ^[Yy]$ ]]; then
+    git push -u origin "$CURRENT_BRANCH" --force-with-lease
+    echo "\n${_g}✅ Force-push complete.${_0}"
+  else
+    echo "\n${_y}⚠️  Force-push aborted.${_0}"
+  fi
+}
+
+# ========================================================================= #
+# GIT AMMEND
+
+_ga() {
+  if [[ $1 > "" ]]; then
+    git commit --ammend "$1" --no-verify
+  else
+    echo "\n${_y}⚠️   NO COMMIT MESSAGE TO AMMEND\n"
+  fi
+}
+
+# ========================================================================= #
+# GIT MERGE-CONTINUE
+
+_gmc() {
+  if [ -f .git/MERGE_HEAD ]; then
+    echo -e "${_m}Merge in progress. Commit with --no-verify..? ${_grey}(y/N)${_0}"
+    read -r response
+    response=${response:-N}
+    git commit --no-verify
+  else
+    echo "\n${_y}⚠️   No merge in progress. Exiting.${_0}\n"
+  fi
+}
+
+# ========================================================================= #
+# GIT CLEAN (DELETE MULTIPLE BRANCHES)
+
+_gclean() {
+  if [[ -z "$1" ]]; then
+    echo "\n${_y}⚠️  No branch pattern specified\n${_0}"
+    return 1
+  fi
+
+  local GLOB_ARG="$1"
+  local AFFECTED_BRANCHES=$(git branch | grep "$GLOB_ARG" || true)
+
+  if [[ -z "$AFFECTED_BRANCHES" ]]; then
+    echo "\n${_y}⚠️  No branches found matching '$GLOB_ARG'\n${_0}"
+    return 1
+  fi
+
+  echo "\n\n${_grey}${_B}Using '${_y}${_B}${GLOB_ARG}${_grey}${_B}*' will ${_y}${_B}DELETE${_grey}${_B} the following branches:${_0}\n"
+  echo "${_y}$AFFECTED_BRANCHES${_0}\n"
+
+  # Get preserved branches by excluding the deletion pattern
+  local BASE_PATTERN=${GLOB_ARG%[0-9]*} # Remove numbers and everything after
+  local PRESERVED_BRANCHES=$(git branch | grep "$BASE_PATTERN" | grep -v "$GLOB_ARG" || true)
+
+  if [[ ! -z "$PRESERVED_BRANCHES" ]]; then
+    echo "${_grey}${_B}Preserves the following branches:${_0}\n"
+    echo "${_c}$PRESERVED_BRANCHES${_0}\n"
+  fi
+
+  echo "${_r}⚠️   Are you sure you want to DELETE these branches? ${_grey}(y/N)${_0}\n"
+  read -r response
+  response=${response:-N}
+
+  if [[ "$response" =~ ^[Yy]$ ]]; then
+    echo "\n${_grey}Deleting branches...${_0}"
+    git branch | grep "$GLOB_ARG" | xargs git branch -D
+    echo "\n${_g}✅ Branch cleanup complete${_0}\n"
+  else
+    echo "\n${_y}Operation aborted${_0}\n"
+  fi
 }
 
 # ========================================================================= #
@@ -40,7 +129,7 @@ _grm() {
   if [[ $1 > "" ]]; then
     git rm --cached "$1"
   else
-    echo "\n${_y}⚠️   NO FILE SPECIFIED TO UN-TRACK\n"
+    echo "\n${_y}⚠️   NO FILE SPECIFIED TO UN-TRACK${_0}\n"
   fi
 }
 
@@ -105,18 +194,29 @@ _gc() {
 # ========================================================================= #
 # NEW: GIT ADD ALL + COMMIT (stages files first, then commits)
 
+# NEW: GIT ADD + COMMIT
 _gca() {
   if [[ -n "$1" ]]; then
     message="$1"
     shift # Remove first argument (message)
 
-    # Only run git add . if not in office environment
-    if [[ "$ZENV" != "office-macos" ]]; then
-      git add .
-    fi
+    # Confirm prompt, if in office environment
+    if [[ "$ZENV" == "office-macos" ]]; then
+      echo -e "${_m}Are you sure? ${_grey}(y/N)${_0}"
+      read -r response
+      response=${response:-N}
 
-    if git commit -m "$message" "$@"; then
-      echo "\n${_g}✅ DONE\n"
+      if [[ "$response" =~ ^[Yy]$ ]]; then
+        git add . && git commit -m "$message" "$@"
+        echo "\n${_g}✅ DONE\n"
+      else
+        echo "\n${_y}⚠️  Operation aborted.${_0}"
+        return 1
+      fi
+    else
+      if git add . && git commit -m "$message" "$@"; then
+        echo "\n${_g}✅ DONE\n"
+      fi
     fi
   else
     echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
@@ -163,7 +263,7 @@ _gpl() {
 
   # git rebase -i origin/master
   if [ $? -eq 0 ]; then
-    echo -e "\033[0;35mAbout to --force-with-lease $CURRENT_GIT_BRANCH to origin/master..\nAre you sure? (Y/n)\033[0m"
+    echo -e "${_m}About to --force-with-lease $CURRENT_GIT_BRANCH to origin/master..\nAre you sure? ${_grey}(y/N)${_0}"
     read -r response
     response=${response:-Y}
     if [[ "$response" =~ ^[Yy]$ ]]; then
@@ -202,7 +302,7 @@ _gmm() {
 
   echo "\n${_y}⚠️  WARNING: This will completely overwrite '$TARGET_BRANCH' with contents from '$SOURCE_BRANCH'${_0}"
   echo "${_y}⚠️  All files in '$TARGET_BRANCH' will be replaced with files from '$SOURCE_BRANCH'${_0}"
-  echo "\n${_m}Are you sure? (y/N)${_0}"
+  echo "\n${_m}Are you sure? ${_grey}(y/N)${_0}"
   read -r response
 
   if [[ "$response" =~ ^[Yy]$ ]]; then
@@ -264,7 +364,7 @@ _greset() {
     echo "\n${_m}Found commit:${_0}\n"
     echo "$commit_info\n"
 
-    echo "${_y}Reset HEAD to this commit? (y/n)${_0}"
+    echo "${_y}Reset HEAD to this commit? ${_grey}(y/N)${_0}"
     read -r response
     if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
       echo "\n${_grey}Resetting to commit $1..${_0}"

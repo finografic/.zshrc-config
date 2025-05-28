@@ -73,7 +73,6 @@ node "$ZSHRC_ROOT/lib/spinner.js"
 # CORE
 source "$ZSHRC_ROOT/lib/colors.zsh"
 # source "$ZSHRC_ROOT/lib/paths.$OS_NAME_LOWER.zsh"
-export PATH=$HOME/.nvm/versions/node/$(node --version)/bin:$PATH
 export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/bin:$PATH
 

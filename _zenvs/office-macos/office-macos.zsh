@@ -21,13 +21,29 @@ eval "$(/usr/local/bin/brew shellenv)"
 
 # INCLUDES: DEFAULTS
 source "$ZSHRC_ROOT/lib/aliases.common.zsh"
-source "$ZSHRC_ROOT/lib/dev.git.zsh"
+source "$ZSHRC_ROOT/lib/git.zsh"
 source "$ZSHRC_ROOT/lib/dev.jest.zsh"
+source "$ZSHRC_ROOT/lib/maintenance.zsh"
 
 # INCLUDES: DEV ZENV-SPECIFIC
 source "$ZENV_PATH/$ZENV.paths.zsh"
 source "$ZENV_PATH/$ZENV.aliases.zsh"
 source "$ZENV_PATH/$ZENV.dev.zsh"
+
+# ============================================================== #
+# GIT UTIL OVERRIDE
+
+# Branch operations
+_gb() {
+  if [[ $1 > "" ]]; then
+    NEW_BRANCH="SBS-${1}"
+    git checkout -b "${NEW_BRANCH/SBS-SBS/"SBS"}"
+  else
+    # git branch-select -l
+    echo "\n${_y}⚠️   NO BRANCH NAME SUPPLIED\n"
+    checkout # git branch-select
+  fi
+}
 
 # ============================================================== #
 
@@ -53,8 +69,22 @@ update_ghostty_config
 
 # ============================================================== #
 
+# Setup git config
+if [ -f "$ZSHRC_ROOT/.gitconfig" ]; then
+  chmod 600 "$ZSHRC_ROOT/.gitconfig"
+  cp "$ZSHRC_ROOT/.gitconfig" "$ZSHRC_ROOT/.git/config"
+  # git config --local --get user.name || git config --local user.name "Justin Rankin"
+  # git config --local --get user.email || git config --local user.email "justin.blair.rankin@gmail.com"
+fi
+
+if [ -f "$ZSHRC_ROOT/.git/config" ]; then
+  chmod 600 "$ZSHRC_ROOT/.git/config"
+fi
+
 git config --global user.name "Justin Rankin"
 git config --global user.email "REDACTED-EMAIL"
+
+# ...existing code...
 
 # ============================================================== #
 # NOTE: START colima / docker..

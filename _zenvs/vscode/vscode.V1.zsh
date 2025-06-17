@@ -11,7 +11,7 @@ source "$ZSHRC_ROOT/lib/utils.zsh"
 source "$ZSHRC_ROOT/lib/utils.disk.zsh"
 source "$ZSHRC_ROOT/lib/common.zsh"
 source "$ZSHRC_ROOT/lib/dev.zsh"
-source "$ZSHRC_ROOT/lib/dev.git.zsh"
+source "$ZSHRC_ROOT/lib/git.zsh"
 source "$ZSHRC_ROOT/lib/dev.jest.zsh"
 
 # iTERM SHELL INTEGRATION

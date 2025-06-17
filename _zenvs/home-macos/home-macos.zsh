@@ -18,7 +18,7 @@ eval "$(/usr/local/bin/brew shellenv)"
 
 # INCLUDES: DEFAULTS
 source "$ZSHRC_ROOT/lib/aliases.common.zsh"
-source "$ZSHRC_ROOT/lib/dev.git.zsh"
+source "$ZSHRC_ROOT/lib/git.zsh"
 source "$ZSHRC_ROOT/lib/dev.jest.zsh"
 
 # INCLUDES: MISC

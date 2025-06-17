@@ -18,4 +18,4 @@ code() { eval "$(which jmate) $@"; }
 source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.paths.zsh"
 source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.aliases.zsh"
 source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.dev.zsh"
-source "$ZSHRC_ROOT/lib/dev.git.zsh"
+source "$ZSHRC_ROOT/lib/git.zsh"

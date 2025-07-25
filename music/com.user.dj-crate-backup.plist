@@ -3,21 +3,31 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.user.musicbackup</string>
+    <string>com.user.dj-crate-backup.plist</string>
     <key>ProgramArguments</key>
     <array>
         <string>/bin/zsh</string>
-        <string>/Users/REDACTED/.zshrc-config/scripts/backup-dj-crate.zsh</string>
+        <string>/Users/REDACTED/.zshrc-config/music/backup-dj-crate.zsh</string>
     </array>
     <key>StartCalendarInterval</key>
-    <dict>
+    <array>
+      <dict>
         <key>Hour</key>
         <integer>4</integer>
         <key>Minute</key>
         <integer>0</integer>
         <key>Weekday</key>
         <integer>1</integer>
-    </dict>
+      </dict>
+      <dict>
+        <key>Hour</key>
+        <integer>4</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+        <key>Weekday</key>
+        <integer>4</integer>
+      </dict>
+    </array>
     <key>StandardOutPath</key>
     <string>/tmp/musicbackup.log</string>
     <key>StandardErrorPath</key>

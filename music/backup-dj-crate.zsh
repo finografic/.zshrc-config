@@ -1,7 +1,14 @@
 #!/bin/zsh
 
+set -euo pipefail
+
+# Function to strip ANSI color codes
+strip_colors() {
+  sed 's/\x1b\[[0-9;]*m//g'
+}
+
 backup_music() {
-  local FOLDER_NAME="_DJ BAG"
+  local FOLDER_NAME="_DJ-CRATE"
   local SOURCE="/Volumes/SSD.MUSIC/${FOLDER_NAME}"
   local DEST="/Volumes/timemachine-music/${FOLDER_NAME} backups"
   local LATEST="${DEST}/latest"
@@ -11,7 +18,8 @@ backup_music() {
 
   # Ensure source exists
   if [ ! -d "${SOURCE}" ]; then
-    echo "Source volume not mounted: ${SOURCE}" | tee -a "${LOG}"
+    msg="Source volume not mounted: ${SOURCE}"
+    echo "$msg" | tee >(strip_colors >> "${LOG}")
     return 1
   fi
 
@@ -26,14 +34,15 @@ backup_music() {
   fi
 
   # Start logging
-  echo "${_c}Starting backup at $(date)...${_0}\n" | tee -a "${LOG}"
+  msg="${_c}Starting backup at $(date)...${_0}\n"
+  echo -e "$msg" | tee >(strip_colors >> "${LOG}")
 
   # Create new backup using hard links to previous backup for unchanged files
   rsync -av --delete \
     -E \
     --link-dest="${LATEST}" \
     "${SOURCE}/" \
-    "${BACKUP}" 2>&1 | tee -a "${LOG}"
+    "${BACKUP}" 2>&1 | tee >(strip_colors >> "${LOG}")
 
   # Update 'latest' symlink and set icons
   if [ $? -eq 0 ]; then
@@ -46,11 +55,11 @@ backup_music() {
       SetFile -a C "${BACKUP}"
     fi
 
-    # echo "\n\033[32m✅ Backup completed successfully\033[0m\n" | tee -a "${LOG}"
-    echo "\n${_g}✅ Backup completed successfully${_0}\n" | tee -a "${LOG}"
+    msg="\n${_g}✅ Backup completed successfully at $(date)${_0}\n"
+    echo -e "$msg" | tee >(strip_colors >> "${LOG}")
   else
-    # echo "\n\033[31m❌ Backup failed!\033[0m\n" | tee -a "${LOG}"
-    echo "\n${_r}❌ Backup failed!${_0}\n" | tee -a "${LOG}"
+    msg="\n${_r}❌ Backup failed at $(date)!${_0}\n"
+    echo -e "$msg" | tee >(strip_colors >> "${LOG}")
     return 1
   fi
 
@@ -61,17 +70,17 @@ backup_music() {
 # Run the backup
 # backup_music
 
-# <!-- ~/Library/LaunchAgents/com.user.musicbackup.plist -->
+# <!-- ~/Library/LaunchAgents/com.user.dj-crate-backup.plist -->
 # <?xml version="1.0" encoding="UTF-8"?>
 # <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 # <plist version="1.0">
 # <dict>
 #     <key>Label</key>
-#     <string>com.user.musicbackup</string>
+#     <string>com.user.dj-crate-backup.plist</string>
 #     <key>ProgramArguments</key>
 #     <array>
 #         <string>/bin/zsh</string>
-#         <string>/Users/REDACTED/.zshrc-config/scripts/backup-dj-crate.zsh</string>
+#         <string>/Users/REDACTED/.zshrc-config/music/backup-dj-crate.zsh</string>
 #     </array>
 #     <key>StartCalendarInterval</key>
 #     <dict>
@@ -90,12 +99,12 @@ backup_music() {
 # </plist>
 
 # 1.
-# Save as ~/scripts/backup-dj-crate.zsh
-# chmod +x ~/scripts/backup-dj-crate.zsh
+# Save as ~/music/backup-dj-crate.zsh
+# chmod +x ~/music/backup-dj-crate.zsh
 
 # 2.
-# Save plist to ~/Library/LaunchAgents/com.user.musicbackup.plist
-# launchctl load ~/Library/LaunchAgents/com.user.musicbackup.plist
+# Save plist to ~/Library/LaunchAgents/com.user.dj-crate-backup.plist
+# launchctl load ~/Library/LaunchAgents/com.user.dj-crate-backup.plist
 
 # 3.
-# ~/scripts/backup-dj-crate.zsh
+# ~/music/backup-dj-crate.zsh

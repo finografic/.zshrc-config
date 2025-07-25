@@ -66,7 +66,7 @@ function update() {
 
 # DELETE ALL node_modules RECURSIVELY
 clean-node-modules() {
-  echo "\033[90m🔍 Finding node_modules directories...\033[0m"
+  echo "\n${_c}🔍 Finding node_modules directories...${_0}"
 
   # Get directories and sort by path depth (shortest first)
   dirs=($(fd -H -I "^node_modules$" -t d | awk '{print length, $0}' | sort -n | cut -d" " -f2-))
@@ -76,12 +76,12 @@ clean-node-modules() {
 
   # If no directories found
   if [ ${#dirs[@]} -eq 0 ]; then
-    echo "\033[90mNo node_modules directories found.\033[0m"
+    echo "${_w}No node_modules directories found.${_0}\n"
     return 0
   fi
 
   # Show total count
-  echo "\033[90mFound ${#dirs[@]} node_modules directories.\033[0m"
+  echo "${_y}Found ${#dirs[@]} node_modules directories.${_0}\n"
 
   # Process each directory
   for dir in "${dirs[@]}"; do
@@ -91,13 +91,13 @@ clean-node-modules() {
       size_bytes=$(du -s "$dir" 2>/dev/null | cut -f1)
 
       if [ ! -z "$size" ]; then
-        echo "\033[90m🗑️  Removing $dir (size: $size)\033[0m"
+        echo "\n${_grey}🗑️  Removing $dir (size: $size)${_0}\n"
 
         # Try to remove with sudo if normal remove fails
         if ! rm -rf "$dir" 2>/dev/null; then
-          echo "\033[93m⚠️  Permission denied, trying with sudo...\033[0m"
+          echo "${_y}⚠️  Permission denied, trying with sudo...${_0}"
           sudo rm -rf "$dir" || {
-            echo "\033[91m❌ Failed to remove: $dir\033[0m"
+            echo "${_r}❌ Failed to remove: $dir${_0}"
             failed_dirs+=("$dir")
           }
         fi
@@ -106,15 +106,15 @@ clean-node-modules() {
   done
 
   # Final summary
-  echo "\n\033[92m✨ Cleanup complete!\033[0m\n"
+  echo "\n${_g}✨ Cleanup complete!${_0}\n"
 
   # Report any failures
   if [ ${#failed_dirs[@]} -gt 0 ]; then
-    echo "\033[93m\nWarning: The following directories had permission issues:\033[0m"
+    echo "\n${_y}Warning: The following directories had permission issues:${_0}"
     for failed in "${failed_dirs[@]}"; do
-      echo "\033[93m  - $failed\033[0m"
+      echo "${_r}  - $failed${_0}"
     done
-    echo "\033[93mYou might need to remove these manually with sudo\033[0m"
+    echo "${_y}You might need to remove these manually with sudo${_0}"
   fi
 }
 

@@ -2,6 +2,7 @@
 export REPOS_SBC="$HOME/sbc-repos"
 export REPOS_REPORTING="$HOME/sbc-reporting"
 export REPOS_INVOICING="$HOME/sbc-invoicing"
+export REPOS_BANKING="$HOME/sbc-banking"
 export REPOS_TRADE="$HOME/sbc-tradedocs"
 export REPOS_PF="$HOME/repos-pioneer"
 

@@ -11,7 +11,7 @@ function repos() {
   cd "$REPOS" && l
 }
 
-npmi() {
+function npmi() {
   if [[ -n "$@" ]]; then
     # ARGS PASSED: INSTALL PACKAGES AND UPDATE package-lock.json
     git update-index --no-assume-unchanged -- package-lock.json

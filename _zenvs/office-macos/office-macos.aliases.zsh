@@ -18,6 +18,9 @@ alias inv="cd $REPOS_INVOICING/sbc.accounting.invoicing.ui/ && l"
 alias inv2="cd $REPOS_INVOICING/INV_PR_GREEN/ && l"
 alias biz="cd $REPOS_INVOICING/sbc.core.manage-business.ui/ && l"
 
+# REPOS BANKING
+alias bank="cd $REPOS_BANKING/sbc.accounting.banking.ui/ && l"
+
 # REPOS TRADEDOCS + ENTITY
 alias docs="cd $REPOS_TRADE/sbc.accounting.tradedocs.ui/ && l"
 alias trade="cd $REPOS_TRADE/sbc.accounting.tradeentity.ui/ && l"

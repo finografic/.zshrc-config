@@ -30,14 +30,14 @@ vsclean() {
   esac
 
   echo "\n${_grey}Cache Locations:${_0}"
-  echo "${_y}1. Code Storage${_0}"
-  echo "${_y}2. Cache files${_0}"
-  echo "${_y}3. Crash Reports${_0}"
-  echo "${_y}4. Workbench State${_0}"
-  echo "${_y}5. Extensions${_0}"
-  echo "${_y}6. All of the above${_0}"
+  echo "${_y}1. Code Storage ${_grey}- Clears user settings and state files${_0}"
+  echo "${_y}2. Cache files ${_grey}- Removes temporary data and cached resources${_0}"
+  echo "${_y}3. Crash Reports ${_grey}- Cleans up crash logs and diagnostics${_0}"
+  echo "${_y}4. Workbench State ${_grey}- Resets workspace-specific settings${_0}"
+  # echo "${_y}5. Extensions ${_grey}- Removes ALL installed extensions (requires reinstall)${_0}"
 
-  echo "\n${_r}⚠️  Which cache would you like to clear? ${_grey}(1-6 or N to cancel)${_0}\n"
+  # echo "\n${_r}⚠️  Which cache would you like to clear? ${_grey}(1-5, A for ALL, Enter to cancel)${_0}\n"
+  echo "\n${_r}⚠️  Which cache would you like to clear? ${_grey}(1-4, A for ALL, Enter to cancel)${_0}\n"
   read -r response
   response=${response:-N}
 
@@ -59,12 +59,12 @@ vsclean() {
     rm -rf ~/Library/Application\ Support/${CODE_PATH}/User/workspaceStorage/*
     echo "\n${_g}✅ Workbench state cleared${_0}\n"
     ;;
-  5)
-    rm -rf ~/.${CODE_PATH}/extensions/*
-    echo "\n${_g}✅ Extensions cleared${_0}\n"
-    echo "${_y}⚠️  You'll need to reinstall your extensions${_0}\n"
-    ;;
-  6)
+  # 5)
+  #   rm -rf ~/.${CODE_PATH}/extensions/*
+  #   echo "\n${_g}✅ Extensions cleared${_0}\n"
+  #   echo "${_y}⚠️  You'll need to reinstall your extensions${_0}\n"
+  #   ;;
+  [Aa])
     echo "\n${_r}⚠️  This will clear ALL caches and extensions! Continue? ${_grey}(y/N)${_0}\n"
     read -r confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then

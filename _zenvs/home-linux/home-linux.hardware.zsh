@@ -61,13 +61,6 @@ DISPLAY_MAIN="eDP-1-1"
 DISPLAY_EXT="HDMI-1-1"
 export BRIGHTNESS=1.4
 
-# MOUNT EXTERNAL DRIVES
-# PATH_ORIG=$(pwd)
-# cd /media/justin/HD1TB_p1/ 2> /dev/null
-# cd /media/justin/HD1TB_p2/ 2> /dev/null
-# cd /media/justin/WALKMAN/MUSIC/ 2> /dev/null
-# cd $PATH_ORIG 2> /dev/null
-
 # KEYBOARD CONFIG - Satechi MX Keyboards
 # SET: SWAP WIN-KEYS for CTRL-KEYS
 setxkbmap -symbols "pc+us(mac)+us(altgr-intl):2+es(mac):3+inet(evdev)+ctrl(swap_lwin_lctl)+ctrl(swap_rwin_rctl)"

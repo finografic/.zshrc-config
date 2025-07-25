@@ -59,7 +59,7 @@ backup_music() {
 }
 
 # Run the backup
-backup_music
+# backup_music
 
 # <!-- ~/Library/LaunchAgents/com.user.musicbackup.plist -->
 # <?xml version="1.0" encoding="UTF-8"?>
@@ -71,7 +71,7 @@ backup_music
 #     <key>ProgramArguments</key>
 #     <array>
 #         <string>/bin/zsh</string>
-#         <string>/Users/REDACTED/.zshrc-config/scripts/backup-music.zsh</string>
+#         <string>/Users/REDACTED/.zshrc-config/scripts/backup-dj-crate.zsh</string>
 #     </array>
 #     <key>StartCalendarInterval</key>
 #     <dict>
@@ -90,12 +90,12 @@ backup_music
 # </plist>
 
 # 1.
-# Save as ~/scripts/backup-music.zsh
-# chmod +x ~/scripts/backup-music.zsh
+# Save as ~/scripts/backup-dj-crate.zsh
+# chmod +x ~/scripts/backup-dj-crate.zsh
 
 # 2.
 # Save plist to ~/Library/LaunchAgents/com.user.musicbackup.plist
 # launchctl load ~/Library/LaunchAgents/com.user.musicbackup.plist
 
 # 3.
-# ~/scripts/backup-music.zsh
+# ~/scripts/backup-dj-crate.zsh

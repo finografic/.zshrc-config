@@ -12,7 +12,14 @@ export NVM="true"
 # export BUN_INSTALL="$HOME/.bun"
 # export PATH="$BUN_INSTALL/bin:$PATH"
 
-eval "$(/usr/local/bin/brew shellenv)"
+# Dynamic brew path detection
+if [[ -f "/opt/homebrew/bin/brew" ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -f "/usr/local/bin/brew" ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+else
+  echo "Warning: Homebrew not found in /opt/homebrew/bin/brew or /usr/local/bin/brew"
+fi
 
 # ============================================================== #
 
@@ -30,6 +37,10 @@ source "$ZENV_PATH/$ZENV.backups.zsh"
 source "$ZENV_PATH/$ZENV.paths.zsh"
 source "$ZENV_PATH/$ZENV.aliases.zsh"
 source "$ZENV_PATH/$ZENV.dev.zsh"
+
+# INCLUDES: SCRIPTS
+source "$ZSHRC_ROOT/scripts/backup-music.zsh"
+# backup_music
 
 # ============================================================== #
 

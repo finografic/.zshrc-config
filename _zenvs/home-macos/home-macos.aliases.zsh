@@ -44,9 +44,9 @@ alias vite="cd $REPOS_APNAES/apnaes-web--VITE && l"
   cd "$REPO_ESLINT" && l
 }
 
-@scripts() {
-  cd "$REPO_SCRIPTS" && l
-}
+# @scripts() {
+#   cd "$REPO_SCRIPTS" && l
+# }
 
 @plate() {
   cd "$REPO_PLATE" && l
@@ -103,9 +103,24 @@ find_monorepo_root() {
   cd "$monorepo/packages/i18n" && l
 }
 
-@shared() {
+@core() {
   local monorepo=$(find_monorepo_root)
-  cd "$monorepo/packages/shared" && l
+  cd "$monorepo/packages/core" && l
+}
+
+@purge() {
+  local monorepo=$(find_monorepo_root)
+  cd "$monorepo/packages/purge-builds" && l
+}
+
+@scripts() {
+  local monorepo=$(find_monorepo_root)
+  cd "$monorepo/packages/scripts" && l
+}
+
+@types() {
+  local monorepo=$(find_monorepo_root)
+  cd "$monorepo/packages/types" && l
 }
 
 # ========================================================================= #

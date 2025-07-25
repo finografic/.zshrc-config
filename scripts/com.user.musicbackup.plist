@@ -7,7 +7,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>/bin/zsh</string>
-        <string>/Users/REDACTED/.zshrc-config/scripts/backup-music.zsh</string>
+        <string>/Users/REDACTED/.zshrc-config/scripts/backup-dj-crate.zsh</string>
     </array>
     <key>StartCalendarInterval</key>
     <dict>

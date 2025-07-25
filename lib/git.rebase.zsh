@@ -17,7 +17,7 @@ _grb() {
   local CURRENT_BRANCH=$(_gcurrent)
 
   # Prompt for force-push
-  echo -e "${_m}Force-push with lease? ${_grey}(y/N)${_0}"
+  echo -e "\n${_m}Force-push with lease $CURRENT_BRANCH to origin? ${_grey}(y/N)${_0}"
   read -r response
   response=${response:-N}
 
@@ -29,8 +29,8 @@ _grb() {
   fi
 }
 
-# Fetch, rebase, and push
-_gpl() {
+# Fetch, rebase, and push with squash
+_grbs() {
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "Not inside a git repository."
@@ -39,10 +39,11 @@ _gpl() {
 
   # Fetch and rebase with squash
   git fetch
-  local CURRENT_GIT_BRANCH=$(_gcurrent)
+  local CURRENT_BRANCH=$(_gcurrent)
   local COMMIT_COUNT=$(git rev-list --count origin/master..HEAD)
 
   if [ "$COMMIT_COUNT" -gt 1 ]; then
+    # export EDITOR="sed -i -e '/^# This is the [2-9].*commit message:/,/^#$/d'"
     # If more than 1 commit, do an automatic rebase with squash
     GIT_SEQUENCE_EDITOR="sed -i -e '2,\$s/^pick/squash/'" git rebase -i origin/master
   elif [ "$COMMIT_COUNT" -eq 1 ]; then
@@ -54,11 +55,11 @@ _gpl() {
 
   # git rebase -i origin/master
   if [ $? -eq 0 ]; then
-    echo -e "${_m}About to --force-with-lease $CURRENT_GIT_BRANCH to origin/master..\nAre you sure? ${_grey}(y/N)${_0}"
+    echo -e "\n${_m}Force-push with lease $CURRENT_BRANCH to origin? ${_grey}(y/N)${_0}"
     read -r response
     response=${response:-Y}
     if [[ "$response" =~ ^[Yy]$ ]]; then
-      git push -u origin "$CURRENT_GIT_BRANCH" --force-with-lease
+      git push -u origin "$CURRENT_BRANCH" --force-with-lease
       echo "\n${_g}✅ DONE\n"
     else
       echo "\n${_y}⚠️  Aborted."

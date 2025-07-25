@@ -8,7 +8,7 @@ NODE_VERSION_PREFERRED="22.15.0" # Default
 
 # NOTE: HOME
 case "$OS_NAME" in
-"Linux" | "macOS") NODE_VERSION_PREFERRED="22.15.0" ;;
+"Linux" | "macOS") NODE_VERSION_PREFERRED="20.15.0" ;;
 "Android") NODE_VERSION_PREFERRED="20.18.2" ;;
 esac
 

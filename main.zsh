@@ -82,6 +82,12 @@ source "$ZSHRC_ROOT/lib/utils.disk.zsh"
 source "$ZSHRC_ROOT/lib/common.zsh"
 source "$ZSHRC_ROOT/lib/dev.zsh"
 
+# DJAY PRO SYNC SCRIPTS
+source "$ZSHRC_ROOT/music/djay_icloud_sync.zsh"
+
+# DOCKER CLEANUP SCRIPT
+source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
+
 source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
 source "$ZSHRC_ROOT/lib/nvm.zsh"
 

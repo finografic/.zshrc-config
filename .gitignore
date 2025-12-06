@@ -63,6 +63,7 @@ unused
 *.log
 *.sql
 *.sqlite
+djay_icloud_sync.log
 
 # OS generated files #
 ######################

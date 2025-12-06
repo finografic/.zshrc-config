@@ -39,7 +39,7 @@ source "$ZENV_PATH/$ZENV.aliases.zsh"
 source "$ZENV_PATH/$ZENV.dev.zsh"
 
 # INCLUDES: SCRIPTS
-source "$ZSHRC_ROOT/scripts/backup-music.zsh"
+source "$ZSHRC_ROOT/music/backup-dj-crate.zsh"
 # backup_music
 
 # ============================================================== #

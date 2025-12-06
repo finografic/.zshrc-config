@@ -1,6 +1,8 @@
 #!/bin/zsh
 
-set -euo pipefail
+# Set locale to handle special characters
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 
 # Function to strip ANSI color codes
 strip_colors() {
@@ -8,13 +10,18 @@ strip_colors() {
 }
 
 backup_music() {
+  # Set locale for proper character encoding
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US.UTF-8
+
   local FOLDER_NAME="_DJ-CRATE"
   local SOURCE="/Volumes/SSD.MUSIC/${FOLDER_NAME}"
   local DEST="/Volumes/timemachine-music/${FOLDER_NAME} backups"
   local LATEST="${DEST}/latest"
   local DATE=$(date +%Y-%m-%d_%H-%M-%S)
   local BACKUP="${DEST}/${DATE}"
-  local LOG="${DEST}/backup.log"
+  local LOGS_DIR="${DEST}/logs"
+  local LOG="${LOGS_DIR}/backup-$(date +%Y-%m-%d-%Hh%M).log"
 
   # Ensure source exists
   if [ ! -d "${SOURCE}" ]; then
@@ -23,30 +30,63 @@ backup_music() {
     return 1
   fi
 
-  # Ensure destination exists and set up initial icon
+  # Ensure destination and logs directory exist
   if [ ! -d "${DEST}" ]; then
     mkdir -p "${DEST}"
+    mkdir -p "${LOGS_DIR}"
     # Copy icon from script directory to destination and set it
-    if [ -f "./Icon?-_DJ-BAG" ]; then
-      cp -a "./Icon?-_DJ-BAG" "${DEST}/Icon?"
+    if [ -f "./Icon?" ]; then
+      cp -a "./Icon?" "${DEST}/Icon?"
       SetFile -a C "${DEST}"
     fi
   fi
 
-  # Start logging
-  msg="${_c}Starting backup at $(date)...${_0}\n"
+  # Create logs directory if it doesn't exist
+  mkdir -p "${LOGS_DIR}"
+
+  # Start backup
+  msg="\n${_m}🎵 Starting backup of ${FOLDER_NAME} at $(date)${_0}\n"
   echo -e "$msg" | tee >(strip_colors >> "${LOG}")
 
-  # Create new backup using hard links to previous backup for unchanged files
-  rsync -av --delete \
-    -E \
-    --link-dest="${LATEST}" \
-    "${SOURCE}/" \
-    "${BACKUP}" 2>&1 | tee >(strip_colors >> "${LOG}")
+  # Create new backup using cp for better character handling
+  mkdir -p "${BACKUP}"
+
+  # Use find and cp to handle special characters better
+  find "${SOURCE}" -type f -print0 | while IFS= read -r -d '' file; do
+    rel_path="${file#$SOURCE/}"
+    dest_file="${BACKUP}/${rel_path}"
+    dest_dir=$(dirname "$dest_file")
+
+    # Create destination directory
+    mkdir -p "$dest_dir"
+
+    # Check if we can hard link from previous backup
+    if [[ -n "${LATEST}" && -L "${LATEST}" ]]; then
+      prev_file="${LATEST}/${rel_path}"
+      if [[ -f "$prev_file" ]]; then
+        # Try to hard link first
+        if ln "$prev_file" "$dest_file" 2>/dev/null; then
+          echo "Hard linked: $rel_path" | tee >(strip_colors >> "${LOG}")
+          continue
+        fi
+      fi
+    fi
+
+    # Copy the file
+    if cp "$file" "$dest_file" 2>/dev/null; then
+      echo "Copied: $rel_path" | tee >(strip_colors >> "${LOG}")
+    else
+      echo "Failed to copy: $rel_path" | tee >(strip_colors >> "${LOG}")
+    fi
+  done
+
+  local copy_exit_code=$?
 
   # Update 'latest' symlink and set icons
-  if [ $? -eq 0 ]; then
+  if [ $copy_exit_code -eq 0 ]; then
+    # Remove old symlink if it exists
     rm -f "${LATEST}"
+    # Create new symlink to the backup we just created
     ln -s "${BACKUP}" "${LATEST}"
 
     # Copy and set icon for the new backup directory
@@ -54,6 +94,16 @@ backup_music() {
       cp -a "./Icon?" "${BACKUP}/Icon?"
       SetFile -a C "${BACKUP}"
     fi
+
+    # Apply custom icons to all subdirectories that have Icon? files
+    echo -e "\n${_m}🎨 Applying custom folder icons...${_0}"
+    find "${BACKUP}" -name "Icon?" -type f | while read -r icon_file; do
+      parent_dir=$(dirname "$icon_file")
+      parent_name=$(basename "$parent_dir")
+      if SetFile -a C "$parent_dir" 2>/dev/null; then
+        echo -e "  ${_g}✅ Applied icon to: $parent_name${_0}"
+      fi
+    done
 
     msg="\n${_g}✅ Backup completed successfully at $(date)${_0}\n"
     echo -e "$msg" | tee >(strip_colors >> "${LOG}")

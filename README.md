@@ -1,6 +1,8 @@
 # 📒 **ZSHRC-CONFIG**
 
-Superior ZSH configuration and startup, supporting multiple dynamic hosts and environments.
+## Cross-Platform Zsh Environment Orchestrator
+
+Superior ZSH configuration and startup, dynamic support for multiple dynamic hosts and environments.
 
 **Backup your current `~/.zshrc` file and leave new/current version containing only:**
 

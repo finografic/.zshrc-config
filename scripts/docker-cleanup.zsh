@@ -6,7 +6,7 @@
 # Source colors
 source ~/.zshrc-config/lib/colors.zsh
 
-echo -e "${_m}🐳 Docker Cleanup Script${_0}\n"
+# echo -e "\n${_m}🐳 Docker Cleanup Script${_0}\n"
 
 # Function to show current usage
 show_usage() {

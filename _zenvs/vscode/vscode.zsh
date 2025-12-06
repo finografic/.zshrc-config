@@ -30,7 +30,7 @@ export EDITOR="vim"
 # Node.js settings
 export NODE_OPTIONS="--max_old_space_size=4096"
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" # Load NVM
+[ -s "$HOME/nvm.sh" ] && source "$HOME/nvm.sh" # Load NVM
 
 # Path management
 typeset -U path

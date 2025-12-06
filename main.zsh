@@ -20,6 +20,7 @@ export ZENV=$(determine_environment)
 # source "$ZSHRC_ROOT/themes/prompt.zsh"
 source "$ZSHRC_ROOT/themes/default.theme.zsh"
 source "$ZSHRC_ROOT/themes/themes.functions.zsh"
+source "$ZSHRC_ROOT/themes/prompt.zsh"
 
 # 4. Core Zsh configuration (should be available everywhere) ================= #
 
@@ -30,6 +31,14 @@ source "$ZSHRC_ROOT/main-zsh-config.zsh"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
+
+  # pnpm
+  export PNPM_HOME="$HOME/Library/pnpm"
+  case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+  esac
+  # pnpm end
 
 # 6. VSCode check - exit to minimal config if needed ========================= #
 
@@ -82,18 +91,29 @@ source "$ZSHRC_ROOT/lib/utils.disk.zsh"
 source "$ZSHRC_ROOT/lib/common.zsh"
 source "$ZSHRC_ROOT/lib/dev.zsh"
 
+source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
+source "$ZSHRC_ROOT/lib/nvm.zsh"
+
+# CUSTOM SCRIPTS ============================================================= #
+
 # DJAY PRO SYNC SCRIPTS
 source "$ZSHRC_ROOT/music/djay_icloud_sync.zsh"
 
 # DOCKER CLEANUP SCRIPT
 source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 
-source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
-source "$ZSHRC_ROOT/lib/nvm.zsh"
+# GITHUB PAT
+[ -n "$GITHUB_TOKEN" ] && echo "${_g}GITHUB_TOKEN set${_0}" || echo "${_r}GITHUB_TOKEN NOT set${_0}"
+
 
 # FINALIZATION OUTPUT
-source "$ZSHRC_ROOT/main-fin.zsh"
+source "$ZSHRC_ROOT/main-splash.zsh"
 
 # REMOVE DUPLICATES FROM PATH ================================================ #
 
 flatten_PATH
+
+# Fallback prompt if none is set
+if [[ -z "$PROMPT" ]]; then
+  PROMPT='%F{green}%n@%m%f:%F{blue}%~%f %# '
+fi

@@ -12,10 +12,4 @@ if command -v pnpm >/dev/null || [ -d "$HOME/Library/pnpm" ]; then
     export PNPM_HOME="$HOME/.pnpm"
     ;;
   esac
-
-  # Add to PATH if not already present
-  case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-  esac
 fi

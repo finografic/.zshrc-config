@@ -11,7 +11,7 @@ export env EXA_COLORS="da=1;34" # brighter blues
 # MY COLORS !! :)
 # COLOR UTILS
 export _B="\033[1m" # BOLD
-export _D="\033[2m" # DIMMED
+export _d="\033[2m" # DIMMED
 export _0="\033[0m" # Reset
 
 # REGULAR

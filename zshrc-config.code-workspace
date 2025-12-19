@@ -1,8 +1,10 @@
 {
   "folders": [
     {
-      "path": "."
-    }
+      "path": ".",
+    },
   ],
-  "settings": {}
+  "settings": {
+    "cSpell.words": ["COMPFIX", "djay", "gallois", "zenvs"],
+  },
 }

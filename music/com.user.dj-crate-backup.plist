@@ -9,6 +9,8 @@
         <string>/bin/zsh</string>
         <string>/Users/REDACTED/.zshrc-config/music/backup-dj-crate.zsh</string>
     </array>
+    <key>RunAtLoad</key>
+    <true/>
     <key>StartCalendarInterval</key>
     <array>
       <dict>

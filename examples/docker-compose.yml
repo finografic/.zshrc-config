@@ -1,0 +1,94 @@
+# Docker Compose example for using host zshrc-config
+# This sets up a development container with your host's zsh configuration
+
+version: '3.8'
+
+services:
+  # Main development container
+  dev:
+    build:
+      context: .
+      dockerfile: examples/Dockerfile.dev
+    image: zsh-dev:latest
+    container_name: zsh-dev-container
+
+    # Keep container running
+    stdin_open: true
+    tty: true
+
+    # Mount host zshrc-config (read-only for safety)
+    volumes:
+      - ~/.zshrc-config:/root/.zshrc-config:ro
+      - ~/.zshrc:/root/.zshrc:ro
+      # Mount current directory as workspace
+      - .:/workspace
+      # Optional: persist zsh history
+      - zsh-history:/root/.zsh_history_dir
+
+    # Environment variables
+    environment:
+      - DOCKER_CONTAINER=1
+      - IN_DOCKER=1
+      - ZSHRC_ROOT=/root/.zshrc-config
+      - TERM=xterm-256color
+
+    # Start with zsh
+    command: zsh
+
+    # Optional: expose ports for development servers
+    # ports:
+    #   - "3000:3000"
+    #   - "8080:8080"
+
+    # Optional: network mode
+    # network_mode: bridge
+
+  # Example: Node.js development container
+  node-dev:
+    build:
+      context: .
+      dockerfile: examples/Dockerfile.node
+    image: zsh-node-dev:latest
+    container_name: zsh-node-dev-container
+    stdin_open: true
+    tty: true
+
+    volumes:
+      - ~/.zshrc-config:/root/.zshrc-config:ro
+      - ~/.zshrc:/root/.zshrc:ro
+      - .:/workspace
+      - node-modules:/workspace/node_modules
+
+    environment:
+      - DOCKER_CONTAINER=1
+      - IN_DOCKER=1
+      - ZSHRC_ROOT=/root/.zshrc-config
+      - NODE_ENV=development
+
+    command: zsh
+
+    ports:
+      - '3000:3000'
+
+# Named volumes for persistence
+volumes:
+  zsh-history:
+    driver: local
+  node-modules:
+    driver: local
+# USAGE:
+# ------
+# Start development container:
+#   docker-compose up -d dev
+#
+# Attach to running container:
+#   docker-compose exec dev zsh
+#
+# Stop containers:
+#   docker-compose down
+#
+# Rebuild containers:
+#   docker-compose build
+#
+# View logs:
+#   docker-compose logs -f dev

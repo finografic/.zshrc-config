@@ -33,9 +33,9 @@ function listing() {
 }
 
 function listing_exa() {
-  # exa --long --all --group-directories-first --accessed --time-style=long-iso --git $1
+  # eza --long --all --group-directories-first --accessed --time-style=long-iso --git $1
   EXA_IGNORES=".DS_Store|Icon*|.directory"
-  exa --long --all --ignore-glob="${EXA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
+  eza --long --all --ignore-glob="${EXA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
   [ -d .git ] && git status -uno
 }
 
@@ -60,7 +60,7 @@ alias -4="cd ../../../../ && l"
 alias -5="cd ../../../../../ && l"
 
 # TREE LISTING
-alias t="exa --tree --group-directories-first --level 2"
+alias t="eza --tree --group-directories-first --level 2"
 alias t2="tree --dirsfirst -L 2"
 
 ########################################

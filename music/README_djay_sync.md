@@ -61,6 +61,26 @@ This service automatically syncs djay Pro files between your local machine and i
 - **Fix**: Streamlined messages to be concise and informative
 - **Result**: Clear, actionable feedback for users
 
+### 9. Function Naming Consistency (December 2024)
+
+- **Issue**: Functions in `backup-dj-crate.zsh` didn't follow `djay_` prefix convention
+- **Fix**: Renamed all functions to use `djay_` prefix:
+  - `strip_colors()` → `djay_strip_colors()`
+  - `backup_music()` → `djay_backup_music()`
+- **Result**: Consistent naming across all djay-related scripts
+
+### 10. Standalone Script Support (December 2024)
+
+- **Issue**: `backup-dj-crate.zsh` relied on colors being pre-loaded, causing issues when run via launchctl
+- **Fix**: Added explicit color sourcing at script start for standalone execution
+- **Result**: Script works both when sourced from zshrc and when run standalone via launchctl
+
+### 11. LaunchAgent Startup Execution (December 2024)
+
+- **Issue**: Backup service only ran on schedule, not at system startup
+- **Fix**: Added `RunAtLoad` to `com.user.dj-crate-backup.plist`
+- **Result**: Backup service now runs immediately on login/startup, plus scheduled times
+
 ## Commands
 
 ### Manual Sync
@@ -150,11 +170,28 @@ The service automatically adapts to different usernames:
 
 ```
 ~/.zshrc-config/music/
-├── djay_icloud_sync.zsh          # Main sync script
+├── djay_icloud_sync.zsh          # Main iCloud sync script
+├── backup-dj-crate.zsh           # Time Machine backup script (separate service)
+├── fix-backup-icons.zsh          # Utility to fix custom folder icons in backups
+├── com.user.dj-crate-backup.plist # LaunchAgent plist template for backup service
 ├── logs/
 │   └── djay_icloud_sync.log      # Sync activity logs
 └── README_djay_sync.md           # This file
 ```
+
+## Related Scripts
+
+### backup-dj-crate.zsh
+
+A separate backup service that backs up the `_DJ-CRATE` folder to Time Machine. This is independent of the iCloud sync service:
+
+- **Function**: `djay_backup_music()` - Performs Time Machine backup
+- **Service**: macOS LaunchAgent (`com.user.dj-crate-backup.plist`)
+- **Schedule**: Runs on startup and every Monday/Thursday at 4:00 AM
+- **Location**: `/Volumes/SSD.MUSIC/_DJ-CRATE` → `/Volumes/timemachine-music/_DJ-CRATE backups`
+- **Features**: Hard linking for efficiency, automatic cleanup (30 days), custom folder icons
+
+**Note**: The backup script uses `djay_` prefixed functions for consistency with the sync script.
 
 ## iCloud Structure
 

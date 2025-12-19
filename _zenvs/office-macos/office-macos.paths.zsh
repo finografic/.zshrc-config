@@ -5,6 +5,7 @@ export REPOS_INVOICING="$HOME/sbc-invoicing"
 export REPOS_BANKING="$HOME/sbc-banking"
 export REPOS_TRADE="$HOME/sbc-tradedocs"
 export REPOS_PF="$HOME/repos-pioneer"
+export REPOS_GAC="$HOME/repos-gac"
 
 # CURRENT REPO - THIS WILL BE REPLACED WITH A NEW SCRIPT :D
 REPO_CURRENT="$REPOS_REPORTING/sbc.accounting.reporting.ui"

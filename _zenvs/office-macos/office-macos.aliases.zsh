@@ -55,6 +55,29 @@ alias dim="cd $REPOS_SBC/sbc.common.dimensions.ui/ && l"
 # SERVICE REPOS (others..)
 alias api="cd $REPOS_SBC/sbc.reporting.reportengine.service/ && l"
 
+# ============================================================== #
+# NEW: GAC
+
+# GAC REPOS (others..)
+alias gacs="cd $REPOS_GAC && l"
+alias one="cd $REPOS_GAC/sage_one_advanced/ && l"
+alias gac="cd $REPOS_GAC/s1_gac_ui/ && l"
+alias s1="cd $REPOS_GAC/s1_central_test/ && l"
+
+alias _aws="aws sso login"
+
+# ============================================================== #
+# NEW: PIP JOURNAL
+
+alias ai_pip="cd $HOME/AI-PIP && l"
+alias pip_log="$HOME/AI-PIP/scripts/pip-log.sh"
+alias pip_summary="$HOME/AI-PIP/scripts/pip-weekly-summary.sh"
+alias pip_backup="$HOME/AI-PIP/scripts/pip-backup.sh"
+alias pip_dir="cd $HOME/AI-PIP"
+
+# ============================================================== #
+# NOTE: PERSONAL
+
 # UNIVERSAL - DEV ALIAS TO **CURRENT** REPO
 alias vcc="cd $HOME/verdaccio && l"
 alias dev="echo '${_y}CHOOSE AN ALIAS!${_0}'"

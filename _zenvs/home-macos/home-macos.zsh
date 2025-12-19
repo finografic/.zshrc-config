@@ -40,7 +40,7 @@ source "$ZENV_PATH/$ZENV.dev.zsh"
 
 # INCLUDES: SCRIPTS
 source "$ZSHRC_ROOT/music/backup-dj-crate.zsh"
-# backup_music
+# djay_backup_music
 
 # ============================================================== #
 
@@ -70,13 +70,52 @@ update_ghostty_config
 # ============================================================== #
 
 # ============================================================== #
-# NOTE: START colima / docker..
+# NOTE: START docker (Docker Desktop)..
 
-if ! colima status &>/dev/null; then
-  echo "${_grey}Starting Colima...${_0}"
-  colima start &>/dev/null &
-  while ! colima status &>/dev/null; do
+if ! docker info &>/dev/null; then
+  echo "${_grey}Starting Docker Desktop...${_0}"
+  open -a Docker &>/dev/null
+  # Wait for Docker to be ready
+  while ! docker info &>/dev/null; do
     sleep 1
   done
-  echo "${_g}Colima is ready${_0}"
+  echo "${_g}Docker is ready${_0}"
+fi
+
+# ============================================================== #
+# SECURITY CHECKS: Minimal Security for Home System
+# NOTE: No firewall warning for home (relaxed security)
+# Ports 11434 (Ollama) and 3001 (OpenWebUI) are intentionally excluded from checks
+
+# Check for suspicious external ESTABLISHED connections (excluding known safe ports 11434, 3001)
+# NOTE: Ports 11434 (Ollama) and 3001 (OpenWebUI) are intentionally excluded - they're expected to be localhost
+if command -v lsof &>/dev/null; then
+  # Get all ESTABLISHED connections, exclude localhost and known safe ports
+  SUSPICIOUS_CONN=$(lsof -i -P 2>/dev/null | grep "ESTABLISHED" | grep -vE "127.0.0.1|localhost|::1|:11434|:3001" || echo "")
+  if [[ -n "$SUSPICIOUS_CONN" ]]; then
+    echo "${_r}⚠️  SECURITY WARNING: Non-localhost ESTABLISHED connections detected!${_0}"
+    echo "${_r}   Check: lsof -i -P | grep ESTABLISHED${_0}"
+  fi
+fi
+
+# ============================================================== #
+# VERIFY: LaunchAgent Services (djay backup, etc.)
+
+# Check djay backup service
+DJAY_BACKUP_PLIST="$HOME/Library/LaunchAgents/com.user.dj-crate-backup.plist"
+if [[ -f "$DJAY_BACKUP_PLIST" ]]; then
+  if ! launchctl list | grep -q "com.user.dj-crate-backup"; then
+    echo "${_y}⚠️  djay backup service not loaded. Loading...${_0}"
+    launchctl load "$DJAY_BACKUP_PLIST" 2>/dev/null && echo "${_g}✅ djay backup service loaded${_0}" || echo "${_r}❌ Failed to load djay backup service${_0}"
+  fi
+  # TODO: Initial setup - ensure plist has RunAtLoad=true for startup execution
+fi
+
+# Check djay sync service (if exists)
+DJAY_SYNC_PLIST="$HOME/Library/LaunchAgents/com.user.djay-sync.plist"
+if [[ -f "$DJAY_SYNC_PLIST" ]]; then
+  if ! launchctl list | grep -q "com.user.djay-sync"; then
+    echo "${_y}⚠️  djay sync service not loaded. Loading...${_0}"
+    launchctl load "$DJAY_SYNC_PLIST" 2>/dev/null && echo "${_g}✅ djay sync service loaded${_0}" || echo "${_r}❌ Failed to load djay sync service${_0}"
+  fi
 fi

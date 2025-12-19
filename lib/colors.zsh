@@ -2,7 +2,7 @@
 ###################  COLORS  ###################
 ################################################
 
-# exa file listing
+# eza file listing
 export env EXA_COLORS="da=1;34" # brighter blues
 
 # COLOR RESOURCE:

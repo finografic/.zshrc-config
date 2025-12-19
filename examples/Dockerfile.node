@@ -1,0 +1,44 @@
+# Node.js development container with zsh and host zshrc-config
+FROM node:20-bullseye
+
+LABEL maintainer="your-email@example.com"
+LABEL description="Node.js dev container with zsh using host zshrc-config"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install zsh and essential tools
+RUN apt-get update && apt-get install -y \
+    zsh \
+    git \
+    curl \
+    wget \
+    vim \
+    nano \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set zsh as default shell
+RUN chsh -s $(which zsh)
+
+# Install global npm packages
+RUN npm install -g \
+    pnpm \
+    yarn \
+    typescript \
+    ts-node \
+    nodemon
+
+# Create workspace
+RUN mkdir -p /workspace
+WORKDIR /workspace
+
+# Container environment
+ENV DOCKER_CONTAINER=1
+ENV IN_DOCKER=1
+ENV ZSHRC_ROOT=/root/.zshrc-config
+ENV SHELL=/bin/zsh
+ENV NODE_ENV=development
+
+SHELL ["/bin/zsh", "-c"]
+
+CMD ["zsh"]

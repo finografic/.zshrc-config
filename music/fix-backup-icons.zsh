@@ -4,17 +4,7 @@
 # This script applies custom folder icons to the backup directories
 
 # Source colors
-if [[ -f ~/.zshrc-config/lib/colors.zsh ]]; then
-    source ~/.zshrc-config/lib/colors.zsh
-else
-    # Fallback color definitions
-    export _m="\033[35m"  # Magenta
-    export _g="\033[32m"  # Green
-    export _c="\033[36m"  # Cyan
-    export _y="\033[33m"  # Yellow
-    export _r="\033[31m"  # Red
-    export _0="\033[0m"   # Reset
-fi
+source ~/.zshrc-config/lib/colors.zsh
 
 # Configuration
 BACKUP_ROOT="/Volumes/timemachine-music/_DJ-CRATE backups"

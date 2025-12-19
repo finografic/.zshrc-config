@@ -40,7 +40,17 @@ export LANGUAGE="en_US.UTF-8"
   esac
   # pnpm end
 
-# 6. VSCode check - exit to minimal config if needed ========================= #
+# 6. Docker Container check - exit to container config if detected =========== #
+
+# Detect if running inside a Docker container
+if [[ -f /.dockerenv ]] || [[ -n "$DOCKER_CONTAINER" ]] || [[ -n "$IN_DOCKER" ]]; then
+  export ZENV="docker-container"
+  export IN_DOCKER=1
+  source "$ZSHRC_ROOT/_zenvs/docker-container/docker-container.zsh"
+  return 0
+fi
+
+# 7. VSCode check - exit to minimal config if needed ========================= #
 
 if [ "$TERM_PROGRAM" = "vscode" ]; then
   # source "$ZSHRC_ROOT/_zenvs/vscode/vscode.V2.zsh"
@@ -103,8 +113,8 @@ source "$ZSHRC_ROOT/music/djay_icloud_sync.zsh"
 source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 
 # GITHUB PAT
-[ -n "$GITHUB_TOKEN" ] && echo "${_g}GITHUB_TOKEN set${_0}" || echo "${_r}GITHUB_TOKEN NOT set${_0}"
-
+[ -n "$GITHUB_TOKEN" ] && echo "${_g}GITHUB_TOKEN set${_0}" || echo "${_y}GITHUB_TOKEN NOT set${_0}"
+[ -n "$GITHUB_TOKEN" ] && gh auth login --with-token < <(printf '%s' "$GITHUB_TOKEN")
 
 # FINALIZATION OUTPUT
 source "$ZSHRC_ROOT/main-splash.zsh"

@@ -1,0 +1,59 @@
+# Example Dockerfile for using host zshrc-config
+# This creates a lightweight dev container with zsh that can use your host config
+
+FROM ubuntu:22.04
+
+LABEL maintainer="your-email@example.com"
+LABEL description="Development container with zsh using host zshrc-config"
+
+# Prevent interactive prompts during build
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install essential packages
+RUN apt-get update && apt-get install -y \
+    zsh \
+    git \
+    curl \
+    wget \
+    vim \
+    nano \
+    build-essential \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set zsh as default shell
+RUN chsh -s $(which zsh)
+
+# Create workspace directory
+RUN mkdir -p /workspace
+WORKDIR /workspace
+
+# Environment variables for container detection
+ENV DOCKER_CONTAINER=1
+ENV IN_DOCKER=1
+ENV ZSHRC_ROOT=/root/.zshrc-config
+ENV SHELL=/bin/zsh
+
+# Set default shell to zsh
+SHELL ["/bin/zsh", "-c"]
+
+# Default command - start zsh
+CMD ["zsh"]
+
+# USAGE:
+# ------
+# Build:
+#   docker build -t zsh-dev:latest -f examples/Dockerfile.dev .
+#
+# Run with host config mounted:
+#   docker run -it --rm \
+#     -v ~/.zshrc-config:/root/.zshrc-config:ro \
+#     -v $(pwd):/workspace \
+#     zsh-dev:latest
+#
+# Run with custom .zshrc:
+#   docker run -it --rm \
+#     -v ~/.zshrc-config:/root/.zshrc-config:ro \
+#     -v ~/.zshrc:/root/.zshrc:ro \
+#     -v $(pwd):/workspace \
+#     zsh-dev:latest

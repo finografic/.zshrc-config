@@ -2,6 +2,8 @@ export CYPRESS_SBS_USER_PASSWORD=
 export CYPRESS_CF_ACCESS_CLIENT_ID=
 export CYPRESS_CF_ACCESS_CLIENT_SECRET=
 
+export AWS_CONFIG_FILE=
+
 # ============================================================= #
 # NOTE: 1. PRE-INIT
 

@@ -17,6 +17,10 @@ function prep() {
   npm run test:coverage
 }
 
+function lintx() {
+  npm run format && npm run lint -- --fix
+}
+
 function confirm() {
   # read -r -p "Are you sure? [y/N] " response
   read -r "Are you sure? [y/N] " response

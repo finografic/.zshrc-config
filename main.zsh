@@ -40,6 +40,8 @@ export LANGUAGE="en_US.UTF-8"
   esac
   # pnpm end
 
+export PATH="/opt/homebrew/opt/node@22/bin:$PATH"
+
 # 6. Docker Container check - exit to container config if detected =========== #
 
 # Detect if running inside a Docker container

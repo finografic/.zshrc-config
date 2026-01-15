@@ -112,15 +112,15 @@ git config --global user.email "REDACTED-EMAIL"
 # ============================================================== #
 # NOTE: START docker (Docker Desktop)..
 
-if ! docker info &>/dev/null; then
-  echo "${_grey}Starting Docker Desktop...${_0}"
-  open -a Docker &>/dev/null
-  # Wait for Docker to be ready
-  while ! docker info &>/dev/null; do
-    sleep 1
-  done
-  echo "${_g}Docker is ready${_0}"
-fi
+# if ! docker info &>/dev/null; then
+#   echo "${_grey}Starting Docker Desktop...${_0}"
+#   open -a Docker &>/dev/null
+#   # Wait for Docker to be ready
+#   while ! docker info &>/dev/null; do
+#     sleep 1
+#   done
+#   echo "${_g}Docker is ready${_0}"
+# fi
 
 # ============================================================== #
 # SECURITY CHECKS: Maximum Security for Work System

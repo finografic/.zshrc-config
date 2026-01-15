@@ -17,7 +17,6 @@ alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls 
 # ========================================================================= #
 # MY REPOS (NEXT!)
 
-REPO_ESLINT="$REPOS_FINO/@finografic-eslint-config"
 REPO_SCRIPTS="$REPOS_FINO/@finografic-project-scripts"
 REPO_PLATE="$REPOS_FINO/@finografic-plate-editor"
 REPO_ZUSTAND_CONTEXT="$REPOS_FINO/@finografic-zustand-context-creator"
@@ -40,11 +39,6 @@ alias vite="cd $REPOS_APNAES/apnaes-web--VITE && l"
 @fino() {
   cd "$REPOS_FINO" && l
 }
-
-@eslint() {
-  cd "$REPO_ESLINT" && l
-}
-
 # @scripts() {
 #   cd "$REPO_SCRIPTS" && l
 # }
@@ -131,6 +125,52 @@ find_monorepo_root() {
   local monorepo=$(find_monorepo_root)
   cd "$monorepo/packages/types" && l
 }
+
+# ========================================================================= #
+
+@_testing() {
+  cd "$REPOS_FINO/___FINOGRAFIC-TESTING___" && l
+}
+
+@_create() {
+  cd "$REPOS_FINO/@finografic-create" && l
+}
+
+fino-create(){
+  if [[ -n "$@" ]]; then
+    finografic-create $@
+  else
+    finografic-create --help
+  fi
+}
+
+@_core() {
+  cd "$REPOS_FINO/@finografic-core" && l
+}
+
+
+@_eslint() {
+  cd "$REPOS_FINO/@finografic-eslint-config" && l
+}
+
+
+@_dprint() {
+  cd "$REPOS_FINO/@finografic-dprint-config" && l
+}
+
+
+@_scripts() {
+  cd "$REPOS_FINO/@finografic-project-scripts" && l
+}
+
+@_react() {
+  cd "$REPOS_FINO/@finografic-react" && l
+}
+
+@_zustand() {
+  cd "$REPOS_FINO/@finografic-zustand-context-creator" && l
+}
+
 
 # ========================================================================= #
 

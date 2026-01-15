@@ -1,16 +1,25 @@
 #!/bin/zsh
 
-# Load environment variables
-if [[ -f "$HOME/.zshrc-config/.env" ]]; then
+# Detect when running inside GitHub Desktop's minimal environment and avoid
+# loading the user's project `.env` (which may reference tools not available
+# to the GUI/git hook environment). We set a flag so the later loader can
+# skip sourcing the file.
+if [[ -n "${XPC_SERVICE_NAME:-}" && "${XPC_SERVICE_NAME}" == *"GitHubClient"* ]]; then
+  SKIP_ENV_LOAD=true
+fi
+
+# Load environment variables (skip when flagged above)
+if [[ -z "${SKIP_ENV_LOAD:-}" && -f "$HOME/.zshrc-config/.env" ]]; then
   source "$HOME/.zshrc-config/.env"
   # export GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2)
-  export $(cat source | grep -v '^#' | xargs)
-else
-  echo "Warning: .env file not found in ~/.zshrc-config/"
 fi
 
 # VSCode memory allocation
 export NODE_OPTIONS="$NODE_OPTIONS --max_old_space_size=4096"
+export SIMPLE_GIT_HOOKS_RC="$HOME/.simple-git-hooks.rc"
+# export PATH="/opt/homebrew/bin/lint-staged:$PATH"
+# export PATH="/opt/homebrew/opt/node@22/bin:$PATH"
+
 
 # OS Detection and System Info =====================
 # Detect OS and Version

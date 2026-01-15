@@ -48,9 +48,9 @@ _gca() {
 # Amend commit
 _ga() {
   if [[ $1 > "" ]]; then
-    git commit --ammend "$1" --no-verify
+    git commit -am "$1" --allow-empty
   else
-    echo "\n${_y}⚠️   NO COMMIT MESSAGE TO AMMEND\n"
+    echo "\n${_y}⚠️   NO COMMIT MESSAGE TO AMEND\n"
   fi
 }
 

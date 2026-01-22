@@ -75,6 +75,14 @@ pnr() {
 }
 
 # ========================================================================= #
+# NEW (2026-01)
+# NOTE: simple alias for /opt/homebrew/bin/tree that auto-adds the --gitignore flag, displaying simpler trees
+
+# tree() {
+#   tree --gitignore "$@"
+# }
+
+# ========================================================================= #
 # NEW (2024-05)
 # TODO: WHAT HAPPENED TO `batcat` ??
 # alias bat="batcat"

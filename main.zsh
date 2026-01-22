@@ -1,7 +1,22 @@
 #!/bin/zsh
 
+# ---- Prompt: Powerlevel10k ----------------------------------------------
+
+# Load powerlevel10k (explicit, no plugin manager dependency)
+if [[ -r "$HOME/.zshrc-config/themes/p10k/powerlevel10k.zsh-theme" ]]; then
+  source "$HOME/.zshrc-config/themes/p10k/powerlevel10k.zsh-theme"
+fi
+
+# Load user p10k config
+[[ -f "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
+
+# ============================================================================ #
+
+
 export ZSH_DISABLE_COMPFIX=true
 export ZSHRC_ROOT=$HOME/.zshrc-config
+
+typeset -g -i FUNCNEST=1000
 
 # ============================================================================ #
 
@@ -39,8 +54,6 @@ export LANGUAGE="en_US.UTF-8"
   *) export PATH="$PNPM_HOME:$PATH" ;;
   esac
   # pnpm end
-
-export PATH="/opt/homebrew/opt/node@22/bin:$PATH"
 
 # 6. Docker Container check - exit to container config if detected =========== #
 
@@ -126,6 +139,6 @@ source "$ZSHRC_ROOT/main-splash.zsh"
 flatten_PATH
 
 # Fallback prompt if none is set
-if [[ -z "$PROMPT" ]]; then
-  PROMPT='%F{green}%n@%m%f:%F{blue}%~%f %# '
-fi
+# if [[ -z "$PROMPT" ]]; then
+#   PROMPT='%F{green}%n@%m%f:%F{blue}%~%f %# '
+# fi

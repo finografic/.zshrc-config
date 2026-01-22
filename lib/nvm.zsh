@@ -25,9 +25,16 @@ esac
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Set default Node version (only if nvm is available)
+# Set default Node version (only if nvm is available)
 if command -v nvm >/dev/null 2>&1; then
-  nvm use $NODE_VERSION_PREFERRED >/dev/null 2>&1
-  nvm alias default $NODE_VERSION_PREFERRED >/dev/null 2>&1
+  # Check if we're in a directory with .nvmrc first
+  local nvmrc_path="$(nvm_find_nvmrc)"
+  if [ -z "$nvmrc_path" ]; then
+    # No .nvmrc found, use preferred version
+    nvm use $NODE_VERSION_PREFERRED >/dev/null 2>&1
+    nvm alias default $NODE_VERSION_PREFERRED >/dev/null 2>&1
+  fi
+  # If .nvmrc exists, load-nvmrc() hook will handle it
 fi
 
 # Export globals path (excluding apnaes environment)

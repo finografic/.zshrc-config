@@ -17,33 +17,82 @@ _gc() {
 }
 
 # Add all and commit
-_gca() {
-  if [[ -n "$1" ]]; then
-    message="$1"
-    shift # Remove first argument (message)
+# _gca() {
+#   if [[ -n "$1" ]]; then
+#     message="$1"
+#     shift # Remove first argument (message)
 
-    # Confirm prompt, if in office environment
-    if [[ "$ZENV" == "office-macos" ]]; then
+#     # Confirm prompt, if in office environment
+#     if [[ "$ZENV" == "office-macos" ]]; then
+#       echo -e "${_m}Are you sure? ${_grey}(y/N)${_0}"
+#       read -r response
+#       response=${response:-N}
+
+#       if [[ "$response" =~ ^[Yy]$ ]]; then
+#         git add . && git commit -m "$message" "$@"
+#         echo "\n${_g}✅ DONE\n"
+#       else
+#         echo "\n${_y}⚠️  Operation aborted.${_0}"
+#         return 1
+#       fi
+#     else
+#       if git add . && git commit -m "$message" "$@"; then
+#         echo "\n${_g}✅ DONE\n"
+#       fi
+#     fi
+#   else
+#     echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
+#   fi
+# }
+
+_gca () {
+  if [[ -n "$1" ]]
+  then
+    message="$1"
+    shift
+
+    if [[ "$ZENV" == "office-macos" ]]
+    then
       echo -e "${_m}Are you sure? ${_grey}(y/N)${_0}"
       read -r response
       response=${response:-N}
 
-      if [[ "$response" =~ ^[Yy]$ ]]; then
-        git add . && git commit -m "$message" "$@"
+      if [[ "$response" =~ ^[Yy]$ ]]
+      then
+        git add -A || return 1
+
+        if git diff --cached --quiet
+        then
+          echo "\n${_y}⚠️  No staged changes to commit.${_0}"
+          return 1
+        fi
+
+        git commit -m "$message" "$@" || return 1
         echo "\n${_g}✅ DONE\n"
       else
         echo "\n${_y}⚠️  Operation aborted.${_0}"
         return 1
       fi
     else
-      if git add . && git commit -m "$message" "$@"; then
+      git add -A || return 1
+
+      if git diff --cached --quiet
+      then
+        echo "\n${_y}⚠️  No staged changes to commit.${_0}"
+        return 1
+      fi
+
+      if git commit -m "$message" "$@"
+      then
         echo "\n${_g}✅ DONE\n"
       fi
     fi
   else
     echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
+    return 1
   fi
 }
+
 
 # Amend commit
 _ga() {

@@ -12,24 +12,24 @@ k () {
 
   # Process options and get files/directories
   typeset -a o_all o_almost_all o_human o_si o_directory o_group_directories \
-	  o_no_directory o_no_vcs o_sort o_sort_reverse o_help
+	o_no_directory o_no_vcs o_sort o_sort_reverse o_help
   zparseopts -E -D \
-             a=o_all -all=o_all \
-             A=o_almost_all -almost-all=o_almost_all \
-             c=o_sort \
-             d=o_directory -directory=o_directory \
-	     -group-directories-first=o_group_directories \
-             h=o_human -human=o_human \
-             -si=o_si \
-             n=o_no_directory -no-directory=o_no_directory \
-             -no-vcs=o_no_vcs \
-             r=o_sort_reverse -reverse=o_sort_reverse \
-             -sort:=o_sort \
-             S=o_sort \
-             t=o_sort \
-             u=o_sort \
-             U=o_sort \
-             -help=o_help
+            a=o_all -all=o_all \
+            A=o_almost_all -almost-all=o_almost_all \
+            c=o_sort \
+            d=o_directory -directory=o_directory \
+	-group-directories-first=o_group_directories \
+            h=o_human -human=o_human \
+            -si=o_si \
+            n=o_no_directory -no-directory=o_no_directory \
+            -no-vcs=o_no_vcs \
+            r=o_sort_reverse -reverse=o_sort_reverse \
+            -sort:=o_sort \
+            S=o_sort \
+            t=o_sort \
+            u=o_sort \
+            U=o_sort \
+            -help=o_help
 
   # Print Help if bad usage, or they asked for it
   if [[ $? != 0 || "$o_help" != "" ]]
@@ -216,9 +216,9 @@ k () {
         2048  82    # <= 2kb
         3072  118   # <= 3kb
         5120  154   # <= 5kb
-       10240  190   # <= 10kb
-       20480  226   # <= 20kb
-       40960  220   # <= 40kb
+      10240  190   # <= 10kb
+      20480  226   # <= 20kb
+      40960  220   # <= 40kb
       102400  214   # <= 100kb
       262144  208   # <= 0.25mb || 256kb
       524288  202   # <= 0.5mb || 512kb
@@ -226,12 +226,12 @@ k () {
     typeset -i ANCIENT_TIME_COLOR=236  # > more than 2 years old
     typeset -a FILEAGES_TO_COLOR
     FILEAGES_TO_COLOR=(
-             0 196  # < in the future, #spooky
+            0 196  # < in the future, #spooky
             60 255  # < less than a min old
           3600 252  # < less than an hour old
-         86400 250  # < less than 1 day old
+        86400 250  # < less than 1 day old
         604800 244  # < less than 1 week old
-       2419200 244  # < less than 28 days (4 weeks) old
+      2419200 244  # < less than 28 days (4 weeks) old
       15724800 242  # < less than 26 weeks (6 months) old
       31449600 240  # < less than 1 year old
       62899200 238  # < less than 2 years old
@@ -276,7 +276,7 @@ k () {
           #Use (^/) instead of (.) so sockets and symlinks get displayed
           show_list+=($base_dir/*(^/$SORT_GLOB))
         else
-	  show_list+=($base_dir/*($SORT_GLOB))
+	show_list+=($base_dir/*($SORT_GLOB))
         fi
       fi
     fi
@@ -354,13 +354,13 @@ k () {
       HAS_STICKY_BIT=0
       IS_WRITABLE_BY_OTHERS=0
 
-         PERMISSIONS="${sv[mode]}"
-       HARDLINKCOUNT="${sv[nlink]}"
-               OWNER="${sv[uid]}"
-               GROUP="${sv[gid]}"
-            FILESIZE="${sv[size]}"
-                DATE=(${(s:^:)sv[mtime]}) # Split date on ^
-                NAME="${sv[name]}"
+      PERMISSIONS="${sv[mode]}"
+      HARDLINKCOUNT="${sv[nlink]}"
+      OWNER="${sv[uid]}"
+      GROUP="${sv[gid]}"
+      FILESIZE="${sv[size]}"
+      DATE=(${(s:^:)sv[mtime]}) # Split date on ^
+      NAME="${sv[name]}"
       SYMLINK_TARGET="${sv[link]}"
 
       # Check for file types
@@ -411,7 +411,7 @@ k () {
       HARDLINKCOUNT="${(l:MAX_LEN[2]:)HARDLINKCOUNT}"
               OWNER="${(l:MAX_LEN[3]:)OWNER}"
               GROUP="${(l:MAX_LEN[4]:)GROUP}"
-       FILESIZE_OUT="${(l:MAX_LEN[5]:)FILESIZE_OUT}"
+      FILESIZE_OUT="${(l:MAX_LEN[5]:)FILESIZE_OUT}"
 
       # --------------------------------------------------------------------------
       # Colour the permissions - TODO
@@ -444,8 +444,9 @@ k () {
       # Colour file weights
       # --------------------------------------------------------------------------
       COLOR=LARGE_FILE_COLOR
-      for i j in ${SIZELIMITS_TO_COLOR[@]}
-      do
+      for (( idx = 1; idx < ${#SIZELIMITS_TO_COLOR[@]}; idx += 2 )); do
+        i=${SIZELIMITS_TO_COLOR[idx]}
+        j=${SIZELIMITS_TO_COLOR[idx+1]}
         (( FILESIZE <= i )) || continue
         COLOR=$j
         break

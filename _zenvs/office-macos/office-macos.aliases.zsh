@@ -59,8 +59,8 @@ alias api="cd $REPOS_SBC/sbc.reporting.reportengine.service/ && l"
 # NEW: GAC
 
 # GAC REPOS (others..)
+alias one="cd $REPOS_GAC/carbon-sageone/ && l"
 alias gacs="cd $REPOS_GAC && l"
-alias one="cd $REPOS_GAC/sage_one_advanced/ && l"
 alias soa="cd $REPOS_GAC/sage_one_advanced/ && l"
 alias gac="cd $REPOS_GAC/s1_gac_ui/ && l"
 alias s1="cd $REPOS_GAC/s1_central_test/ && l"

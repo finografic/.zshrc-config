@@ -44,6 +44,20 @@ function jc() {
   fi
 }
 
+# JEST SNAP GENERATION
+function jsnaps() {
+  if [[ "$1" > "" ]]; then
+    npm test -- -u --testPathPattern="$1"
+  else
+    echo "\n${_y}⚠️   NO FILENAME SUPPLIED\n"
+  fi
+}
+
+
+
+# ================================================================== #
+# NOTE: jest logs..
+
 function jlog() {
   if [[ "$2" > "" ]]; then
     node 'node_modules/.bin/jest' "$1" -t "$2" >>JEST.log 2> >(tee JEST.log >&2)

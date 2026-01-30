@@ -78,9 +78,10 @@ pnr() {
 # NEW (2026-01)
 # NOTE: simple alias for /opt/homebrew/bin/tree that auto-adds the --gitignore flag, displaying simpler trees
 
-# tree() {
-#   tree --gitignore "$@"
-# }
+tree2() {
+  # tree --gitignore "$@"
+  find . | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
+}
 
 # ========================================================================= #
 # NEW (2024-05)

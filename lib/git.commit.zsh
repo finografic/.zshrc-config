@@ -2,6 +2,18 @@
 # COMMIT OPERATIONS
 # ========================================================================= #
 
+_is_finografic_repo() {
+  local root
+  root=$(git rev-parse --show-toplevel 2>/dev/null) || return 1
+
+  [[ -f "$root/package.json" ]] || return 1
+  grep -q '"@finografic/' "$root/package.json"
+}
+
+_has_build_artifact_changes() {
+  git status --porcelain | grep -E '^( M|A |AM|MM).* (dist/|bin/)' >/dev/null
+}
+
 # Commit (staged files only)
 _gc() {
   if [[ -n "$1" ]]; then
@@ -16,40 +28,30 @@ _gc() {
   fi
 }
 
-# Add all and commit
-# _gca() {
-#   if [[ -n "$1" ]]; then
-#     message="$1"
-#     shift # Remove first argument (message)
-
-#     # Confirm prompt, if in office environment
-#     if [[ "$ZENV" == "office-macos" ]]; then
-#       echo -e "${_m}Are you sure? ${_grey}(y/N)${_0}"
-#       read -r response
-#       response=${response:-N}
-
-#       if [[ "$response" =~ ^[Yy]$ ]]; then
-#         git add . && git commit -m "$message" "$@"
-#         echo "\n${_g}✅ DONE\n"
-#       else
-#         echo "\n${_y}⚠️  Operation aborted.${_0}"
-#         return 1
-#       fi
-#     else
-#       if git add . && git commit -m "$message" "$@"; then
-#         echo "\n${_g}✅ DONE\n"
-#       fi
-#     fi
-#   else
-#     echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
-#   fi
-# }
-
 _gca () {
   if [[ -n "$1" ]]
   then
     message="$1"
     shift
+
+    if _is_finografic_repo && _has_build_artifact_changes; then
+      echo "\n${_y}⚠️  Finografic repo detected with build artifact changes.${_0}"
+      echo "${_grey}This commit will include dist/ or bin/.${_0}"
+      echo "${_grey}Recommended flow:${_0}"
+      echo "  pnpm build"
+      echo "  git add dist bin"
+      echo "  git commit -m \"build: update artifacts\""
+      echo
+
+      echo -e "${_m}Proceed anyway? ${_grey}(y/N)${_0}"
+      read -r response
+      response=${response:-N}
+
+      [[ "$response" =~ ^[Yy]$ ]] || {
+        echo "\n${_y}⚠️  Commit aborted.${_0}"
+        return 1
+      }
+    fi
 
     if [[ "$ZENV" == "office-macos" ]]
     then

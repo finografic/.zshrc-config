@@ -44,15 +44,6 @@ function jc() {
   fi
 }
 
-# JEST SNAP GENERATION
-function jsnaps() {
-  if [[ "$1" > "" ]]; then
-    npm test -- -u --testPathPattern="$1"
-  else
-    echo "\n${_y}⚠️   NO FILENAME SUPPLIED\n"
-  fi
-}
-
 
 
 # ================================================================== #

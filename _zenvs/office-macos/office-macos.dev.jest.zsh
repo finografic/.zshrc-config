@@ -19,7 +19,7 @@ function j() {
 }
 
 
-function V2__j() {
+function j2() {
   mfe_scripts_cmd=$([[ -f "node_modules/@sage/mfe-scripts/src/bin/mfe-scripts.js" ]] && echo 'node_modules/.bin/jest' || echo 'npx jest')
   if [[ "$2" != "" ]]; then
     $mfe_scripts_cmd "$1" -t "$2" --setupFilesAfterEnv ./src/setupTests.ts   --watch
@@ -30,79 +30,21 @@ function V2__j() {
   fi
 }
 
-# NOTE: JEST_OFFICE V1 - USES jest
 
-function __j() {
-  jest_cmd=$([[ -f "node_modules/.bin/jest" ]] && echo 'node_modules/.bin/jest' || echo 'npx jest')
-  # jest --silent --verbose=false --bail
-  if [[ "$2" != "" ]]; then
-    # $jest_cmd "$1" -t "$2" --watch --verbose=false
-    $jest_cmd "$1" -t "$2" --watch
-  elif [[ "$1" != "" ]]; then
-    # $jest_cmd "$1" --watch --verbose=false
-    $jest_cmd "$1" --watch
-  else
-    npm run test:coverage -- --runInBand
-  fi
-}
-
-function js() {
-  jest_cmd=$([[ -f "node_modules/.bin/jest" ]] && echo 'node_modules/.bin/jest' || echo 'npx jest')
-  # jest --silent --verbose=false --bail
-  if [[ "$2" != "" ]]; then
-    $jest_cmd "$1" -t "$2" --watch --silent
-  elif [[ "$1" != "" ]]; then
-    $jest_cmd "$1" --watch --silent
-  else
-    npm run test:coverage -- --runInBand
-  fi
-}
-
-# *SCOPED* JEST COVERAGE - COVERAGE REPORT OF *ONLY* SPECFIED SCOPE
-function jc() {
+# JEST RUN - FOR GAC UI (UTC TZ)
+function jgac() {
   if [[ "$1" > "" ]]; then
-    npx jest --coverage --watch "$1"
+    TZ=UTC npm test -- --testPathPattern="$1"
   else
-    echo "\n${_y}⚠️   NO FILENAME SUPPLIED\n"
+    echo "\n${_y}⚠️   NO TEST-PATTERN SUPPLIED\n"
   fi
 }
 
-function jlog() {
-  if [[ "$2" > "" ]]; then
-    node 'node_modules/.bin/jest' "$1" -t "$2" >>JEST.log 2> >(tee JEST.log >&2)
-  elif [[ "$1" > "" ]]; then
-    node 'node_modules/.bin/jest' "$1" >>JEST.log 2> >(tee JEST.log >&2)
+# JEST SNAP GENERATION - FOR GAC UI (UTC TZ)
+function jsnaps() {
+  if [[ "$1" > "" ]]; then
+    TZ=UTC npm test -- -u --testPathPattern="$1"
   else
-    npm run test:coverage -- --runInBand >>JEST.log 2> >(tee JEST.log >&2)
-  fi
-}
-
-function jlog2() {
-  if [[ "$2" > "" ]]; then
-    node 'node_modules/.bin/jest' "$1" -t "$2" --color=always | sed -r 'w /dev/stderr' | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' >>JEST.log
-  elif [[ "$1" > "" ]]; then
-    node 'node_modules/.bin/jest' "$1" --color=always | sed -r 'w /dev/stderr' | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' >>JEST.log
-  else
-    npm run test:coverage -- --runInBand --color=always | sed -r 'w /dev/stderr' | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' >>JEST.log
-  fi
-}
-
-function jlog3() {
-  if [[ "$2" > "" ]]; then
-    node 'node_modules/.bin/jest' "$1" -t "$2" --color=always | tee >(sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' >>JEST.log)
-  elif [[ "$1" > "" ]]; then
-    node 'node_modules/.bin/jest' "$1" --color=always | tee >(sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' >>JEST.log)
-  else
-    npm run test:coverage -- --runInBand ---color=always | tee >(sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' >>JEST.log)
-  fi
-}
-
-function jlog4() {
-  if [[ "$2" > "" ]]; then
-    node 'node_modules/.bin/jest' "$1" -t "$2" --color=always | tee >(sed -E "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g") >>JEST.log
-  elif [[ "$1" > "" ]]; then
-    node 'node_modules/.bin/jest' "$1" --color=always | tee >(sed -E "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g") >>JEST.log
-  else
-    npm run test:coverage -- --runInBand ---color=always | tee >(sed -E "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g") >>JEST.log
+    echo "\n${_y}⚠️   NO TEST-PATTERN SUPPLIED\n"
   fi
 }

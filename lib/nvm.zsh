@@ -6,11 +6,11 @@ export NVM_COMPLETION=true # Enable completion
 # Node version preferences by environment
 # NODE_VERSION_PREFERRED="22.15.0" # Default
 # NODE_VERSION_PREFERRED="22.17.1" # Default
-NODE_VERSION_PREFERRED="24.12.0" # Default
+NODE_VERSION_PREFERRED="24.3.0" # Default
 
 # NOTE: HOME
 case "$OS_NAME" in
-"Linux" | "macOS") NODE_VERSION_PREFERRED="24.12.1" ;;
+"Linux" | "macOS") NODE_VERSION_PREFERRED="24.3.0" ;;
 "Android") NODE_VERSION_PREFERRED="20.18.2" ;;
 esac
 

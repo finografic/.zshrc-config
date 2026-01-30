@@ -68,7 +68,7 @@ _gtrashes() {
   fi
 }
 
-# ================================================================== #
+# ============================================================================ #
 
 # Pretty-printed git log
 _glog() {
@@ -124,6 +124,56 @@ _greset() {
     return 1
   fi
 }
+
+# ============================================================================ #
+
+# Merge into master (alternative - overwrites master with source branch)
+_gmm() {
+  if [[ ! -d "./.git" ]]; then
+    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
+    return 1
+  fi
+
+  if [[ -z "$1" ]]; then
+    echo "\n${_y}⚠️  No source branch specified\n${_0}"
+    return 1
+  fi
+
+  local SOURCE_BRANCH="$1"
+  local TARGET_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+  # Check if source branch exists
+  if ! git rev-parse --verify "$SOURCE_BRANCH" >/dev/null 2>&1; then
+    echo "\n${_r}❌ Source branch '$SOURCE_BRANCH' does not exist${_0}"
+    return 1
+  fi
+
+  echo "\n${_y}⚠️  WARNING: This will completely overwrite '$TARGET_BRANCH' with contents from '$SOURCE_BRANCH'${_0}"
+  echo "${_y}⚠️  All files in '$TARGET_BRANCH' will be replaced with files from '$SOURCE_BRANCH'${_0}"
+  echo "\n${_m}Are you sure? ${_grey}(y/N)${_0}"
+  read -r response
+
+  if [[ "$response" =~ ^[Yy]$ ]]; then
+    echo "\n${_grey}Proceeding with overwrite...${_0}"
+
+    # Stash any uncommitted changes
+    git stash push -m "Temporary stash before branch overwrite"
+
+    # Hard reset to source branch
+    if ! git reset --hard "$SOURCE_BRANCH"; then
+      echo "\n${_r}❌ Failed to reset to $SOURCE_BRANCH${_0}"
+      return 1
+    fi
+
+    echo "\n${_g}✅ Successfully overwrote $TARGET_BRANCH with contents of $SOURCE_BRANCH${_0}"
+    echo "${_m}To push these changes to remote, use: git push -f origin $TARGET_BRANCH${_0}"
+  else
+    echo "\n${_y}Operation aborted.${_0}"
+    return 1
+  fi
+}
+
+# ============================================================================ #
 
 # Reset git permissions
 _g_PERMISSIONS() {

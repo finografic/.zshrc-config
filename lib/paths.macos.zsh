@@ -5,6 +5,7 @@
 # SYS PATHS
 export PATH="/opt/homebrew/binnpm:/opt/local/bin:/opt/local/sbin:$PATH"
 export PATH=$PATH:$HOME/bin:/usr/local/bin
+export PATH="$HOME/.local/bin:$PATH"
 export PATH=$PATH:$NPM_GLOBALS
 
 # GLOBALIZE IMPORTANT BINARIES (now included in repo)

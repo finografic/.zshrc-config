@@ -116,6 +116,8 @@ source "$ZSHRC_ROOT/lib/utils.disk.zsh"
 source "$ZSHRC_ROOT/lib/common.zsh"
 source "$ZSHRC_ROOT/lib/dev.zsh"
 
+# LOAD + OVERRIDE WITH ENVIRONMENT-SPECIFIC CONFIGURATION =========-========== #
+
 source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
 source "$ZSHRC_ROOT/lib/nvm.zsh"
 
@@ -130,6 +132,10 @@ source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 # GITHUB PAT
 [ -n "$GITHUB_TOKEN" ] && echo "${_g}GITHUB_TOKEN set${_0}" || echo "${_y}GITHUB_TOKEN NOT set${_0}"
 [ -n "$GITHUB_TOKEN" ] && gh auth login --with-token < <(printf '%s' "$GITHUB_TOKEN")
+
+# GITHUB PAT
+[ -n "$NPM_TOKEN" ] && echo "${_g}NPM_TOKEN set${_0}" || echo "${_y}NPM_TOKEN NOT set${_0}"
+[ -n "$NPM_TOKEN" ] && gh auth login --with-token < <(printf '%s' "$NPM_TOKEN")
 
 # FINALIZATION OUTPUT
 source "$ZSHRC_ROOT/main-splash.zsh"

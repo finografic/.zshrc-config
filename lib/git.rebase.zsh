@@ -4,8 +4,24 @@
 
 # Fetch and rebase
 _grb() {
-  # Fetch and rebase
-  git fetch && git rebase -i origin/master
+  # Check if inside a git repository
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "Not inside a git repository."
+    return 1
+  fi
+
+  # Ensure origin/master exists
+  if ! git show-ref --verify --quiet refs/remotes/origin/master; then
+    echo "\n${_y}⚠️  Missing origin/master. This repo may not use master as the base branch.${_0}"
+    return 1
+  fi
+
+  # Fetch and "pull" origin/master into local master (without leaving current branch)
+  # This is effectively: checkout master; git pull --ff-only origin master
+  git fetch origin master:master
+
+  # Rebase current feature branch onto the updated remote base
+  git rebase -i origin/master
 
   # Exit if rebase fails
   if [ $? -ne 0 ]; then
@@ -66,51 +82,5 @@ _grbs() {
     fi
   else
     echo "\n${_y}⚠️  Rebase conflicts detected. Resolve them before pushing."
-  fi
-}
-
-# Merge into master (alternative - overwrites master with source branch)
-_gmm() {
-  if [[ ! -d "./.git" ]]; then
-    echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
-    return 1
-  fi
-
-  if [[ -z "$1" ]]; then
-    echo "\n${_y}⚠️  No source branch specified\n${_0}"
-    return 1
-  fi
-
-  local SOURCE_BRANCH="$1"
-  local TARGET_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-
-  # Check if source branch exists
-  if ! git rev-parse --verify "$SOURCE_BRANCH" >/dev/null 2>&1; then
-    echo "\n${_r}❌ Source branch '$SOURCE_BRANCH' does not exist${_0}"
-    return 1
-  fi
-
-  echo "\n${_y}⚠️  WARNING: This will completely overwrite '$TARGET_BRANCH' with contents from '$SOURCE_BRANCH'${_0}"
-  echo "${_y}⚠️  All files in '$TARGET_BRANCH' will be replaced with files from '$SOURCE_BRANCH'${_0}"
-  echo "\n${_m}Are you sure? ${_grey}(y/N)${_0}"
-  read -r response
-
-  if [[ "$response" =~ ^[Yy]$ ]]; then
-    echo "\n${_grey}Proceeding with overwrite...${_0}"
-
-    # Stash any uncommitted changes
-    git stash push -m "Temporary stash before branch overwrite"
-
-    # Hard reset to source branch
-    if ! git reset --hard "$SOURCE_BRANCH"; then
-      echo "\n${_r}❌ Failed to reset to $SOURCE_BRANCH${_0}"
-      return 1
-    fi
-
-    echo "\n${_g}✅ Successfully overwrote $TARGET_BRANCH with contents of $SOURCE_BRANCH${_0}"
-    echo "${_m}To push these changes to remote, use: git push -f origin $TARGET_BRANCH${_0}"
-  else
-    echo "\n${_y}Operation aborted.${_0}"
-    return 1
   fi
 }

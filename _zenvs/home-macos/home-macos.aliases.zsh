@@ -171,6 +171,10 @@ fino-create(){
   cd "$REPOS_FINO/@finografic-zustand-context-creator" && l
 }
 
+@_pi(){
+  sudo mount_smbfs //REDACTED-CREDENTIAL/touch ~/Public/touch
+  cd ~/Public/touch && l
+}
 
 # ========================================================================= #
 

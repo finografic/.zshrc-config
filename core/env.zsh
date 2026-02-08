@@ -1,4 +1,7 @@
 #!/bin/zsh
+# ============================================================================ #
+# NOTE: CORE ENV - Environment detection and variables
+# ============================================================================ #
 
 # Detect when running inside GitHub Desktop's minimal environment and avoid
 # loading the user's project `.env` (which may reference tools not available
@@ -9,17 +12,14 @@ if [[ -n "${XPC_SERVICE_NAME:-}" && "${XPC_SERVICE_NAME}" == *"GitHubClient"* ]]
 fi
 
 # Load environment variables (skip when flagged above)
-if [[ -z "${SKIP_ENV_LOAD:-}" && -f "$HOME/.zshrc-config/.env" ]]; then
-  source "$HOME/.zshrc-config/.env"
-  # export GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2)
+if [[ -z "${SKIP_ENV_LOAD:-}" && -f "$ZSHRC_ROOT/.env" ]]; then
+  source "$ZSHRC_ROOT/.env"
+  export NPM_TOKEN=$(grep NPM_TOKEN "$ZSHRC_ROOT/.env" 2>/dev/null | cut -d '=' -f2)
 fi
 
 # VSCode memory allocation
 export NODE_OPTIONS="$NODE_OPTIONS --max_old_space_size=4096"
 export SIMPLE_GIT_HOOKS_RC="$HOME/.simple-git-hooks.rc"
-# export PATH="/opt/homebrew/bin/lint-staged:$PATH"
-# export PATH="/opt/homebrew/opt/node@22/bin:$PATH"
-
 
 # OS Detection and System Info =====================
 # Detect OS and Version

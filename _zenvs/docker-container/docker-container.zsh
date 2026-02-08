@@ -44,8 +44,7 @@ source "$ZSHRC_ROOT/lib/utils.zsh"
 source "$ZSHRC_ROOT/lib/common.zsh"
 
 # Git configuration (very useful in dev containers)
-source "$ZSHRC_ROOT/lib/git.core.zsh"
-source "$ZSHRC_ROOT/lib/git.commit.zsh"
+source "$ZSHRC_ROOT/lib/git/index.zsh"
 source "$ZSHRC_ROOT/lib/git.stashes.zsh"
 
 # Development tools
@@ -55,7 +54,7 @@ source "$ZSHRC_ROOT/lib/dev.zsh"
 source "$ZSHRC_ROOT/lib/aliases.common.zsh"
 
 # History configuration
-source "$ZSHRC_ROOT/lib/history.zsh"
+source "$ZSHRC_ROOT/core/history.zsh"
 
 # ============================================================================ #
 # Container-Specific Aliases

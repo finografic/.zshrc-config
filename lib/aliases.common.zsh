@@ -41,25 +41,25 @@ pn() {
 
   # Handle GitHub authentication if needed
   if [[ "$needs_github" == true ]]; then
-    # Try to load GITHUB_TOKEN from .env
+    # Try to load NPM_TOKEN from .env
     if [[ -f "$root_dir/.env" ]]; then
-      export GITHUB_TOKEN=$(grep GITHUB_TOKEN "$root_dir/.env" | cut -d '=' -f2)
+      export NPM_TOKEN=$(grep NPM_TOKEN "$root_dir/.env" | cut -d '=' -f2)
     fi
 
-    # Check if we have authentication (either via .netrc or GITHUB_TOKEN)
-    if [[ ! -f "$HOME/.netrc" ]] && [[ -z "$GITHUB_TOKEN" ]]; then
+    # Check if we have authentication (either via .netrc or NPM_TOKEN)
+    if [[ ! -f "$HOME/.netrc" ]] && [[ -z "$NPM_TOKEN" ]]; then
       echo "⚠️  Warning: No GitHub authentication found"
       echo "Please either:"
       echo "  1. Run 'npm login --scope=@finografic --registry=https://npm.pkg.github.com'"
       echo "  2. Set up .netrc file"
-      echo "  3. Provide GITHUB_TOKEN in .env file"
+      echo "  3. Provide NPM_TOKEN in .env file"
       return 1
     fi
   fi
 
   # Execute pnpm with all arguments
-  if [[ "$needs_github" == true ]] && [[ -n "$GITHUB_TOKEN" ]]; then
-    GITHUB_TOKEN=$GITHUB_TOKEN pnpm "$@"
+  if [[ "$needs_github" == true ]] && [[ -n "$NPM_TOKEN" ]]; then
+    NPM_TOKEN=$NPM_TOKEN pnpm "$@"
   else
     pnpm "$@"
   fi

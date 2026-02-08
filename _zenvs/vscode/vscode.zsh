@@ -42,6 +42,12 @@ path=(
   $path
 )
 
+# VSCode aliases (macOS specific)
+if [ "$OS_NAME" = "macOS" ]; then
+  # NEW: V2 (better)
+  alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
+fi
+
 # Basic aliases
 alias ll='ls -la'
 alias ..='cd ..'

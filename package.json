@@ -2,18 +2,22 @@
   "name": "zshrc-config",
   "description": "Superior ZSH configuration and startup, supporting multiple dynamic hosts and environments.",
   "scripts": {
-    "install:globals": "npm i -g yarn jmate fd-find pm2 nodemon vtop"
+    "install:globals": "npm i -g yarn jmate fd-find pm2 nodemon vtop",
+    "·········· FORMATTING": "··················································",
+    "format": "dprint fmt --diff",
+    "format.check": "dprint check"
   },
   "dependencies": {
     "chalk": "^2.4.2",
-    "git-branch-select": "^4.0.5",
+    "git-branch-select": "^4.1.0",
     "jmate": "^0.0.3",
-    "ora": "^4.0.2",
-    "pfetch": "^0.0.0-reserved"
+    "ora": "^4.1.1",
+    "pfetch": "0.0.0-reserved"
   },
   "devDependencies": {
-    "prettier": "^3.3.2",
-    "tsx": "^4.19.2"
+    "@finografic/dprint-config": "^0.12.2",
+    "eslint-plugin-markdownlint": "^0.9.0",
+    "tsx": "^4.21.0"
   },
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
 }

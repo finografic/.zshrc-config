@@ -1,3 +1,8 @@
+#!/bin/zsh
+# ============================================================================ #
+# NOTE: CORE OPTIONS - Zsh settings, completion, keybindings
+# ============================================================================ #
+
 # COLOR ============================
 # Use modern completion system
 [ "$(dircolors -b 2>/dev/null)" ] && eval "$(dircolors -b)"
@@ -10,9 +15,8 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 # ZSH SETTINGS ============================
 
-# Load core configurations..
-source "$ZSHRC_ROOT/lib/history.zsh"
-source "$ZSHRC_ROOT/lib/keybindings.zsh"
+# Load keybindings (history is loaded in bootstrap/00-profiling.zsh)
+source "$ZSHRC_ROOT/core/keybindings.zsh"
 
 # ANTIDOTE SETTINGS ============================
 

@@ -1,5 +1,6 @@
 # REPOS_REPORTING
 alias repos="cd $REPOS_REPORTING && l"
+alias skills="cd $HOME/ai-skills && l"
 alias sbc="cd $REPOS_SBC && l"
 alias repo="cd $REPO_CURRENT && l"
 alias misc="cd $HOME/repos-misc && l"

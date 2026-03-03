@@ -96,6 +96,42 @@ _gca () {
 }
 
 
+# Git, commit, repeat (reuses last commit message; supports multi-line)
+_gcr() {
+  # Check if inside a git repository
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "Not inside a git repository."
+    return 1
+  fi
+
+  # Ensure there is at least one commit to repeat
+  if ! git rev-parse --verify HEAD >/dev/null 2>&1; then
+    echo "\n${_y}⚠️  No commits found to repeat.${_0}"
+    return 1
+  fi
+
+  local last_message
+  last_message="$(git log -1 --pretty=%B 2>/dev/null)" || return 1
+
+  if [[ -z "$last_message" ]]; then
+    echo "\n${_y}⚠️  Last commit message is empty; aborting.${_0}"
+    return 1
+  fi
+
+  git add -A || return 1
+
+  if git diff --cached --quiet; then
+    echo "\n${_y}⚠️  No staged changes to commit.${_0}"
+    return 1
+  fi
+
+  # Use -F - to preserve multi-line messages exactly
+  if print -r -- "$last_message" | git commit -F - "$@"; then
+    echo "\n${_g}✅ DONE\n"
+  fi
+}
+
+
 # Amend commit
 _ga() {
   if [[ $1 > "" ]]; then

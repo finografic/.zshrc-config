@@ -30,7 +30,7 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
 [[ -d "$HOME/bin" ]] && export PATH="$HOME/bin:$PATH"
 
 # Don't load host macOS binary directories
-# export PATH="$ZSHRC_ROOT/bin-$(uname -m):$PATH"  # SKIP - these are macOS binaries
+# export PATH="$ZSHRC_ROOT/tools/bin-$(uname -m):$PATH"  # SKIP - these are macOS binaries
 
 # ============================================================================ #
 # Core Libraries (Container-Safe)

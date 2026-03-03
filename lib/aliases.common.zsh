@@ -43,7 +43,7 @@ pn() {
   if [[ "$needs_github" == true ]]; then
     # Try to load NPM_TOKEN from .env
     if [[ -f "$root_dir/.env" ]]; then
-      export NPM_TOKEN=$(grep NPM_TOKEN "$root_dir/.env" | cut -d '=' -f2)
+      export NPM_TOKEN=$(awk -F= '/^NPM_TOKEN=/ {print $2; exit}' "$root_dir/.env" 2>/dev/null)
     fi
 
     # Check if we have authentication (either via .netrc or NPM_TOKEN)

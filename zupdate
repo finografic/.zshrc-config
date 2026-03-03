@@ -1,4 +1,6 @@
 #!/bin/zsh
+# Commit and push zshrc-config updates (use from any directory via ~/bin/zupdate)
+# Requires: update-config.zsh in repo root
 
-cd "${HOME}/.zshrc-config";
-./update-config.sh;
+cd "${HOME}/.zshrc-config"
+./update-config.zsh

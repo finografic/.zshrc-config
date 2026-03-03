@@ -131,16 +131,16 @@ if [[ -z "$FIREWALL_STATUS" ]]; then
   echo "${_y}⚠️  Firewall may not be enabled. For security, enable in System Settings → Network → Firewall${_0}"
 fi
 
-# Check for suspicious external ESTABLISHED connections (excluding known safe ports 11434, 3001)
-# NOTE: Ports 11434 (Ollama) and 3001 (OpenWebUI) are intentionally excluded - they're expected to be localhost
-if command -v lsof &>/dev/null; then
-  # Get all ESTABLISHED connections, exclude localhost and known safe ports
-  SUSPICIOUS_CONN=$(lsof -i -P 2>/dev/null | grep "ESTABLISHED" | grep -vE "127.0.0.1|localhost|::1|:11434|:3001" || echo "")
-  if [[ -n "$SUSPICIOUS_CONN" ]]; then
-    echo "${_r}⚠️  SECURITY WARNING: Non-localhost ESTABLISHED connections detected!${_0}"
-    echo "${_r}   Check: lsof -i -P | grep ESTABLISHED${_0}"
-  fi
-fi
+# WIP: Security check commented out for now
+# # Check for suspicious external ESTABLISHED connections (excluding known safe ports 11434, 3001)
+# # NOTE: Ports 11434 (Ollama) and 3001 (OpenWebUI) are intentionally excluded
+# if command -v lsof &>/dev/null; then
+#   SUSPICIOUS_CONN=$(lsof -i -P 2>/dev/null | grep "ESTABLISHED" | grep -vE "127.0.0.1|localhost|::1|:11434|:3001" || echo "")
+#   if [[ -n "$SUSPICIOUS_CONN" ]]; then
+#     echo "${_r}⚠️  SECURITY WARNING: Non-localhost ESTABLISHED connections detected!${_0}"
+#     echo "${_r}   Check: lsof -i -P | grep ESTABLISHED${_0}"
+#   fi
+# fi
 
 # ============================================================== #
 # VERIFY: LaunchAgent Services (djay backup, etc.)

@@ -76,12 +76,15 @@ source "$ZSHRC_ROOT/vendor/index.zsh"
 export EDITOR="nvim"
 export VISUAL="nvim"
 export IDE="code"
+alias vim="${EDITOR} $@"
 
 edit() { $EDITOR "$@"; }
 
 # VSCode aliases (macOS specific)
 if [[ "$OS_NAME" = "macOS" ]]; then
   alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
+    alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
+  export PATH="/opt/homebrew/bin/hs:$PATH"
 fi
 
 # ============================================================================ #
@@ -89,15 +92,14 @@ fi
 # ============================================================================ #
 
 # Loading indicator (200ms - gives "busy" impression during bootstrap)
-node "$ZSHRC_ROOT/lib/spinner.js"
+# Uses compiled TypeScript: node/src/spinner.ts -> node/dist/spinner.mjs (tsdown/rolldown)
+node "$ZSHRC_ROOT/packages/node/dist/spinner.mjs"
 
 # Core libraries
 source "$ZSHRC_ROOT/lib/colors.zsh"
 
-# PATH additions
-export PATH=/usr/local/bin:$PATH
-export PATH=$HOME/.local/bin:$PATH
-export PATH=$HOME/bin:$PATH
+# PATH additions (consolidated; typeset -U PATH in bootstrap prevents duplicates)
+export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 
 # Common utilities
 source "$ZSHRC_ROOT/lib/utils.zsh"
@@ -116,18 +118,13 @@ source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
 # ============================================================================ #
 
 # DJ software sync
-source "$ZSHRC_ROOT/music/djay_icloud_sync.zsh"
+source "$ZSHRC_ROOT/extras/music/djay_icloud_sync.zsh"
 
 # Docker cleanup utilities
 source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 
-# GitHub authentication
-if [[ -n "$NPM_TOKEN" ]]; then
-  echo "${_g}NPM_TOKEN set${_0}"
-  gh auth login --with-token < <(printf '%s' "$NPM_TOKEN") 2>/dev/null
-else
-  echo "${_y}NPM_TOKEN NOT set${_0}"
-fi
+# GitHub authentication (silent)
+[[ -n "$NPM_TOKEN" ]] && gh auth login --with-token < <(printf '%s' "$NPM_TOKEN") 2>/dev/null
 
 # ============================================================================ #
 # NOTE: 12. FINALIZATION
@@ -136,5 +133,5 @@ fi
 # Splash screen
 source "$ZSHRC_ROOT/main-splash.zsh"
 
-# Remove duplicate PATH entries
-flatten_PATH
+# Remove duplicate PATH entries (uses TypeScript: node/src/build-path.ts)
+export PATH=$(node "$ZSHRC_ROOT/packages/node/dist/build-path.mjs")

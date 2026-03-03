@@ -1,4 +1,4 @@
-# FZF IGNORES
+# Used by fd (FZF_DEFAULT_COMMAND) when searching in this repo - lib/utils.zsh
 .git
 .gitignore
 .ignore

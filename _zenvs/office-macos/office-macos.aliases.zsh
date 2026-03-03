@@ -1,6 +1,6 @@
 # REPOS_REPORTING
 alias repos="cd $REPOS_REPORTING && l"
-alias skills="cd $HOME/ai-skills && l"
+alias skills="cd $HOME/ai-agent-skills && l"
 alias sbc="cd $REPOS_SBC && l"
 alias repo="cd $REPO_CURRENT && l"
 alias misc="cd $HOME/repos-misc && l"
@@ -38,6 +38,9 @@ alias tokens="cd $REPOS_SBC/design-tokens/ && l"
 alias tui="cd $REPOS_SBC/sbc.template.ui/ && l"
 alias template="cd $REPOS_SBC/sbc.template.ui/ && l"
 alias cop="cd $REPOS_SBC/sbc.common.copilot.ui/ && l"
+
+# MY REPOS
+alias lay="cd $HOME/repos-my/macos-layouts && l"
 
 @root() {
   cd "$REPOS_SBC/sbc.core.root-config.ui" && l

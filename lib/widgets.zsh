@@ -53,6 +53,20 @@ show_custom_launch_agents() {
 }
 
 # ========================================================================= #
+# LIST PORTS - localhost listeners (macOS, Linux, Android)
+
+show_ports() {
+  if [[ "$OS_NAME" == "Linux" && "$ZENV" != "apnaes" ]]; then
+    ports
+  elif [[ "$OS_NAME" == "macOS" ]]; then
+    ports
+  elif [[ "$OS_NAME" == "Android" ]]; then
+    ports 2>/dev/null
+  fi
+  echo "\n"
+}
+
+# ========================================================================= #
 # DOCKER CONTAINERS WIDGET
 
 show_docker_containers() {
@@ -71,16 +85,29 @@ show_docker_containers() {
 # SPLASH SCREEN - FASTFETCH or NEOFETCH, based on SYSTEM ARCHITECTURE
 
 show_splash_neofetch() {
-  # Check architecture and use appropriate binary
-  if [ $ZENV = "apnaes" ]; then
-    # $ZSHRC_ROOT/bin-$OS_ARCH/neofetch
-    # command -v neofetch >/dev/null && neofetch || echo "neofetch not found"
-    command -v $ZSHRC_ROOT/bin-$OS_ARCH/neofetch >/dev/null && $ZSHRC_ROOT/bin-$OS_ARCH/neofetch || echo "neofetch not found"
+  if [[ "$ZENV" == "apnaes" ]]; then
+    if command -v neofetch >/dev/null; then
+      neofetch
+    elif [[ -x "$ZSHRC_ROOT/tools/bin-$OS_ARCH/neofetch" ]]; then
+      "$ZSHRC_ROOT/tools/bin-$OS_ARCH/neofetch"
+    else
+      echo "neofetch not found"
+    fi
   else
-    # Original x86_64 logic
-    # $ZSHRC_ROOT/bin-$OS_ARCH/fastfetch
-    # command -v fastfetch >/dev/null && fastfetch || echo "fastfetch not found"
-    command -v $ZSHRC_ROOT/bin-$OS_ARCH/fastfetch >/dev/null && $ZSHRC_ROOT/bin-$OS_ARCH/fastfetch || echo "fastfetch not found"
+    # Prefer system fastfetch (brew, etc.), then bundled
+    local fastfetch_cmd=""
+    if command -v fastfetch >/dev/null; then
+      fastfetch_cmd="fastfetch"
+    elif [[ -x "$ZSHRC_ROOT/tools/bin-$OS_ARCH/fastfetch" ]]; then
+      fastfetch_cmd="$ZSHRC_ROOT/tools/bin-$OS_ARCH/fastfetch"
+    fi
+    if [[ -n "$fastfetch_cmd" ]]; then
+      $fastfetch_cmd
+    elif [[ "$OS_NAME" == "macOS" ]] && command -v brew >/dev/null; then
+      brew install fastfetch 2>/dev/null && fastfetch
+    else
+      echo "fastfetch not found"
+    fi
   fi
 }
 
@@ -108,5 +135,10 @@ show_os_version_and_sys_info() {
   echo "${_y}$OS_NAME \t $([[ $OS != "Android" ]] && echo "$OS_VERSION") $([[ $OS = "Linux" ]] && echo $OS_KERNEL)"
   [ -e /etc/os-release ] && echo "${_y}$(env -i bash -c '. /etc/os-release; echo $PRETTY_NAME')"
   echo "${_c}NodeJS \t$(node --version)"
-  echo "${_c}npm \tv$(npm --version)\n${_0}"
+  # Prefer pnpm to avoid npm warnings for pnpm-specific .npmrc options (node-linker, hoist-workspace-packages)
+  if command -v pnpm >/dev/null; then
+    echo "${_c}pnpm \tv$(pnpm --version)\n${_0}"
+  else
+    echo "${_c}npm \tv$(npm --version)\n${_0}"
+  fi
 }

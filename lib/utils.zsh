@@ -6,39 +6,14 @@
 export FZF_DEFAULT_COMMAND='fd --type f --ignore-file .ignore'
 
 config() {
-  open -a "/Applications/Visual Studio Code.app" "$ZSHRC_ROOT/zshrc-config.code-workspace"
+  open -a "/Applications/Visual Studio Code.app" "$ZSHRC_ROOT/.vscode/zshrc-config.code-workspace"
 }
 
-# Load environment variables from .env file
-_load_env() {
-  # Use ZSHRC_ROOT if available, otherwise fall back to script directory
-  local ENV_FILE="${ZSHRC_ROOT:-$HOME/.zshrc-config}/.env"
+# NOTE: .env is loaded in core/env.zsh (canonical, includes SKIP_ENV_LOAD for GitHub Desktop)
 
-  # Check if .env file exists
-  if [[ -f "$ENV_FILE" ]]; then
-    # Read each line of the .env file
-    while read -r line; do
-      # Skip comments and empty lines
-      if [[ $line =~ ^\s*# ]] || [[ -z $line ]]; then
-        continue
-      fi
-
-      # Export the variable to make it available to all sourced files
-      export "${line?}"
-    done < "$ENV_FILE"
-  else
-    echo "No .env file found in ${ZSHRC_ROOT:-$HOME/.zshrc-config}/"
-    return 1
-  fi
-}
-
-# Call the function to load the env vars
-_load_env
-
-# REMOVE DUPLICATES FROM PATH - while preserving order
+# REMOVE DUPLICATES FROM PATH (legacy; build-path.mjs used at end of main.zsh)
 flatten_PATH() {
-  typeset -U PATH
-  PATH="${PATH}"
+  export PATH=$(node "${ZSHRC_ROOT:-$HOME/.zshrc-config}/packages/node/dist/build-path.mjs")
 }
 
 function config_V1_FZF() {

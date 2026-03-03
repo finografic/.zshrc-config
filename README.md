@@ -1,39 +1,98 @@
-# 📒 **ZSHRC-CONFIG**
+# 💻 zshrc-config
 
-## Cross-Platform Zsh Environment Orchestrator
+**Modular Zsh configuration that adapts to your environment.** One config, multiple hosts—macOS, Linux, Docker, VSCode, Android—with environment-specific aliases, paths, and tools.
 
-Superior ZSH configuration and startup, dynamic support for multiple dynamic hosts and environments.
+---
 
-**Backup your current `~/.zshrc` file and leave new/current version containing only:**
+## Philosophy
 
-```sh
-source "$HOME/.zshrc-config/main.zsh";
+Provide a single, maintainable Zsh setup that:
+
+- Detects environment (home-macos, office-macos, apnaes, docker, vscode) and loads the right profile
+- Keeps `~/.zshrc` minimal—everything else lives in this repo
+- Optimizes startup (VSCode/Docker use lighter profiles)
+- Supports multi-system sync (commit/push from any machine)
+
+---
+
+## Quick Setup
+
+**1. Minimal `~/.zshrc`**
+
+```zsh
+export ZSHRC_ROOT="$HOME/.zshrc-config"
+source "$ZSHRC_ROOT/bootstrap/index.zsh"
+source "$ZSHRC_ROOT/main.zsh"
 ```
 
-**Fixing the `zsh compinit: insecure directories` error/warning message on macOS:**
-<https://github.com/zsh-users/zsh-completions/issues/433#issuecomment-390600994>
+**2. Install dependencies (fresh Mac)**
 
-```sh
-compaudit # list directories thought unsecure
-sudo chown -R username TARGET_DIRECTORY
-sudo chmod -R 755 TARGET_DIRECTORY
+```zsh
+zsh ~/.zshrc-config/scripts/install-zshrc-config-dependencies.zsh
+```
+
+Installs: Homebrew, Antidote, Powerlevel10k, Meslo Nerd Font, fzf.
+
+**3. Environment file**
+
+Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct `_zenvs/` profile loads.
+
+---
+
+## Structure
+
+```
+~/.zshrc-config/
+├── bootstrap/          # Early init: profiling, Antidote, plugins, compinit, p10k
+├── core/               # env, options, history, keybindings, locale
+├── vendor/             # pnpm, nvm
+├── lib/                # colors, utils, dev, git, widgets
+├── _zenvs/             # Environment-specific (home-macos, office-macos, docker, vscode, …)
+├── themes/             # p10k config
+├── plugins/            # Antidote plugin list
+├── scripts/            # install-zshrc-config-dependencies, vscode-clean, etc.
+├── packages/
+│   └── node/           # TypeScript utilities (spinner, build-path, detect-env)
+├── tools/
+│   ├── bin-arm64/      # Architecture-specific binaries (fastfetch, neofetch)
+│   └── bin-x86_64/
+└── extras/
+    ├── music/          # DJ sync utilities
+    ├── hardware/       # Linux hardware config
+    └── examples/       # Docker examples
 ```
 
 ---
 
-## 🐳 Docker Container Support
+## Features
 
-This configuration can be used inside Docker containers without installing the entire environment. The container automatically detects it's running in Docker and loads a lightweight, container-optimized profile.
+| Feature                   | Description                                                           |
+| ------------------------- | --------------------------------------------------------------------- |
+| **Environment detection** | `.env` + IP/hostname → load `_zenvs/home-macos`, `office-macos`, etc. |
+| **Bootstrap**             | Antidote, plugins, compinit, p10k—correct load order                  |
+| **VSCode/Docker**         | Early exit with minimal config for fast IDE terminals                 |
+| **Splash**                | Time Machine, launch agents, ports, fastfetch/neofetch                |
+| **Node/TS**               | Spinner, PATH deduplication, env detection (tsdown)                   |
 
-### Quick Start
+---
 
-**Option 1: Using docker run**
+## Scripts
+
+| Script                                          | Purpose                                                              |
+| ----------------------------------------------- | -------------------------------------------------------------------- |
+| `scripts/install-zshrc-config-dependencies.zsh` | Install Homebrew, Antidote, p10k, fzf, Meslo font                    |
+| `scripts/vscode-clean.zsh`                      | Clear VSCode / Insiders / Cursor caches (Cursor: safe only)          |
+| `zupdate`                                       | Commit and push with `fetch` + `pull --rebase` for multi-system sync |
+
+Run `zupdate` from anywhere (symlink in `~/bin`) to sync changes.
+
+---
+
+## Docker
+
+Mount the config into a container—it auto-detects Docker and loads `_zenvs/docker-container/`:
 
 ```bash
-# Build the example dev container
-docker build -t zsh-dev:latest -f examples/Dockerfile.dev .
-
-# Run with your host config mounted
 docker run -it --rm \
   -v ~/.zshrc-config:/root/.zshrc-config:ro \
   -v ~/.zshrc:/root/.zshrc:ro \
@@ -41,113 +100,27 @@ docker run -it --rm \
   zsh-dev:latest
 ```
 
-**Option 2: Using docker-compose**
-
-```bash
-# Start the dev container
-docker-compose -f examples/docker-compose.yml up -d dev
-
-# Attach to the container
-docker-compose -f examples/docker-compose.yml exec dev zsh
-
-# Stop when done
-docker-compose -f examples/docker-compose.yml down
-```
-
-### How It Works
-
-1. **Automatic Detection**: The config detects Docker via `/.dockerenv` or `$DOCKER_CONTAINER` environment variable
-2. **Lightweight Profile**: Loads `_zenvs/docker-container/docker-container.zsh` with container-optimized settings
-3. **Host Config Mount**: Your host `~/.zshrc-config` is mounted read-only into the container
-4. **No macOS Binaries**: Skips loading macOS-specific binaries from `bin-arm64/` and `bin-x86_64/`
-
-### What's Included in Container Profile
-
-- ✅ Git configuration and aliases
-- ✅ Common utilities and aliases
-- ✅ Development tools
-- ✅ History management
-- ✅ FZF integration (if available)
-- ❌ Hardware detection (skipped)
-- ❌ NVM auto-load (skipped for speed)
-- ❌ macOS-specific features
-
-### Example Dockerfiles
-
-See `examples/` directory for:
-
-- `Dockerfile.dev` - Basic Ubuntu-based dev container
-- `Dockerfile.node` - Node.js development container
-- `docker-compose.yml` - Multi-container setup
-
-### Customizing Container Behavior
-
-Edit `_zenvs/docker-container/docker-container.zsh` to:
-
-- Add/remove sourced libraries
-- Customize aliases
-- Enable/disable features (NVM, FZF, etc.)
-- Adjust the container banner
+See `extras/examples/` for Dockerfiles and docker-compose.
 
 ---
 
-## Antidote setup
+## Troubleshooting
 
-```sh
-# 1. Clone Antidote
-git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+**`zsh compinit: insecure directories`**
 
-# 2. Add to .zshrc
-echo 'source ${ZDOTDIR:-~}/.antidote/antidote.zsh' >> ${ZDOTDIR:-~}/.zshrc
-
-# 3. Create initial plugins file
-touch ${ZDOTDIR:-~}/.zsh_plugins.txt
-
-# 4. Add plugin load command to .zshrc
-echo 'antidote load ${ZDOTDIR:-~}/.zsh_plugins.txt' >> ${ZDOTDIR:-~}/.zshrc
-
-
-# THEN..
-# 1. Set up preferred plugins in .zsh_plugins.txt
-# 2. Configure how to integrate .zsh-config
-# 3. Consider static loading for better performance
-# 4. Explore plugin update strategies
-
+```zsh
+compaudit                    # list insecure dirs
+sudo chown -R $USER /path    # fix ownership
 ```
 
-## Profiling
+**Profiling startup**
 
-**basic:**
-
-```sh
-# Before static loading
-time zsh -i -c exit
-
-# After static loading
-time zsh -i -c exit
-```
-
-**detailed (saved in `.zshrc`):**
-
-```sh
-# Add this to the very top:
-zmodload zsh/zprof
-
-# And this at the very bottom:
-zprof
-```
-
-## `hyperfine` - for MORE profiling
-
-```sh
-# Install hyperfine
-brew install hyperfine
-
-# Then test
-hyperfine 'zsh -i -c exit'
+```zsh
+# Add at top of .zshrc: zmodload zsh/zprof
+# Add at bottom: zprof
+time zsh -i -c exit          # quick measure
 ```
 
 ---
 
-_Submitted by_ **Justin Rankin**
-[justin.blair.rankin@gmail.com](justin.blair.rankin@gmail.com)
+_By Justin Rankin_

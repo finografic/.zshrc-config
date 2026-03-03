@@ -38,7 +38,7 @@ show_what_will_be_removed() {
     fi
 
     # Show build cache size
-    local build_cache_size=$(docker system df --format "table {{.Type}}\t{{.TotalCount}}\t{{.Size}}\t{{.Reclaimable}}" | grep "Build Cache" | awk '{print $3}')
+    local build_cache_size=$(docker system df --format "table {{.Type}}\t{{.TotalCount}}\t{{.Size}}\t{{.Reclaimable}}" | awk '/Build Cache/ {print $3}')
     echo -e "${_c}🏗️  Build Cache: $build_cache_size${_0}"
 
     echo ""

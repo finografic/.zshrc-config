@@ -13,7 +13,7 @@ ICLOUD_DJAY_PATH="$HOME/Library/Mobile Documents/com~apple~CloudDocs/djay"
 LIBRARY_FILE="djay Media Library.djayMediaLibrary"
 # Move logs to the repo
 ZSHRC_ROOT="$HOME/.zshrc-config"
-LOG_FILE="$ZSHRC_ROOT/music/logs/djay_icloud_sync.log"
+LOG_FILE="$ZSHRC_ROOT/extras/music/logs/djay_icloud_sync.log"
 
 # Main djay command function
 djay() {
@@ -120,12 +120,12 @@ djay() {
 }
 
 # Convenient aliases (keeping for backward compatibility)
-alias djay-sync='~/.zshrc-config/music/djay_icloud_sync.zsh'
-alias djay-status='~/.zshrc-config/music/djay_icloud_sync.zsh status'
-alias djay-up='~/.zshrc-config/music/djay_icloud_sync.zsh up'
-alias djay-down='~/.zshrc-config/music/djay_icloud_sync.zsh down'
-alias djay-logs='~/.zshrc-config/music/djay_icloud_sync.zsh logs'
-alias djay-help='~/.zshrc-config/music/djay_icloud_sync.zsh help'
+alias djay-sync='~/.zshrc-config/extras/music/djay_icloud_sync.zsh'
+alias djay-status='~/.zshrc-config/extras/music/djay_icloud_sync.zsh status'
+alias djay-up='~/.zshrc-config/extras/music/djay_icloud_sync.zsh up'
+alias djay-down='~/.zshrc-config/extras/music/djay_icloud_sync.zsh down'
+alias djay-logs='~/.zshrc-config/extras/music/djay_icloud_sync.zsh logs'
+alias djay-help='~/.zshrc-config/extras/music/djay_icloud_sync.zsh help'
 
 # Function to log messages
 log_message() {

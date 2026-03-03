@@ -1,66 +1,51 @@
-# SPECIFIC
-export ZSHRC_ROOT="$HOME/.zshrc-config"
-export ZENV_PATH="$ZSHRC_ROOT/_zenvs/${ZENV}"
-export NVM="true"
+#!/bin/zsh
+# ============================================================================ #
+# NOTE: VSCODE - Minimal config for IDE integrated terminals (fast startup)
+# ============================================================================ #
+# Early exit from main.zsh - skips splash, widgets, hardware detection.
+# Target: essential dev tools only, <200ms startup.
+# ============================================================================ #
 
-export ZSH_THEME="gallois"
-
-# CORE
-# source "$ZSHRC_ROOT/lib/paths.$OS_NAME_LOWER.zsh"
-# source "$ZSHRC_ROOT/lib/colors.zsh"
-
-# COMMON
-# source "$ZSHRC_ROOT/lib/utils.zsh"
-# source "$ZSHRC_ROOT/lib/utils.disk.zsh"
-source "$ZSHRC_ROOT/lib/common.zsh"
-source "$ZSHRC_ROOT/lib/dev.zsh"
-source "$ZSHRC_ROOT/lib/git.zsh"
-source "$ZSHRC_ROOT/lib/dev.jest.zsh"
-
-source "$ZSHRC_ROOT/_zenvs/home-macos/home-macos.aliases.zsh"
-
-# ========================================================================== #
-# VSCODE START  ============================================================ #
-
-# Basic environment
 export ZENV='vscode'
+export ZSHRC_ROOT="$HOME/.zshrc-config"
 export LANG="en_US.UTF-8"
-export EDITOR="vim"
+export EDITOR="nvim"
+export VISUAL="nvim"
 
-# Node.js settings
-export NODE_OPTIONS="--max_old_space_size=4096"
+# Colors (needed for prompts/aliases)
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
+# Node/VSCode
+export NODE_OPTIONS="$NODE_OPTIONS --max_old_space_size=4096"
 export NVM_DIR="$HOME/.nvm"
-[ -s "$HOME/nvm.sh" ] && source "$HOME/nvm.sh" # Load NVM
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# Path management
-typeset -U path
-path=(
-  "$HOME/bin"
-  "/usr/local/bin"
-  "/opt/homebrew/bin"
-  "$HOME/.nvm/versions/node/$(node --version 2>/dev/null || echo 'v16')/bin"
-  $path
-)
+# PATH basics
+PATH_NODE="$HOME/.nvm/versions/node/$(node --version)/bin"
+export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH_NODE:$PATH"
 
-# VSCode aliases (macOS specific)
-if [ "$OS_NAME" = "macOS" ]; then
-  # NEW: V2 (better)
-  alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
-fi
 
-# Basic aliases
+# pnpm (use vendor config)
+source "$ZSHRC_ROOT/vendor/pnpm.zsh"
+
+# Core aliases
 alias ll='ls -la'
 alias ..='cd ..'
 
-# Minimal git configuration
-# autoload -Uz compinit && compinit
+# VSCode command (macOS)
+[[ "$OS_NAME" = "macOS" ]] && alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
+
+# Git - essential only
+source "$ZSHRC_ROOT/lib/git.zsh"
+
+# Common dev aliases
+source "$ZSHRC_ROOT/lib/common.zsh"
+source "$ZSHRC_ROOT/lib/dev.zsh"
+
+# Simple prompt with git branch (p10k loads from bootstrap, but we use minimal for speed)
 autoload -Uz vcs_info
-precmd() {
-  vcs_info
-}
-
+precmd() { vcs_info }
 zstyle ':vcs_info:git:*' formats '%b '
-
-# Simple prompt with git branch
 setopt PROMPT_SUBST
 PROMPT='%F{green}%~%f %F{blue}${vcs_info_msg_0_}%f$ '

@@ -1,0 +1,21 @@
+{
+  "name": "@zshrc/node",
+  "type": "module",
+  "description": "TypeScript/Node utilities for zshrc-config",
+  "scripts": {
+    "detect-env": "tsx src/detect-env.ts",
+    "build-path": "tsx src/build-path.ts",
+    "spinner": "tsx src/spinner.ts",
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsdown": "^0.20.3",
+    "typescript": "^5.6.0"
+  }
+}

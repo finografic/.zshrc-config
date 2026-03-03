@@ -6,6 +6,9 @@
 # Load history first (was in original .zshrc before compinit)
 source "$ZSHRC_ROOT/core/history.zsh"
 
+# PATH: unique entries only (no duplicates when appending)
+typeset -g -U PATH
+
 # Uncomment to enable detailed profiling (run `zprof` at end of session)
 # zmodload zsh/zprof
 

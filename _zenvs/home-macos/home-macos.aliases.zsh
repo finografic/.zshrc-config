@@ -7,6 +7,7 @@ REPOS_LOUPEDECK="$HOME/repos-loupedeck"
 REPOS_APNAES="$HOME/repos-apnaes"
 
 alias repos="cd $REPOS && l"
+alias skills="cd $HOME/ai-agent-skills && l"
 alias misc="cd $REPOS/repos-various && l"
 alias apps="cd $REPOS/repos-x-apps && l"
 alias my="cd $REPOS_FINO && l"
@@ -91,6 +92,11 @@ find_monorepo_root() {
   cd "$monorepo/apps/client" && l
 }
 
+@shared() {
+  local monorepo=$(find_monorepo_root)
+  cd "$monorepo/packages/shared" && l
+}
+
 @globals() {
   local monorepo=$(find_monorepo_root)
   cd "$monorepo/packages/globals" && l
@@ -132,22 +138,21 @@ find_monorepo_root() {
   cd "$REPOS_FINO/___FINOGRAFIC-TESTING___" && l
 }
 
-@_create() {
-  cd "$REPOS_FINO/@finografic-create" && l
+@_genx() {
+  cd "$REPOS_FINO/@finografic-genx" && l
 }
 
-fino-create(){
-  if [[ -n "$@" ]]; then
-    finografic-create $@
-  else
-    finografic-create --help
-  fi
+@_gli() {
+  cd "$REPOS_FINO/@finografic-git-cli" && l
+}
+
+@_lay() {
+  cd "$REPOS_FINO/macos-layouts" && l
 }
 
 @_core() {
   cd "$REPOS_FINO/@finografic-core" && l
 }
-
 
 @_eslint() {
   cd "$REPOS_FINO/@finografic-eslint-config" && l

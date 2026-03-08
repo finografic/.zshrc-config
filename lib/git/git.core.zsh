@@ -64,3 +64,7 @@ if [ $ZENV != "office-macos" ]; then
   git config --global user.email "justin.blair.rankin@gmail.com"
   git config --global credential.helper 'cache --timeout=1209600' # TWO WEEKS!
 fi
+
+_tsclean() {
+  tmutil listlocalsnapshots / 2>/dev/null | wc -l
+}

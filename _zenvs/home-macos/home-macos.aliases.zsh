@@ -92,6 +92,11 @@ find_monorepo_root() {
   cd "$monorepo/apps/client" && l
 }
 
+@design() {
+  local monorepo=$(find_monorepo_root)
+  cd "$monorepo/packages/design-system" && l
+}
+
 @shared() {
   local monorepo=$(find_monorepo_root)
   cd "$monorepo/packages/shared" && l
@@ -105,6 +110,11 @@ find_monorepo_root() {
 @editor() {
   local monorepo=$(find_monorepo_root)
   cd "$monorepo/packages/plate-editor" && l
+}
+
+@icons() {
+  local monorepo=$(find_monorepo_root)
+  cd "$monorepo/packages/icons" && l
 }
 
 @i18n() {
@@ -154,15 +164,17 @@ find_monorepo_root() {
   cd "$REPOS_FINO/@finografic-core" && l
 }
 
-@_eslint() {
-  cd "$REPOS_FINO/@finografic-eslint-config" && l
-}
-
-
 @_dprint() {
   cd "$REPOS_FINO/@finografic-dprint-config" && l
 }
 
+@_eslint() {
+  cd "$REPOS_FINO/@finografic-eslint-config" && l
+}
+
+@_lucide() {
+  cd "$REPOS_FINO/@finografic-lucide-manager" && l
+}
 
 @_scripts() {
   cd "$REPOS_FINO/@finografic-project-scripts" && l

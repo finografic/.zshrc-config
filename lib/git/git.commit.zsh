@@ -96,7 +96,7 @@ _gca () {
 }
 
 
-# Git, commit, repeat (reuses last commit message; supports multi-line)
+# Git, commit, REPEAT (reuses last commit message; supports multi-line)
 _gcr() {
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -110,6 +110,12 @@ _gcr() {
     return 1
   fi
 
+  # Exit early if there is nothing to commit (tracked/untracked)
+  if [[ -z "$(git status --porcelain 2>/dev/null)" ]]; then
+    echo "\n${_y}⚠️  No changes to commit.${_0}"
+    return 1
+  fi
+
   local last_message
   last_message="$(git log -1 --pretty=%B 2>/dev/null)" || return 1
 
@@ -117,6 +123,8 @@ _gcr() {
     echo "\n${_y}⚠️  Last commit message is empty; aborting.${_0}"
     return 1
   fi
+
+  echo "\n${_w}committing with message:   \n${_m}${last_message}${_0}\n"
 
   git add -A || return 1
 

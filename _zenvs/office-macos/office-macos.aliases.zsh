@@ -1,3 +1,5 @@
+REPOS_MY="$HOME/repos-my"
+
 # REPOS_REPORTING
 alias repos="cd $REPOS_REPORTING && l"
 alias skills="cd $HOME/ai-agent-skills && l"
@@ -5,7 +7,7 @@ alias sbc="cd $REPOS_SBC && l"
 alias repo="cd $REPO_CURRENT && l"
 alias misc="cd $HOME/repos-misc && l"
 alias apps="cd $HOME/repos-apps && l"
-alias my="cd $HOME/repos-my && l"
+alias my="cd $REPOS_MY && l"
 alias pf="cd $HOME/repos-pioneer && l"
 alias json="cd $REPOS_PF/$REPOS_PF_JSON_WALKER/ && l"
 alias obs="cd $HOME/Documents/OFFICE_VAULT 🔒 && l"
@@ -90,6 +92,10 @@ alias dev="echo '${_y}CHOOSE AN ALIAS!${_0}'"
 # /Users/REDACTED/Library/Application Support/Logi/LogiPluginService
 alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls -lAh'
 alias l2="cd $HOME/.local/share && l"
+
+@_gli() {
+  cd "$REPOS_MY/@finografic-git-cli" && l
+}
 
 # COMMON ALIASES
 source "$ZSHRC_ROOT/lib/aliases.common.zsh"

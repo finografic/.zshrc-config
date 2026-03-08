@@ -12,6 +12,88 @@ function run() {
 ##########  NEW 2026  #########
 ###############################
 
+
+# ------------------------------------------------------------------------- #
+# Recursively remove all `node_modules` directories from a given path.
+# Usage: _clean_node_modules [--dry-run|-n] [--force|-f] [path]
+# Defaults: path="." (current working directory)
+# Options:
+#  --dry-run, -n   : list what would be removed without deleting
+#  --force, -f     : remove without prompting per-folder
+# Notes:
+#  - Matches true directories and symlinks named "node_modules".
+#  - Uses `rm -rf --` so dotfiles, dot-folders and symlinks inside
+#    each `node_modules` are removed without leaving artifacts.
+# ------------------------------------------------------------------------- #
+
+_clean_node_modules() {
+  local target="."
+  local dry_run=0
+  local force=0
+
+  # Parse args
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --dry-run|-n) dry_run=1; shift ;;
+      --force|-f) force=1; shift ;;
+      --) shift; target="$1"; shift; break ;;
+      *) target="$1"; shift ;;
+    esac
+  done
+
+  if [ -z "$target" ]; then target="."; fi
+  if [ ! -e "$target" ]; then
+    echo "Target does not exist: $target"
+    return 1
+  fi
+
+  echo "Searching for node_modules under: $target"
+
+  # Collect node_modules directories (real dirs and symlinks named node_modules)
+  local -a matches
+  local p
+
+  # Directories named node_modules (prune so find doesn't descend into them)
+  while IFS= read -r -d '' p; do
+    matches+=("$p")
+  done < <(find "$target" -name 'node_modules' \( -type d -o -type l \) -prune -print0 2>/dev/null)
+
+  if [ ${#matches[@]} -eq 0 ]; then
+    echo "No node_modules found under: $target"
+    return 0
+  fi
+
+  printf "Found %d node_modules locations\n" "${#matches[@]}"
+
+  for p in "${matches[@]}"; do
+    if [ $dry_run -eq 1 ]; then
+      echo "[DRY-RUN] rm -rf -- $p"
+      continue
+    fi
+
+    if [ $force -ne 1 ]; then
+      printf "Delete %s ? [y/N]: " "$p"
+      read -r ans
+      case "$ans" in
+        y|Y|yes|YES|Yes) ;;
+        *) echo "Skipping: $p"; continue ;;
+      esac
+    fi
+
+    # Use rm -rf -- to ensure removal of dotfiles/folders and symlinks
+    rm -rf -- "$p"
+    if [ $? -eq 0 ]; then
+      echo "Removed: $p"
+    else
+      echo "Failed to remove: $p" >&2
+    fi
+  done
+}
+
+alias _cnm="_clean_node_modules"
+
+
+
 function min() {
   # Pass-through: allow minify help/version without requiring a file.
   # (Your screenshot shows `min --help`, `min -h`, etc.)
@@ -164,6 +246,32 @@ function min() {
     fi
   fi
 }
+
+# Wrapper: measure disk usage before and after running the cleaner
+clean-node-modules-report() {
+  # Compute size in kilobytes, fallback to 0
+  SIZE_A_KB=$(du -sk . 2>/dev/null | awk '{print $1+0}')
+  SIZE_A=$(awk "BEGIN{printf \"%.1f\", (${SIZE_A_KB:-0})/1024}")
+
+  # Run the existing cleaner (allow passing options/args)
+  clean-node-modules "$@"
+
+  # Recompute size after cleanup
+  SIZE_B_KB=$(du -sk . 2>/dev/null | awk '{print $1+0}')
+  SIZE_B=$(awk "BEGIN{printf \"%.1f\", (${SIZE_B_KB:-0})/1024}")
+
+  # Compute saved (may be negative if size increased)
+  SAVED=$(awk "BEGIN{printf \"%.1f\", (${SIZE_A} - ${SIZE_B})}")
+
+  # Output results with colours
+  echo "${_grey}before clean: ${SIZE_A} MB${_0}"
+  echo "${_grey}after clean: ${SIZE_B} MB${_0}"
+  echo "${_g}space saved: ${SAVED} MB${_0}"
+
+  # Export variables for interactive inspection
+  export SIZE_A SIZE_B SAVED
+}
+
 
 ###############################
 ############  NPM  ############

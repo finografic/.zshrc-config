@@ -8,15 +8,26 @@
 # mounted zshrc-config directory
 # ============================================================================ #
 
-export ZSHRC_ENV="docker-container"
+export ZSHRC_ENV="docker-dev"
 export ZSHRC_PLATFORM="linux"
+export LANG="en_US.UTF-8"
+export EDITOR="nvim"
+export VISUAL="nvim"
 
+# SPECIFIC =================================================================== #
+
+export ZSHRC_ROOT="$HOME/.zshrc-config"
+export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
+export NVM="true"
+
+# TODO: LEAVE DISABLED ??
 # Skip hardware detection in containers
-export SKIP_HARDWARE_DETECT=1
+# export SKIP_HARDWARE_DETECT=1
 
+# TODO: LEAVE DISABLED ??
 # Skip resource-intensive features
-export SKIP_NVM_AUTOLOAD=1
-export SKIP_FANCY_PROMPTS=0  # Keep minimal prompt
+# export SKIP_NVM_AUTOLOAD=1
+# export SKIP_FANCY_PROMPTS=0  # Keep minimal prompt
 
 # ============================================================================ #
 # PATH Configuration
@@ -24,7 +35,7 @@ export SKIP_FANCY_PROMPTS=0  # Keep minimal prompt
 
 # Use container's native binaries, not host macOS binaries
 # Add common Linux paths
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/linuxbrew/.linuxbrew/bin:$PATH"
 
 # Add user bin if exists
 [[ -d "$HOME/bin" ]] && export PATH="$HOME/bin:$PATH"
@@ -36,12 +47,8 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
 # Core Libraries (Container-Safe)
 # ============================================================================ #
 
-# Colors for output
-source "$ZSHRC_ROOT/lib/colors.zsh"
-
 # Common utilities (safe for containers)
 source "$ZSHRC_ROOT/lib/utils.zsh"
-source "$ZSHRC_ROOT/lib/common.zsh"
 
 # Git configuration (very useful in dev containers)
 source "$ZSHRC_ROOT/lib/git/index.zsh"
@@ -60,16 +67,10 @@ source "$ZSHRC_ROOT/core/history.zsh"
 # Container-Specific Aliases
 # ============================================================================ #
 
-# Quick access to workspace (if mounted)
-alias work='cd /workspace'
-alias ws='cd /workspace'
-
-# Container info
-alias container-info='echo "Container: $(hostname)\nArch: ${OS_ARCH}\nOS: ${OS_NAME}\nConfig: ${ZSHRC_ROOT}"'
-
-# Exit aliases
-alias q='exit'
-alias x='exit'
+# INCLUDES: DEV ZENV-SPECIFIC
+# source "$ZENV_PATH/$ZENV.paths.zsh"
+source "$ZENV_PATH/$ZENV.aliases.zsh"
+source "$ZENV_PATH/$ZENV.dev.zsh"
 
 # ============================================================================ #
 # Optional: FZF (if available in container)
@@ -84,9 +85,9 @@ fi
 # ============================================================================ #
 
 # Uncomment if you need NVM in containers
-# if [[ -z "$SKIP_NVM_AUTOLOAD" ]]; then
-#   source "$ZSHRC_ROOT/lib/nvm.zsh" 2>/dev/null || true
-# fi
+if [[ -z "$SKIP_NVM_AUTOLOAD" ]]; then
+  source "$ZSHRC_ROOT/lib/nvm.zsh" 2>/dev/null || true
+fi
 
 # ============================================================================ #
 # Docker-Specific Environment Variables
@@ -104,7 +105,7 @@ export NPM_CONFIG_LOGLEVEL=warn
 # Banner (optional - comment out if too verbose)
 # ============================================================================ #
 
-source "$ZSHRC_ROOT/_zenvs/docker-container/docker-container.banner.zsh"
+source "$ZSHRC_ROOT/_zenvs/docker-dev/docker-dev.banner.zsh"
 
 # ============================================================================ #
 # Cleanup
@@ -127,11 +128,11 @@ fi
 # Welcome Message
 # ============================================================================ #
 
-echo "${_g}✓${_0} Docker container environment loaded"
-echo "${_y}💡${_0} Working directory: ${_c}$(pwd)${_0}"
+echo -e "${_g}✓${_0} Docker container environment loaded"
+echo -e "${_y}💡${_0} Working directory: ${_c}$(pwd)${_0}"
 
 if [[ -d /workspace ]]; then
-  echo "${_y}💡${_0} Workspace mounted at: ${_c}/workspace${_0}"
+  echo -e "${_y}💡${_0} Workspace mounted at: ${_c}/workspace${_0}"
 fi
 
 echo ""

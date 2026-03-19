@@ -120,7 +120,7 @@ docker inspect <container-id>
 
 ### Enable NVM
 
-Edit `_zenvs/docker-container/docker-container.zsh`:
+Edit `_zenvs/docker-dev/docker-dev.zsh`:
 
 ```bash
 # Remove this line:
@@ -133,14 +133,14 @@ source "$ZSHRC_ROOT/lib/nvm.zsh"
 ### Disable Banner
 
 ```bash
-# Comment out in docker-container.zsh:
-# source "$ZSHRC_ROOT/_zenvs/docker-container/docker-container.banner.zsh"
+# Comment out in docker-dev.zsh:
+# source "$ZSHRC_ROOT/_zenvs/docker-dev/docker-dev.banner.zsh"
 ```
 
 ### Add Custom Aliases
 
 ```bash
-# Add to docker-container.zsh:
+# Add to docker-dev.zsh:
 alias ll='ls -alh'
 alias gs='git status'
 ```
@@ -170,7 +170,7 @@ RUN apt-get update && apt-get install -y zsh
 
 ```bash
 # Pre-build image with zsh
-# Disable heavy features in docker-container.zsh
+# Disable heavy features in docker-dev.zsh
 ```
 
 ---
@@ -179,7 +179,7 @@ RUN apt-get update && apt-get install -y zsh
 
 - Full guide: `DOCKER.md`
 - Examples: `examples/` directory
-- Container profile: `_zenvs/docker-container/`
+- Container profile: `_zenvs/docker-dev/`
 
 ---
 

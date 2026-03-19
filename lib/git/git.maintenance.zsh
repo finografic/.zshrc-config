@@ -175,6 +175,92 @@ _gmm() {
 
 # ============================================================================ #
 
+# Rename initial commit message
+_grename_initial() {
+
+  if [[ ! -d "./.git" ]]; then
+    echo "\n${_y}⚠️  Not inside of git repository${_0}"
+    return 1
+  fi
+
+  if [[ -z "$1" || "$1" == "--help" || "$1" == "-h" ]]; then
+    echo "\n${_m}Rename initial commit message${_0}\n"
+    echo "${_y}Usage:${_0} _grename_initial \"New commit message\" [commit-hash]\n"
+    echo "${_grey}If no <commit-hash> is provided, the repository's initial commit (root) is used.${_0}\n"
+    echo "${_grey}Examples:${_0}\n  _grename_initial \"Fix typo in initial commit\"\n  _grename_initial \"New message\" abcd1234\n"
+    echo "${_grey}Notes:${_0}\n  - This command uses 'git-filter-repo' to rewrite history. Install it from:\n    https://github.com/newren/git-filter-repo\n  - After a successful run you must force-push rewritten refs: ${_y}git push --force --all && git push --force --tags${_0}\n"
+    return 0
+  fi
+
+  local NEW_MSG="$1"
+  local TARGET_ARG="$2"
+
+  # Determine target commit: provided or initial commit
+  if [[ -z "$TARGET_ARG" ]]; then
+    TARGET_ARG=$(git rev-list --max-parents=0 HEAD 2>/dev/null)
+  fi
+
+  local TARGET_COMMIT
+  if ! TARGET_COMMIT=$(git rev-parse "$TARGET_ARG" 2>/dev/null); then
+    echo "\n${_r}❌ Invalid commit hash or commit not found: ${_y}${TARGET_ARG}${_0}\n"
+    return 1
+  fi
+
+  local CURRENT_MSG
+  CURRENT_MSG=$(git show -s --format=%B "$TARGET_COMMIT")
+
+  echo "\n${_m}Found commit:${_0} ${_y}${TARGET_COMMIT}${_0}\n"
+  echo "${_grey}Current message:${_0}\n${CURRENT_MSG}\n"
+  echo "${_y}New message:${_0}\n${_c}${NEW_MSG}${_0}\n"
+
+  echo "${_r}⚠️  This will REWRITE repository history for all rewritten refs.${_0}"
+  echo "${_m}Continue and replace the commit message? ${_grey}(y/N)${_0}\n"
+  read -r response
+  response=${response:-N}
+  if [[ ! "$response" =~ ^[Yy]$ ]]; then
+    echo "\n${_y}Operation aborted${_0}\n"
+    return 1
+  fi
+
+  # Ensure git-filter-repo is available
+  if ! git filter-repo --help >/dev/null 2>&1; then
+    echo "\n${_r}❌ git-filter-repo not found. Please install 'git-filter-repo' and retry.${_0}\n"
+    echo "Install: https://github.com/newren/git-filter-repo\n"
+    return 1
+  fi
+
+  # Base64-encode the message to safely embed arbitrary content
+  local BASE64_MSG
+  if ! BASE64_MSG=$(printf '%s' "$NEW_MSG" | python3 -c 'import sys,base64 as b; print(b.b64encode(sys.stdin.buffer.read()).decode())' 2>/dev/null); then
+    # fallback to system base64
+    BASE64_MSG=$(printf '%s' "$NEW_MSG" | base64 | tr -d '\n')
+  fi
+
+  # Build commit-callback python snippet
+  local CALLBACK
+  CALLBACK=$(cat <<PY
+import base64
+msg = base64.b64decode(b'$BASE64_MSG')
+if commit.original_id == b'$TARGET_COMMIT' or len(commit.parents) == 0:
+    commit.message = msg
+PY
+)
+
+  echo "\n${_grey}Running git filter-repo to update commit message...${_0}\n"
+  if git filter-repo --force --commit-callback "$CALLBACK"; then
+    echo "\n${_g}✅ Initial commit message renamed.${_0}\n"
+    echo "${_m}To update remotes, force-push rewritten refs:${_0}\n"
+    echo "  ${_y}git push --force --all && git push --force --tags${_0}\n"
+  else
+    echo "\n${_r}❌ git filter-repo failed. No changes applied.${_0}\n"
+    return 1
+  fi
+
+}
+
+
+# ============================================================================ #
+
 # Reset git permissions
 _g_PERMISSIONS() {
   # TODO: ??

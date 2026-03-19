@@ -29,7 +29,7 @@ source "$ZSHRC_ROOT/lib/git.zsh"
 source "$ZSHRC_ROOT/lib/dev.jest.zsh"
 
 # INCLUDES: MISC
-source "$ZSHRC_ROOT/lib/clean.zsh"
+source "$ZSHRC_ROOT/lib/clean.home.zsh"
 source "$ZENV_PATH/$ZENV.backups.zsh"
 
 # INCLUDES: DEV ZENV-SPECIFIC

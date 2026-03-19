@@ -33,7 +33,7 @@ function config_V1_FZF() {
 # ENCHANCED CD ("cd-directory")
 cdd() {
   if [ $# -eq 0 ]; then
-    cd $(fd --type directory --max-depth 1 | fzf --cycle --reverse) && listing_exa
+    cd $(fd --type directory --max-depth 1 | fzf --cycle --reverse) && listing_eza
   else
     cd "$(pwd)/$@"
   fi

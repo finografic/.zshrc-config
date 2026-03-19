@@ -96,8 +96,8 @@ _gca () {
 }
 
 
-# Git, commit, REPEAT (reuses last commit message; supports multi-line)
-_gcr() {
+# Git, commit, COPY (LAST) (reuses last commit message; supports multi-line)
+_gcc() {
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "Not inside a git repository."
@@ -161,11 +161,55 @@ _gmc() {
   fi
 }
 
-# Untrack file/folders
+# Untrack file/folders (keeps them on disk)
 _grm() {
-  if [[ $1 > "" ]]; then
-    git rm --cached "$1"
-  else
-    echo "\n${_y}⚠️   NO FILE SPECIFIED TO UN-TRACK${_0}\n"
+  local target="$1"
+
+  if [[ -z "$target" ]]; then
+    echo "\n${_y}⚠️   Usage: _grm <tracked-path>${_0}\n"
+    return 2
   fi
+
+  # Only untrack if Git is tracking it
+  if ! git ls-files --error-unmatch -- "$target" >/dev/null 2>&1; then
+    echo "\n${_y}⚠️   NOT TRACKED: ${_0}$target\n"
+    return 1
+  fi
+
+  if [[ -d "$target" && ! -L "$target" ]]; then
+    echo "\n${_y}UN-TRACKING FOLDER: ${_0}$target\n"
+    git rm -r --cached -- "$target"
+  else
+    echo "\n${_y}UN-TRACKING FILE: ${_0}$target\n"
+    git rm --cached -- "$target"
+  fi
+
+  git status
 }
+
+# git restore --staged --worktree -- .cursor/hooks/state/continual-learning.json
+
+
+# Untrack file/folders
+# _grm() {
+#   if [[ $1 > "" ]]; then
+#     git rm --cached "$1"
+#     git status
+#   else
+#     echo "\n${_y}⚠️   NO FOLDER SPECIFIED TO UN-TRACK${_0}\n"
+#   fi
+# }
+
+# _grm() {
+#   if [[ -f "$1" ]]; then
+#     git rm --cached "$1"
+#     git status
+#   else
+#     echo "\n${_y}⚠️   NO FOLDER SPECIFIED TO UN-TRACK${_0}\n"
+#   fi
+# }
+
+
+# if [ -f .cursor ]; then
+#   echo ".cursor is file"
+# fi

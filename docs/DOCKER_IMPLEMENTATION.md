@@ -4,12 +4,12 @@
 
 ### 1. Docker Environment Profile
 
-**Location:** `_zenvs/docker-container/`
+**Location:** `_zenvs/docker-dev/`
 
 **Files created:**
 
-- `docker-container.zsh` - Main container configuration
-- `docker-container.banner.zsh` - Welcome banner for container sessions
+- `docker-dev.zsh` - Main container configuration
+- `docker-dev.banner.zsh` - Welcome banner for container sessions
 
 **Features:**
 
@@ -106,8 +106,8 @@ docker run -it --rm \
    - `$DOCKER_CONTAINER` is set, OR
    - `$IN_DOCKER` is set
 4. If Docker detected:
-   - Sets `ZENV="docker-container"`
-   - Sources `_zenvs/docker-container/docker-container.zsh`
+   - Sets `ZENV="docker-dev"`
+   - Sources `_zenvs/docker-dev/docker-dev.zsh`
    - Returns early (skips full host setup)
 
 ### What Gets Loaded (Container Profile)
@@ -147,7 +147,7 @@ docker run -it --rm \
 ### Environment Variables Set
 
 ```bash
-ZSHRC_ENV="docker-container"
+ZSHRC_ENV="docker-dev"
 ZSHRC_PLATFORM="linux"
 IN_DOCKER=1
 DOCKER_CONTAINER=1
@@ -167,9 +167,9 @@ DEBIAN_FRONTEND=noninteractive
 ├── README.md                             # [MODIFIED] Added Docker section
 │
 ├── _zenvs/
-│   └── docker-container/                 # [NEW] Container profile
-│       ├── docker-container.zsh          # Main container config
-│       └── docker-container.banner.zsh   # Welcome banner
+│   └── docker-dev/                 # [NEW] Container profile
+│       ├── docker-dev.zsh          # Main container config
+│       └── docker-dev.banner.zsh   # Welcome banner
 │
 └── examples/                             # [NEW] Docker examples
     ├── Dockerfile.dev                    # Basic dev container
@@ -198,7 +198,7 @@ Safe to mount the same config in multiple containers simultaneously (read-only).
 
 ### 4. Customizable
 
-Easy to modify container behavior by editing `docker-container.zsh`.
+Easy to modify container behavior by editing `docker-dev.zsh`.
 
 ### 5. Performance Optimized
 
@@ -214,7 +214,7 @@ Includes git tools, development utilities, and common aliases.
 
 ### Enable Additional Features
 
-Edit `_zenvs/docker-container/docker-container.zsh`:
+Edit `_zenvs/docker-dev/docker-dev.zsh`:
 
 ```bash
 # Enable NVM
@@ -307,7 +307,7 @@ docker run -it --rm \
   zsh-dev
 
 # 3. Inside container, verify:
-echo $ZENV                     # Should be "docker-container"
+echo $ZENV                     # Should be "docker-dev"
 echo $DOCKER_CONTAINER         # Should be "1"
 ls -la $ZSHRC_ROOT             # Should show your config
 which zsh                      # Should show /bin/zsh or similar
@@ -365,9 +365,9 @@ Potential improvements:
 
 3. **Profile Variants**
 
-   - `docker-container-minimal` - Absolute bare minimum
-   - `docker-container-dev` - Full dev tools
-   - `docker-container-ci` - CI/CD optimized
+   - `docker-dev-minimal` - Absolute bare minimum
+   - `docker-dev-dev` - Full dev tools
+   - `docker-dev-ci` - CI/CD optimized
 
 4. **Volume Caching**
 

@@ -164,6 +164,18 @@ find_monorepo_root() {
   cd "$REPOS_FINO/@finografic-core" && l
 }
 
+@_design() {
+  cd "$REPOS_FINO/@finografic-design-system" && l
+}
+
+@_ds() {
+  cd "$REPOS_FINO/@finografic-design-system" && l
+}
+
+@_icons() {
+  cd "$REPOS_FINO/@finografic-design-system/packages/icons" && l
+}
+
 @_dprint() {
   cd "$REPOS_FINO/@finografic-dprint-config" && l
 }

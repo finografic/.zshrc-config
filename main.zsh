@@ -43,13 +43,21 @@ source "$ZSHRC_ROOT/core/options.zsh"
 source "$ZSHRC_ROOT/core/locale.zsh"
 
 # ============================================================================ #
+# NOTE: 4. CORE INCLUDES for ALL ENVIRONMENTS
+# ============================================================================ #
+
+source "$ZSHRC_ROOT/lib/colors.zsh"
+source "$ZSHRC_ROOT/lib/common.zsh"
+source "$ZSHRC_ROOT/lib/fzf.zsh"
+
+# ============================================================================ #
 # NOTE: 5. DOCKER CONTAINER CHECK - Early exit for containers
 # ============================================================================ #
 
 if [[ -f /.dockerenv ]] || [[ -n "$DOCKER_CONTAINER" ]] || [[ -n "$IN_DOCKER" ]]; then
-  export ZENV="docker-container"
+  export ZENV="docker-dev"
   export IN_DOCKER=1
-  source "$ZSHRC_ROOT/_zenvs/docker-container/docker-container.zsh"
+  source "$ZSHRC_ROOT/_zenvs/docker-dev/docker-dev.zsh"
   return 0
 fi
 
@@ -66,7 +74,7 @@ fi
 # NOTE: 7. VENDOR TOOLS (pnpm, nvm)
 # ============================================================================ #
 
-source "$ZSHRC_ROOT/lib/fzf.zsh"
+# source "$ZSHRC_ROOT/lib/fzf.zsh"
 source "$ZSHRC_ROOT/vendor/index.zsh"
 
 # ============================================================================ #
@@ -96,7 +104,7 @@ fi
 node "$ZSHRC_ROOT/packages/node/dist/spinner.mjs"
 
 # Core libraries
-source "$ZSHRC_ROOT/lib/colors.zsh"
+# source "$ZSHRC_ROOT/lib/colors.zsh"
 
 # PATH additions (consolidated; typeset -U PATH in bootstrap prevents duplicates)
 export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
@@ -104,8 +112,12 @@ export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 # Common utilities
 source "$ZSHRC_ROOT/lib/utils.zsh"
 source "$ZSHRC_ROOT/lib/utils.disk.zsh"
-source "$ZSHRC_ROOT/lib/common.zsh"
+# source "$ZSHRC_ROOT/lib/common.zsh"
 source "$ZSHRC_ROOT/lib/dev.zsh"
+source "$ZSHRC_ROOT/lib/clean.node.zsh" # functions
+
+# Terminal tools
+source "$ZSHRC_ROOT/lib/ghostty.zsh"
 
 # ============================================================================ #
 # NOTE: 10. ENVIRONMENT-SPECIFIC CONFIGURATION

@@ -73,6 +73,18 @@ alias s1="cd $REPOS_GAC/s1_central_test/ && l"
 
 alias _aws="aws sso login"
 
+
+@release() {
+  cd "$REPOS_GAC/s1_config"
+  git checkout release
+  l
+  # NOTE:
+  # 1. ./vbump.sh -p -e preprod -v 5.243.1
+  # 2. ./vbump.sh -e production -v 5.243.1
+  # 3. ./vbump.sh -e qa_base_config -v 5.243.1
+}
+
+
 # ============================================================== #
 # NEW: PIP JOURNAL
 
@@ -96,6 +108,3 @@ alias l2="cd $HOME/.local/share && l"
 @_gli() {
   cd "$REPOS_MY/@finografic-git-cli" && l
 }
-
-# COMMON ALIASES
-source "$ZSHRC_ROOT/lib/aliases.common.zsh"

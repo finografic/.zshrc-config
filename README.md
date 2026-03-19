@@ -90,7 +90,7 @@ Run `zupdate` from anywhere (symlink in `~/bin`) to sync changes.
 
 ## Docker
 
-Mount the config into a container—it auto-detects Docker and loads `_zenvs/docker-container/`:
+Mount the config into a container—it auto-detects Docker and loads `_zenvs/docker-dev/`:
 
 ```bash
 docker run -it --rm \

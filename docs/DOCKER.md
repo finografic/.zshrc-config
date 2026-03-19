@@ -80,9 +80,9 @@ When detected, it automatically loads the container-optimized profile.
 ### Container Profile Location
 
 ```
-_zenvs/docker-container/
-├── docker-container.zsh          # Main container config
-└── docker-container.banner.zsh   # Container welcome banner
+_zenvs/docker-dev/
+├── docker-dev.zsh          # Main container config
+└── docker-dev.banner.zsh   # Container welcome banner
 ```
 
 ### What Gets Loaded
@@ -152,7 +152,7 @@ Mount at any path by setting `ZSHRC_ROOT` environment variable.
 
 ### Enable NVM in Containers
 
-Edit `_zenvs/docker-container/docker-container.zsh`:
+Edit `_zenvs/docker-dev/docker-dev.zsh`:
 
 ```bash
 # Remove or comment out this line:
@@ -165,13 +165,13 @@ source "$ZSHRC_ROOT/lib/nvm.zsh" 2>/dev/null || true
 ### Disable Container Banner
 
 ```bash
-# Comment out this line in docker-container.zsh:
-# source "$ZSHRC_ROOT/_zenvs/docker-container/docker-container.banner.zsh"
+# Comment out this line in docker-dev.zsh:
+# source "$ZSHRC_ROOT/_zenvs/docker-dev/docker-dev.banner.zsh"
 ```
 
 ### Add Custom Container Aliases
 
-Edit `_zenvs/docker-container/docker-container.zsh`:
+Edit `_zenvs/docker-dev/docker-dev.zsh`:
 
 ```bash
 # Add after existing aliases
@@ -182,7 +182,7 @@ alias proj='cd /workspace/my-project'
 ### Change Container Prompt
 
 ```bash
-# Edit the prompt section in docker-container.zsh
+# Edit the prompt section in docker-dev.zsh
 PROMPT='%F{blue}🐳%f %F{cyan}%~%f %# '
 ```
 
@@ -344,7 +344,7 @@ apt-get install -y exa bat fd-find fzf
 **Optimize:**
 
 1. Build image with zsh pre-installed
-2. Disable heavy features in `docker-container.zsh`:
+2. Disable heavy features in `docker-dev.zsh`:
    ```bash
    export SKIP_NVM_AUTOLOAD=1
    export SKIP_FANCY_PROMPTS=1
@@ -487,7 +487,7 @@ docker exec -it dev-container zsh
 | File                                           | Purpose                     |
 | ---------------------------------------------- | --------------------------- |
 | `main.zsh`                                     | Entry point, detects Docker |
-| `_zenvs/docker-container/docker-container.zsh` | Container profile           |
+| `_zenvs/docker-dev/docker-dev.zsh` | Container profile           |
 | `examples/Dockerfile.dev`                      | Basic dev image             |
 | `examples/Dockerfile.node`                     | Node.js dev image           |
 | `examples/docker-compose.yml`                  | Compose configurations      |

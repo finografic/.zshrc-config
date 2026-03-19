@@ -10,16 +10,20 @@ alias ai="sudo apt install -y $1"
 alias npmls="npm ls -g --depth=0"
 
 #########################################
-############  FILE LISTINGS  ############
+###  FILE LISTINGS  #####################
 #########################################
 
 # LIST SYSTEM PATHS
 alias path="tr ':' '\n' <<< '$PATH'"
 alias PATH="tr ':' '\n' <<< '$PATH'"
 
+# CORE
+alias ls="ls -lAh"
+alias ll="ls -la --color -h --group-directories-first"
+alias l="ls -lAh" # TODO: replace with `k`
+
 # ENHANCED FOLDER LISTINGS
 alias llh="ls -ld .?*"                                 # list hidden
-alias ll="ls -la --color -h --group-directories-first" #
 
 # subl $(dirname $(gem which colorls))/yaml
 alias lc="colorls -lA --sort-dirs --git-status --report && echo \n" # RUBY GEM ls w/ icons :D
@@ -32,10 +36,10 @@ function listing() {
   [ -d .git ] && git status -uno
 }
 
-function listing_exa() {
+function listing_eza() {
   # eza --long --all --group-directories-first --accessed --time-style=long-iso --git $1
-  EXA_IGNORES=".DS_Store|Icon*|.directory"
-  eza --long --all --ignore-glob="${EXA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
+  EZA_IGNORES=".DS_Store|Icon*|.directory"
+  eza --long --all --ignore-glob="${EZA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
   [ -d .git ] && git status -uno
 }
 
@@ -45,12 +49,16 @@ function lr() {
 
 # DEFAULT MAIN DIRECTORY LISTERS
 alias l1="listing"
-alias l2="listing_exa"
-alias l="listing_exa"
+alias l2="listing_eza"
+alias l="listing_eza"
 # alias ls="eval `dircolors -b ${HOME}/.dircolors` && ls -Alh --color" # list hidden
 
 # ???
 alias lr="find $(pwd) -mtime -1 -ls -maxdepth 1"
+
+#########################################
+###  NAVIGATION  ########################
+#########################################
 
 # CD NAVIGATION
 alias -1="cd ../ && l"
@@ -60,30 +68,6 @@ alias -4="cd ../../../../ && l"
 alias -5="cd ../../../../../ && l"
 
 # TREE LISTING
+# NOTE: /opt/homebrew/bin/tree
 alias t="eza --tree --group-directories-first --level 2"
 alias t2="tree --dirsfirst -L 2"
-
-########################################
-############  FOLDER FAVES  ############
-########################################
-
-# FOLDER FAVORITES
-alias home="cd $HOME && l"
-alias www="cd /var/www/ && l"
-# alias test="cd /var/www/html/test && l"
-
-########################################
-##########  UPDATE GHOSTTY  ############
-########################################
-
-GHOSTTY_CONFIG_FILE_PATH="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
-
-update_ghostty_config() {
-  cp -a "$ZSHRC_ROOT/configs/ghostty.config" "$GHOSTTY_CONFIG_FILE_PATH"
-}
-
-_config() {
-  update_ghostty_config
-  osascript -e 'tell application "System Events" to keystroke "," using {command down, shift down}'
-  # osascript -e 'tell application "Ghostty" to activate' -e 'tell application "System Events" to keystroke "," using {command down, shift down}'
-}

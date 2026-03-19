@@ -2,7 +2,7 @@
   "name": "zshrc-config",
   "description": "Superior ZSH configuration and startup, supporting multiple dynamic hosts and environments.",
   "scripts": {
-    "install:globals": "npm i -g yarn jmate fd-find pm2 nodemon vtop",
+    "install:globals": "npm i -g fd-find vtop",
     "·········· FORMATTING": "··················································",
     "format": "dprint fmt --diff",
     "format.check": "dprint check",

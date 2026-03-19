@@ -60,6 +60,8 @@ determine_environment() {
     echo "home-macos"
   elif [[ $IS_OFFICE == true ]]; then
     echo "office-macos"
+  elif [[ $IS_OFFICE == true || $IS_DOCKER == true ]]; then
+    echo "docker-dev"
   elif [[ $IS_SERVER == true || $IP == ${IP_ADDRESSES[APNAES]} ]]; then
     export OS_NAME='Linux'
     echo "apnaes"

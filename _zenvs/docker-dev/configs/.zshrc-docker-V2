@@ -1,0 +1,34 @@
+# ============================================================================ #
+# NOTE: 1. P10K INSTANT PROMPT (must be early, before other console output)
+# ============================================================================ #
+
+# Disable instant prompt so the prompt appears only at the END after full
+# bootstrap/splash output. Instant prompt causes a premature prompt to appear
+# while bootstrapping continues in the background.
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# ============================================================================ #
+# NOTE: 2. ZSHRC-CONFIG BOOTSTRAP
+# ============================================================================ #
+
+export ZSHRC_ROOT="$HOME/.zshrc-config"
+source "$ZSHRC_ROOT/bootstrap/index.zsh"
+
+# ============================================================================ #
+# NOTE: 3. MAIN CONFIG
+# ============================================================================ #
+
+source "$ZSHRC_ROOT/main.zsh"
+
+# ============================================================================ #
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+
+# fpath=(/Users/REDACTED/.docker/completions $fpath)
+# autoload -Uz compinit
+# compinit
+
+# End of Docker CLI completions

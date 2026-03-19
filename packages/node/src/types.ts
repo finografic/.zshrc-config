@@ -7,7 +7,7 @@ export type ZEnv =
   | 'office-macos'
   | 'apnaes'
   | 'android'
-  | 'docker-container'
+  | 'docker-dev'
   | 'vscode';
 
 export type OSName = 'macOS' | 'Linux' | 'Android' | 'Windows' | 'Unknown';

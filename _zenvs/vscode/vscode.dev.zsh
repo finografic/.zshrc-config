@@ -8,7 +8,6 @@ REPOS="$HOME/repos"
 alias repos="cd $REPOS && l"
 alias misc="cd $HOME/repos-misc && l"
 alias apps="cd $HOME/repos-apps && l"
-alias my="cd $HOME/repos-my && l"
 
 # COMMANDS
 function repos() {
@@ -16,3 +15,8 @@ function repos() {
   # MOVED !!
   cd "$REPOS" && l
 }
+
+@my() {
+  cd "$HOME/repos-my" && l
+}
+

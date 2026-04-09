@@ -7,7 +7,6 @@ alias sbc="cd $REPOS_SBC && l"
 alias repo="cd $REPO_CURRENT && l"
 alias misc="cd $HOME/repos-misc && l"
 alias apps="cd $HOME/repos-apps && l"
-alias my="cd $REPOS_MY && l"
 alias pf="cd $HOME/repos-pioneer && l"
 alias json="cd $REPOS_PF/$REPOS_PF_JSON_WALKER/ && l"
 alias obs="cd $HOME/Documents/OFFICE_VAULT 🔒 && l"
@@ -74,6 +73,9 @@ alias s1="cd $REPOS_GAC/s1_central_test/ && l"
 alias _aws="aws sso login"
 
 
+
+# ============================================================== #
+
 @release() {
   cd "$REPOS_GAC/s1_config"
   git checkout release
@@ -84,27 +86,21 @@ alias _aws="aws sso login"
   # 3. ./vbump.sh -e qa_base_config -v 5.243.1
 }
 
-
-# ============================================================== #
-# NEW: PIP JOURNAL
-
-alias ai_pip="cd $HOME/AI-PIP && l"
-alias pip_log="$HOME/AI-PIP/scripts/pip-log.sh"
-alias pip_summary="$HOME/AI-PIP/scripts/pip-weekly-summary.sh"
-alias pip_backup="$HOME/AI-PIP/scripts/pip-backup.sh"
-alias pip_dir="cd $HOME/AI-PIP"
-
 # ============================================================== #
 # NOTE: PERSONAL
 
 # UNIVERSAL - DEV ALIAS TO **CURRENT** REPO
-alias vcc="cd $HOME/verdaccio && l"
 alias dev="echo '${_y}CHOOSE AN ALIAS!${_0}'"
-# alias loup="cd $HOME/.local/share/Loupedeck && ls -lAh"
-# /Users/REDACTED/Library/Application Support/Logi/LogiPluginService
 alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls -lAh'
-alias l2="cd $HOME/.local/share && l"
+
+@my() {
+  cd "$HOME/repos-my" && l
+}
 
 @_gli() {
-  cd "$REPOS_MY/@finografic-git-cli" && l
+  cd "$REPOS_MY/@finografic-gli" && l
+}
+
+@_lay() {
+  cd "$REPOS_MY/@finografic-macos-layouts" && l
 }

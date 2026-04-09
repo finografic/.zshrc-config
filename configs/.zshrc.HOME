@@ -1,4 +1,10 @@
 # ============================================================= #
+# NOTE: 0. PATHS
+
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:/opt/homebrew/bin:$PATH"
+
+# ============================================================= #
 # NOTE: 1. PRE-INIT
 
 # More detailed profiling

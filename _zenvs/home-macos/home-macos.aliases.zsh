@@ -10,7 +10,6 @@ alias repos="cd $REPOS && l"
 alias skills="cd $HOME/ai-agent-skills && l"
 alias misc="cd $REPOS/repos-various && l"
 alias apps="cd $REPOS/repos-x-apps && l"
-alias my="cd $REPOS_FINO && l"
 alias json="cd $REPOS_NEXT/json-walker && l"
 alias driz="cd $REPOS_SERVER/__DRIZZLE__/api-fastify-drizzle && l"
 alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls -lAh'
@@ -35,14 +34,14 @@ alias apnaes="cd $REPO_APNAES && l"
 alias mono="cd $REPO_APNAES && l"
 alias admin="cd $REPO_APNAES/apps/client && l"
 alias api="cd $REPOS_APNAES/apnaes-api && l"
-alias vite="cd $REPOS_APNAES/apnaes-web--VITE && l"
 
 @fino() {
   cd "$REPOS_FINO" && l
 }
-# @scripts() {
-#   cd "$REPO_SCRIPTS" && l
-# }
+
+@my() {
+  cd "$REPOS_FINO" && l
+}
 
 @zust() {
   cd "$REPO_ZUSTAND_CONTEXT" && l
@@ -144,8 +143,18 @@ find_monorepo_root() {
 
 # ========================================================================= #
 
+@llaab() {
+  cd "$HOME/LLAAB" && l
+}
+
+alias lab="@llaab"
+
 @_testing() {
   cd "$REPOS_FINO/___FINOGRAFIC-TESTING___" && l
+}
+
+@_deps() {
+  cd "$REPOS_FINO/_@finografic-deps-policy" && l
 }
 
 @_genx() {
@@ -153,8 +162,13 @@ find_monorepo_root() {
 }
 
 @_gli() {
-  cd "$REPOS_FINO/@finografic-git-cli" && l
+  cd "$REPOS_FINO/@finografic-gli" && l
 }
+
+@_md() {
+  cd "$REPOS_FINO/@finografic-md-lint" && l
+}
+
 
 @_lay() {
   cd "$REPOS_FINO/macos-layouts" && l
@@ -182,6 +196,14 @@ find_monorepo_root() {
 
 @_eslint() {
   cd "$REPOS_FINO/@finografic-eslint-config" && l
+}
+
+@_oxfmt() {
+  cd "$REPOS_FINO/@finografic-oxfmt-config" && l
+}
+
+@_fmt() {
+  cd "$REPOS_FINO/@finografic-oxfmt-config" && l
 }
 
 @_lucide() {

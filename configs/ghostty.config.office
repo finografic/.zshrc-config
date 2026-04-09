@@ -62,7 +62,7 @@ keybind = cmd+w=close_surface
 # Font configuration
 font-family = "MesloLGS NF Regular"
 # font-family = "MesloLGS NF"
-font-size = 13
+font-size = 11
 font-feature = "calt"
 font-feature = "liga"
 font-feature = "zero"

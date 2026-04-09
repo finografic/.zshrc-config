@@ -52,6 +52,28 @@ _gpr() {
   npm ci
 }
 
+
+# CREATE PATCH
+_gpatch() {
+  if [[ $1 > "" ]]; then
+    git diff HEAD > "$1.patch"
+    echo "\n patch made: ${_g}$1.patch\n${_0}"
+  else
+    git diff HEAD > "CHANGES.patch"
+    echo "\n patch made: ${_g}CHANGES.patch\n${_0}"
+  fi
+}
+
+# APPLY PATCH
+_gpatch_apply() {
+  if [[ $1 > "" ]]; then
+    git apply "$1.patch"
+  else
+    echo "\n${_y}⚠️  No patch name supplied\n${_0}"
+    return 1
+  fi
+}
+
 # Common aliases
 alias b="branch"
 alias .="git status"
@@ -65,6 +87,3 @@ if [ $ZENV != "office-macos" ]; then
   git config --global credential.helper 'cache --timeout=1209600' # TWO WEEKS!
 fi
 
-_tsclean() {
-  tmutil listlocalsnapshots / 2>/dev/null | wc -l
-}

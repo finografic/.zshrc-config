@@ -41,7 +41,7 @@ _grb() {
     git push -u origin "$CURRENT_BRANCH" --force-with-lease
     echo "\n${_g}✅ Force-push complete.${_0}"
   else
-    echo "\n${_y}⚠️  Force-push aborted.${_0}"
+    echo "\n${_grey}Force-push aborted.${_0}"
   fi
 }
 

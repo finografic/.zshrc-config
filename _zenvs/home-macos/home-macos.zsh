@@ -29,7 +29,7 @@ source "$ZSHRC_ROOT/lib/git.zsh"
 source "$ZSHRC_ROOT/lib/dev.jest.zsh"
 
 # INCLUDES: MISC
-source "$ZSHRC_ROOT/lib/clean.home.zsh"
+source "$ZSHRC_ROOT/lib/clean.zsh"
 source "$ZENV_PATH/$ZENV.backups.zsh"
 
 # INCLUDES: DEV ZENV-SPECIFIC
@@ -72,15 +72,15 @@ update_ghostty_config
 # ============================================================== #
 # NOTE: START docker (Docker Desktop)..
 
-if ! docker info &>/dev/null; then
-  echo "${_grey}Starting Docker Desktop...${_0}"
-  open -a Docker &>/dev/null
-  # Wait for Docker to be ready
-  while ! docker info &>/dev/null; do
-    sleep 1
-  done
-  echo "${_g}Docker is ready${_0}"
-fi
+# if ! docker info &>/dev/null; then
+#   echo "${_grey}Starting Docker Desktop...${_0}"
+#   open -a Docker &>/dev/null
+#   # Wait for Docker to be ready
+#   while ! docker info &>/dev/null; do
+#     sleep 1
+#   done
+#   echo "${_g}Docker is ready${_0}"
+# fi
 
 # ============================================================== #
 # SECURITY CHECKS: Minimal Security for Home System

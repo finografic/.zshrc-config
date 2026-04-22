@@ -1,77 +1,10 @@
 REPOS_MY="$HOME/repos-my"
 
-# REPOS_REPORTING
-alias repos="cd $REPOS_REPORTING && l"
-alias skills="cd $HOME/ai-agent-skills && l"
-alias sbc="cd $REPOS_SBC && l"
-alias repo="cd $REPO_CURRENT && l"
-alias misc="cd $HOME/repos-misc && l"
-alias apps="cd $HOME/repos-apps && l"
-alias pf="cd $HOME/repos-pioneer && l"
-alias json="cd $REPOS_PF/$REPOS_PF_JSON_WALKER/ && l"
-alias obs="cd $HOME/Documents/OFFICE_VAULT 🔒 && l"
-
-# REPOS REPORTING
-alias rui="cd $REPOS_REPORTING/sbc.accounting.reporting.ui/ && l"
-alias MASTER="cd $REPOS_REPORTING/MASTER/ && l"
-
-# REPOS INVOICING
-alias inv="cd $REPOS_INVOICING/sbc.accounting.invoicing.ui/ && l"
-alias inv2="cd $REPOS_INVOICING/INV_PR_GREEN/ && l"
-alias biz="cd $REPOS_INVOICING/sbc.core.manage-business.ui/ && l"
-
-# REPOS BANKING
-alias bank="cd $REPOS_BANKING/sbc.accounting.banking.ui/ && l"
-
-# REPOS TRADEDOCS + ENTITY
-alias docs="cd $REPOS_TRADE/sbc.accounting.tradedocs.ui/ && l"
-alias trade="cd $REPOS_TRADE/sbc.accounting.tradeentity.ui/ && l"
-
-# SBC REPOS (miro..)
-alias vat="cd $REPOS_SBC/sbc.accountants.vat-centre.ui/ && l"
-alias admin="cd $REPOS_SBC/sbc.core.support.ui/ && l"
-alias dash="cd $REPOS_SBC/sbc.accounting.dashboard.ui/ && l"
-alias poc="cd $REPOS_REPORTING/sbc.accounting.reporting.ui_POCs/ && l"
-
-# SBC REPOS (others..)
-alias carbon="cd $REPOS_SBC/carbon/ && l"
-alias tokens="cd $REPOS_SBC/design-tokens/ && l"
-alias tui="cd $REPOS_SBC/sbc.template.ui/ && l"
-alias template="cd $REPOS_SBC/sbc.template.ui/ && l"
-alias cop="cd $REPOS_SBC/sbc.common.copilot.ui/ && l"
-
-# MY REPOS
-alias lay="cd $HOME/repos-my/macos-layouts && l"
-
-@root() {
-  cd "$REPOS_SBC/sbc.core.root-config.ui" && l
-}
-
-alias cm="cd $REPOS_SBC/sbc.accountants.clientmanagement.ui/ && l"
-alias notes="cd $REPOS_SBC/sbc.common.notes.ui/ && l"
-alias global="cd $REPOS_SBC/sbc.core.globalnav.ui/ && l"
-alias org="cd $REPOS_SBC/sbc.core.orghub.ui/ && l"
-alias aui="cd $REPOS_SBC/sbc.accounting.ui/ && l"
-alias nav="cd $REPOS_SBC/sbc.accounting.ui/ && l"
-alias cui="cd $REPOS_SBC/sbc.accounting.compliance.ui/ && l"
-alias acc="cd $REPOS_SBC/sbc.accounting.accounts.ui/ && l"
-alias dim="cd $REPOS_SBC/sbc.common.dimensions.ui/ && l"
-
-# SERVICE REPOS (others..)
-alias api="cd $REPOS_SBC/sbc.reporting.reportengine.service/ && l"
-
-# ============================================================== #
-# NEW: GAC
-
-# GAC REPOS (others..)
-alias one="cd $REPOS_GAC/carbon-sageone/ && l"
-alias gacs="cd $REPOS_GAC && l"
-alias soa="cd $REPOS_GAC/sage_one_advanced/ && l"
-alias gac="cd $REPOS_GAC/s1_gac_ui/ && l"
-alias s1="cd $REPOS_GAC/s1_central_test/ && l"
-
 alias _aws="aws sso login"
 
+_select() {
+  gli select
+}
 
 
 # ============================================================== #
@@ -102,5 +35,22 @@ alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls 
 }
 
 @_lay() {
-  cd "$REPOS_MY/@finografic-macos-layouts" && l
+  cd "$REPOS_MY/macos-layouts" && l
 }
+
+# ============================================================== #
+# NOTE: GENERATED ALIASES - (SEE .env FOR CONFIGURATION)
+# Optional `.env` source of truth.
+# Use full paths as values so local folder layout stays out of tracked files:
+
+_register_office_repo_aliases() {
+  (( ${+OFFICE_REPO_ALIASES} )) || return 0
+
+  local alias_name target_path
+  for alias_name target_path in ${(kv)OFFICE_REPO_ALIASES}; do
+    eval "alias ${alias_name}='cd ${target_path:q} && l'"
+  done
+}
+
+_register_office_repo_aliases
+unset -f _register_office_repo_aliases

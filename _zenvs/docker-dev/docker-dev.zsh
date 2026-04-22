@@ -52,7 +52,7 @@ source "$ZSHRC_ROOT/lib/utils.zsh"
 
 # Git configuration (very useful in dev containers)
 source "$ZSHRC_ROOT/lib/git/index.zsh"
-source "$ZSHRC_ROOT/lib/git.stashes.zsh"
+[[ -f "$ZSHRC_ROOT/lib/git.stashes.zsh" ]] && source "$ZSHRC_ROOT/lib/git.stashes.zsh"
 
 # Development tools
 source "$ZSHRC_ROOT/lib/dev.zsh"

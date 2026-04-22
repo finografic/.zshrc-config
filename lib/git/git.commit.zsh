@@ -116,6 +116,11 @@ _gcc() {
     return 1
   fi
 
+  local previous_head
+  local previous_parent
+  previous_head="$(git rev-parse HEAD 2>/dev/null)" || return 1
+  previous_parent="$(git rev-parse "${previous_head}^" 2>/dev/null)"
+
   local last_message
   last_message="$(git log -1 --pretty=%B 2>/dev/null)" || return 1
 
@@ -124,7 +129,7 @@ _gcc() {
     return 1
   fi
 
-  echo "\n${_w}committing with message:   \n${_m}${last_message}${_0}\n"
+  echo "\n${_w}committing with message:   \n${_c}${last_message}${_0}\n"
 
   git add -A || return 1
 
@@ -134,7 +139,23 @@ _gcc() {
   fi
 
   # Use -F - to preserve multi-line messages exactly
-  if print -r -- "$last_message" | git commit -F - "$@"; then
+    if print -r -- "$last_message" | git commit -F - "$@"; then
+    echo -e "\n${_c}Squash commit? ${_grey}(y/N)${_0}"
+    read -r response
+    response=${response:-N}
+
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        if [[ -z "$previous_head" ]]; then
+        echo "\n${_y}⚠️  Cannot squash because the copied commit is the root commit.${_0}"
+      else
+          git reset --soft "$previous_head" || return 1
+
+          if ! print -r -- "$last_message" | git commit --amend -F - "$@"; then
+          return 1
+        fi
+      fi
+    fi
+
     echo "\n${_g}✅ DONE\n"
   fi
 }

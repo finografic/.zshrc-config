@@ -1,6 +1,6 @@
 REPOS="$HOME/dev_projects"
 
-export CPATH=$(xcrun --show-sdk-path)/usr/include
+[[ "$OSTYPE" == darwin* ]] && export CPATH=$(xcrun --show-sdk-path)/usr/include
 
 function run() {
   # requires "ntl" node package installed globally

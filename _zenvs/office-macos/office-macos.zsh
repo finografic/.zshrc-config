@@ -34,18 +34,12 @@ source "$ZSHRC_ROOT/lib/git.zsh"
 source "$ZSHRC_ROOT/lib/maintenance.zsh"
 
 # INCLUDES: DEV ZENV-SPECIFIC
-source "$ZENV_PATH/$ZENV.paths.zsh"
 source "$ZENV_PATH/$ZENV.aliases.zsh"
 source "$ZENV_PATH/$ZENV.dev.zsh"
 source "$ZENV_PATH/$ZENV.dev.jest.zsh"
 
 # ============================================================== #
 # TODO: TESTING CLI TOOL - Helper for merging template.ui
-
-# source "$ZENV_PATH/lib/template-tool/__tool.zsh"
-# source "$HOME/.zshrc-config/lib/template-tool/__tool.zsh"
-# source "$HOME/.zshrc-config/lib/template-tool/__tool-accept.zsh"
-# source "$HOME/.zshrc-config/lib/template-tool/__TOOLS.zsh"
 
 # NEW: COVERAGE SUMMARY TOOL
 # source "$ZENV_PATH/parse-test-coverage.zsh"

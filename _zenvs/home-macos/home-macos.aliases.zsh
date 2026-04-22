@@ -1,6 +1,6 @@
 # MY REPOS
-REPOS="$HOME/repos"
 REPOS_FINO="$HOME/repos-finografic"
+REPOS="$REPOS_FINO"
 REPOS_NEXT="$HOME/repos-next"
 REPOS_SERVER="$HOME/repos-server"
 REPOS_LOUPEDECK="$HOME/repos-loupedeck"
@@ -13,6 +13,13 @@ alias apps="cd $REPOS/repos-x-apps && l"
 alias json="cd $REPOS_NEXT/json-walker && l"
 alias driz="cd $REPOS_SERVER/__DRIZZLE__/api-fastify-drizzle && l"
 alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls -lAh'
+
+# ======================================================================== #
+# OVERRIDES
+
+config() {
+  cursor "$ZSHRC_ROOT/.vscode/zshrc-config.code-workspace"
+}
 
 # ========================================================================= #
 # MY REPOS (NEXT!)
@@ -147,7 +154,13 @@ find_monorepo_root() {
   cd "$HOME/LLAAB" && l
 }
 
-alias lab="@llaab"
+@lab() {
+  cd "$HOME/LLAAB" && l
+}
+
+@_web() {
+  cd "$HOME/LLAAB/packages/web" && l
+}
 
 @_testing() {
   cd "$REPOS_FINO/___FINOGRAFIC-TESTING___" && l
@@ -155,6 +168,14 @@ alias lab="@llaab"
 
 @_deps() {
   cd "$REPOS_FINO/_@finografic-deps-policy" && l
+}
+
+@deps_update() {
+  (cd "$REPOS_FINO/_@finografic-deps-policy" && pnpm run update)
+}
+
+@_kit() {
+  cd "$REPOS_FINO/@finografic-cli-kit" && l
 }
 
 @_genx() {
@@ -169,17 +190,12 @@ alias lab="@llaab"
   cd "$REPOS_FINO/@finografic-md-lint" && l
 }
 
-
 @_lay() {
   cd "$REPOS_FINO/macos-layouts" && l
 }
 
 @_core() {
   cd "$REPOS_FINO/@finografic-core" && l
-}
-
-@_design() {
-  cd "$REPOS_FINO/@finografic-design-system" && l
 }
 
 @_ds() {
@@ -198,12 +214,8 @@ alias lab="@llaab"
   cd "$REPOS_FINO/@finografic-eslint-config" && l
 }
 
-@_oxfmt() {
-  cd "$REPOS_FINO/@finografic-oxfmt-config" && l
-}
-
-@_fmt() {
-  cd "$REPOS_FINO/@finografic-oxfmt-config" && l
+@_oxc() {
+  cd "$REPOS_FINO/@finografic-oxc-config" && l
 }
 
 @_lucide() {
@@ -222,7 +234,7 @@ alias lab="@llaab"
   cd "$REPOS_FINO/@finografic-zustand-context-creator" && l
 }
 
-@_pi(){
+@_pi() {
   sudo mount_smbfs //REDACTED-CREDENTIAL/touch ~/Public/touch
   cd ~/Public/touch && l
 }

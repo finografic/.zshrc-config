@@ -15,11 +15,11 @@ source "$ZSHRC_ROOT/bootstrap/00-profiling.zsh"
 # 2. Completion system MUST be before plugins (plugins use compdef)
 source "$ZSHRC_ROOT/bootstrap/03-compinit.zsh"
 
-# 3. Antidote plugin manager (install check + load)
-source "$ZSHRC_ROOT/bootstrap/01-antidote.zsh"
-
-# 4. Load plugins (after compinit!)
-source "$ZSHRC_ROOT/bootstrap/02-plugins.zsh"
+# 3-4. Antidote + plugins (skipped in docker — docker-dev.zsh handles its own setup)
+if [[ ! -f /.dockerenv ]] && [[ -z "$IN_DOCKER" ]] && [[ -z "$DOCKER_CONTAINER" ]]; then
+  source "$ZSHRC_ROOT/bootstrap/01-antidote.zsh"
+  source "$ZSHRC_ROOT/bootstrap/02-plugins.zsh"
+fi
 
 # 5. Prompt configuration (p10k settings + user config)
 source "$ZSHRC_ROOT/bootstrap/04-prompt.zsh"

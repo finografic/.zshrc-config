@@ -88,6 +88,40 @@ Run `zupdate` from anywhere (symlink in `~/bin`) to sync changes.
 
 ---
 
+## Alias Registry
+
+You can keep local repo paths out of tracked shell files by defining an alias map in `.env`. Because `.env` is sourced by zsh, associative arrays work.
+
+Example `.env` entries:
+
+```zsh
+typeset -gA REPO_ALIASES=(
+  [skills]="$HOME/ai-agent-skills"
+  [repos]="$HOME/repos"
+  [next]="$HOME/repos-next"
+)
+```
+
+Then add this parser to your `${ZENV}.aliases.zsh` file:
+
+```zsh
+_register_repo_aliases() {
+  (( ${+REPO_ALIASES} )) || return 0
+
+  local alias_name target_path
+  for alias_name target_path in ${(kv)REPO_ALIASES}; do
+    eval "alias ${alias_name}='cd ${target_path:q} && l'"
+  done
+}
+
+_register_repo_aliases
+unset -f _register_repo_aliases
+```
+
+Each key becomes the alias name, and each value becomes the `cd ... && l` target.
+
+---
+
 ## Docker
 
 Mount the config into a container—it auto-detects Docker and loads `_zenvs/docker-dev/`:

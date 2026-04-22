@@ -1,4 +1,5 @@
 # Required libraries
+ohmyzsh/ohmyzsh path:lib/async_prompt.zsh
 ohmyzsh/ohmyzsh path:lib/git.zsh
 
 # Theme

@@ -3,7 +3,12 @@
 # ========================================================================= #
 
 # Fetch and rebase
+# Usage: _grb [-y]
+#   -y  Non-interactive rebase (skips editor) and auto-accepts force-push
 _grb() {
+  local auto=0
+  [[ "$1" == "-y" ]] && { auto=1; shift; }
+
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "Not inside a git repository."
@@ -21,7 +26,11 @@ _grb() {
   git fetch origin master:master
 
   # Rebase current feature branch onto the updated remote base
-  git rebase -i origin/master
+  if (( auto )); then
+    git rebase origin/master
+  else
+    git rebase -i origin/master
+  fi
 
   # Exit if rebase fails
   if [ $? -ne 0 ]; then
@@ -32,16 +41,21 @@ _grb() {
   # Get the current branch name
   local CURRENT_BRANCH=$(_gcurrent)
 
-  # Prompt for force-push
-  echo -e "\n${_m}Force-push with lease $CURRENT_BRANCH to origin? ${_grey}(y/N)${_0}"
-  read -r response
-  response=${response:-N}
-
-  if [[ "$response" =~ ^[Yy]$ ]]; then
+  # Prompt for force-push (skipped with -y)
+  if (( auto )); then
     git push -u origin "$CURRENT_BRANCH" --force-with-lease
     echo "\n${_g}✅ Force-push complete.${_0}"
   else
-    echo "\n${_grey}Force-push aborted.${_0}"
+    echo -e "\n${_m}Force-push with lease $CURRENT_BRANCH to origin? ${_grey}(y/N)${_0}"
+    read -r response
+    response=${response:-N}
+
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+      git push -u origin "$CURRENT_BRANCH" --force-with-lease
+      echo "\n${_g}✅ Force-push complete.${_0}"
+    else
+      echo "\n${_grey}Force-push aborted.${_0}"
+    fi
   fi
 }
 
@@ -76,7 +90,7 @@ _grbs() {
     response=${response:-Y}
     if [[ "$response" =~ ^[Yy]$ ]]; then
       git push -u origin "$CURRENT_BRANCH" --force-with-lease
-      echo "\n${_g}✅ DONE\n"
+      echo "\n${_g}✅ DONE${_0}\n"
     else
       echo "\n${_y}⚠️  Aborted."
     fi

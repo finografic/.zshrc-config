@@ -53,24 +53,30 @@ _gpr() {
 }
 
 
-# CREATE PATCH
+# CREATE / APPLY PATCH  (_gpatch [apply [name]])
 _gpatch() {
-  if [[ $1 > "" ]]; then
-    git diff HEAD > "$1.patch"
-    echo "\n patch made: ${_g}$1.patch\n${_0}"
+  if [[ "$1" == "apply" ]]; then
+    local patchfile="${${2:-CHANGES}%.patch}.patch"
+    if [[ ! -f "$patchfile" ]]; then
+      echo "\n${_y}⚠️  Patch file not found: ${patchfile}\n${_0}"
+      return 1
+    fi
+    git apply --whitespace=fix "$patchfile" && return 0
+    echo "\n${_y}⚠️  Direct apply failed — retrying with 3-way merge...\n${_0}"
+    git apply -3 --whitespace=fix "$patchfile"
   else
-    git diff HEAD > "CHANGES.patch"
-    echo "\n patch made: ${_g}CHANGES.patch\n${_0}"
-  fi
-}
-
-# APPLY PATCH
-_gpatch_apply() {
-  if [[ $1 > "" ]]; then
-    git apply "$1.patch"
-  else
-    echo "\n${_y}⚠️  No patch name supplied\n${_0}"
-    return 1
+    local outfile="${${1:-CHANGES}%.patch}.patch"
+    git diff HEAD --binary > "$outfile"
+    if [[ $? -ne 0 ]]; then
+      echo "\n${_y}⚠️  Patch creation failed\n${_0}"
+      rm -f "$outfile"
+      return 1
+    elif [[ ! -s "$outfile" ]]; then
+      echo "\n${_y}⚠️  No changes to patch\n${_0}"
+      rm -f "$outfile"
+      return 1
+    fi
+    echo "\n patch made: ${_g}${outfile}\n${_0}"
   fi
 }
 

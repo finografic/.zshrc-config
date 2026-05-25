@@ -21,16 +21,15 @@ _gc() {
     shift # Remove first argument (message)
 
     if git commit -m "$message" "$@"; then
-      echo "\n${_g}✅ DONE\n"
+      echo "\n${_g}✅ DONE${_0}\n"
     fi
   else
     echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
   fi
 }
 
-_gca () {
-  if [[ -n "$1" ]]
-  then
+_gca() {
+  if [[ -n "$1" ]]; then
     message="$1"
     shift
 
@@ -53,24 +52,21 @@ _gca () {
       }
     fi
 
-    if [[ "$ZENV" == "office-macos" ]]
-    then
+    if [[ "$ZENV" == "office-macos" ]]; then
       echo -e "${_m}Are you sure? ${_grey}(y/N)${_0}"
       read -r response
       response=${response:-N}
 
-      if [[ "$response" =~ ^[Yy]$ ]]
-      then
+      if [[ "$response" =~ ^[Yy]$ ]]; then
         git add -A || return 1
 
-        if git diff --cached --quiet
-        then
+        if git diff --cached --quiet; then
           echo "\n${_y}⚠️  No staged changes to commit.${_0}"
           return 1
         fi
 
         git commit -m "$message" "$@" || return 1
-        echo "\n${_g}✅ DONE\n"
+        echo "\n${_g}✅ DONE${_0}\n"
       else
         echo "\n${_y}⚠️  Operation aborted.${_0}"
         return 1
@@ -78,15 +74,13 @@ _gca () {
     else
       git add -A || return 1
 
-      if git diff --cached --quiet
-      then
+      if git diff --cached --quiet; then
         echo "\n${_y}⚠️  No staged changes to commit.${_0}"
         return 1
       fi
 
-      if git commit -m "$message" "$@"
-      then
-        echo "\n${_g}✅ DONE\n"
+      if git commit -m "$message" "$@"; then
+        echo "\n${_g}✅ DONE${_0}\n"
       fi
     fi
   else
@@ -94,7 +88,6 @@ _gca () {
     return 1
   fi
 }
-
 
 # Git, commit, COPY (LAST) (reuses last commit message; supports multi-line)
 _gcc() {
@@ -139,27 +132,29 @@ _gcc() {
   fi
 
   # Use -F - to preserve multi-line messages exactly
-    if print -r -- "$last_message" | git commit -F - "$@"; then
+  if print -r -- "$last_message" | git commit -F - "$@"; then
     echo -e "\n${_c}Squash commit? ${_grey}(y/N)${_0}"
     read -r response
     response=${response:-N}
 
     if [[ "$response" =~ ^[Yy]$ ]]; then
-        if [[ -z "$previous_head" ]]; then
+      if [[ -z "$previous_head" ]]; then
         echo "\n${_y}⚠️  Cannot squash because the copied commit is the root commit.${_0}"
       else
-          git reset --soft "$previous_head" || return 1
+        git reset --soft "$previous_head" || return 1
 
-          if ! print -r -- "$last_message" | git commit --amend -F - "$@"; then
+        if ! print -r -- "$last_message" | git commit --amend -F - "$@"; then
           return 1
         fi
       fi
     fi
 
-    echo "\n${_g}✅ DONE\n"
+    echo "\n${_g}✅ DONE${_0}\n"
   fi
-}
 
+  # REBASE AND AUTO-ACCEPTED PUSH FORCE-WITH-LEASE
+  # _grb -y
+}
 
 # Amend commit
 _ga() {
@@ -210,7 +205,6 @@ _grm() {
 
 # git restore --staged --worktree -- .cursor/hooks/state/continual-learning.json
 
-
 # Untrack file/folders
 # _grm() {
 #   if [[ $1 > "" ]]; then
@@ -229,7 +223,6 @@ _grm() {
 #     echo "\n${_y}⚠️   NO FOLDER SPECIFIED TO UN-TRACK${_0}\n"
 #   fi
 # }
-
 
 # if [ -f .cursor ]; then
 #   echo ".cursor is file"

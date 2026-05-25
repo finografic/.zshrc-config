@@ -43,7 +43,7 @@ source "$ZSHRC_ROOT/core/options.zsh"
 source "$ZSHRC_ROOT/core/locale.zsh"
 
 # ============================================================================ #
-# NOTE: 4. CORE INCLUDES for ALL ENVIRONMENTS
+# NOTE: 5. CORE INCLUDES for ALL ENVIRONMENTS
 # ============================================================================ #
 
 source "$ZSHRC_ROOT/lib/colors.zsh"
@@ -51,18 +51,13 @@ source "$ZSHRC_ROOT/lib/common.zsh"
 source "$ZSHRC_ROOT/lib/fzf.zsh"
 
 # ============================================================================ #
-# NOTE: 5. DOCKER CONTAINER CHECK - Early exit for containers
+# NOTE: 6. CACHES CLEANUP
 # ============================================================================ #
 
-if [[ -f /.dockerenv ]] || [[ -n "$DOCKER_CONTAINER" ]] || [[ -n "$IN_DOCKER" ]]; then
-  export ZENV="docker-dev"
-  export IN_DOCKER=1
-  source "$ZSHRC_ROOT/_zenvs/docker-dev/docker-dev.zsh"
-  return 0
-fi
+source "$ZSHRC_ROOT/lib/clean.caches.zsh"
 
 # ============================================================================ #
-# NOTE: 6. VSCODE CHECK - Early exit for IDE terminals
+# NOTE: 7. VSCODE CHECK - Early exit for IDE terminals
 # ============================================================================ #
 
 if [[ "$TERM_PROGRAM" = "vscode" ]]; then
@@ -71,14 +66,14 @@ if [[ "$TERM_PROGRAM" = "vscode" ]]; then
 fi
 
 # ============================================================================ #
-# NOTE: 7. VENDOR TOOLS (pnpm, nvm)
+# NOTE: 8. VENDOR TOOLS (pnpm, nvm)
 # ============================================================================ #
 
 # source "$ZSHRC_ROOT/lib/fzf.zsh"
 source "$ZSHRC_ROOT/vendor/index.zsh"
 
 # ============================================================================ #
-# NOTE: 8. EDITOR CONFIGURATION
+# NOTE: 9. EDITOR CONFIGURATION
 # ============================================================================ #
 
 export EDITOR="nvim"
@@ -90,13 +85,14 @@ edit() { $EDITOR "$@"; }
 
 # VSCode aliases (macOS specific)
 if [[ "$OS_NAME" = "macOS" ]]; then
+  # alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
   alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
-    alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
+  PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
   export PATH="/opt/homebrew/bin/hs:$PATH"
 fi
 
 # ============================================================================ #
-# NOTE: 9. FULL ENVIRONMENT SETUP (Terminal only, not VSCode/Docker)
+# NOTE: 10. FULL ENVIRONMENT SETUP (Terminal only, not VSCode/Docker)
 # ============================================================================ #
 
 # Loading indicator (200ms - gives "busy" impression during bootstrap)
@@ -120,13 +116,13 @@ source "$ZSHRC_ROOT/lib/clean.node.zsh" # functions
 source "$ZSHRC_ROOT/lib/ghostty.zsh"
 
 # ============================================================================ #
-# NOTE: 10. ENVIRONMENT-SPECIFIC CONFIGURATION
+# NOTE: 11. ENVIRONMENT-SPECIFIC CONFIGURATION
 # ============================================================================ #
 
 source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
 
 # ============================================================================ #
-# NOTE: 11. CUSTOM SCRIPTS
+# NOTE: 12. CUSTOM SCRIPTS
 # ============================================================================ #
 
 # DJ software sync
@@ -139,7 +135,7 @@ source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 [[ -n "$NPM_TOKEN" ]] && gh auth login --with-token < <(printf '%s' "$NPM_TOKEN") 2>/dev/null
 
 # ============================================================================ #
-# NOTE: 12. FINALIZATION
+# NOTE: 13. FINALIZATION
 # ============================================================================ #
 
 # Splash screen

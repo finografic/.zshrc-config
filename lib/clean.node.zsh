@@ -35,8 +35,19 @@ _clean_node_modules() {
 
 # NEW: V2 -- USING THIS ONE !!
 # DELETE ALL node_modules RECURSIVELY
+# Options: --dry-run  (list targets and sizes only; no rm)
 clean-node-modules() {
+  local dry_run=0
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --dry-run) dry_run=1; shift ;;
+      *) break ;;
+    esac
+  done
+
   echo "\n${_c}🔍 Finding node_modules directories...${_0}"
+  [[ $dry_run -eq 1 ]] && echo "${_w}(dry-run — nothing will be deleted)${_0}\n"
 
   # --prune: don't descend into node_modules dirs, so nested ones are excluded from results
   # (they get deleted automatically when the parent is removed)
@@ -62,6 +73,11 @@ clean-node-modules() {
       size_bytes=$(du -s "$dir" 2>/dev/null | cut -f1)
 
       if [ ! -z "$size" ]; then
+        if [[ $dry_run -eq 1 ]]; then
+          echo "\n${_grey}🔎 Would remove $dir (size: $size)${_0}\n"
+          continue
+        fi
+
         echo "\n${_grey}🗑️  Removing $dir (size: $size)${_0}\n"
 
         # Try to remove with sudo if normal remove fails
@@ -77,7 +93,11 @@ clean-node-modules() {
   done
 
   # Final summary
-  echo "\n${_g}✨ Cleanup complete!${_0}\n"
+  if [[ $dry_run -eq 1 ]]; then
+    echo "\n${_g}✨ Dry run finished — no directories were removed.${_0}\n"
+  else
+    echo "\n${_g}✨ Cleanup complete!${_0}\n"
+  fi
 
   # Report any failures
   if [ ${#failed_dirs[@]} -gt 0 ]; then
@@ -92,6 +112,9 @@ clean-node-modules() {
 
 # Wrapper: measure disk usage before and after running the cleaner
 clean-node-modules-report() {
+  local dry_run=0 _
+  for _ in "$@"; do [[ "$_" == "--dry-run" ]] && dry_run=1; done
+
   # Compute size in kilobytes, fallback to 0
   SIZE_A_KB=$(du -sk . 2>/dev/null | awk '{print $1+0}')
   SIZE_A=$(awk "BEGIN{printf \"%.1f\", (${SIZE_A_KB:-0})/1024}")
@@ -110,6 +133,7 @@ clean-node-modules-report() {
   echo "${_grey}before clean: ${SIZE_A} MB${_0}"
   echo "${_grey}after clean: ${SIZE_B} MB${_0}"
   echo "${_g}space saved: ${SAVED} MB${_0}"
+  [[ $dry_run -eq 1 ]] && echo "${_w}(dry run — disk usage should match above)${_0}"
 
   # Export variables for interactive inspection
   export SIZE_A SIZE_B SAVED

@@ -46,7 +46,7 @@ alias api="cd $REPOS_APNAES/apnaes-api && l"
   cd "$REPOS_FINO" && l
 }
 
-@my() {
+my() {
   cd "$REPOS_FINO" && l
 }
 
@@ -150,13 +150,23 @@ find_monorepo_root() {
 
 # ========================================================================= #
 
-@llaab() {
+@_deps() {
+  cd "$REPOS_FINO/_@finografic-deps-policy" && l
+}
+
+_deps() {
+  pnpm -C "$REPOS_FINO/_@finografic-deps-policy" run policy:update:release
+}
+
+@_lab() {
   cd "$HOME/LLAAB" && l
 }
 
-@lab() {
-  cd "$HOME/LLAAB" && l
+@_harness() {
+  cd "$REPOS_FINO/@finografic-ai-harness" && l
 }
+
+# ========================================================================= #
 
 @_web() {
   cd "$HOME/LLAAB/packages/web" && l
@@ -166,12 +176,8 @@ find_monorepo_root() {
   cd "$REPOS_FINO/___FINOGRAFIC-TESTING___" && l
 }
 
-@_deps() {
-  cd "$REPOS_FINO/_@finografic-deps-policy" && l
-}
-
-@deps_update() {
-  (cd "$REPOS_FINO/_@finografic-deps-policy" && pnpm run update)
+@_cv() {
+  cd "$REPOS_FINO/cv-justin-rankin" && l
 }
 
 @_kit() {

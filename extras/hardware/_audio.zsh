@@ -4,7 +4,7 @@
 # 0       alsa_output.pci-0000_00_03.0.hdmi-stereo        module-alsa-card.c      s16le 2ch 44100Hz       SUSPENDED
 # 1       alsa_output.pci-0000_00_1b.0.analog-stereo      module-alsa-card.c      s16le 2ch 44100Hz       RUNNING
 
-function headphones_availability() {
+function headphones-availability() {
     HEADPHONES_UNAVAILABLE=`echo $(pactl list sinks | grep "analog-output-headphones*") | grep "not available" | wc -l`;
     if [ $HEADPHONES_UNAVAILABLE = 1 ]; then HEADPHONES_AVAILABLE=0; else HEADPHONES_AVAILABLE=1; fi
     export HEADPHONES_UNAVAILABLE;
@@ -16,12 +16,12 @@ function headphones_availability() {
     fi;
 }
 
-function get_audio_root() {
+function get-audio-root() {
     AUDIO_DEVICE_ROOT=`echo $(pactl list short sinks | grep -v "hdmi" | awk '{print $1}')`;
     echo $AUDIO_DEVICE_ROOT;
 }
 
-function audio_root() {
+function audio-root() {
     if [ $HEADPHONES_AVAILABLE = 1 ]; then CURRENT_AUDIO_DEVICE="headphones"; else CURRENT_AUDIO_DEVICE="internal speaker"; fi
     export CURRENT_AUDIO_DEVICE;
     echo "${_y}Switching audio to ${CURRENT_AUDIO_DEVICE}...${_0}";
@@ -29,7 +29,7 @@ function audio_root() {
     pactl list short sink-inputs | awk '{print $1}' | xargs -I {} pacmd move-sink-input {} $1 $AUDIO_DEVICE_ROOT;
 }
 
-function audio_hdmi() {
+function audio-hdmi() {
     CURRENT_AUDIO_DEVICE="HDMI";
     export CURRENT_AUDIO_DEVICE;
     echo "${_y}Switching audio to ${CURRENT_AUDIO_DEVICE}...${_0}";
@@ -40,29 +40,29 @@ function audio_hdmi() {
 # CHECK AND SET AUDIO - MAIN FUNCTION !!
 function audio() {
     # ARE HEADPHONES PLUGGED IN ??
-    headphones_availability;
+    headphones-availability;
     # echo "\n${_grey}AUDIO VARIABLE PASSED: ${@}${_0}";
     # echo "${_grey}HEADPHONES_AVAILABLE = ${HEADPHONES_AVAILABLE}${_0}";
     # echo "${_grey}HEADPHONES_UNAVAILABLE = ${HEADPHONES_UNAVAILABLE}${_0}\n";
     
     if [[ $@ == "root" || $@ == "main" ]] then
-        audio_root;
+        audio-root;
         elif [[ $@ == "hdmi" ]] then
-        # audio_hdmi;
-        audio_root; # NEW DISPLAY, NO HDMI AUDIO (202103)
+        # audio-hdmi;
+        audio-root; # NEW DISPLAY, NO HDMI AUDIO (202103)
     else
         # SWITCH AUDIO, DEPENDING...
         if   [ $HDMI_AVAILABLE = 1 ] && [ $HEADPHONES_AVAILABLE = 0 ]; then
             echo "${_grey}CASE 1: HDMI available + headphones not available${_0}"
-            # audio_hdmi;
-            audio_root; # NEW DISPLAY, NO HDMI AUDIO (202103)
+            # audio-hdmi;
+            audio-root; # NEW DISPLAY, NO HDMI AUDIO (202103)
             elif [ $HDMI_AVAILABLE = 1 ] && [ $HEADPHONES_AVAILABLE = 1 ]; then
             echo "${_grey}CASE 2: HDMI available + headphones available${_0}"
-            audio_root;
+            audio-root;
         else
             echo "${_grey}CASE 3: DEFAULT (root audio)${_0}"
             # WILL DEFAULT TO HEADPHONES, IF PLUGGED IN ;)
-            audio_root;
+            audio-root;
         fi;
     fi
     
@@ -71,7 +71,7 @@ function audio() {
 # INIT AUDIO CONFIG
 audio;
 
-function AUDIO_EXAMPLES() {
+function audio-examples() {
     
     # 1. LIST "SINKS" (OUTPUTS)
     pactl list short sinks

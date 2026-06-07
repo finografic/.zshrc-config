@@ -3,6 +3,7 @@
 # ============================================================================ #
 # NOTE: VSCODE - Minimal config for IDE integrated terminals (fast startup)
 # ============================================================================ #
+
 # Early exit from main.zsh - skips splash, widgets, hardware detection.
 # Target: essential dev tools only, <200ms startup.
 # ============================================================================ #
@@ -46,7 +47,7 @@ source "$ZSHRC_ROOT/lib/dev.zsh"
 
 # Simple prompt with git branch (p10k loads from bootstrap, but we use minimal for speed)
 autoload -Uz vcs_info
-precmd() { vcs_info }
+function precmd() { vcs_info }
 zstyle ':vcs_info:git:*' formats '%b '
 setopt PROMPT_SUBST
 PROMPT='%F{green}%~%f %F{blue}${vcs_info_msg_0_}%f$ '

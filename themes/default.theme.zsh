@@ -1,7 +1,9 @@
-# THEME + PROMPT ============================
+# ============================================================================ #
+# THEME + PROMPT
+# ============================================================================ #
 
 # Set environment and theme..
-export ZENV=$(determine_environment)
+export ZENV=$(determine-environment)
 # TODO: TESTING DEFAULT THEME
 # export ZSH_THEME="gallois-custom" # Using consistent theme across environments
 # source "$ZSHRC_ROOT/themes/prompt.zsh"

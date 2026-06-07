@@ -25,7 +25,7 @@ function npmi() {
   fi
 }
 
-_gclean__ORIG() {
+function _gclean-orig() {
   [ ! -d "./.git" ] && return
   echo "\n${_y}CLEAN / DELETE LOCAL GIT BRANCHES.. sure to proceed? (y/n)\n${_0}"
   read -r response
@@ -38,7 +38,7 @@ _gclean__ORIG() {
   fi
 }
 
-_gclean() {
+function _gclean() {
   local pattern=$1
   [ ! -d "./.git" ] && return
 
@@ -58,16 +58,17 @@ _gclean() {
   fi
 }
 
-# ========================================================================= #
+# ============================================================================ #
 # GITHUB PACKAGE RELEASE (GitHub Packages only, no npmjs)
-# ========================================================================= #
+# ============================================================================ #
+
 # Replaces inline package.json scripts like:
 #   "release.github.patch": "pnpm release.verify && pnpm release.verify.git && pnpm release.bump.patch && pnpm release.push"
 #   "release.github.minor": "pnpm release.verify && pnpm release.verify.git && pnpm release.bump.minor && pnpm release.push"
 #   "release.github.major": "pnpm release.verify && pnpm release.verify.git && pnpm release.bump.major && pnpm release.push"
 # Run from repo root. Uses npm by default; supports --pm pnpm.
 #
-_release() {
+function _release() {
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "\n${_y}⚠️  Not inside a git repository\n${_0}"
     return 1
@@ -201,8 +202,9 @@ _release() {
   echo "\n${_g}✅ Released $PKG_NAME\n${_0}"
 }
 
-# ========================================================================= #
+# ============================================================================ #
 # NOTE: APNAES - RSYNC TRANSFERS, BACKUPS, and PUBLISHING..
+# ============================================================================ #
 
 export ROOT_ACCESS="root@REDACTED-IP"
 export REMOTE_LSWS="/usr/local/lsws"
@@ -217,18 +219,18 @@ export REMOTE_API="/usr/local/lsws/api"
 alias h="ssh -i ~/.ssh/id_hostinger.pub -p 22 $ROOT_ACCESS"
 alias a="ssh -i ~/.ssh/id_hostinger.pub -p 22 apnaes@REDACTED-IP"
 
-h_get_all() {
+function h-get-all() {
   echo "${_c}\nDownloading FULL 'lsws' folder + contents from remote...\n${_0}"
   rsync -avz --progress -e "ssh -p 22" $ROOT_ACCESS:/usr/local/lsws ~/Public
 
   echo "${_g}\nfull 'lsws' folder downloaded to ~/Public\n${_0}"
 }
 
-h_pub_web() {
+function h-pub-web() {
   echo "${_y}\nPublishing WEB: LOCAL -> REMOTE...\n${_0}"
   rsync -avz --progress --no-perms --no-owner --no-group $LOCAL_WEB/dist/ $ROOT_ACCESS:$REMOTE_WEB/html/
 
   echo "${_grey}\nweb 'html' content published to remote.\n${_0}"
 }
 
-# ========================================================================= #
+# ============================================================================ #

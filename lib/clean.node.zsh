@@ -1,14 +1,14 @@
-#########################################
-#########  CLEAN node_modules  ##########
-#########################################
+# ============================================================================ #
+# CLEAN node_modules
+# ============================================================================ #
 
-# ------------------------------------------------------------------------- #
+# ============================================================================ #
 # Recursively remove all `node_modules` directories from a given path.
-# ------------------------------------------------------------------------- #
+# ============================================================================ #
 
 # NOTE: V1 ORIG (faster, no sudo)
 
-_clean_node_modules() {
+function _clean-node-modules() {
   local size_before size_after space_saved
 
   # Get size before cleaning (in MB)
@@ -31,12 +31,12 @@ _clean_node_modules() {
   echo "${_g}Space saved:  ${space_saved} MB${_0}"
 }
 
-# alias _cnm="_clean_node_modules"
+# alias _cnm="_clean-node-modules"
 
 # NEW: V2 -- USING THIS ONE !!
 # DELETE ALL node_modules RECURSIVELY
 # Options: --dry-run  (list targets and sizes only; no rm)
-clean-node-modules() {
+function clean-node-modules() {
   local dry_run=0
 
   while [[ $# -gt 0 ]]; do
@@ -111,7 +111,7 @@ clean-node-modules() {
 
 
 # Wrapper: measure disk usage before and after running the cleaner
-clean-node-modules-report() {
+function clean-node-modules-report() {
   local dry_run=0 _
   for _ in "$@"; do [[ "$_" == "--dry-run" ]] && dry_run=1; done
 

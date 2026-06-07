@@ -1,19 +1,19 @@
-################################
-###########  THEMES  ###########
-################################
+# ============================================================================ #
+# THEMES
+# ============================================================================ #
 
-# Usage: $ switch_theme refined
-theme() {
+# Usage: $ switch-theme refined
+function theme() {
   sed -i '' "s|path:themes/.*\.zsh-theme|path:themes/$1.zsh-theme|" ~/.zshrc-config/.zsh_plugins.zsh
   source ~/.zshrc
 }
 
 # Add to your .zshrc
-switch_theme() {
+function switch-theme() {
   sed -i '' "s|path:themes/.*\.zsh-theme|path:themes/$1.zsh-theme|" ~/.zshrc-config/.zsh_plugins.zsh
   source ~/.zshrc
 }
-# Usage: switch_theme refined
+# Usage: switch-theme refined
 
 # NEW!! - ZSH_THEME SET BY main.zsh
 

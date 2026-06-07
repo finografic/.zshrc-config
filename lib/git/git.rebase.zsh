@@ -1,11 +1,11 @@
-# ========================================================================= #
+# ============================================================================ #
 # REBASE AND MERGE OPERATIONS
-# ========================================================================= #
+# ============================================================================ #
 
 # Fetch and rebase
 # Usage: _grb [-y]
 #   -y  Non-interactive rebase (skips editor) and auto-accepts force-push
-_grb() {
+function _grb() {
   local auto=0
   [[ "$1" == "-y" ]] && { auto=1; shift; }
 
@@ -60,7 +60,7 @@ _grb() {
 }
 
 # Fetch, rebase, and push with squash
-_grbs() {
+function _grbs() {
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "Not inside a git repository."

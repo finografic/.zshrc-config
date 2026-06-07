@@ -1,6 +1,6 @@
-##################################
-############  MONGODB   ##########
-##################################
+# ============================================================================ #
+# MONGODB
+# ============================================================================ #
 
 # OLD / ORIG
 # alias mstart="sudo systemctl start mofind . -mtime -1 -printodb"
@@ -68,6 +68,6 @@ function mbak() {
 }
 
 # OWN USING mongodb USER
-mown() {
+function mown() {
   sudo chown -R mongodb:mongodb $1
 }

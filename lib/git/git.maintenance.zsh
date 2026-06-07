@@ -1,9 +1,9 @@
-# ========================================================================= #
+# ============================================================================ #
 # MAINTENANCE OPERATIONS
-# ========================================================================= #
+# ============================================================================ #
 
 # Clean (delete multiple branches)
-_gclean() {
+function _gclean() {
   if [[ -z "$1" ]]; then
     echo "\n${_y}⚠️  No branch pattern specified\n${_0}"
     return 1
@@ -42,11 +42,12 @@ _gclean() {
   fi
 }
 
-# ================================================================== #
+# ============================================================================ #
 # NOTE: CLEAUP ALL STASHES
+# ============================================================================ #
 
 # Clear all git stashes
-_gtrashes() {
+function _gtrashes() {
   local STASH_COUNT=$(git stash list | wc -l | tr -d ' ')
 
   echo "\n${_r}⚠️  WARNING: This will DELETE ALL ${_y}${STASH_COUNT}${_r} stashes!${_0}"
@@ -71,12 +72,12 @@ _gtrashes() {
 # ============================================================================ #
 
 # Pretty-printed git log
-_glog() {
+function _glog() {
   git log --graph --abbrev-commit --decorate --date=relative --all
 }
 
 # Reset HEAD with origin
-_greset_origin() {
+function _greset-origin() {
   if [[ ! -d "./.git" ]]; then
     echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
     return 1
@@ -94,7 +95,7 @@ _greset_origin() {
 }
 
 # Reset to specific commit
-_greset() {
+function _greset() {
   if [[ ! -d "./.git" ]]; then
     echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
     return 1
@@ -128,7 +129,7 @@ _greset() {
 # ============================================================================ #
 
 # Merge into master (alternative - overwrites master with source branch)
-_gmm() {
+function _gmm() {
   if [[ ! -d "./.git" ]]; then
     echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
     return 1
@@ -176,7 +177,7 @@ _gmm() {
 # ============================================================================ #
 
 # Rename initial commit message
-_grename_initial() {
+function _grename-initial() {
 
   if [[ ! -d "./.git" ]]; then
     echo "\n${_y}⚠️  Not inside of git repository${_0}"
@@ -185,9 +186,9 @@ _grename_initial() {
 
   if [[ -z "$1" || "$1" == "--help" || "$1" == "-h" ]]; then
     echo "\n${_m}Rename initial commit message${_0}\n"
-    echo "${_y}Usage:${_0} _grename_initial \"New commit message\" [commit-hash]\n"
+    echo "${_y}Usage:${_0} _grename-initial \"New commit message\" [commit-hash]\n"
     echo "${_grey}If no <commit-hash> is provided, the repository's initial commit (root) is used.${_0}\n"
-    echo "${_grey}Examples:${_0}\n  _grename_initial \"Fix typo in initial commit\"\n  _grename_initial \"New message\" abcd1234\n"
+    echo "${_grey}Examples:${_0}\n  _grename-initial \"Fix typo in initial commit\"\n  _grename-initial \"New message\" abcd1234\n"
     echo "${_grey}Notes:${_0}\n  - This command uses 'git-filter-repo' to rewrite history. Install it from:\n    https://github.com/newren/git-filter-repo\n  - After a successful run you must force-push rewritten refs: ${_y}git push --force --all && git push --force --tags${_0}\n"
     return 0
   fi
@@ -262,7 +263,7 @@ PY
 # ============================================================================ #
 
 # Reset git permissions
-_g_PERMISSIONS() {
+function _g-permissions() {
   # TODO: ??
   # RESET GIT PERMISSIONS
   # own .git

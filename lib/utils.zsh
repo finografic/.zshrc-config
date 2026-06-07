@@ -1,22 +1,22 @@
-#############################################
-############ FUNCTIONS + ALIASES ############
-#############################################
+# ============================================================================ #
+# FUNCTIONS + ALIASES
+# ============================================================================ #
 
 # ZSH CONFIG
 export FZF_DEFAULT_COMMAND='fd --type f --ignore-file .ignore'
 
-config() {
+function config() {
   open -a "/Applications/Visual Studio Code.app" "$ZSHRC_ROOT/.vscode/zshrc-config.code-workspace"
 }
 
 # NOTE: .env is loaded in core/env.zsh (canonical, includes SKIP_ENV_LOAD for GitHub Desktop)
 
 # REMOVE DUPLICATES FROM PATH (legacy; build-path.mjs used at end of main.zsh)
-flatten_PATH() {
+function flatten-path() {
   export PATH=$(node "${ZSHRC_ROOT:-$HOME/.zshrc-config}/packages/node/dist/build-path.mjs")
 }
 
-function config_V1_FZF() {
+function config-v1-fzf() {
   #  TEMP: SAVE CURRENT PATH && CD TO CUSTOM ZSH CONFIG PATH
   PWD_ORIG=$PWD
   cd ${HOME}/.zshrc-config
@@ -31,23 +31,23 @@ function config_V1_FZF() {
 }
 
 # ENCHANCED CD ("cd-directory")
-cdd() {
+function cdd() {
   if [ $# -eq 0 ]; then
-    cd $(fd --type directory --max-depth 1 | fzf --cycle --reverse) && listing_eza
+    cd $(fd --type directory --max-depth 1 | fzf --cycle --reverse) && listing-eza
   else
     cd "$(pwd)/$@"
   fi
 }
 
-#####################################
-############  UTILITIES  ############
-#####################################
+# ============================================================================ #
+# UTILITIES
+# ============================================================================ #
 
 # MISC COM
 alias ip="echo '\n\e[37mLocal IP addess: \e[0;35m$IP\n'"
 
 # NEW!! 2024-12-12
-ports() {
+function ports() {
   lsof -i -P -n | grep LISTEN | grep -E '127\.0\.0\.1:|[::1]:' | awk '{
     gsub(/\\x20./, " ", $1);
     if ($9 ~ /\[.*\]:/) {
@@ -61,17 +61,17 @@ ports() {
   tput sgr0
 }
 
-#####################################
-##########  FILE UTILS  #############
-#####################################
+# ============================================================================ #
+# FILE UTILS
+# ============================================================================ #
 
 # TAR
-tz() {
+function tz() {
   sudo tar -xzf $1 # COMPRESS
   # sudo tar zcvf mongodb-BAK-20181221.tar.gz db
 }
 
-tuz() {
+function tuz() {
   # DECOMPRESS
   # TODO: USER SELECT FOR *.tar.gz FILES
   echo '\e[32m'
@@ -80,7 +80,7 @@ tuz() {
 }
 
 # FIND: FILE
-f() {
+function f() {
   # OPTION 1.
   # sudo find . -type f -name "$@"
   # OPTION 2. ** BEST OPTION
@@ -93,14 +93,14 @@ f() {
 # sudo ag -i -g "$@" # --depth 5
 
 # FIND: FILE CONTENTS
-contents() {
+function contents() {
   # OPTION 1.
   # sudo grep -rnw "." -e "$@"
   sudo grep -rnl "." -e "$@"
 }
 
 # FILE/FOLDER PERMISSIONS
-own() {
+function own() {
   sudo chown -R $USER:$USER $1
 }
 
@@ -110,25 +110,25 @@ own() {
 # }
 
 # IMAGES
-convert-heic() {
+function convert-heic() {
   for f in *.heic; do
     echo "Working on file $f"
     heif-convert $f $f.jpg
   done
 }
 
-##################################
-#############  MISC  #############
-##################################
+# ============================================================================ #
+# MISC
+# ============================================================================ #
 
-newsh() {
+function newsh() {
   NEW_FILE=$1.sh
   echo "#!/bin/zsh" >>$HOME/bin/$NEW_FILE
   chmod +x $HOME/bin/$NEW_FILE
   code $HOME/bin/$NEW_FILE
 }
 
-numberRound() {
+function numberRound() {
   printf "%.0f\n" $1
 }
 
@@ -136,7 +136,7 @@ numberRound() {
 #   printf ${$(($1))%.*}
 # }
 
-msg() {
+function msg() {
   # DEFINE + GET MESSAGE TYPE
   declare -A TYPES=(
     [info]=$_c

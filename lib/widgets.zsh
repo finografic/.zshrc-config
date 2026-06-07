@@ -1,13 +1,13 @@
-#############################################
-############ FUNCTIONS + ALIASES ############
-#############################################
+# ============================================================================ #
+# FUNCTIONS + ALIASES
+# ============================================================================ #
 
 # Colors and emoji
 # source "$ZSHRC_ROOT/lib/colors.zsh"
 
-# ========================================================================= #
+# ============================================================================ #
 
-show_tmutil_snapshots() {
+function show-tmutil-snapshots() {
   # TMUTIL LOCAL SNAPSHOTS WIDGET
   if command -v tmutil &>/dev/null; then
     # Count snapshots
@@ -29,9 +29,9 @@ show_tmutil_snapshots() {
   fi
 }
 
-# ========================================================================= #
+# ============================================================================ #
 
-show_custom_launch_agents() {
+function show-custom-launch-agents() {
   if [[ -d ~/Library/LaunchAgents ]]; then
     # Create array using find with multiple patterns
     CUSTOM_AGENTS=($(find ~/Library/LaunchAgents -name "com.user.tmutil.plist" -o -name "com.user.dj-crate-backup.plist" -o -name "com.user.dj-crate-backup.plist"))
@@ -52,10 +52,11 @@ show_custom_launch_agents() {
   fi
 }
 
-# ========================================================================= #
+# ============================================================================ #
 # LIST PORTS - localhost listeners (macOS, Linux, Android)
+# ============================================================================ #
 
-show_ports() {
+function show-ports() {
   if [[ "$OS_NAME" == "Linux" && "$ZENV" != "apnaes" ]]; then
     ports
   elif [[ "$OS_NAME" == "macOS" ]]; then
@@ -66,10 +67,11 @@ show_ports() {
   echo "\n"
 }
 
-# ========================================================================= #
+# ============================================================================ #
 # DOCKER CONTAINERS WIDGET
+# ============================================================================ #
 
-show_docker_containers() {
+function show-docker-containers() {
   if command -v docker &>/dev/null && docker info &>/dev/null 2>/dev/null; then
     RUNNING_CONTAINERS=$(docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Image}}" 2>/dev/null | tail -n +2)
     if [[ -n "$RUNNING_CONTAINERS" ]]; then
@@ -81,10 +83,11 @@ show_docker_containers() {
   fi
 }
 
-# ========================================================================= #
+# ============================================================================ #
 # SPLASH SCREEN - FASTFETCH or NEOFETCH, based on SYSTEM ARCHITECTURE
+# ============================================================================ #
 
-show_splash_neofetch() {
+function show-splash-neofetch() {
   if [[ "$ZENV" == "apnaes" ]]; then
     if command -v neofetch >/dev/null; then
       neofetch
@@ -111,27 +114,31 @@ show_splash_neofetch() {
   fi
 }
 
-# ========================================================================= #
+# ============================================================================ #
 # SPLASH SCREEN BANNER
+# ============================================================================ #
 
-show_splash_sys_banner() {
+function show-splash-sys-banner() {
   source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.banner.zsh"
 }
 
-# ========================================================================= #
+# ============================================================================ #
 # SPLASH SCREEN FOOTER INFO
+# ============================================================================ #
 
-show_splash_sys_banner_footer_info() {
+function show-splash-sys-banner-footer-info() {
   D="${_c}::${_0}"
   RESET_STRING="$HOSTNAME $D ${_w}$IP"
   echo "\n${_c} ---=====${_w} $RESET_STRING ${_c}=====--- \n"
 }
 
-# ========================================================================= #
+# ============================================================================ #
 # SPLASH SCREEN VERSIONS + OS INFO
+# ============================================================================ #
+
 # versions of macOS, NodeJS, npm... etc
 
-show_os_version_and_sys_info() {
+function show-os-version-and-sys-info() {
   echo "${_y}$OS_NAME \t $([[ $OS != "Android" ]] && echo "$OS_VERSION") $([[ $OS = "Linux" ]] && echo $OS_KERNEL)"
   [ -e /etc/os-release ] && echo "${_y}$(env -i bash -c '. /etc/os-release; echo $PRETTY_NAME')"
   echo "${_c}NodeJS \t$(node --version)"

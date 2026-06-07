@@ -1,9 +1,9 @@
 CONTAINER_HOME="/workspace"
 
-_dgo() {
+function _dgo() {
   ./script/docker/start.sh --go
 }
 
-_dclean() {
+function _dclean() {
   ./script/docker/start.sh --clean --pull
 }

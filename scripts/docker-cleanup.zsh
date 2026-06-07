@@ -9,14 +9,14 @@ source ~/.zshrc-config/lib/colors.zsh
 # echo -e "\n${_m}🐳 Docker Cleanup Script${_0}\n"
 
 # Function to show current usage
-show_usage() {
+function show-usage() {
     echo -e "${_g}📊 Current Docker Usage:${_0}"
     docker system df
     echo ""
 }
 
 # Function to show what will be removed
-show_what_will_be_removed() {
+function show-what-will-be-removed() {
     echo -e "${_y}🗑️  Items that will be removed:${_0}"
 
     # Show dangling images
@@ -45,7 +45,7 @@ show_what_will_be_removed() {
 }
 
 # Function to perform cleanup
-perform_cleanup() {
+function perform-cleanup() {
     echo -e "${_m}🧹 Starting cleanup...${_0}\n"
 
     # Remove all stopped containers
@@ -72,22 +72,22 @@ perform_cleanup() {
 }
 
 # Function to show space saved
-show_space_saved() {
+function show-space-saved() {
     echo -e "${_g}💾 Space freed up:${_0}"
     docker system df
     echo ""
 }
 
 # Main docker-cleanup function
-docker-cleanup() {
+function docker-cleanup() {
     case "${1:-help}" in
     "status"|"check")
-        show_usage
-        show_what_will_be_removed
+        show-usage
+        show-what-will-be-removed
         ;;
     "clean"|"cleanup")
-        show_usage
-        show_what_will_be_removed
+        show-usage
+        show-what-will-be-removed
 
         echo -e "${_y}⚠️  This will remove:${_0}"
         echo "  • All stopped containers"
@@ -102,16 +102,16 @@ docker-cleanup() {
         response=${response:-N}
 
         if [[ "$response" =~ ^[Yy]$ ]]; then
-            perform_cleanup
-            show_space_saved
+            perform-cleanup
+            show-space-saved
         else
             echo -e "${_y}⚠️  Cleanup cancelled${_0}"
         fi
         ;;
     "force")
-        show_usage
-        perform_cleanup
-        show_space_saved
+        show-usage
+        perform-cleanup
+        show-space-saved
         ;;
     "help"|"--help"|"-h"|*)
         echo -e "${_m}🐳 Docker Cleanup Script${_0}\n"

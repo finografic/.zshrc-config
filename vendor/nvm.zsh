@@ -47,6 +47,7 @@ fi
 
 # ============================================================================ #
 # NOTE: NVM AUTOLOAD - ref: https://github.com/nvm-sh/nvm?tab=readme-ov-file#zsh
+# ============================================================================ #
 
 # place this after nvm initialization!
 autoload -U add-zsh-hook

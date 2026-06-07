@@ -5,12 +5,12 @@ _g='\033[1;32m'      # Green (success)
 _grey='\033[0;90m'   # Grey (informational)
 _0='\033[0m'         # Reset
 
-# ========================================================================= #
+# ============================================================================ #
 # GIT TAG OPERATIONS -- FOR CI
-# ========================================================================= #
+# ============================================================================ #
 
 # Create and push a dev tag that exactly matches package.json
-_gtag() {
+function _gtag() {
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "\n${_y}⚠️  Not inside of git repository\n${_0}"

@@ -27,7 +27,7 @@ source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.hardware.zsh"
 source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.dev.zsh"
 
 # FIX FOR KDE PLASMA DISPLAY BUG
-function kde_restart_plasma() {
+function kde-restart-plasma() {
     killall plasmashell
     kstart5 plasmashell
 }
@@ -36,5 +36,5 @@ function kde_restart_plasma() {
 # PM2 startup DOCS: https://pm2.keymetrics.io/docs/usage/startup/
 # [ -e ${NPM_GLOBALS}/pm2 ] && eval "env PATH=\$PATH:${NPM_GLOBALS}/pm2 startup systemd -u ${USER} --hp ${HOME}";
 
-alias kde-restart=kde_restart_plasma
-alias kde=kde_restart_plasma
+alias kde-restart=kde-restart-plasma
+alias kde=kde-restart-plasma

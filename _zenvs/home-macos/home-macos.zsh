@@ -4,7 +4,7 @@ export ZSHRC_ROOT="$HOME/.zshrc-config"
 export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
 export NVM="true"
 
-# ============================================================== #
+# ============================================================================ #
 
 # BUN - https://bun.sh
 # TODO: CAUSING ERROR IN $PATH !!
@@ -21,7 +21,7 @@ else
   echo "Warning: Homebrew not found in /opt/homebrew/bin/brew or /usr/local/bin/brew"
 fi
 
-# ============================================================== #
+# ============================================================================ #
 
 # INCLUDES: DEFAULTS
 source "$ZSHRC_ROOT/lib/aliases.common.zsh"
@@ -40,9 +40,9 @@ source "$ZENV_PATH/$ZENV.dev.zsh"
 
 # INCLUDES: SCRIPTS
 source "$ZSHRC_ROOT/extras/music/backup-dj-crate.zsh"
-# djay_backup_music
+# djay-backup-music
 
-# ============================================================== #
+# ============================================================================ #
 
 # iTERM SHELL INTEGRATION
 # source $ZSHRC_ROOT/.iterm2_shell_integration.zsh
@@ -59,18 +59,19 @@ source "$ZSHRC_ROOT/extras/music/backup-dj-crate.zsh"
 # [ -e ${NPM_GLOBALS}/pm2 ] && eval "sudo env PATH=\$PATH:${NPM_GLOBALS}/../lib/node_modules/pm2/bin/pm2 startup launchd -u ${USER} --hp ${HOME}";
 
 # NOTE: UPDATE GHOSTTY CONFIG
-update_ghostty_config
+update-ghostty-config
 
-# ============================================================== #
+# ============================================================================ #
 
 # TODO: NOT EVERY LAUNCH - ESPECIALLY IF NOT ON M1
 # ENSURE LOUPDECK POINTS to CORRECT $HOME FOLDER
 # sh $HOME/.local/share/Loupedeck/_Loupedeck_DEV/scripts/loupedeck/setHomeUserPaths.sh
 
-# ============================================================== #
+# ============================================================================ #
 
-# ============================================================== #
+# ============================================================================ #
 # NOTE: START docker (Docker Desktop)..
+# ============================================================================ #
 
 # if ! docker info &>/dev/null; then
 #   echo "${_grey}Starting Docker Desktop...${_0}"
@@ -82,8 +83,10 @@ update_ghostty_config
 #   echo "${_g}Docker is ready${_0}"
 # fi
 
-# ============================================================== #
+# ============================================================================ #
 # SECURITY CHECKS: Minimal Security for Home System
+# ============================================================================ #
+
 # NOTE: No firewall warning for home (relaxed security)
 # Ports 11434 (Ollama) and 3001 (OpenWebUI) are intentionally excluded from checks
 
@@ -98,8 +101,9 @@ update_ghostty_config
 #   fi
 # fi
 
-# ============================================================== #
+# ============================================================================ #
 # VERIFY: LaunchAgent Services (djay backup, etc.)
+# ============================================================================ #
 
 # Check djay backup service
 DJAY_BACKUP_PLIST="$HOME/Library/LaunchAgents/com.user.dj-crate-backup.plist"

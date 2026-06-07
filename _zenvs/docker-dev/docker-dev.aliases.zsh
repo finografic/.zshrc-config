@@ -8,7 +8,7 @@ export CONTAINER_HOME="/workspace"
 # export alias 5="cd ../../../../../ && l"
 
 unalias l 2>/dev/null
-l(){
+function l() {
   ls -lAh "$@"  # Add --color if desired and supported in container
 }
 
@@ -33,11 +33,11 @@ alias sop="cd $CONTAINER_HOME/sop && l"
 # Container info
 alias container-info='echo -e "Container: $(hostname)\nArch: ${OS_ARCH}\nOS: ${OS_NAME}\nConfig: ${ZSHRC_ROOT}"'
 
-soa() {
+function soa() {
  cd $CONTAINER_HOME/sage_one_advanced && l
 }
 
-_start() {
+function _start() {
   cd $CONTAINER_HOME/sage_one_advanced && l
 
   if [[ "$2" != "" ]]; then

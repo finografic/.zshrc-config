@@ -4,7 +4,7 @@
 export BRIGHTNESS=1.4
 export DISPLAY_BACKLIGHT_MAX=5273
 
-function get_displays(){
+function get-displays() {
 
   # MULTI-LINE ARRAY:
   # DISPLAYS=$(xrandr | grep " connected" | awk '{print $1}');
@@ -27,17 +27,17 @@ function get_displays(){
 # xrandr --output ${DISPLAY_EXT} --brightness 1.0
 
 # SET BRIGHTNESS: HDMI-1
-brightness() {
+function brightness() {
     BRIGHTNESS=${1:-1}
     xrandr --output ${DISPLAY_MAIN} --brightness $BRIGHTNESS;
 }
 
-brightness-x() {
+function brightness-x() {
     BRIGHTNESS=${1:-1}
     xrandr --output ${DISPLAY_EXT} --brightness $BRIGHTNESS;
 }
 
-function is_hdmi_available() {
+function is-hdmi-available() {
     HDMI_AVAILABLE=0;
     HDMI_UNAVAILABLE=`echo $(pactl list sinks | grep "hdmi-output-0*") | grep "not available" | wc -l`;
     if [ $HDMI_UNAVAILABLE = 1 ]; then $HDMI_AVAILABLE=0; else HDMI_AVAILABLE=1; fi
@@ -50,9 +50,9 @@ function is_hdmi_available() {
 }
 
 # SET HDMI_AVAILABLE VAR !!
-is_hdmi_available;
+is-hdmi-available;
 
-function get_dim_display_main() {
+function get-dim-display-main() {
   DISPLAY_MAIN_PROPS=$(xrandr | grep "eDP-1-1" | awk '{print $4}'); # 3RD COL USED BY 'primary' FLAG
   DISPLAY_MAIN_PROPS_ARRAY=($(echo $DISPLAY_MAIN_PROPS | tr "x|+" "\n"));
     # GET ABSOLUTE W,H SIZE
@@ -68,7 +68,7 @@ function get_dim_display_main() {
   export MAIN_PAD_BOTTOM=0;
 }
 
-function get_dim_hdmi() {
+function get-dim-hdmi() {
   HDMI_PROPS=$(xrandr | grep "HDMI-1-1" | awk '{print $3}'); # 3RD COL = DIMENSIONS+POS
   HDMI_PROPS_ARRAY=($(echo $HDMI_PROPS | tr "x|+" "\n"));
   # GET ABSOLUTE W,H SIZE
@@ -114,7 +114,7 @@ function get_dim_hdmi() {
 
 }
 
-function get_dim_desktop() {
+function get-dim-desktop() {
 
   # DESKTOP DIMENSIONS AVAILABLE
   export DESKTOP_DIMENSIONS=$(wmctrl -d | grep "*" | awk '{print $9}') # RETURNS "W,H"
@@ -157,16 +157,16 @@ function displays() {
   # echo "new size:\t w:${_c}$NEW_W${_0}\th:${_c}$NEW_H${_0}";
   # echo "new position:\t x:${_c}$NEW_X${_0}\ty:${_c}$NEW_Y${_0}\n";
 
-  get_dim_hdmi;
+  get-dim-hdmi;
   wmctrl -r "Pocket Casts" -e "0,$HDMI_LEFT_HALF"; # NOT WORKING :()
   wmctrl -r "All-in-One Messenger" -e "0,$HDMI_RIGHT_HALF";
 
 }
 
 # RUN BATCH DISPLAY SCRIPTS
-get_displays;
-get_dim_display_main;
-get_dim_hdmi;
+get-displays;
+get-dim-display-main;
+get-dim-hdmi;
 # get_dim_total;
 displays "hdmi";
 

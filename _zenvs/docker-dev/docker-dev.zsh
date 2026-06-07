@@ -3,6 +3,7 @@
 # ============================================================================ #
 # Docker Container Environment Configuration
 # ============================================================================ #
+
 # This profile is automatically loaded when running inside Docker containers
 # It provides a lightweight, container-friendly shell setup using the host's
 # mounted zshrc-config directory
@@ -112,8 +113,8 @@ source "$ZSHRC_ROOT/_zenvs/docker-dev/docker-dev.banner.zsh"
 # ============================================================================ #
 
 # Remove duplicate PATH entries
-if command -v flatten_PATH >/dev/null 2>&1; then
-  flatten_PATH
+if command -v flatten-path >/dev/null 2>&1; then
+  flatten-path
 fi
 
 # ============================================================================ #

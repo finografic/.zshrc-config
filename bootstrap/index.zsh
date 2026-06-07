@@ -2,6 +2,7 @@
 # ============================================================================ #
 # NOTE: BOOTSTRAP INDEX - Loads all bootstrap files in correct order
 # ============================================================================ #
+
 # This file is sourced by ~/.zshrc after setting ZSHRC_ROOT
 # Order matters! Do not rearrange without understanding dependencies.
 # ============================================================================ #

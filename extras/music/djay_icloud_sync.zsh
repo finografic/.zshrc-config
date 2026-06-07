@@ -16,34 +16,34 @@ ZSHRC_ROOT="$HOME/.zshrc-config"
 LOG_FILE="$ZSHRC_ROOT/extras/music/logs/djay_icloud_sync.log"
 
 # Main djay command function
-djay() {
+function djay() {
     case "${1:-help}" in
         "sync")
-            djay_icloud_sync_main
+            djay-icloud-sync-main
             ;;
         "status")
-            show_status
+            show-status
             ;;
         "up"|"to-icloud")
-            check_icloud_drive && create_icloud_djay_dir && sync_to_icloud
+            check-icloud-drive && create-icloud-djay-dir && sync-to-icloud
             ;;
         "down"|"from-icloud")
-            check_icloud_drive && sync_from_icloud
+            check-icloud-drive && sync-from-icloud
             ;;
         "logs")
-            show_recent_logs
+            show-recent-logs
             ;;
         "debug")
-            debug_timestamps
+            debug-timestamps
             ;;
         "agent-start"|"start-sync-auto"|"setup-auto")
-            setup_automatic_sync
+            setup-automatic-sync
             ;;
         "agent-stop"|"stop-sync-auto"|"stop-auto")
-            stop_automatic_sync
+            stop-automatic-sync
             ;;
         "agent-status"|"check-auto")
-            check_automatic_sync
+            check-automatic-sync
             ;;
         "export-ios")
             # Export the djay library directory to iCloud Drive for iOS import
@@ -77,7 +77,7 @@ djay() {
                 cp -Rv "$DJAY_PATH/$LIBRARY_FILE" "$IOS_EXPORT_DIR/"
                 echo -e "\n${_g}✅ Auto-exported djay Media Library for iOS!${_0}"
                 echo -e "${_c}Available in iCloud Drive > djay > ios-transfer${_0}"
-                log_message "Auto-exported djay library to ios-transfer"
+                log-message "Auto-exported djay library to ios-transfer"
             else
                 echo -e "\n${_r}❌ djay Media Library not found at: $DJAY_PATH/$LIBRARY_FILE${_0}"
                 echo -e "${_y}Please ensure djay Pro is installed and has been run at least once.${_0}"
@@ -128,16 +128,16 @@ alias djay-logs='~/.zshrc-config/extras/music/djay_icloud_sync.zsh logs'
 alias djay-help='~/.zshrc-config/extras/music/djay_icloud_sync.zsh help'
 
 # Function to log messages
-log_message() {
+function log-message() {
     # Ensure log directory exists
     mkdir -p "$(dirname "$LOG_FILE")"
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
 }
 
 # Function to check if iCloud Drive is available
-check_icloud_drive() {
+function check-icloud-drive() {
     if [[ ! -d "$HOME/Library/Mobile Documents/com~apple~CloudDocs" ]]; then
-        log_message "ERROR: iCloud Drive not found"
+        log-message "ERROR: iCloud Drive not found"
         echo -e "\n${_r}❌ iCloud Drive not found${_0}"
         echo "${_y}⚠️  Please enable iCloud Drive in System Preferences > Apple ID > iCloud${_0}\n"
         return 1
@@ -146,9 +146,9 @@ check_icloud_drive() {
 }
 
 # Function to create iCloud djay directory
-create_icloud_djay_dir() {
+function create-icloud-djay-dir() {
     if [[ ! -d "$ICLOUD_DJAY_PATH" ]]; then
-        log_message "Creating iCloud djay directory"
+        log-message "Creating iCloud djay directory"
         mkdir -p "$ICLOUD_DJAY_PATH"
         mkdir -p "$ICLOUD_DJAY_PATH/Key Bindings"
         mkdir -p "$ICLOUD_DJAY_PATH/MIDI Mappings"
@@ -158,7 +158,7 @@ create_icloud_djay_dir() {
 }
 
 # Function to get file/directory modification time
-get_file_time() {
+function get-file-time() {
     local file="$1"
     if [[ -e "$file" ]]; then
         stat -f "%m" "$file"
@@ -168,7 +168,7 @@ get_file_time() {
 }
 
 # Function to update bundle timestamp (for macOS packages/bundles)
-update_bundle_timestamp() {
+function update-bundle-timestamp() {
     local bundle_path="$1"
     local update_to_current_time="${2:-false}"
 
@@ -176,21 +176,21 @@ update_bundle_timestamp() {
         if [[ "$update_to_current_time" == "true" ]]; then
             # Update bundle timestamp to current time (for sync activity)
             touch "$bundle_path"
-            log_message "Updated bundle timestamp to current time for: $(basename "$bundle_path")"
+            log-message "Updated bundle timestamp to current time for: $(basename "$bundle_path")"
         else
             # Find the most recently modified file inside the bundle
             local newest_file=$(find "$bundle_path" -type f -exec stat -f "%m %N" {} \; | sort -nr | head -1 | cut -d' ' -f2-)
             if [[ -n "$newest_file" ]]; then
                 # Update the bundle's timestamp to match the newest file inside
                 touch -r "$newest_file" "$bundle_path"
-                log_message "Updated bundle timestamp for: $(basename "$bundle_path")"
+                log-message "Updated bundle timestamp for: $(basename "$bundle_path")"
             fi
         fi
     fi
 }
 
 # Function to check iCloud Drive permissions
-check_icloud_permissions() {
+function check-icloud-permissions() {
     local test_file="$ICLOUD_DJAY_PATH/.test_write_permission"
 
     # Try to create a test file
@@ -203,13 +203,13 @@ check_icloud_permissions() {
 }
 
 # Function to sync files to iCloud
-sync_to_icloud() {
+function sync-to-icloud() {
     echo -e "\n${_grey}💻 -> ☁️ SYNC TO iCLOUD${_0}${_grey} ──────────────────────────────────────────────────────────${_0}\n"
-    log_message "Syncing djay files to iCloud Drive"
+    log-message "Syncing djay files to iCloud Drive"
 
     # Check iCloud permissions first
-    if ! check_icloud_permissions; then
-        log_message "ERROR: No write permission to iCloud Drive"
+    if ! check-icloud-permissions; then
+        log-message "ERROR: No write permission to iCloud Drive"
         echo -e "${_r}❌ No write permission to iCloud Drive${_0}"
         echo -e "${_y}⚠️ Please check iCloud Drive permissions in System Preferences${_0}\n"
         return 1
@@ -217,8 +217,8 @@ sync_to_icloud() {
 
     # Sync library file/directory (bundle)
     if [[ -e "$DJAY_PATH/$LIBRARY_FILE" ]]; then
-        local_time=$(get_file_time "$DJAY_PATH/$LIBRARY_FILE")
-        icloud_time=$(get_file_time "$ICLOUD_DJAY_PATH/$LIBRARY_FILE")
+        local_time=$(get-file-time "$DJAY_PATH/$LIBRARY_FILE")
+        icloud_time=$(get-file-time "$ICLOUD_DJAY_PATH/$LIBRARY_FILE")
 
         if [[ $local_time -gt $icloud_time ]]; then
             echo -e "\n${_y}💻 -> ☁️ Local library is newer, copying to iCloud..${_0}"
@@ -226,24 +226,24 @@ sync_to_icloud() {
             # Attempt copy and check for errors
             if cp -R "$DJAY_PATH/$LIBRARY_FILE" "$ICLOUD_DJAY_PATH/" 2>/dev/null; then
                 # Update bundle timestamp to match newest internal file
-                update_bundle_timestamp "$ICLOUD_DJAY_PATH/$LIBRARY_FILE"
+                update-bundle-timestamp "$ICLOUD_DJAY_PATH/$LIBRARY_FILE"
                 echo -e "${_g}✅ Library copied to iCloud (timestamp updated to data time)${_0}\n"
-                log_message "Local library file is newer, copying to iCloud"
+                log-message "Local library file is newer, copying to iCloud"
             else
                 echo -e "${_r}❌ Library copy failed - permission denied${_0}\n"
-                log_message "ERROR: Library copy failed - permission denied"
+                log-message "ERROR: Library copy failed - permission denied"
                 return 1
             fi
         else
-            log_message "iCloud library file is newer or same age"
-            update_bundle_timestamp "$ICLOUD_DJAY_PATH/$LIBRARY_FILE" "true"
+            log-message "iCloud library file is newer or same age"
+            update-bundle-timestamp "$ICLOUD_DJAY_PATH/$LIBRARY_FILE" "true"
             echo -e "\n"
             echo -e "${_grey}ℹ️ Library unchanged (no upload needed)${_0}"
             # Update bundle timestamp to show sync activity
             echo -e "${_grey}📝 Updated bundle timestamp to show sync activity${_0}\n"
         fi
     else
-        log_message "WARNING: Local library file not found"
+        log-message "WARNING: Local library file not found"
         echo -e "${_y}⚠️ Local library file not found${_0}\n"
     fi
 
@@ -260,7 +260,7 @@ sync_to_icloud() {
                 # Check if files were actually transferred by looking for file transfer indicators
                 if echo "$rsync_output" | grep -q -E "(^[^d].*|^d.*|^sending|^receiving|^sent|^received)"; then
                     echo -e "${_g}✅ synced (files updated)${_0}"
-                    log_message "synced folder: $folder"
+                    log-message "synced folder: $folder"
                     # Touch the folder to update its timestamp
                     touch "$ICLOUD_DJAY_PATH/$folder"
                 else
@@ -271,7 +271,7 @@ sync_to_icloud() {
             else
                 echo -e "${_r}❌ $folder sync failed${_0}"
                 echo -e "${_y}Debug: $rsync_output${_0}"
-                log_message "ERROR: $folder sync failed - $rsync_output"
+                log-message "ERROR: $folder sync failed - $rsync_output"
             fi
             echo ""
         fi
@@ -281,13 +281,13 @@ sync_to_icloud() {
 }
 
 # Function to sync files from iCloud
-sync_from_icloud() {
+function sync-from-icloud() {
     echo -e "\n${_grey}💻 <- ☁️ SYNC FROM iCLOUD${_0}${_grey} ────────────────────────────────────────────────────────${_0}\n"
-    log_message "Syncing djay files from iCloud Drive"
+    log-message "Syncing djay files from iCloud Drive"
 
     # Check if djay is running
     if pgrep -x "djay" > /dev/null; then
-        log_message "WARNING: djay Pro is running. Please quit djay Pro before syncing."
+        log-message "WARNING: djay Pro is running. Please quit djay Pro before syncing."
         echo -e "\n${_y}⚠️ djay Pro is running${_0}"
         echo "${_y}⚠️ Please quit djay Pro and run this script again${_0}\n"
         return 1
@@ -295,33 +295,33 @@ sync_from_icloud() {
 
     # Sync library file/directory (bundle)
     if [[ -e "$ICLOUD_DJAY_PATH/$LIBRARY_FILE" ]]; then
-        local_time=$(get_file_time "$DJAY_PATH/$LIBRARY_FILE")
-        icloud_time=$(get_file_time "$ICLOUD_DJAY_PATH/$LIBRARY_FILE")
+        local_time=$(get-file-time "$DJAY_PATH/$LIBRARY_FILE")
+        icloud_time=$(get-file-time "$ICLOUD_DJAY_PATH/$LIBRARY_FILE")
 
         if [[ $icloud_time -gt $local_time ]]; then
-            log_message "iCloud library file is newer, copying to local"
+            log-message "iCloud library file is newer, copying to local"
             echo -e "\n${_y}💻 <- ☁️ iCloud library is newer, copying to local..${_0}"
             # Create backup first
             if [[ -e "$DJAY_PATH/$LIBRARY_FILE" ]]; then
                 backup_file="$HOME/Documents/djay_backup_$(date '+%Y%m%d_%H%M%S').djayMediaLibrary"
                 cp -R "$DJAY_PATH/$LIBRARY_FILE" "$backup_file"
                 echo -e "${_c}\n💾 $(basename "$backup_file")${_0}"
-                log_message "Backup created: $backup_file"
+                log-message "Backup created: $backup_file"
             fi
             cp -R "$ICLOUD_DJAY_PATH/$LIBRARY_FILE" "$DJAY_PATH/"
             # Update bundle timestamp to match newest internal file
-            update_bundle_timestamp "$DJAY_PATH/$LIBRARY_FILE"
+            update-bundle-timestamp "$DJAY_PATH/$LIBRARY_FILE"
             echo -e "${_g}✅ Library copied from iCloud (timestamp updated to data time)${_0}\n"
         else
-            log_message "Local library file is newer or same age"
+            log-message "Local library file is newer or same age"
             # Update bundle timestamp to show sync activity
-            update_bundle_timestamp "$DJAY_PATH/$LIBRARY_FILE" "true"
+            update-bundle-timestamp "$DJAY_PATH/$LIBRARY_FILE" "true"
             echo -e "\n"
             echo -e "${_grey}ℹ️ Library unchanged (no download needed)${_0}"
             echo -e "${_grey}📝 Updated bundle timestamp to show sync activity${_0}"
         fi
     else
-        log_message "WARNING: iCloud library file not found"
+        log-message "WARNING: iCloud library file not found"
         echo -e "${_y}⚠️ iCloud library file not found${_0}\n"
     fi
 
@@ -337,7 +337,7 @@ sync_from_icloud() {
             if [[ $rsync_exit_code -eq 0 ]]; then
                 # Check if files were actually transferred by looking for file transfer indicators
                 if echo "$rsync_output" | grep -q -E "(^[^d].*|^d.*|^sending|^receiving|^sent|^received)"; then
-                   log_message "synced folder: $folder"
+                   log-message "synced folder: $folder"
                   echo -e "${_g}✅ files updated and synced${_0}"
                     # Touch the folder to update its timestamp
                     touch "$DJAY_PATH/$folder"
@@ -358,7 +358,7 @@ sync_from_icloud() {
 }
 
 # Function to debug file timestamps
-debug_timestamps() {
+function debug-timestamps() {
     echo -e "\n${_m}🔍 TIMESTAMP DEBUG INFO${_0}"
     echo -e "${_grey}────────────────────────────────────────────────────────────────────────────────────${_0}\n"
 
@@ -369,7 +369,7 @@ debug_timestamps() {
 
     # Check local file
     if [[ -e "$DJAY_PATH/$LIBRARY_FILE" ]]; then
-        local_time=$(get_file_time "$DJAY_PATH/$LIBRARY_FILE")
+        local_time=$(get-file-time "$DJAY_PATH/$LIBRARY_FILE")
         echo -e "${_c}💻 Local File:${_0}"
         echo -e "  Path: $DJAY_PATH/$LIBRARY_FILE"
         echo -e "  Timestamp: $local_time"
@@ -382,7 +382,7 @@ debug_timestamps() {
 
     # Check iCloud file
     if [[ -e "$ICLOUD_DJAY_PATH/$LIBRARY_FILE" ]]; then
-        icloud_time=$(get_file_time "$ICLOUD_DJAY_PATH/$LIBRARY_FILE")
+        icloud_time=$(get-file-time "$ICLOUD_DJAY_PATH/$LIBRARY_FILE")
         echo -e "${_c}☁️ iCloud File:${_0}"
         echo -e "  Path: $ICLOUD_DJAY_PATH/$LIBRARY_FILE"
         echo -e "  Timestamp: $icloud_time"
@@ -395,7 +395,7 @@ debug_timestamps() {
 
     # Check permissions
     echo -e "${_c}🔐 Permission Check:${_0}"
-    if check_icloud_permissions; then
+    if check-icloud-permissions; then
         echo -e "  ✅ iCloud Drive: Write permission OK"
     else
         echo -e "  ❌ iCloud Drive: No write permission"
@@ -410,7 +410,7 @@ debug_timestamps() {
 }
 
 # Function to convert seconds to human-readable relative time
-format_relative_time() {
+function format-relative-time() {
     local seconds="$1"
     local abs_seconds=${seconds#-}  # Remove negative sign for calculation
 
@@ -426,7 +426,7 @@ format_relative_time() {
 }
 
 # Function to check if files actually need syncing using rsync dry-run
-check_sync_needed() {
+function check-sync-needed() {
     local source="$1"
     local destination="$2"
     local direction="$3"  # "up" or "down"
@@ -439,8 +439,8 @@ check_sync_needed() {
 
     # For the main library bundle, check if it exists and compare timestamps
     if [[ -d "$source/djay Media Library.djayMediaLibrary" ]]; then
-        local local_time=$(get_file_time "$source/djay Media Library.djayMediaLibrary")
-        local remote_time=$(get_file_time "$destination/djay Media Library.djayMediaLibrary")
+        local local_time=$(get-file-time "$source/djay Media Library.djayMediaLibrary")
+        local remote_time=$(get-file-time "$destination/djay Media Library.djayMediaLibrary")
 
         # If timestamps are within 5 seconds, consider them synchronized
         local time_diff=$((local_time - remote_time))
@@ -473,14 +473,14 @@ check_sync_needed() {
 }
 
 # Function to show sync status
-show_status() {
+function show-status() {
     # echo -e "\n${_m}💾 djay Pro iCloud Sync Status${_0}\n"
 
     # Local files
     echo -e "\n${_m}💻 Local djay directory: $(du -sh "$DJAY_PATH/$LIBRARY_FILE" | cut -f1) ${_grey}$DJAY_PATH${_0}"
     if [[ -d "$DJAY_PATH" ]]; then
         if [[ -e "$DJAY_PATH/$LIBRARY_FILE" ]]; then
-            local_time=$(get_file_time "$DJAY_PATH/$LIBRARY_FILE")
+            local_time=$(get-file-time "$DJAY_PATH/$LIBRARY_FILE")
             echo "${_w}$(date -r $local_time)${_0}"
         else
             echo "${_r}❌ Library file: Not found${_0}"
@@ -495,7 +495,7 @@ show_status() {
     echo -e "${_c}☁️ iCloud djay directory: $(du -sh "$ICLOUD_DJAY_PATH/$LIBRARY_FILE" | cut -f1) ${_grey}$ICLOUD_DJAY_PATH${_0}"
     if [[ -d "$ICLOUD_DJAY_PATH" ]]; then
         if [[ -e "$ICLOUD_DJAY_PATH/$LIBRARY_FILE" ]]; then
-            icloud_time=$(get_file_time "$ICLOUD_DJAY_PATH/$LIBRARY_FILE")
+            icloud_time=$(get-file-time "$ICLOUD_DJAY_PATH/$LIBRARY_FILE")
             echo "${_w}$(date -r $icloud_time)${_0}"
         else
             echo "  ❌ Library file: Not found"
@@ -508,16 +508,16 @@ show_status() {
 
     # Check actual sync status using rsync dry-run
     if [[ -e "$DJAY_PATH/$LIBRARY_FILE" && -e "$ICLOUD_DJAY_PATH/$LIBRARY_FILE" ]]; then
-        local_time=$(get_file_time "$DJAY_PATH/$LIBRARY_FILE")
-        icloud_time=$(get_file_time "$ICLOUD_DJAY_PATH/$LIBRARY_FILE")
+        local_time=$(get-file-time "$DJAY_PATH/$LIBRARY_FILE")
+        icloud_time=$(get-file-time "$ICLOUD_DJAY_PATH/$LIBRARY_FILE")
 
         # Check if upload is needed
-        upload_status=$(check_sync_needed "$DJAY_PATH" "$ICLOUD_DJAY_PATH" "up")
-        download_status=$(check_sync_needed "$ICLOUD_DJAY_PATH" "$DJAY_PATH" "down")
+        upload_status=$(check-sync-needed "$DJAY_PATH" "$ICLOUD_DJAY_PATH" "up")
+        download_status=$(check-sync-needed "$ICLOUD_DJAY_PATH" "$DJAY_PATH" "down")
 
         # Calculate time difference for display
         time_diff=$((local_time - icloud_time))
-        relative_time=$(format_relative_time $time_diff)
+        relative_time=$(format-relative-time $time_diff)
 
         if [[ "$upload_status" == "needed" ]]; then
             echo -e "${_w}💻 -> ☁️ Last sync: ${_y}${relative_time} ago${_0}"
@@ -537,8 +537,8 @@ show_status() {
 }
 
 # Function to setup automatic sync
-setup_automatic_sync() {
-    log_message "Setting up automatic sync"
+function setup-automatic-sync() {
+    log-message "Setting up automatic sync"
     echo -e "${_m}⚙️  Setting up automatic sync..${_0}"
 
     # Create launch agent plist
@@ -580,28 +580,28 @@ EOF
 
     # Load the launch agent
     launchctl load "$plist_file"
-    log_message "Automatic sync setup complete. Will run every 15 minutes."
+    log-message "Automatic sync setup complete. Will run every 15 minutes."
     echo -e "${_g}✅ Automatic sync setup complete${_0}"
     echo "${_c}⏰ Will run every 15 minutes${_0}\n"
 }
 
 # Function to stop automatic sync
-stop_automatic_sync() {
+function stop-automatic-sync() {
     local plist_file="$HOME/Library/LaunchAgents/com.user.djay-sync.plist"
 
     if [[ -f "$plist_file" ]]; then
         launchctl unload "$plist_file"
         rm "$plist_file"
         echo -e "${_g}✅ Automatic sync stopped and removed${_0}\n"
-        log_message "Automatic sync stopped and removed"
+        log-message "Automatic sync stopped and removed"
     else
         echo -e "${_y}⚠️ No automatic sync found to stop${_0}\n"
-        log_message "No automatic sync found to stop"
+        log-message "No automatic sync found to stop"
     fi
 }
 
 # Function to check automatic sync status
-check_automatic_sync() {
+function check-automatic-sync() {
     local plist_file="$HOME/Library/LaunchAgents/com.user.djay-sync.plist"
 
     if [[ -f "$plist_file" ]]; then
@@ -629,8 +629,8 @@ check_automatic_sync() {
 
         # Show current sync status
         if [[ -e "$DJAY_PATH/$LIBRARY_FILE" && -e "$ICLOUD_DJAY_PATH/$LIBRARY_FILE" ]]; then
-            upload_status=$(check_sync_needed "$DJAY_PATH" "$ICLOUD_DJAY_PATH" "up")
-            download_status=$(check_sync_needed "$ICLOUD_DJAY_PATH" "$DJAY_PATH" "down")
+            upload_status=$(check-sync-needed "$DJAY_PATH" "$ICLOUD_DJAY_PATH" "up")
+            download_status=$(check-sync-needed "$ICLOUD_DJAY_PATH" "$DJAY_PATH" "down")
 
             if [[ "$upload_status" == "needed" ]]; then
                 echo "  �� Sync status: ${_y}Sync required${_0}"
@@ -648,7 +648,7 @@ check_automatic_sync() {
 }
 
 # Function to show recent log entries
-show_recent_logs() {
+function show-recent-logs() {
     if [[ -f "$LOG_FILE" ]]; then
         echo -e "${_m}📝 Recent djay Sync Log Entries${_0}"
         echo "📄 Log file: $LOG_FILE"
@@ -660,27 +660,27 @@ show_recent_logs() {
 }
 
 # Main script function
-djay_icloud_sync_main() {
+function djay-icloud-sync-main() {
     echo -e "\n${_w}🎧 DJAY PRO iCLOUD SYNC:${_0}\n"
 
-      log_message "djay Pro iCloud Sync Started"
+      log-message "djay Pro iCloud Sync Started"
       echo -e "\n"
 
 
     # Check iCloud Drive
-    if ! check_icloud_drive; then
+    if ! check-icloud-drive; then
         return 1
     fi
 
     # Create iCloud directory if needed
-    create_icloud_djay_dir
+    create-icloud-djay-dir
 
     # Sync both directions
-    sync_to_icloud
-    sync_from_icloud
+    sync-to-icloud
+    sync-from-icloud
 
     echo -e "${_g}✅ djay Pro iCloud Sync Completed${_0}\n"
-    log_message "djay Pro iCloud synced"
+    log-message "djay Pro iCloud synced"
 }
 
 # Command line interface (only runs when script is executed directly)
@@ -688,34 +688,34 @@ if [[ "${ZSH_EVAL_CONTEXT}" == "toplevel"* ]] || [[ "${BASH_SOURCE[0]}" == "${0}
     # Parse command line arguments
     case "${1:-sync}" in
         "sync")
-            djay_icloud_sync_main
+            djay-icloud-sync-main
             ;;
         "up")
-            check_icloud_drive && create_icloud_djay_dir && sync_to_icloud
+            check-icloud-drive && create-icloud-djay-dir && sync-to-icloud
             ;;
         "down")
-            check_icloud_drive && sync_from_icloud
+            check-icloud-drive && sync-from-icloud
             ;;
         "status")
-            show_status
+            show-status
             ;;
         "auto")
-            djay_icloud_sync_main
+            djay-icloud-sync-main
             ;;
         "agent-start")
-            setup_automatic_sync
+            setup-automatic-sync
             ;;
         "agent-stop")
-            stop_automatic_sync
+            stop-automatic-sync
             ;;
         "agent-status")
-            check_automatic_sync
+            check-automatic-sync
             ;;
         "logs")
-            show_recent_logs
+            show-recent-logs
             ;;
         "debug")
-            debug_timestamps
+            debug-timestamps
             ;;
         "export-ios")
             # Export the djay library directory to iCloud Drive for iOS import
@@ -749,7 +749,7 @@ if [[ "${ZSH_EVAL_CONTEXT}" == "toplevel"* ]] || [[ "${BASH_SOURCE[0]}" == "${0}
                 cp -Rv "$DJAY_PATH/$LIBRARY_FILE" "$IOS_EXPORT_DIR/"
                 echo -e "\n${_g}✅ Auto-exported djay Media Library for iOS!${_0}"
                 echo -e "${_c}Available in iCloud Drive > djay > ios-transfer${_0}"
-                log_message "Auto-exported djay library to ios-transfer"
+                log-message "Auto-exported djay library to ios-transfer"
             else
                 echo -e "\n${_r}❌ djay Media Library not found at: $DJAY_PATH/$LIBRARY_FILE${_0}"
                 echo -e "${_y}Please ensure djay Pro is installed and has been run at least once.${_0}"

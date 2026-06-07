@@ -6,8 +6,8 @@ export NVM="false"
 # EDITOR + IDE OVERRIDES (set originally in main.zsh)
 export EDITOR="vi"
 export IDE="false"
-edit() { "$EDITOR $@"; }
-code() { "$IDE $@"; }
+function edit() { "$EDITOR $@"; }
+function code() { "$IDE $@"; }
 
 STORAGE="/storage/emulated/0/termux"
 alias x="cd $STORAGE"
@@ -23,7 +23,7 @@ alias .="cd $HOME && l"
 alias pilot="cd $STORAGE/auto-pilot &&  l"
 
 # DEPRECATED !
-repos() {
+function repos() {
   # msg err "PLEASE USE ALIAS 'dev'" # use my MSG FUNCTION
   # MOVED !!
   cd "$HOME/dev_repos" && l

@@ -1,15 +1,15 @@
-# ========================================================================= #
+# ============================================================================ #
 # CORE GIT OPERATIONS
-# ========================================================================= #
+# ============================================================================ #
 
 # Checkout master
-master() {
+function master() {
   git checkout master
   [[ "$1" == "ci" ]] && npm ci
 }
 
 # Basic checkout/status
-_g() {
+function _g() {
   if [[ -z "$1" ]]; then
     git status
   else
@@ -18,7 +18,7 @@ _g() {
 }
 
 # New branch checkout
-_gb() {
+function _gb() {
   if [[ $1 > "" ]]; then
     branch="$1"
     # NOTE: DO NOT AUTO-ADD FOR OFFICE..
@@ -31,12 +31,12 @@ _gb() {
 }
 
 # Get current branch
-_gcurrent() {
+function _gcurrent() {
   git branch --show-current
 }
 
 # Fetch and pull
-_gf() {
+function _gf() {
   if [[ ! -d "./.git" ]]; then
     echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
     return 1
@@ -47,14 +47,14 @@ _gf() {
 }
 
 # GitHub PR checkout
-_gpr() {
+function _gpr() {
   gh pr checkout $1
   npm ci
 }
 
 
 # CREATE / APPLY PATCH  (_gpatch [apply [name]])
-_gpatch() {
+function _gpatch() {
   if [[ "$1" == "apply" ]]; then
     local patchfile="${${2:-CHANGES}%.patch}.patch"
     if [[ ! -f "$patchfile" ]]; then

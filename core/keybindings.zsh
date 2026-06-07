@@ -1,13 +1,13 @@
-######################################
-#########  KEY BINDINGS  #############
-######################################
+# ============================================================================ #
+# KEY BINDINGS
+# ============================================================================ #
 
 # Basic history navigation (needs to be before other history bindings)
 bindkey '^[[A' up-line-or-history
 bindkey '^[[B' down-line-or-history
 
 # Show dots while completing
-expand-or-complete-with-dots() {
+function expand-or-complete-with-dots() {
   print -Pn "%F{red}...%f"
   zle expand-or-complete
   zle redisplay

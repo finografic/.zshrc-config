@@ -1,5 +1,6 @@
-# ========================================================================= #
+# ============================================================================ #
 # NOTE: LIST GIT STASHES..
+# ============================================================================ #
 
 # OUTPUT LAYOUT CONSTANTS
 export MAX_CHARS=131
@@ -9,17 +10,19 @@ export CHANGES_NUM_WIDTH=4
 export METER_LENGTH=30
 export ALIGN_LEFT="left"
 export ALIGN_RIGHT="right"
-# ================================================================== #
+# ============================================================================ #
 # export DEFAULT_COL_WIDTH=40
+# ============================================================================ #
+
 # export BRANCH_NAME_WIDTH=12
 # export STASH_NAME_WIDTH=35
-# ================================================================== #
+# ============================================================================ #
 export DEFAULT_COL_WIDTH=40
 export BRANCH_NAME_WIDTH=40
 export STASH_NAME_WIDTH=52
 
 # Format branch text with specified width and alignment
-_format_branch() {
+function _format-branch() {
   local text=$1
   local width=${2:-$DEFAULT_COL_WIDTH}
   local align=${3:-$ALIGN_LEFT}
@@ -32,7 +35,7 @@ _format_branch() {
 }
 
 # Format date to be consistent and remove timezone
-_format_date() {
+function _format-date() {
   local line=$1
   echo "$line" |
     sed -E 's/([A-Za-z]+) ([A-Za-z]+) ([0-9]) /\1 \2 0\3 /g' |
@@ -41,7 +44,7 @@ _format_date() {
 }
 
 # Get stats for a stash reference
-_get_stash_stats() {
+function _get-stash-stats() {
   local stash_ref=$1
   local stats=$(git stash show "$stash_ref" --shortstat 2>/dev/null)
 
@@ -55,7 +58,7 @@ _get_stash_stats() {
 }
 
 # Generate a visual meter of changes
-_generate_changes_meter() {
+function _generate-changes-meter() {
   local inserts=$1
   local deletes=$2
 
@@ -72,10 +75,11 @@ _generate_changes_meter() {
   fi
 }
 
-# ================================================================== #
+# ============================================================================ #
 # NOTE: MAIN FUNCTION - LIST GIT STASHES (FOR CURRENT/LOCAL REPO)
+# ============================================================================ #
 
-_stashes() {
+function _stashes() {
   local MAX_CHARS=131
   local BRANCH_NAME_FALLBACK="n/a"
   local FILES_NUM_WIDTH=2
@@ -104,7 +108,7 @@ _stashes() {
     fi
 
     # Format date and extract components
-    formatted_date=$(_format_date "$line")
+    formatted_date=$(_format-date "$line")
     date_part=$(echo "$formatted_date" | awk '{print $1, $2, $3, $4}')
 
     # Extract branch information
@@ -113,17 +117,17 @@ _stashes() {
     branch_name=$(echo "$line" | grep -o ": .*$" | sed 's/^: //')
 
     # Get change statistics
-    read num_files inserts deletes <<<$(_get_stash_stats "$stash_ref")
+    read num_files inserts deletes <<<$(_get-stash-stats "$stash_ref")
 
     # Print with fixed widths for each section
     printf "%s" "$date_part"
-    printf "${_grey}%s  ${_0}" "$(_format_branch "$stash_name" "$BRANCH_NAME_WIDTH" "$ALIGN_RIGHT")"
-    printf "${_c}%s${_0}" "$(_format_branch "$branch_name" "$STASH_NAME_WIDTH")"
+    printf "${_grey}%s  ${_0}" "$(_format-branch "$stash_name" "$BRANCH_NAME_WIDTH" "$ALIGN_RIGHT")"
+    printf "${_c}%s${_0}" "$(_format-branch "$branch_name" "$STASH_NAME_WIDTH")"
     printf "${_grey}files:${_0} ${_c}%${FILES_NUM_WIDTH}d${_0} " "$num_files"
     printf "  ${_g}+%${CHANGES_NUM_WIDTH}d${_0}  ${_r}-%${CHANGES_NUM_WIDTH}d${_0}  " "$inserts" "$deletes"
 
     # Generate and print meter
-    _generate_changes_meter "$inserts" "$deletes"
+    _generate-changes-meter "$inserts" "$deletes"
 
     printf "\n"
   done 2>/dev/null

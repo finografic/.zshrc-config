@@ -10,7 +10,7 @@ export NVM="true"
 # The original version is saved in .zprofile.pysave
 export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.11/bin
 
-# ============================================================== #
+# ============================================================================ #
 
 # Apple Silicon Macs (M1/M2/M3) - /opt/homebrew
 if [[ -f "/opt/homebrew/bin/brew" ]]; then
@@ -25,7 +25,7 @@ fi
 # GET CURRENT ENVIRONMENT - ADDITIONAL CONFIGS
 # source "${ZENV_PATH}//${ZENV}.hardware.zsh";
 
-# ============================================================== #
+# ============================================================================ #
 
 # INCLUDES: DEFAULTS
 source "$ZSHRC_ROOT/lib/aliases.common.zsh"
@@ -38,8 +38,9 @@ source "$ZENV_PATH/$ZENV.aliases.zsh"
 source "$ZENV_PATH/$ZENV.dev.zsh"
 source "$ZENV_PATH/$ZENV.dev.jest.zsh"
 
-# ============================================================== #
+# ============================================================================ #
 # TODO: TESTING CLI TOOL - Helper for merging template.ui
+# ============================================================================ #
 
 # NEW: COVERAGE SUMMARY TOOL
 # source "$ZENV_PATH/parse-test-coverage.zsh"
@@ -47,11 +48,12 @@ alias parse-coverage="~/bin/parse-test-coverage.zsh"
 export PATH=$PATH:$HOME/bin/gen-test-summary
 export PATH=$PATH:$HOME/bin/gen-todo-coverage
 
-# ============================================================== #
+# ============================================================================ #
 # GIT UTIL OVERRIDE
+# ============================================================================ #
 
 # Branch operations
-_gb() {
+function _gb() {
   if [[ $1 > "" ]]; then
     NEW_BRANCH="SBS-${1}"
     git checkout -b "${NEW_BRANCH/SBS-SBS/"SBS"}"
@@ -62,7 +64,7 @@ _gb() {
   fi
 }
 
-# ============================================================== #
+# ============================================================================ #
 
 # iTERM SHELL INTEGRATION
 # source $ZSHRC_ROOT/.iterm2_shell_integration.zsh
@@ -72,9 +74,9 @@ _gb() {
 # \b[^\]\$]*$
 
 # NOTE: UPDATE GHOSTTY CONFIG
-update_ghostty_config
+update-ghostty-config
 
-# ============================================================== #
+# ============================================================================ #
 
 # INCLUDE PM2 USING macOS "lanchd" // NOTE: MAY REQUIRE "sudo"
 # PM2 startup DOCS: https://pm2.keymetrics.io/docs/usage/startup/
@@ -84,7 +86,7 @@ update_ghostty_config
 # ENSURE LOUPEDECK POINTS to CORRECT $HOME FOLDER
 # sh $HOME/.local/share/Loupedeck/_Loupedeck_DEV/scripts/loupedeck/setHomeUserPaths.sh
 
-# ============================================================== #
+# ============================================================================ #
 
 # Setup git config
 if [ -f "$ZSHRC_ROOT/.gitconfig" ]; then
@@ -103,8 +105,9 @@ git config --global user.email "REDACTED-EMAIL"
 
 # ...existing code...
 
-# ============================================================== #
+# ============================================================================ #
 # NOTE: START docker (Docker Desktop)..
+# ============================================================================ #
 
 # if ! docker info &>/dev/null; then
 #   echo "${_grey}Starting Docker Desktop...${_0}"
@@ -116,8 +119,9 @@ git config --global user.email "REDACTED-EMAIL"
 #   echo "${_g}Docker is ready${_0}"
 # fi
 
-# ============================================================== #
+# ============================================================================ #
 # SECURITY CHECKS: Maximum Security for Work System
+# ============================================================================ #
 
 # Check macOS Firewall status (OFFICE: Show warning if disabled)
 FIREWALL_STATUS=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate 2>/dev/null | grep -i "enabled" || echo "")
@@ -136,8 +140,9 @@ fi
 #   fi
 # fi
 
-# ============================================================== #
+# ============================================================================ #
 # VERIFY: LaunchAgent Services (djay backup, etc.)
+# ============================================================================ #
 
 # Check djay backup service
 DJAY_BACKUP_PLIST="$HOME/Library/LaunchAgents/com.user.dj-crate-backup.plist"

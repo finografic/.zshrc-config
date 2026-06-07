@@ -2,13 +2,13 @@
 export ZSHRC_ROOT="$HOME/.zshrc-config"
 export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
 export NVM="true"
-# ============================================================== #
+# ============================================================================ #
 
 # EDITOR + IDE OVERRIDES (set originally in main.zsh)
 export EDITOR="vim"
 export IDE="false"
-edit() { "$EDITOR $@"; }
-code() { eval "$(which jmate) $@"; }
+function edit() { "$EDITOR $@"; }
+function code() { eval "$(which jmate) $@"; }
 
 # DIRCOLORS
 # [ -d "${HOME}/.dircolors" ] && eval $(dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark)

@@ -1,24 +1,26 @@
-################################################
-########## FINAL INI + RESET MESSAGE   #########
-################################################
+# ============================================================================ #
+# FINAL INI + RESET MESSAGE
+# ============================================================================ #
+
 # NOTE: PATH deduplication done at end of main.zsh via build-path.mjs
 
-# ========================================================================= #
+# ============================================================================ #
 # SPLASH SCREEN - CUSTOM WIDGETS
+# ============================================================================ #
 
 source "$ZSHRC_ROOT/lib/widgets.zsh"
 
-show_tmutil_snapshots
-show_custom_launch_agents
-# show_docker_containers
-show_ports
+show-tmutil-snapshots
+show-custom-launch-agents
+# show-docker-containers
+show-ports
 
 # SPLASH SCREEN BANNER + OS / SYS INFO..
-show_splash_neofetch
+show-splash-neofetch
 
-show_splash_sys_banner
-show_splash_sys_banner_footer_info
+show-splash-sys-banner
+show-splash-sys-banner-footer-info
 
 # VERSIONS: OS, NodeJS, npm... etc
-show_os_version_and_sys_info
+show-os-version-and-sys-info
 

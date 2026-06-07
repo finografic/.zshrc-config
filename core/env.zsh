@@ -21,7 +21,10 @@ fi
 export NODE_OPTIONS="$NODE_OPTIONS --max_old_space_size=4096"
 export SIMPLE_GIT_HOOKS_RC="$HOME/.simple-git-hooks.rc"
 
-# OS Detection and System Info =====================
+# ============================================================================ #
+# OS Detection and System Info
+# ============================================================================ #
+
 # Detect OS and Version
 if command -v sw_vers >/dev/null; then
   export OS_NAME="macOS"
@@ -51,11 +54,14 @@ declare -A IP_ADDRESSES=(
   [HOME]='REDACTED-IP'
 )
 
-# Environment Detection ============================
+# ============================================================================ #
+# Environment Detection
+# ============================================================================ #
+
 # These variables should be set in your .env file:
 # IS_HOME, IS_OFFICE, IS_SERVER
 
-determine_environment() {
+function determine-environment() {
   if [[ $IS_HOME == true ]]; then
     echo "home-macos"
   elif [[ $IS_OFFICE == true ]]; then
@@ -74,7 +80,10 @@ determine_environment() {
   fi
 }
 
-# Compilation flags ============================
+# ============================================================================ #
+# Compilation flags
+# ============================================================================ #
+
 # detect and set architecture
 if [[ $(uname -m) == "arm64" ]]; then
   export ARCHFLAGS="-arch arm64"

@@ -4,7 +4,7 @@ KEYBOARD_LAYOUT="us";
 KEYBOARD_LAYOUT_EXT="en";
 
 # SET KEYBOARD LAYOUT
-setKeyboardLayout(){
+function setKeyboardLayout() {
   setxkbmap -layout "$@"
   # NO VARIANT, FOR NOW
 }

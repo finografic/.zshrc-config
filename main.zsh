@@ -2,6 +2,7 @@
 # ============================================================================ #
 # NOTE: MAIN.ZSH - Orchestrator for zshrc-config
 # ============================================================================ #
+
 # This file is sourced AFTER bootstrap/ sequence which handles:
 #   - Profiling (00-profiling.zsh)
 #   - Antidote plugin manager (01-antidote.zsh)
@@ -20,7 +21,7 @@ typeset -g -i FUNCNEST=1000
 source "$ZSHRC_ROOT/core/env.zsh"
 
 # Determine which environment we're running in
-export ZENV=$(determine_environment)
+export ZENV=$(determine-environment)
 
 # ============================================================================ #
 # NOTE: 2. THEME CONFIGURATION
@@ -57,7 +58,7 @@ source "$ZSHRC_ROOT/lib/fzf.zsh"
 source "$ZSHRC_ROOT/lib/clean.caches.zsh"
 
 # ============================================================================ #
-# NOTE: 7. VSCODE CHECK - Early exit for IDE terminals
+# NOTE: 7. VSCODE CHECK - EARLY EXIT for IDE terminals
 # ============================================================================ #
 
 if [[ "$TERM_PROGRAM" = "vscode" ]]; then
@@ -81,7 +82,7 @@ export VISUAL="nvim"
 export IDE="code"
 alias vim="${EDITOR} $@"
 
-edit() { $EDITOR "$@"; }
+function edit() { $EDITOR "$@"; }
 
 # VSCode aliases (macOS specific)
 if [[ "$OS_NAME" = "macOS" ]]; then
@@ -119,10 +120,19 @@ source "$ZSHRC_ROOT/lib/ghostty.zsh"
 # NOTE: 11. ENVIRONMENT-SPECIFIC CONFIGURATION
 # ============================================================================ #
 
+# macOS specific
+if [[ "$OS_NAME" = "macOS" ]]; then
+  source "$ZSHRC_ROOT/lib/macos.utils.zsh"
+fi
+
+# ============================================================================ #
+# NOTE: 12. ZENV-SPECIFIC CONFIGURATION
+# ============================================================================ #
+
 source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
 
 # ============================================================================ #
-# NOTE: 12. CUSTOM SCRIPTS
+# NOTE: 13. CUSTOM SCRIPTS
 # ============================================================================ #
 
 # DJ software sync
@@ -135,7 +145,7 @@ source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 [[ -n "$NPM_TOKEN" ]] && gh auth login --with-token < <(printf '%s' "$NPM_TOKEN") 2>/dev/null
 
 # ============================================================================ #
-# NOTE: 13. FINALIZATION
+# NOTE: 14. FINALIZATION
 # ============================================================================ #
 
 # Splash screen

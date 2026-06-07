@@ -1,5 +1,6 @@
 # MY REPOS
 REPOS_FINO="$HOME/repos-finografic"
+REPOS_FINO_REF="$HOME/repos-finografic-ref"
 REPOS="$REPOS_FINO"
 REPOS_NEXT="$HOME/repos-next"
 REPOS_SERVER="$HOME/repos-server"
@@ -14,15 +15,25 @@ alias json="cd $REPOS_NEXT/json-walker && l"
 alias driz="cd $REPOS_SERVER/__DRIZZLE__/api-fastify-drizzle && l"
 alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls -lAh'
 
-# ======================================================================== #
+# ============================================================================ #
 # OVERRIDES
+# ============================================================================ #
 
-config() {
+function config() {
   cursor "$ZSHRC_ROOT/.vscode/zshrc-config.code-workspace"
 }
 
-# ========================================================================= #
+function @lab() {
+  cd "$HOME/LLAAB" && l
+}
+
+function _lab() {
+  cursor "$HOME/LLAAB/llaab.code-workspace"
+}
+
+# ============================================================================ #
 # MY REPOS (NEXT!)
+# ============================================================================ #
 
 REPO_SCRIPTS="$REPOS_FINO/@finografic-project-scripts"
 REPO_PLATE="$REPOS_FINO/@finografic-plate-editor"
@@ -32,6 +43,7 @@ REPO_APNAES="$REPOS_APNAES/apnaes-monorepo"
 REPO_IOX_LOUPEDECK="$REPOS_FINO/iox-loupedeck"
 REPO_FNX_MONOREPO="$REPOS_FINO/fnx-monorepo"
 REPO_TOUCH_MONOREPO="$REPOS_FINO/touch-monorepo"
+REPO_TOUCH_MONOREPO_ORIG="$REPOS_FINO_REF/touch-monorepo"
 
 alias fnx="cd $REPO_FNX_MONOREPO && l"
 alias iox="cd $REPO_IOX_LOUPEDECK && l"
@@ -46,7 +58,7 @@ alias api="cd $REPOS_APNAES/apnaes-api && l"
   cd "$REPOS_FINO" && l
 }
 
-my() {
+function my() {
   cd "$REPOS_FINO" && l
 }
 
@@ -62,15 +74,20 @@ my() {
   cd "$REPO_TOUCH_MONOREPO" && l
 }
 
+@touch_orig() {
+  cd "$REPO_TOUCH_MONOREPO_ORIG" && l
+}
+
 @prod() {
   cd "$REPO_TOUCH_MONOREPO/dist-production" && l
 }
 
-# ========================================================================= #
+# ============================================================================ #
 # MONOREPO ALIASES - DETECTS THE MONOREPO PATH USING $PWD
+# ============================================================================ #
 
 # Helper function to find monorepo ROOT
-find_monorepo_root() {
+function find-monorepo-root() {
   local current=$PWD
   while [[ $current != "/" ]]; do
     if [[ -f "$current/pnpm-workspace.yaml" ]]; then
@@ -84,89 +101,85 @@ find_monorepo_root() {
 }
 
 @config() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/config" && l
 }
 
 @server() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/apps/server" && l
 }
 
 @client() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/apps/client" && l
 }
 
 @design() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/packages/design-system" && l
 }
 
 @shared() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/packages/shared" && l
 }
 
 @globals() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/packages/globals" && l
 }
 
 @editor() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/packages/plate-editor" && l
 }
 
 @icons() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/packages/icons" && l
 }
 
 @i18n() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/packages/i18n" && l
 }
 
 @core() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/packages/core" && l
 }
 
 @purge() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/packages/purge-builds" && l
 }
 
 @scripts() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/packages/scripts" && l
 }
 
 @types() {
-  local monorepo=$(find_monorepo_root)
+  local monorepo=$(find-monorepo-root)
   cd "$monorepo/packages/types" && l
 }
 
-# ========================================================================= #
+# ============================================================================ #
 
 @_deps() {
-  cd "$REPOS_FINO/_@finografic-deps-policy" && l
+  cd "$REPOS_FINO/@finografic-deps-policy" && l
 }
 
-_deps() {
+function _deps() {
   pnpm -C "$REPOS_FINO/_@finografic-deps-policy" run policy:update:release
-}
-
-@_lab() {
-  cd "$HOME/LLAAB" && l
 }
 
 @_harness() {
   cd "$REPOS_FINO/@finografic-ai-harness" && l
 }
 
-# ========================================================================= #
+# ============================================================================ #
 
 @_web() {
   cd "$HOME/LLAAB/packages/web" && l
@@ -245,7 +258,7 @@ _deps() {
   cd ~/Public/touch && l
 }
 
-# ========================================================================= #
+# ============================================================================ #
 
 # COMMON ALIASES
 source "$ZSHRC_ROOT/lib/aliases.common.zsh"

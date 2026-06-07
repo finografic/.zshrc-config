@@ -3,7 +3,10 @@
 # NOTE: CORE OPTIONS - Zsh settings, completion, keybindings
 # ============================================================================ #
 
-# COLOR ============================
+# ============================================================================ #
+# COLOR
+# ============================================================================ #
+
 # Use modern completion system
 [ "$(dircolors -b 2>/dev/null)" ] && eval "$(dircolors -b)"
 
@@ -13,12 +16,16 @@ zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
-# ZSH SETTINGS ============================
+# ============================================================================ #
+# ZSH SETTINGS
+# ============================================================================ #
 
 # Load keybindings (history is loaded in bootstrap/00-profiling.zsh)
 source "$ZSHRC_ROOT/core/keybindings.zsh"
 
-# ANTIDOTE SETTINGS ============================
+# ============================================================================ #
+# ANTIDOTE SETTINGS
+# ============================================================================ #
 
 # VERY CORE FEATURES !!
 setopt autocd

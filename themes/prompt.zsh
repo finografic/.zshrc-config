@@ -5,11 +5,11 @@ ZSH_THEME_GIT_PROMPT_PREFIX=""
 ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%}"
 
 # Execution time configuration (with unique function names)
-function _exec_time_preexec() {
+function _exec-time-preexec() {
   timer=$(($(print -P %D{%s%6.}) / 1000))
 }
 
-function _exec_time_precmd() {
+function _exec-time-precmd() {
   if [ $timer ]; then
     now=$(($(print -P %D{%s%6.}) / 1000))
     elapsed=$(($now - $timer))
@@ -22,5 +22,5 @@ function _exec_time_precmd() {
 
 # Register only execution time hooks
 autoload -Uz add-zsh-hook
-add-zsh-hook preexec _exec_time_preexec
-add-zsh-hook precmd _exec_time_precmd
+add-zsh-hook preexec _exec-time-preexec
+add-zsh-hook precmd _exec-time-precmd

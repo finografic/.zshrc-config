@@ -1,9 +1,9 @@
-# ========================================================================= #
+# ============================================================================ #
 # SUBMODULE OPERATIONS
-# ========================================================================= #
+# ============================================================================ #
 
 # Safely push submodule changes and update parent repository
-_gps() {
+function _gps() {
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "Not inside a git repository."

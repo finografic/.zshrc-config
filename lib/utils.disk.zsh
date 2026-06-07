@@ -1,9 +1,9 @@
-##################################
-#########  DISKSPACE  ############
-##################################
+# ============================================================================ #
+# DISKSPACE
+# ============================================================================ #
 
 # GET DISK USAGE
-_du() {
+function _du() {
   # If no argument: run default (sudo) summary for current dir
   if [[ -z "$1" ]]; then
     sudo du -hd .
@@ -21,31 +21,31 @@ _du() {
 }
 
 # DISK SPACE -- PERFORMS *FULL* DISK SCAN
-function _du_scan() {
+function _du-scan() {
   ncdu
 }
 
 
-function diskspace_df_brief() {
+function diskspace-df-brief() {
   echo "\n"
   # LIST IMPORTANT DRIVES, IGNORE TMPS AND SNAPS etc..
   # df -h;
   df -h -x "squashfs" -x "devtmpfs"
 }
 
-function diskspace_df_with_temps() {
+function diskspace-df-with-temps() {
   echo "\n\e[36m$(df -H -ai | grep "" --max-count 1)\e[0m"
   df -H -ai | sed -n '1!p'
 }
 
-function diskspace_df_mac() {
+function diskspace-df-mac() {
   # LIST IMPORTANT DRIVES ONLY
   # HEADERS (CYAN)
   echo "\n\e[36m$(df -b -H -ailn | grep "" --max-count 1)\e[0m"
   df -b -H -ailn | grep "/Volumes/.timemachine" -v | grep "/Volumes/.com.apple.*" -v | sed -n '1!p'
 }
 
-function diskspace_df_android() {
+function diskspace-df-android() {
   # LIST IMPORTANT DRIVES ONLY
   # HEADERS (CYAN)
   echo "\n\e[36m$(df -H -ai | grep "" --max-count 1)\e[0m"
@@ -54,11 +54,11 @@ function diskspace_df_android() {
 
 # DEFINE DEFAULT "space" METHOD:
 if [ $OS_NAME = 'Linux' ]; then
-  alias space=diskspace_df_brief
+  alias space=diskspace-df-brief
 elif [ $OS_NAME = 'macOS' ]; then
-  alias space=diskspace_df_mac
+  alias space=diskspace-df-mac
 elif [ $OS_NAME = 'Android' ]; then
-  alias space=diskspace_df_android
+  alias space=diskspace-df-android
 else
-  alias space=diskspace_df_android # DEFAULT ALIAS
+  alias space=diskspace-df-android # DEFAULT ALIAS
 fi

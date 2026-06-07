@@ -1,8 +1,9 @@
 #!/usr/bin/env zsh
 
-# =============================================================================
+# ============================================================================ #
 # parse-test-coverage.zsh
-# =============================================================================
+# ============================================================================ #
+
 # Zsh function to run the parse-test-coverage.ts TypeScript file
 # 
 # Usage:
@@ -11,9 +12,9 @@
 #   3. Add to PATH or create alias in ~/.zshrc:
 #      alias parse-coverage='~/bin/parse-test-coverage.zsh'
 #   4. Run from any directory containing TEST_COVERAGE.txt
-# =============================================================================
+# ============================================================================ #
 
-parse_test_coverage() {
+function parse-test-coverage() {
     local SCRIPT_DIR="$HOME/bin"
     local SCRIPT_FILE="$SCRIPT_DIR/parse-test-coverage.ts"
     local INPUT_FILE="TEST_COVERAGE.txt"
@@ -72,5 +73,5 @@ parse_test_coverage() {
 # If sourced, define the function; if executed, run it
 if [[ "${(%):-%x}" == "${0}" ]]; then
     # Script is being executed directly
-    parse_test_coverage "$@"
+    parse-test-coverage "$@"
 fi

@@ -1,8 +1,8 @@
-# ========================================================================= #
+# ============================================================================ #
 # COMMIT OPERATIONS
-# ========================================================================= #
+# ============================================================================ #
 
-_is_finografic_repo() {
+function _is-finografic-repo() {
   local root
   root=$(git rev-parse --show-toplevel 2>/dev/null) || return 1
 
@@ -10,12 +10,12 @@ _is_finografic_repo() {
   grep -q '"@finografic/' "$root/package.json"
 }
 
-_has_build_artifact_changes() {
+function _has-build-artifact-changes() {
   git status --porcelain | grep -E '^( M|A |AM|MM).* (dist/|bin/)' >/dev/null
 }
 
 # Commit (staged files only)
-_gc() {
+function _gc() {
   if [[ -n "$1" ]]; then
     message="$1"
     shift # Remove first argument (message)
@@ -28,12 +28,12 @@ _gc() {
   fi
 }
 
-_gca() {
+function _gca() {
   if [[ -n "$1" ]]; then
     message="$1"
     shift
 
-    if _is_finografic_repo && _has_build_artifact_changes; then
+    if _is-finografic-repo && _has-build-artifact-changes; then
       echo "\n${_y}⚠️  Finografic repo detected with build artifact changes.${_0}"
       echo "${_grey}This commit will include dist/ or bin/.${_0}"
       echo "${_grey}Recommended flow:${_0}"
@@ -90,7 +90,7 @@ _gca() {
 }
 
 # Git, commit, COPY (LAST) (reuses last commit message; supports multi-line)
-_gcc() {
+function _gcc() {
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "Not inside a git repository."
@@ -133,9 +133,9 @@ _gcc() {
 
   # Use -F - to preserve multi-line messages exactly
   if print -r -- "$last_message" | git commit -F - "$@"; then
-    echo -e "\n${_c}Squash commit? ${_grey}(y/N)${_0}"
+    echo -e "\n${_c}Squash commit? ${_grey}(n/Y)${_0}"
     read -r response
-    response=${response:-N}
+    response=${response:-Y}
 
     if [[ "$response" =~ ^[Yy]$ ]]; then
       if [[ -z "$previous_head" ]]; then
@@ -152,12 +152,13 @@ _gcc() {
     echo "\n${_g}✅ DONE${_0}\n"
   fi
 
+  # NOTE: DISALBED.
   # REBASE AND AUTO-ACCEPTED PUSH FORCE-WITH-LEASE
   # _grb -y
 }
 
 # Amend commit
-_ga() {
+function _ga() {
   if [[ $1 > "" ]]; then
     git commit -am "$1" --allow-empty
   else
@@ -166,7 +167,7 @@ _ga() {
 }
 
 # Continue merge
-_gmc() {
+function _gmc() {
   if [ -f .git/MERGE_HEAD ]; then
     echo -e "${_m}Merge in progress. Commit with --no-verify..? ${_grey}(y/N)${_0}"
     read -r response
@@ -178,7 +179,7 @@ _gmc() {
 }
 
 # Untrack file/folders (keeps them on disk)
-_grm() {
+function _grm() {
   local target="$1"
 
   if [[ -z "$target" ]]; then

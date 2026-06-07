@@ -17,7 +17,7 @@ alias apps="cd $HOME/.local/share/applications/ && l"
 alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
 
 # DEVILBOX
-devil() {
+function devil() {
   PWD=$(pwd)
   # START UP DEVILBOX
   if [[ $@ == "ini" || $@ == "init" ]]; then

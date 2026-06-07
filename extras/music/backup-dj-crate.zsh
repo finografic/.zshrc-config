@@ -8,11 +8,11 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # Function to strip ANSI color codes
-djay_strip_colors() {
+function djay-strip-colors() {
   sed 's/\x1b\[[0-9;]*m//g'
 }
 
-djay_backup_music() {
+function djay-backup-music() {
   # Set locale for proper character encoding
   export LC_ALL=en_US.UTF-8
   export LANG=en_US.UTF-8
@@ -29,7 +29,7 @@ djay_backup_music() {
   # Ensure source exists
   if [ ! -d "${SOURCE}" ]; then
     msg="Source volume not mounted: ${SOURCE}"
-    echo "$msg" | tee >(djay_strip_colors >> "${LOG}")
+    echo "$msg" | tee >(djay-strip-colors >> "${LOG}")
     return 1
   fi
 
@@ -49,7 +49,7 @@ djay_backup_music() {
 
   # Start backup
   msg="\n${_m}🎵 Starting backup of ${FOLDER_NAME} at $(date)${_0}\n"
-  echo -e "$msg" | tee >(djay_strip_colors >> "${LOG}")
+  echo -e "$msg" | tee >(djay-strip-colors >> "${LOG}")
 
   # Create new backup using cp for better character handling
   mkdir -p "${BACKUP}"
@@ -69,7 +69,7 @@ djay_backup_music() {
       if [[ -f "$prev_file" ]]; then
         # Try to hard link first
         if ln "$prev_file" "$dest_file" 2>/dev/null; then
-          echo "Hard linked: $rel_path" | tee >(djay_strip_colors >> "${LOG}")
+          echo "Hard linked: $rel_path" | tee >(djay-strip-colors >> "${LOG}")
           continue
         fi
       fi
@@ -77,9 +77,9 @@ djay_backup_music() {
 
     # Copy the file
     if cp "$file" "$dest_file" 2>/dev/null; then
-      echo "Copied: $rel_path" | tee >(djay_strip_colors >> "${LOG}")
+      echo "Copied: $rel_path" | tee >(djay-strip-colors >> "${LOG}")
     else
-      echo "Failed to copy: $rel_path" | tee >(djay_strip_colors >> "${LOG}")
+      echo "Failed to copy: $rel_path" | tee >(djay-strip-colors >> "${LOG}")
     fi
   done
 
@@ -109,10 +109,10 @@ djay_backup_music() {
     done
 
     msg="\n${_g}✅ Backup completed successfully at $(date)${_0}\n"
-    echo -e "$msg" | tee >(djay_strip_colors >> "${LOG}")
+    echo -e "$msg" | tee >(djay-strip-colors >> "${LOG}")
   else
     msg="\n${_r}❌ Backup failed at $(date)!${_0}\n"
-    echo -e "$msg" | tee >(djay_strip_colors >> "${LOG}")
+    echo -e "$msg" | tee >(djay-strip-colors >> "${LOG}")
     return 1
   fi
 
@@ -121,7 +121,7 @@ djay_backup_music() {
 }
 
 # Run the backup
-# djay_backup_music
+# djay-backup-music
 
 # <!-- ~/Library/LaunchAgents/com.user.dj-crate-backup.plist -->
 # <?xml version="1.0" encoding="UTF-8"?>

@@ -1,6 +1,6 @@
-#############################################
-############ FUNCTIONS + ALIASES ############
-#############################################
+# ============================================================================ #
+# FUNCTIONS + ALIASES
+# ============================================================================ #
 
 alias reset=". ${HOME}/.zshrc"
 alias update_cache=". ${HOME}/.zshrc; npm cache verify"
@@ -9,9 +9,9 @@ alias os="cd ${HOME}/os-setup && l"
 alias ai="sudo apt install -y $1"
 alias npmls="npm ls -g --depth=0"
 
-#########################################
-###  FILE LISTINGS  #####################
-#########################################
+# ============================================================================ #
+# FILE LISTINGS
+# ============================================================================ #
 
 # LIST SYSTEM PATHS
 alias path="tr ':' '\n' <<< '$PATH'"
@@ -36,7 +36,7 @@ function listing() {
   [ -d .git ] && git status -uno
 }
 
-function listing_eza() {
+function listing-eza() {
   # eza --long --all --group-directories-first --accessed --time-style=long-iso --git $1
   EZA_IGNORES=".DS_Store|Icon*|.directory"
   eza --long --all --ignore-glob="${EZA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
@@ -49,16 +49,16 @@ function lr() {
 
 # DEFAULT MAIN DIRECTORY LISTERS
 alias l1="listing"
-alias l2="listing_eza"
-alias l="listing_eza"
+alias l2="listing-eza"
+alias l="listing-eza"
 # alias ls="eval `dircolors -b ${HOME}/.dircolors` && ls -Alh --color" # list hidden
 
 # ???
 alias lr="find $(pwd) -mtime -1 -ls -maxdepth 1"
 
-#########################################
-###  NAVIGATION  ########################
-#########################################
+# ============================================================================ #
+# NAVIGATION
+# ============================================================================ #
 
 # CD NAVIGATION
 alias -1="cd ../ && l"

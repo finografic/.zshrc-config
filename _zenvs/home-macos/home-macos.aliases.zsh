@@ -120,6 +120,11 @@ function find-monorepo-root() {
   cd "$monorepo/packages/design-system" && l
 }
 
+@ui() {
+  local monorepo=$(find-monorepo-root)
+  cd "$monorepo/packages/ui" && l
+}
+
 @shared() {
   local monorepo=$(find-monorepo-root)
   cd "$monorepo/packages/shared" && l

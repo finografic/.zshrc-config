@@ -1,23 +1,23 @@
 #!/bin/zsh
 
 # ============================================================================ #
-# NOTE: VSCODE - Minimal config for IDE integrated terminals (fast startup)
+# NOTE: CODEX - Minimal config for Codex agent shells (fast startup)
 # ============================================================================ #
 
 # Early exit from main.zsh - skips splash, widgets, hardware detection.
 # Target: essential dev tools only, <200ms startup.
 # ============================================================================ #
 
-export ZENV='vscode'
+export ZENV='codex'
 export ZSHRC_ROOT="$HOME/.zshrc-config"
 export LANG="en_US.UTF-8"
 export EDITOR="nvim"
 export VISUAL="nvim"
+export OS_NAME="${OS_NAME:-macOS}"
+export PNPM_HOME="${PNPM_HOME:-$HOME/Library/pnpm}"
+export GRAPHIFY_PYTHON_PINNED="${GRAPHIFY_PYTHON_PINNED:-$HOME/.local/pipx/venvs/graphifyy/bin/python}"
 
-# Colors (needed for prompts/aliases)
-source "$ZSHRC_ROOT/lib/colors.zsh"
-
-# Node/VSCode
+# Node/Codex
 export NODE_OPTIONS="$NODE_OPTIONS --max_old_space_size=4096"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -27,30 +27,19 @@ export NVM_DIR="$HOME/.nvm"
 source "$ZSHRC_ROOT/lib/nvm-autoload.zsh"
 
 # PATH basics
-PATH_NODE="${NPM_GLOBALS:-$HOME/.nvm/versions/node/$(node --version)/bin}"
-export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH_NODE:$PATH"
-
+if command -v node >/dev/null 2>&1; then
+  PATH_NODE="${NPM_GLOBALS:-$HOME/.nvm/versions/node/$(node --version)/bin}"
+else
+  PATH_NODE=""
+fi
+export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:$PATH_NODE:$PNPM_HOME:$PATH"
 
 # pnpm (use vendor config)
 source "$ZSHRC_ROOT/vendor/pnpm.zsh"
 
-# Core aliases
+# Minimal aliases
 alias ll='ls -la'
 alias ..='cd ..'
 
-# VSCode command (macOS)
-[[ "$OS_NAME" = "macOS" ]] && alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
-
-# Git - essential only
-source "$ZSHRC_ROOT/lib/git.zsh"
-
-# Common dev aliases
-source "$ZSHRC_ROOT/lib/common.zsh"
-source "$ZSHRC_ROOT/lib/dev.zsh"
-
-# Simple prompt with git branch (p10k loads from bootstrap, but we use minimal for speed)
-autoload -Uz vcs_info
-function precmd() { vcs_info }
-zstyle ':vcs_info:git:*' formats '%b '
-setopt PROMPT_SUBST
-PROMPT='%F{green}%~%f %F{blue}${vcs_info_msg_0_}%f$ '
+# Keep Codex shells quiet and predictable.
+export PROMPT='%~ %# '

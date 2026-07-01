@@ -7,6 +7,10 @@
 # Order matters! Do not rearrange without understanding dependencies.
 # ============================================================================ #
 
+if [[ "${IS_CODEX:-}" = "true" || -n "${CODEX_CI:-}" || -n "${CODEX_THREAD_ID:-}" || "${__CFBundleIdentifier:-}" = "com.openai.codex" ]]; then
+  return 0
+fi
+
 # Load colors module (used throughout the config)
 source "$ZSHRC_ROOT/lib/colors.zsh"
 

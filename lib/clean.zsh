@@ -1,48 +1,20 @@
-echo $_grey
-echo "Cleaning Downloads..."
-echo $_0
+# ============================================================================ #
+# CLEANING UTILITIES - Loads all clean modules from lib/clean/
+# ============================================================================ #
 
-# IMPORTANT - DISABLE ZSH GLOB MATCH ERROR OUTPUT
-setopt no_nomatch
+source "$ZSHRC_ROOT/lib/clean/clean.downloads.zsh"
+source "$ZSHRC_ROOT/lib/clean/clean.browsers.zsh"
+source "$ZSHRC_ROOT/lib/clean/clean.node-caches.zsh"
 
-# IGNORE THESE CACHES
-declare -a FOLDERS_TO_CLEAN=(
-  $HOME/Downloads/**/*.mp4.mp4
-  $HOME/dwhelper/**/*.mp4.mp4
-)
+# ============================================================================ #
+# MAINTENANCE OPERATIONS
+# ============================================================================ #
 
-for file in "${FOLDERS_TO_CLEAN[@]}"; do
-  $(mv $file "$(echo $file | sed -E 's/.mp4.mp4/.mp4/')" 2>/dev/null)
-done
+source "$ZSHRC_ROOT/lib/clean/utils/clean.node_modules.utils.zsh" # functions
 
-# FIREFOX CLEAN
-# setopt extendedglob - CAUTION !!
+# Clear VSCode / VSCode Insiders / Cursor IDE caches
+# Delegates to lib/clean/utils/clean.ides.utils.zsh (supports all 3 IDEs, Cursor-safe)
 
-PATH_FIREFOX_STORAGE="$HOME/Library/Application Support/Firefox/Profiles/3qn4h86i.dev-edition-default/storage/default"
-PATH_FIREFOX_STORAGE_TEMP="$PATH_FIREFOX_STORAGE/__TEMP"
-
-# BACKUP APP CONFIGS LOCATED IN $HOME/.config ================================ #
-
-# IGNORE THESE CACHES
-declare -a cleanIgnores=(
-  "https+++mail.google.com"
-  "https+++calendar.google.com"
-  "https+++drive.google.com"
-  "https+++www.youtube.com"
-  "https+++www.bing.com"
-)
-
-[[ ! -d "$PATH_FIREFOX_STORAGE_TEMP" ]] && $(mkdir "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null)
-
-for ignored in "${cleanIgnores[@]}"; do
-  [[ -d "$PATH_FIREFOX_STORAGE/$ignored" ]] && $(mv "$PATH_FIREFOX_STORAGE/$ignored" "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null)
-done
-
-$(rm -fr "$PATH_FIREFOX_STORAGE"/https+++* 2>/dev/null)
-
-# RETURN IGNORED
-$(mv "$PATH_FIREFOX_STORAGE_TEMP"/* "$PATH_FIREFOX_STORAGE" 2>/dev/null)
-$(rm -fr "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null)
-
-# IMPORTANT - RE-ENABLE ZSH GLOB MATCH ERROR OUTPUT
-setopt nomatch
+function vsclean() {
+  zsh "${ZSHRC_ROOT}/lib/clean/utils/clean.ides.utils.zsh"
+}

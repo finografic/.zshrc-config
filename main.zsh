@@ -24,7 +24,16 @@ source "$ZSHRC_ROOT/core/env.zsh"
 export ZENV=$(determine-environment)
 
 # ============================================================================ #
-# NOTE: 2. THEME CONFIGURATION
+# NOTE: 2. CODEX CHECK - EARLY EXIT for Codex agent shells
+# ============================================================================ #
+
+if [[ "${IS_CODEX:-}" = "true" || -n "${CODEX_CI:-}" || -n "${CODEX_THREAD_ID:-}" || "${__CFBundleIdentifier:-}" = "com.openai.codex" ]]; then
+  source "$ZSHRC_ROOT/_zenvs/codex/codex.zsh"
+  return 0
+fi
+
+# ============================================================================ #
+# NOTE: 3. THEME CONFIGURATION
 # ============================================================================ #
 
 source "$ZSHRC_ROOT/themes/default.theme.zsh"
@@ -32,19 +41,19 @@ source "$ZSHRC_ROOT/themes/themes.functions.zsh"
 source "$ZSHRC_ROOT/themes/prompt.zsh"
 
 # ============================================================================ #
-# NOTE: 3. CORE ZSH CONFIGURATION
+# NOTE: 4. CORE ZSH CONFIGURATION
 # ============================================================================ #
 
 source "$ZSHRC_ROOT/core/options.zsh"
 
 # ============================================================================ #
-# NOTE: 4. LOCALE SETTINGS
+# NOTE: 5. LOCALE SETTINGS
 # ============================================================================ #
 
 source "$ZSHRC_ROOT/core/locale.zsh"
 
 # ============================================================================ #
-# NOTE: 5. CORE INCLUDES for ALL ENVIRONMENTS
+# NOTE: 6. CORE INCLUDES for ALL ENVIRONMENTS
 # ============================================================================ #
 
 source "$ZSHRC_ROOT/lib/colors.zsh"
@@ -52,13 +61,13 @@ source "$ZSHRC_ROOT/lib/common.zsh"
 source "$ZSHRC_ROOT/lib/fzf.zsh"
 
 # ============================================================================ #
-# NOTE: 6. CACHES CLEANUP
+# NOTE: 7. CACHES CLEANUP
 # ============================================================================ #
 
-source "$ZSHRC_ROOT/lib/clean.caches.zsh"
+source "$ZSHRC_ROOT/lib/clean.zsh"
 
 # ============================================================================ #
-# NOTE: 7. VSCODE CHECK - EARLY EXIT for IDE terminals
+# NOTE: 8. VSCODE CHECK - EARLY EXIT for IDE terminals
 # ============================================================================ #
 
 if [[ "$TERM_PROGRAM" = "vscode" ]]; then
@@ -67,14 +76,14 @@ if [[ "$TERM_PROGRAM" = "vscode" ]]; then
 fi
 
 # ============================================================================ #
-# NOTE: 8. VENDOR TOOLS (pnpm, nvm)
+# NOTE: 9. VENDOR TOOLS (pnpm, nvm)
 # ============================================================================ #
 
 # source "$ZSHRC_ROOT/lib/fzf.zsh"
 source "$ZSHRC_ROOT/vendor/index.zsh"
 
 # ============================================================================ #
-# NOTE: 9. EDITOR CONFIGURATION
+# NOTE: 10. EDITOR CONFIGURATION
 # ============================================================================ #
 
 export EDITOR="nvim"
@@ -93,7 +102,7 @@ if [[ "$OS_NAME" = "macOS" ]]; then
 fi
 
 # ============================================================================ #
-# NOTE: 10. FULL ENVIRONMENT SETUP (Terminal only, not VSCode/Docker)
+# NOTE: 11. FULL ENVIRONMENT SETUP (Terminal only, not VSCode/Docker)
 # ============================================================================ #
 
 # Loading indicator (200ms - gives "busy" impression during bootstrap)
@@ -111,13 +120,12 @@ source "$ZSHRC_ROOT/lib/utils.zsh"
 source "$ZSHRC_ROOT/lib/utils.disk.zsh"
 # source "$ZSHRC_ROOT/lib/common.zsh"
 source "$ZSHRC_ROOT/lib/dev.zsh"
-source "$ZSHRC_ROOT/lib/clean.node.zsh" # functions
 
 # Terminal tools
 source "$ZSHRC_ROOT/lib/ghostty.zsh"
 
 # ============================================================================ #
-# NOTE: 11. ENVIRONMENT-SPECIFIC CONFIGURATION
+# NOTE: 12. ENVIRONMENT-SPECIFIC CONFIGURATION
 # ============================================================================ #
 
 # macOS specific
@@ -126,13 +134,13 @@ if [[ "$OS_NAME" = "macOS" ]]; then
 fi
 
 # ============================================================================ #
-# NOTE: 12. ZENV-SPECIFIC CONFIGURATION
+# NOTE: 13. ZENV-SPECIFIC CONFIGURATION
 # ============================================================================ #
 
 source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
 
 # ============================================================================ #
-# NOTE: 13. CUSTOM SCRIPTS
+# NOTE: 14. CUSTOM SCRIPTS
 # ============================================================================ #
 
 # DJ software sync
@@ -145,7 +153,7 @@ source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 [[ -n "$NPM_TOKEN" ]] && gh auth login --with-token < <(printf '%s' "$NPM_TOKEN") 2>/dev/null
 
 # ============================================================================ #
-# NOTE: 14. FINALIZATION
+# NOTE: 15. FINALIZATION
 # ============================================================================ #
 
 # Splash screen

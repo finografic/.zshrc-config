@@ -31,7 +31,6 @@ fi
 source "$ZSHRC_ROOT/lib/aliases.common.zsh"
 source "$ZSHRC_ROOT/lib/git.zsh"
 # source "$ZSHRC_ROOT/lib/dev.jest.zsh"
-source "$ZSHRC_ROOT/lib/maintenance.zsh"
 
 # INCLUDES: DEV ZENV-SPECIFIC
 source "$ZENV_PATH/$ZENV.aliases.zsh"

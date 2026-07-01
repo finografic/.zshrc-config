@@ -1,5 +1,5 @@
 echo $_grey
-echo "Cleaning Downloads..."
+echo "Cleaning node caches..."
 echo $_0
 
 # NPM CACHE CLEAN (security)

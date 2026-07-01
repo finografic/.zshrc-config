@@ -81,7 +81,7 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 | Script                                          | Purpose                                                              |
 | ----------------------------------------------- | -------------------------------------------------------------------- |
 | `scripts/install-zshrc-config-dependencies.zsh` | Install Homebrew, Antidote, p10k, fzf, Meslo font                    |
-| `scripts/vscode-clean.zsh`                      | Clear VSCode / Insiders / Cursor caches (Cursor: safe only)          |
+| `lib/clean/utils/clean.ides.utils.zsh`          | Clear VSCode / Insiders / Cursor caches (Cursor: safe only)          |
 | `zupdate`                                       | Commit and push with `fetch` + `pull --rebase` for multi-system sync |
 
 Run `zupdate` from anywhere (symlink in `~/bin`) to sync changes.

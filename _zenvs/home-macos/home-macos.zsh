@@ -4,6 +4,8 @@ export ZSHRC_ROOT="$HOME/.zshrc-config"
 export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
 export NVM="true"
 
+export GRAPHIFY_PYTHON_PINNED="$HOME/.local/pipx/venvs/graphifyy/bin/python"
+
 # ============================================================================ #
 
 # BUN - https://bun.sh
@@ -29,7 +31,6 @@ source "$ZSHRC_ROOT/lib/git.zsh"
 source "$ZSHRC_ROOT/lib/dev.jest.zsh"
 
 # INCLUDES: MISC
-source "$ZSHRC_ROOT/lib/clean.zsh"
 source "$ZENV_PATH/$ZENV.backups.zsh"
 
 # INCLUDES: DEV ZENV-SPECIFIC

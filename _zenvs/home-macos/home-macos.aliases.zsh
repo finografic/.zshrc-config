@@ -222,6 +222,18 @@ function _deps() {
   cd "$REPOS_FINO/@finografic-core" && l
 }
 
+@_xscan() {
+  cd "$REPOS_FINO/@finografic-deps-xscan" && l
+}
+
+@_starter() {
+  cd "$REPOS_FINO/monorepo-starter" && l
+}
+
+@_demo() {
+  cd "$REPOS_FINO/monorepo-demo" && l
+}
+
 @_ds() {
   cd "$REPOS_FINO/@finografic-design-system" && l
 }

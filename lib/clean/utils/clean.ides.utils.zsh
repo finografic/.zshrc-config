@@ -3,7 +3,7 @@
 # VSCODE-CLEAN - Clear VSCode / VSCode Insiders / Cursor IDE caches
 # ============================================================================ #
 
-# Run manually: zsh scripts/vscode-clean.zsh (or: source scripts/vscode-clean.zsh)
+# Run manually: zsh lib/clean/utils/clean.ides.utils.zsh (or: source lib/clean/utils/clean.ides.utils.zsh)
 # CAUTION: Cursor - only safe caches (Cache, CachedData, Crashpad).
 #          Chat and AI data are NOT cleared.
 # ============================================================================ #
@@ -40,7 +40,10 @@ case $ide_choice in
 1) CODE_PATH="${IDE_PATHS[code]}" ;;
 2) CODE_PATH="${IDE_PATHS[insiders]}" ;;
 3) CODE_PATH="${IDE_PATHS[cursor]}" ;;
-*) echo "\n${_y}Operation aborted${_0}\n"; exit 0 ;;
+*)
+  echo "\n${_y}Operation aborted${_0}\n"
+  exit 0
+  ;;
 esac
 
 BASE_PATH="${APPLICATION_SUPPORT}/${CODE_PATH}"
@@ -86,7 +89,10 @@ if [[ $IS_CURSOR -eq 1 ]]; then
     rm -rf "$BASE_PATH/Cache"/* "$BASE_PATH/CachedData"/* "$BASE_PATH/Crashpad"/* 2>/dev/null
     echo "\n${_g}✅ All safe Cursor caches cleared${_0}\n"
     ;;
-  *) echo "\n${_y}Operation aborted${_0}\n"; exit 0 ;;
+  *)
+    echo "\n${_y}Operation aborted${_0}\n"
+    exit 0
+    ;;
   esac
 else
   case $response in
@@ -116,7 +122,10 @@ else
       echo "\n${_y}Operation aborted${_0}\n"
     fi
     ;;
-  *) echo "\n${_y}Operation aborted${_0}\n"; exit 0 ;;
+  *)
+    echo "\n${_y}Operation aborted${_0}\n"
+    exit 0
+    ;;
   esac
 fi
 

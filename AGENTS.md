@@ -88,12 +88,15 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 ## Learned User Preferences
 
 - Define zsh functions with the `function` keyword and kebab-case names (never snake_case)
+- Sourced modules: omit shebang; wrap top-level logic in named functions with a short top-of-file annotation
 - Prefer `--dry-run` over `--dry` for CLI dry-run flags
+- Interactive confirm prompts: put the default last as `(Y/n)` / `(n/Y)` so Enter accepts the default
 - Keep `~/.zshrc` section headers as `NOTE: {STEP_DESCRIPTION}` inside the canonical boxed comment style
 - Refer to sourced `.zsh` files as "modules"
 - Use color variables from `lib/colors.zsh` (e.g. `${_c}`, `${_0}`) for terminal output
 - Editor formatters: dprint for JS/TS/JSON/jsonc/YAML/TOML/CSS/SCSS/HTML; mkhl.shfmt for shellscript with tabs (`editor.insertSpaces: false`, `editor.detectIndentation: false`)
 - Prefer `pnpm -C "$path"` when running pnpm scripts in another repo without changing the shell PWD
+- Prefer root/`pnpm --filter` scripts over `cd <pkg> && pnpm …` for workspace packages
 - Update `TODO_REFACTOR_PROGRESS.md` when continuing refactor work across agent sessions
 
 ## Learned Workspace Facts
@@ -102,5 +105,7 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - Committed repo file `.zshrc` is the reference template for system `~/.zshrc` (sync on major refactors or new system setup)
 - Bootstrap sequence under `bootstrap/`: compinit must run before plugins; plugin list in `plugins/.zsh_plugins.txt` (Antidote)
 - Canonical comment block separators: 78-char boxed equals (`# ============================================================================ #`); normalization script at `scripts/normalize-comment-blocks.py`
+- `.nvmrc` auto-switch is handled by `lib/node/nvm-autoload.zsh` (`chpwd` hook via `add-zsh-hook`; sourced from `lib/node.zsh` after nvm is loaded)
+- Node/TS utilities live under `packages/node/` (pnpm workspace; built with tsdown)
 - Git remote host is Bitbucket (`bitbucket.org:justin-rankin/.zshrc-config.git`)
 - `$REPOS_FINO` in `_zenvs/home-macos/` points at Finografic repos (e.g. `_@finografic-deps-policy`)

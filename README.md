@@ -47,8 +47,8 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 ├── bootstrap/          # Early init: profiling, Antidote, plugins, compinit, p10k
 ├── core/               # env detection, zsh options, history, keybindings, locale
 ├── themes/             # p10k config, prompt, theme switcher
-├── lib/                # colors, utils, dev, git, fzf, widgets, cache cleanup
-├── vendor/             # pnpm, nvm
+├── lib/                # colors, utils, node/, clean/, dev, git, fzf, widgets
+├── vendor/             # pnpm, nvm init/PATH
 ├── _zenvs/             # One profile per host:
 │   ├── home-macos/     #   personal macOS
 │   ├── office-macos/   #   work macOS (minimal skeleton — populate per job)
@@ -96,7 +96,8 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 | Script                                          | Purpose                                                              |
 | ----------------------------------------------- | -------------------------------------------------------------------- |
 | `scripts/install-zshrc-config-dependencies.zsh` | Install Homebrew, Antidote, p10k, fzf, Meslo font                    |
-| `lib/clean/utils/clean.ides.utils.zsh`          | Clear VSCode / Insiders / Cursor caches (Cursor: safe only)          |
+| `lib/clean/clean.ides.zsh`                      | Clear VSCode / Insiders / Cursor caches (Cursor: safe only)          |
+| `lib/node.zsh`                                  | Barrel for Node UX: nvm-autoload + `pn`/`pnr`/`npmls`                |
 | `zupdate`                                       | Commit and push with `fetch` + `pull --rebase` for multi-system sync |
 | `pnpm lint` / `pnpm lint:fix`                   | Run `oxlint` (optionally with `--fix`)                               |
 | `pnpm format:check` / `pnpm format:fix`         | Run `oxfmt` in check or write mode                                   |

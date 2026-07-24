@@ -29,6 +29,7 @@ fi
 source "$ZSHRC_ROOT/lib/aliases.common.zsh"
 source "$ZSHRC_ROOT/lib/git.zsh"
 source "$ZSHRC_ROOT/lib/dev.jest.zsh"
+source "$ZSHRC_ROOT/lib/llms.zsh"
 
 # INCLUDES: MISC
 source "$ZENV_PATH/$ZENV.backups.zsh"

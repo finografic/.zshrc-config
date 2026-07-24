@@ -27,6 +27,10 @@ function @lab() {
   cd "$HOME/LLAAB" && l
 }
 
+function @vault() {
+  cd "$HOME/LLAAB/vault" && l
+}
+
 function _lab() {
   cursor "$HOME/LLAAB/llaab.code-workspace"
 }

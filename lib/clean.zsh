@@ -1,20 +1,24 @@
 # ============================================================================ #
-# CLEANING UTILITIES - Loads all clean modules from lib/clean/
+# NOTE: CLEAN - Barrel for lib/clean/ modules (source-only; call functions to run)
 # ============================================================================ #
 
+# Modules (define functions only)
 source "$ZSHRC_ROOT/lib/clean/clean.downloads.zsh"
 source "$ZSHRC_ROOT/lib/clean/clean.browsers.zsh"
-source "$ZSHRC_ROOT/lib/clean/clean.node-caches.zsh"
+source "$ZSHRC_ROOT/lib/clean/clean.ides.zsh"
+source "$ZSHRC_ROOT/lib/clean/clean.node.zsh"
+
+# Aliases
+alias vsclean="clean-ides"
+alias _cnm="clean-node-modules-report"
+alias _cnpm="clean-caches-npm"
+alias _cpnpm="clean-caches-pnpm"
 
 # ============================================================================ #
-# MAINTENANCE OPERATIONS
+# NOTE: AUTO-RUN on shell start
 # ============================================================================ #
 
-source "$ZSHRC_ROOT/lib/clean/utils/clean.node_modules.utils.zsh" # functions
-
-# Clear VSCode / VSCode Insiders / Cursor IDE caches
-# Delegates to lib/clean/utils/clean.ides.utils.zsh (supports all 3 IDEs, Cursor-safe)
-
-function vsclean() {
-  zsh "${ZSHRC_ROOT}/lib/clean/utils/clean.ides.utils.zsh"
-}
+clean-downloads
+clean-browsers
+clean-caches-npm
+# clean-caches-pnpm

@@ -1,38 +1,35 @@
-echo $_grey
-echo "Cleaning Browsers..."
-echo $_0
+# ============================================================================ #
+# NOTE: CLEAN BROWSERS - Prune Firefox site storage (keeps allowlisted origins)
+# Usage: clean-browsers
+# ============================================================================ #
 
-# IMPORTANT - DISABLE ZSH GLOB MATCH ERROR OUTPUT
-setopt no_nomatch
+function clean-browsers() {
+	echo -e "${_grey}"
+	echo "Cleaning Browsers..."
+	echo -e "${_0}"
 
-# FIREFOX CLEAN
-# setopt extendedglob - CAUTION !!
+	setopt local_options no_nomatch
 
-PATH_FIREFOX_STORAGE="$HOME/Library/Application Support/Firefox/Profiles/3qn4h86i.dev-edition-default/storage/default"
-PATH_FIREFOX_STORAGE_TEMP="$PATH_FIREFOX_STORAGE/__TEMP"
+	local PATH_FIREFOX_STORAGE="$HOME/Library/Application Support/Firefox/Profiles/3qn4h86i.dev-edition-default/storage/default"
+	local PATH_FIREFOX_STORAGE_TEMP="$PATH_FIREFOX_STORAGE/__TEMP"
+	local ignored
 
-# BACKUP APP CONFIGS LOCATED IN $HOME/.config ================================ #
+	local -a clean_ignores=(
+		"https+++mail.google.com"
+		"https+++calendar.google.com"
+		"https+++drive.google.com"
+		"https+++www.youtube.com"
+		"https+++www.bing.com"
+	)
 
-# IGNORE THESE CACHES
-declare -a cleanIgnores=(
-  "https+++mail.google.com"
-  "https+++calendar.google.com"
-  "https+++drive.google.com"
-  "https+++www.youtube.com"
-  "https+++www.bing.com"
-)
+	[[ ! -d "$PATH_FIREFOX_STORAGE_TEMP" ]] && mkdir "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null
 
-[[ ! -d "$PATH_FIREFOX_STORAGE_TEMP" ]] && $(mkdir "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null)
+	for ignored in "${clean_ignores[@]}"; do
+		[[ -d "$PATH_FIREFOX_STORAGE/$ignored" ]] && mv "$PATH_FIREFOX_STORAGE/$ignored" "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null
+	done
 
-for ignored in "${cleanIgnores[@]}"; do
-  [[ -d "$PATH_FIREFOX_STORAGE/$ignored" ]] && $(mv "$PATH_FIREFOX_STORAGE/$ignored" "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null)
-done
+	rm -fr "$PATH_FIREFOX_STORAGE"/https+++* 2>/dev/null
 
-$(rm -fr "$PATH_FIREFOX_STORAGE"/https+++* 2>/dev/null)
-
-# RETURN IGNORED
-$(mv "$PATH_FIREFOX_STORAGE_TEMP"/* "$PATH_FIREFOX_STORAGE" 2>/dev/null)
-$(rm -fr "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null)
-
-# IMPORTANT - RE-ENABLE ZSH GLOB MATCH ERROR OUTPUT
-setopt nomatch
+	mv "$PATH_FIREFOX_STORAGE_TEMP"/* "$PATH_FIREFOX_STORAGE" 2>/dev/null
+	rm -fr "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null
+}

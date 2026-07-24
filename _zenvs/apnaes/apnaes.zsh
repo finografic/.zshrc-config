@@ -15,7 +15,8 @@ function code() { eval "$(which jmate) $@"; }
 
 # TODO: HARDWARE (OR MOST?) SHOULD BE ENV-SPECIFIC
 # source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.hardware.zsh"
-source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.paths.zsh"
+source "$ZSHRC_ROOT/lib/paths.zsh"
 source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.aliases.zsh"
 source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.dev.zsh"
 source "$ZSHRC_ROOT/lib/git.zsh"
+

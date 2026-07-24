@@ -24,7 +24,8 @@ esac
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# Set default Node version when no .nvmrc is present (load-nvmrc handles .nvmrc dirs)
+# Set default Node version when no .nvmrc is present
+# (.nvmrc switching: lib/node/nvm-autoload.zsh via lib/node.zsh barrel)
 if command -v nvm > /dev/null 2>&1; then
 	if [[ -z "$(nvm_find_nvmrc 2> /dev/null)" ]]; then
 		nvm use $NODE_VERSION_PREFERRED > /dev/null 2>&1
@@ -32,5 +33,3 @@ if command -v nvm > /dev/null 2>&1; then
 	fi
 fi
 
-# Switch on cd (and once at startup); keeps NODE_CURRENT_VERSION / NPM_GLOBALS in sync
-source "$ZSHRC_ROOT/lib/nvm-autoload.zsh"

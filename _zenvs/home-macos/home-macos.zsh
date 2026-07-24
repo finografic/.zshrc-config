@@ -26,17 +26,17 @@ fi
 # ============================================================================ #
 
 # INCLUDES: DEFAULTS
-source "$ZSHRC_ROOT/lib/aliases.common.zsh"
 source "$ZSHRC_ROOT/lib/git.zsh"
 source "$ZSHRC_ROOT/lib/dev.jest.zsh"
 source "$ZSHRC_ROOT/lib/llms.zsh"
+source "$ZSHRC_ROOT/lib/paths.zsh"
 
 # INCLUDES: MISC
 source "$ZENV_PATH/$ZENV.backups.zsh"
 
 # INCLUDES: DEV ZENV-SPECIFIC
 # source "$ZENV_PATH//$ZENV.hardware.zsh";
-source "$ZENV_PATH/$ZENV.paths.zsh"
+
 source "$ZENV_PATH/$ZENV.aliases.zsh"
 source "$ZENV_PATH/$ZENV.dev.zsh"
 

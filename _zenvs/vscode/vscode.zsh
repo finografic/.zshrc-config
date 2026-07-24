@@ -23,16 +23,15 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# Switch Node on cd when a directory contains .nvmrc
-source "$ZSHRC_ROOT/lib/nvm-autoload.zsh"
+# Node helpers (.nvmrc autoload + pn / pnr / npmls)
+source "$ZSHRC_ROOT/lib/node.zsh"
 
 # PATH basics
 PATH_NODE="${NPM_GLOBALS:-$HOME/.nvm/versions/node/$(node --version)/bin}"
 export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH_NODE:$PATH"
 
-
-# pnpm (use vendor config)
-source "$ZSHRC_ROOT/vendor/pnpm.zsh"
+# pnpm PATH / PNPM_HOME
+source "$ZSHRC_ROOT/vendor/pnpm-path.zsh"
 
 # Core aliases
 alias ll='ls -la'
@@ -45,12 +44,11 @@ alias ..='cd ..'
 source "$ZSHRC_ROOT/lib/git.zsh"
 
 # Common dev aliases
-source "$ZSHRC_ROOT/lib/common.zsh"
 source "$ZSHRC_ROOT/lib/dev.zsh"
 
 # Simple prompt with git branch (p10k loads from bootstrap, but we use minimal for speed)
 autoload -Uz vcs_info
-function precmd() { vcs_info }
+function precmd() { vcs_info; }
 zstyle ':vcs_info:git:*' formats '%b '
 setopt PROMPT_SUBST
 PROMPT='%F{green}%~%f %F{blue}${vcs_info_msg_0_}%f$ '

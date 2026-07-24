@@ -23,8 +23,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# Switch Node on cd when a directory contains .nvmrc
-source "$ZSHRC_ROOT/lib/nvm-autoload.zsh"
+# Node helpers (.nvmrc autoload + pn / pnr / npmls)
+source "$ZSHRC_ROOT/lib/node.zsh"
 
 # PATH basics
 if command -v node >/dev/null 2>&1; then
@@ -34,8 +34,8 @@ else
 fi
 export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:$PATH_NODE:$PNPM_HOME:$PATH"
 
-# pnpm (use vendor config)
-source "$ZSHRC_ROOT/vendor/pnpm.zsh"
+# pnpm PATH / PNPM_HOME
+source "$ZSHRC_ROOT/vendor/pnpm-path.zsh"
 
 # Minimal aliases
 alias ll='ls -la'
@@ -43,3 +43,4 @@ alias ..='cd ..'
 
 # Keep Codex shells quiet and predictable.
 export PROMPT='%~ %# '
+

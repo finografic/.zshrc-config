@@ -52,14 +52,10 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/
 source "$ZSHRC_ROOT/lib/utils.zsh"
 
 # Git configuration (very useful in dev containers)
-source "$ZSHRC_ROOT/lib/git/index.zsh"
-[[ -f "$ZSHRC_ROOT/lib/git.stashes.zsh" ]] && source "$ZSHRC_ROOT/lib/git.stashes.zsh"
+source "$ZSHRC_ROOT/lib/git.zsh"
 
 # Development tools
 source "$ZSHRC_ROOT/lib/dev.zsh"
-
-# Common aliases (container-friendly)
-source "$ZSHRC_ROOT/lib/aliases.common.zsh"
 
 # History configuration
 source "$ZSHRC_ROOT/core/history.zsh"
@@ -69,7 +65,7 @@ source "$ZSHRC_ROOT/core/history.zsh"
 # ============================================================================ #
 
 # INCLUDES: DEV ZENV-SPECIFIC
-# source "$ZENV_PATH/$ZENV.paths.zsh"
+# source "$ZENV_PATH/paths.zsh"
 source "$ZENV_PATH/$ZENV.aliases.zsh"
 source "$ZENV_PATH/$ZENV.dev.zsh"
 
@@ -82,13 +78,14 @@ if command -v fzf >/dev/null 2>&1; then
 fi
 
 # ============================================================================ #
-# Optional: Node Version Manager (skip by default for speed)
+# Optional: Node Version Manager + Node UX helpers
 # ============================================================================ #
 
-# Uncomment if you need NVM in containers
+# Load nvm first (when enabled), then lib/node.zsh (autoload + pn / pnr / npmls)
 if [[ -z "$SKIP_NVM_AUTOLOAD" ]]; then
-  source "$ZSHRC_ROOT/lib/nvm.zsh" 2>/dev/null || true
+  source "$ZSHRC_ROOT/vendor/nvm.zsh" 2>/dev/null || true
 fi
+source "$ZSHRC_ROOT/lib/node.zsh"
 
 # ============================================================================ #
 # Docker-Specific Environment Variables

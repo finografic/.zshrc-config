@@ -28,7 +28,6 @@ fi
 # ============================================================================ #
 
 # INCLUDES: DEFAULTS
-source "$ZSHRC_ROOT/lib/aliases.common.zsh"
 source "$ZSHRC_ROOT/lib/git.zsh"
 # source "$ZSHRC_ROOT/lib/dev.jest.zsh"
 

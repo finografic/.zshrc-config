@@ -128,7 +128,6 @@ docker run -it --rm \
 **Development:**
 
 - `lib/dev.zsh` - Development tools
-- `lib/aliases.common.zsh` - Common aliases
 
 **Optional:**
 

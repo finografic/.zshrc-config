@@ -30,6 +30,3 @@ alias admin="cd /usr/local/lsws/Example && l"
 alias adminV1="cd /usr/local/lsws/Example/apnaes-web && l"
 # alias lsws="cd /usr/local/lsws && l"
 # alias ws="cd /usr/local/lsws && l"
-
-# COMMON ALIASES
-source "$ZSHRC_ROOT/lib/aliases.common.zsh"

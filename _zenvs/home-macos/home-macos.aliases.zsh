@@ -258,6 +258,12 @@ function _deps() {
   cd "$REPOS_FINO/@finografic-oxc-config" && l
 }
 
+@_pipeline() {
+  cd "$REPOS_FINO/@finografic-ai-agent-pipeline" && l
+}
+
+alias pipe="cd $REPOS_FINO/@finografic-ai-agent-pipeline && l"
+
 @_lucide() {
   cd "$REPOS_FINO/@finografic-lucide-manager" && l
 }
@@ -278,8 +284,3 @@ function _deps() {
   sudo mount_smbfs //REDACTED-CREDENTIAL/touch ~/Public/touch
   cd ~/Public/touch && l
 }
-
-# ============================================================================ #
-
-# COMMON ALIASES
-source "$ZSHRC_ROOT/lib/aliases.common.zsh"

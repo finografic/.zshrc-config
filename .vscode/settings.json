@@ -57,198 +57,133 @@
   "eslint.format.enable": true,
   "eslint.useFlatConfig": true,
   "shfmt.executablePath": "/opt/homebrew/bin/shfmt",
-  "shfmt.formatIgnored": true,
+  "shfmt.formatIgnored": false,
   "vsicons.associations.files": [
     {
       "icon": "copilot",
-      "extensions": [
-        ".instructions.md"
-      ],
+      "extensions": [".instructions.md"],
       "format": "svg"
     },
     {
       "icon": "git2",
-      "extensions": [
-        ".simple-git-hooks.js",
-        ".simple-git-hooks.mjs"
-      ],
+      "extensions": [".simple-git-hooks.js", ".simple-git-hooks.mjs"],
       "format": "svg"
     },
     {
       "icon": "script",
-      "extensions": [
-        ".nojekyll"
-      ],
+      "extensions": [".nojekyll"],
       "format": "svg"
     },
     {
       "icon": "typescript",
-      "extensions": [
-        ".route.ts",
-        ".routes.ts"
-      ],
+      "extensions": [".route.ts", ".routes.ts"],
       "format": "svg"
     },
     {
       "icon": "vanilla_extract",
-      "extensions": [
-        "styles.ts"
-      ],
+      "extensions": ["styles.ts"],
       "format": "svg"
     },
     {
       "icon": "tsconfig",
-      "extensions": [
-        "vite.json"
-      ],
+      "extensions": ["vite.json"],
       "format": "svg"
     }
   ],
   "vsicons.associations.folders": [
     {
       "icon": "binary",
-      "extensions": [
-        "bin",
-        "bin-arm64",
-        "bin-x86_64"
-      ],
+      "extensions": ["bin", "bin-arm64", "bin-x86_64"],
       "format": "svg"
     },
     {
       "icon": "maven",
-      "extensions": [
-        ".vitepress"
-      ],
+      "extensions": [".vitepress"],
       "format": "svg"
     },
     {
       "icon": "certificate",
-      "extensions": [
-        "admin"
-      ],
+      "extensions": ["admin"],
       "format": "svg"
     },
     {
       "icon": "certificate",
-      "extensions": [
-        "auth"
-      ],
+      "extensions": ["auth"],
       "format": "svg"
     },
     {
       "icon": "devcontainer",
-      "extensions": [
-        "core"
-      ],
+      "extensions": ["core"],
       "format": "svg"
     },
     {
       "icon": "cli",
-      "extensions": [
-        "admin-tools",
-        "dev-tools"
-      ],
+      "extensions": ["admin-tools", "dev-tools"],
       "format": "svg"
     },
     {
       "icon": "webpack",
-      "extensions": [
-        "IconButtons",
-        "Icons"
-      ],
+      "extensions": ["IconButtons", "Icons"],
       "format": "svg"
     },
     {
       "icon": "template",
-      "extensions": [
-        "Dialog",
-        "Dialogs",
-        "dialogs"
-      ],
+      "extensions": ["Dialog", "Dialogs", "dialogs"],
       "format": "svg"
     },
     {
       "icon": "helper",
-      "extensions": [
-        "generator",
-        "generators"
-      ],
+      "extensions": ["generator", "generators"],
       "format": "svg"
     },
     {
       "icon": "tools",
-      "extensions": [
-        "Toolbars",
-        "toolbars"
-      ],
+      "extensions": ["Toolbars", "toolbars"],
       "format": "svg"
     },
     {
       "icon": "db",
-      "extensions": [
-        "store"
-      ],
+      "extensions": ["store"],
       "format": "svg"
     },
     {
       "icon": "config",
-      "extensions": [
-        "env",
-        "configs",
-        "_zenvs"
-      ],
+      "extensions": ["env", "configs", "_zenvs"],
       "format": "svg"
     },
     {
       "icon": "webpack",
-      "extensions": [
-        "eslint-config"
-      ],
+      "extensions": ["eslint-config"],
       "format": "svg"
     },
     {
       "icon": "devcontainer",
-      "extensions": [
-        "externals"
-      ],
+      "extensions": ["externals"],
       "format": "svg"
     },
     {
       "icon": "devcontainer",
-      "extensions": [
-        "externals"
-      ],
+      "extensions": ["externals"],
       "format": "svg"
     },
     {
       "icon": "log",
-      "extensions": [
-        "forms"
-      ],
+      "extensions": ["forms"],
       "format": "svg"
     },
     {
       "icon": "locale",
-      "extensions": [
-        "i18n",
-        "locales",
-        "translations",
-        "messages"
-      ],
+      "extensions": ["i18n", "locales", "translations", "messages"],
       "format": "svg"
     },
     {
       "icon": "devcontainer",
-      "extensions": [
-        "providers"
-      ],
+      "extensions": ["providers"],
       "format": "svg"
     },
     {
       "icon": "api",
-      "extensions": [
-        "queries"
-      ],
+      "extensions": ["queries"],
       "format": "svg"
     },
     {
@@ -266,16 +201,12 @@
     },
     {
       "icon": "tools",
-      "extensions": [
-        "toolbar"
-      ],
+      "extensions": ["toolbar"],
       "format": "svg"
     },
     {
       "icon": "typings",
-      "extensions": [
-        "constants"
-      ],
+      "extensions": ["constants"],
       "format": "svg"
     }
   ],

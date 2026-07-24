@@ -460,8 +460,9 @@ k () {
       # Setup colours based on time difference
       TIME_DIFF=$(( K_EPOCH - DATE[1] ))
       TIME_COLOR=$ANCIENT_TIME_COLOR
-      for i j in ${FILEAGES_TO_COLOR[@]}
-      do
+      for (( idx = 1; idx < ${#FILEAGES_TO_COLOR[@]}; idx += 2 )); do
+        i=${FILEAGES_TO_COLOR[idx]}
+        j=${FILEAGES_TO_COLOR[idx+1]}
         (( TIME_DIFF < i )) || continue
         TIME_COLOR=$j
         break

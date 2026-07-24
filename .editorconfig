@@ -20,3 +20,8 @@ indent_size = 2
 
 [*.zsh]
 indent_size = 2
+
+# Vendored supercrabtree/k — heavy zsh; shfmt cannot parse it reliably
+[lib/k.plugin.zsh]
+ignore = true
+

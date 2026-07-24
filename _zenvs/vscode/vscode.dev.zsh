@@ -11,7 +11,6 @@ alias apps="cd $HOME/repos-apps && l"
 
 # COMMANDS
 function repos() {
-  # msg err "PLEASE USE ALIAS 'dev'" # use my MSG FUNCTION
   # MOVED !!
   cd "$REPOS" && l
 }
@@ -19,4 +18,5 @@ function repos() {
 @my() {
   cd "$HOME/repos-my" && l
 }
+
 

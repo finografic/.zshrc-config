@@ -24,7 +24,7 @@ alias pilot="cd $STORAGE/auto-pilot &&  l"
 
 # DEPRECATED !
 function repos() {
-  # msg err "PLEASE USE ALIAS 'dev'" # use my MSG FUNCTION
   # MOVED !!
   cd "$HOME/dev_repos" && l
 }
+

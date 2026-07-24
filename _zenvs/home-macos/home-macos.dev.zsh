@@ -6,7 +6,6 @@ alias dev="echo 'CHOOSE AN ALIAS!'"
 # COMMANDS
 
 function repos() {
-  # msg err "PLEASE USE ALIAS 'dev'" # use my MSG FUNCTION
   # MOVED !!
   cd "$REPOS" && l
 }
@@ -234,3 +233,4 @@ function h-pub-web() {
 }
 
 # ============================================================================ #
+

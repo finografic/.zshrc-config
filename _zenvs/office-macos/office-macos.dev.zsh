@@ -3,8 +3,6 @@ export REPOS_REPORTING="$HOME/repos-reporting"
 
 # COMMANDS
 function repos() {
-  # msg err "PLEASE USE ALIAS 'dev'" # zsh
-  # use my MSG FUNCTION
   # MOVED !!
   cd "$REPOS_REPORTING" && l
 }
@@ -106,3 +104,4 @@ function bots() {
 #
 #   Find a PR that introduced a given commit
 #   $ gh pr list --search "<SHA>" --state merged
+

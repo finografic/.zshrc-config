@@ -11,34 +11,6 @@ function config() {
 
 # NOTE: .env is loaded in core/env.zsh (canonical, includes SKIP_ENV_LOAD for GitHub Desktop)
 
-# REMOVE DUPLICATES FROM PATH (legacy; build-path.mjs used at end of main.zsh)
-function flatten-path() {
-  export PATH=$(node "${ZSHRC_ROOT:-$HOME/.zshrc-config}/packages/node/dist/build-path.mjs")
-}
-
-function config-v1-fzf() {
-  #  TEMP: SAVE CURRENT PATH && CD TO CUSTOM ZSH CONFIG PATH
-  PWD_ORIG=$PWD
-  cd ${HOME}/.zshrc-config
-  # --preview BROKEN !! :()
-  # code $(fzf --reverse --preview '[[ $(file --mime {}) =~ binary ]] &&
-  #                echo {} is a binary file ||
-  #                (rougify {} ||
-  #                 lnav {} ||
-  #                 cat {}) 2> /dev/null | head -500');
-  $EDITOR $(fzf --reverse)
-  cd $PWD_ORIG
-}
-
-# ENCHANCED CD ("cd-directory")
-function cdd() {
-  if [ $# -eq 0 ]; then
-    cd $(fd --type directory --max-depth 1 | fzf --cycle --reverse) && listing-eza
-  else
-    cd "$(pwd)/$@"
-  fi
-}
-
 # ============================================================================ #
 # UTILITIES
 # ============================================================================ #
@@ -103,67 +75,3 @@ function contents() {
 function own() {
   sudo chown -R $USER:$USER $1
 }
-
-# OWN USING mongodb USER
-# mown () {
-#   sudo chown -R mongodb:mongodb $1
-# }
-
-# IMAGES
-function convert-heic() {
-  for f in *.heic; do
-    echo "Working on file $f"
-    heif-convert $f $f.jpg
-  done
-}
-
-# ============================================================================ #
-# MISC
-# ============================================================================ #
-
-function newsh() {
-  NEW_FILE=$1.sh
-  echo "#!/bin/zsh" >>$HOME/bin/$NEW_FILE
-  chmod +x $HOME/bin/$NEW_FILE
-  code $HOME/bin/$NEW_FILE
-}
-
-function numberRound() {
-  printf "%.0f\n" $1
-}
-
-# function numberFloor() {
-#   printf ${$(($1))%.*}
-# }
-
-function msg() {
-  # DEFINE + GET MESSAGE TYPE
-  declare -A TYPES=(
-    [info]=$_c
-    [success]=$_g
-    [warning]=$_y
-    [warn]=$_y
-    [danger]=$_r
-    [error]=$_r
-    [err]=$_r
-  )
-  _type=${TYPES[$1]}
-
-  # DETERMINE LENGTH OF MESSAGE IN CHARS
-  FULL_LENGTH=70
-  STRING_LENGTH=$(expr length $2 + 4)
-
-  # SUFFIX (REMAINING CHARACTERS OUT OF 80)
-  let SUFFIX_LENGTH=$FULL_LENGTH-$STRING_LENGTH
-  SUFFIX_STRING="${_type}"
-  for ((i = 1; i <= $SUFFIX_LENGTH; i++)); do
-    SUFFIX_STRING+="="
-  done
-
-  # FULL MESSAGE OUTPUT
-  MSG="\n${_type}== ${_w}${2} ${SUFFIX_STRING}\n"
-  echo $MSG
-
-}
-
-

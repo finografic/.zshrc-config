@@ -38,7 +38,7 @@ function devil() {
     docker system prune
     docker network prune
   else
-    msg warn "OPTIONAL ARGS" # use my MSG FUNCTION
+    echo "\n${_y}OPTIONAL ARGS${_0}"
     echo "${_0}${_w}ini, init ${_y}- start up devilbox${_0}"
     echo "${_w}cli       ${_y}- enter main docker container (php)${_0}"
     echo "\n${_0}"
@@ -50,3 +50,4 @@ git config --global color.ui true
 git config --global user.name "Justin"
 git config --global user.email "justin.blair.rankin@gmail.com"
 git config --global credential.helper 'cache --timeout=1209600' # TWO WEEKS!
+

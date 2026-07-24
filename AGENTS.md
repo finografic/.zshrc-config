@@ -1,3 +1,5 @@
+# AGENTS.md — AI Assistant Guide
+
 ## Project Memory Model
 
 - `docs/todo/ROADMAP.md` = milestone plan, near-term tasks, and completed history.

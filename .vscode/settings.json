@@ -7,9 +7,6 @@
   },
 
   "eslint.enable": true,
-  "eslint.useFlatConfig": true,
-  "eslint.format.enable": true,
-
   "prettier.enable": false,
 
   "[javascript]": {
@@ -45,27 +42,22 @@
   "[html]": {
     "editor.defaultFormatter": "dprint.dprint"
   },
-  "[markdown]": {
-    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
-    "files.trimTrailingWhitespace": false,
-    "files.insertFinalNewline": true
-  },
-  "shfmt.executablePath": "/opt/homebrew/bin/shfmt",
-  "shfmt.formatIgnored": true,
-
   "[shellscript]": {
     "editor.defaultFormatter": "mkhl.shfmt",
     "editor.detectIndentation": false,
     "editor.insertSpaces": false,
     "editor.formatOnSave": true
   },
-
-  "markdownlint.config": {
-    "default": true,
-    "MD025": false, // Allow multiple top-level headings (useful for TODO files)
-    "MD041": false // Don't require first line to be a top-level heading
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "files.trimTrailingWhitespace": false,
+    "files.insertFinalNewline": true
   },
-  "workbench.iconTheme": "vscode-icons",
+
+  "eslint.format.enable": true,
+  "eslint.useFlatConfig": true,
+  "shfmt.executablePath": "/opt/homebrew/bin/shfmt",
+  "shfmt.formatIgnored": true,
   "vsicons.associations.files": [
     {
       "icon": "copilot",
@@ -286,5 +278,8 @@
       ],
       "format": "svg"
     }
-  ]
+  ],
+  "workbench.iconTheme": "vscode-icons",
+
+  "markdown.styles": ["node_modules/@finografic/md-lint/styles/markdown-github-light.css"]
 }

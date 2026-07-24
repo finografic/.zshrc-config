@@ -1,6 +1,6 @@
 # 💻 zshrc-config
 
-**Modular Zsh configuration that adapts to your environment.** One config, multiple hosts—macOS, Linux, Docker, VSCode, Android—with environment-specific aliases, paths, and tools.
+**Modular Zsh configuration that adapts to your environment.** One config, eight host profiles—home-macos, office-macos, home-linux, docker-dev, vscode, android, apnaes, codex—with environment-specific aliases, paths, and tools, plus AI-agent-friendly project docs.
 
 ---
 
@@ -8,10 +8,11 @@
 
 Provide a single, maintainable Zsh setup that:
 
-- Detects environment (home-macos, office-macos, apnaes, docker, vscode) and loads the right profile
+- Detects environment (`.env` flags + hostname/IP) and loads the matching `_zenvs/` profile
 - Keeps `~/.zshrc` minimal—everything else lives in this repo
-- Optimizes startup (VSCode/Docker use lighter profiles)
-- Supports multi-system sync (commit/push from any machine)
+- Optimizes startup (VSCode/Docker/Codex use lighter, early-exit profiles)
+- Supports multi-system sync (commit/push from any machine via `zupdate`)
+- Stays legible to both humans and AI coding agents (`AGENTS.md`, `.agents/`, `docs/`)
 
 ---
 
@@ -44,23 +45,34 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 ```
 ~/.zshrc-config/
 ├── bootstrap/          # Early init: profiling, Antidote, plugins, compinit, p10k
-├── core/               # env, options, history, keybindings, locale
+├── core/               # env detection, zsh options, history, keybindings, locale
+├── themes/             # p10k config, prompt, theme switcher
+├── lib/                # colors, utils, dev, git, fzf, widgets, cache cleanup
 ├── vendor/             # pnpm, nvm
-├── lib/                # colors, utils, dev, git, widgets
-├── _zenvs/             # Environment-specific (home-macos, office-macos, docker, vscode, …)
-├── themes/             # p10k config
-├── plugins/            # Antidote plugin list
-├── scripts/            # install-zshrc-config-dependencies, vscode-clean, etc.
-├── packages/
-│   └── node/           # TypeScript utilities (spinner, build-path, detect-env)
-├── tools/
-│   ├── bin-arm64/      # Architecture-specific binaries (fastfetch, neofetch)
-│   └── bin-x86_64/
-└── extras/
-    ├── music/          # DJ sync utilities
-    ├── hardware/       # Linux hardware config
-    └── examples/       # Docker examples
+├── _zenvs/             # One profile per host:
+│   ├── home-macos/     #   personal macOS
+│   ├── office-macos/   #   work macOS (minimal skeleton — populate per job)
+│   ├── home-linux/     #   personal Linux
+│   ├── docker-dev/     #   containers (auto-detected)
+│   ├── vscode/         #   VSCode integrated terminal (early exit)
+│   ├── codex/          #   OpenAI Codex agent shells (early exit)
+│   ├── android/        #   Termux
+│   └── apnaes/         #   remote server
+├── plugins/            # Antidote plugin list (.zsh_plugins.txt + generated)
+├── packages/node/      # TypeScript CLI utilities (spinner, PATH build), built via tsdown
+├── scripts/            # Setup, cleanup, and repo-maintenance scripts
+├── tools/              # bin-arm64/ + bin-x86_64/ arch-specific binaries (fastfetch, neofetch, …)
+├── extras/             # music/, hardware/, examples/ — optional, not sourced by default
+├── docs/               # DOCKER.md, ROADMAP.md, process notes
+├── .agents/            # handoff.md (tracked state) + memory.md (local session log)
+├── main.zsh            # Orchestrator: core → theme → lib → _zenvs/$ZENV → splash
+├── update-config.zsh   # zupdate implementation (commit + rebase + push)
+└── AGENTS.md           # AI-agent entry point (linked from CLAUDE.md)
 ```
+
+### Load order
+
+`~/.zshrc` sources `bootstrap/index.zsh` (profiling → Antidote → plugins → compinit → p10k), then `main.zsh`, which detects `$ZENV` (`core/env.zsh`), early-exits for Codex/VSCode shells, loads theme + core options + shared `lib/` modules, then sources the matching `_zenvs/$ZENV/$ZENV.zsh` profile before the splash screen.
 
 ---
 
@@ -72,7 +84,10 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 | **Bootstrap**             | Antidote, plugins, compinit, p10k—correct load order                  |
 | **VSCode/Docker**         | Early exit with minimal config for fast IDE terminals                 |
 | **Splash**                | Time Machine, launch agents, ports, fastfetch/neofetch                |
-| **Node/TS**               | Spinner, PATH deduplication, env detection (tsdown)                   |
+| **Node/TS**               | Spinner + PATH deduplication (`packages/node`, built via tsdown)      |
+| **Lint/format**           | `oxlint` + `oxfmt`, run via Husky `pre-commit` (`lint-staged`)        |
+| **Commit hygiene**        | `commitlint` (Conventional Commits) via Husky `commit-msg`            |
+| **AI-agent docs**         | `AGENTS.md` entry point, `.agents/` memory, `docs/todo/ROADMAP.md`    |
 
 ---
 
@@ -83,6 +98,9 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 | `scripts/install-zshrc-config-dependencies.zsh` | Install Homebrew, Antidote, p10k, fzf, Meslo font                    |
 | `lib/clean/utils/clean.ides.utils.zsh`          | Clear VSCode / Insiders / Cursor caches (Cursor: safe only)          |
 | `zupdate`                                       | Commit and push with `fetch` + `pull --rebase` for multi-system sync |
+| `pnpm lint` / `pnpm lint:fix`                   | Run `oxlint` (optionally with `--fix`)                               |
+| `pnpm format:check` / `pnpm format:fix`         | Run `oxfmt` in check or write mode                                   |
+| `pnpm lint:md` / `pnpm lint:md:fix`             | Markdown lint via `@finografic/md-lint`                              |
 
 Run `zupdate` from anywhere (symlink in `~/bin`) to sync changes.
 

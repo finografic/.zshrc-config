@@ -3,8 +3,8 @@
 # NOTE: PLUGINS - Load zsh plugins via antidote (with caching)
 # ============================================================================ #
 
-# Skip antidote entirely in docker containers — docker-dev.zsh handles its own setup
-if [[ -f /.dockerenv ]] || [[ -n "$IN_DOCKER" ]] || [[ -n "$DOCKER_CONTAINER" ]]; then
+# Skip antidote entirely in containers — docker-dev.zsh handles its own setup
+if is-container; then
   return 0
 fi
 

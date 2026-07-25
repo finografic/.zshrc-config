@@ -19,6 +19,17 @@ jobs:
           done < <(git ls-files -z '*.zsh')
           exit $fail
 
+  zsh-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install -y zsh
+      - name: Environment detection matrix
+        run: zsh tests/test-detect.zsh
+      - name: lib/ modules must source inertly
+        run: zsh tests/test-lib-inert.zsh "$GITHUB_WORKSPACE"
+
   secret-scan:
     runs-on: ubuntu-latest
     steps:

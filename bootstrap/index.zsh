@@ -7,7 +7,13 @@
 # Order matters! Do not rearrange without understanding dependencies.
 # ============================================================================ #
 
-if [[ "${IS_CODEX:-}" = "true" || -n "${CODEX_CI:-}" || -n "${CODEX_THREAD_ID:-}" || "${__CFBundleIdentifier:-}" = "com.openai.codex" ]]; then
+# Shared environment predicates (is-agent-shell, is-container, ...). Must come
+# first: the Codex early-exit below depends on it.
+source "$ZSHRC_ROOT/core/detect.zsh"
+
+# Codex agent shells get nothing from bootstrap — main.zsh loads the minimal
+# codex profile and returns.
+if is-agent-shell; then
   return 0
 fi
 
@@ -24,8 +30,8 @@ source "$ZSHRC_ROOT/bootstrap/00-profiling.zsh"
 # 2. Completion system MUST be before plugins (plugins use compdef)
 source "$ZSHRC_ROOT/bootstrap/03-compinit.zsh"
 
-# 3-4. Antidote + plugins (skipped in docker — docker-dev.zsh handles its own setup)
-if [[ ! -f /.dockerenv ]] && [[ -z "$IN_DOCKER" ]] && [[ -z "$DOCKER_CONTAINER" ]]; then
+# 3-4. Antidote + plugins (skipped in containers — docker-dev.zsh handles its own setup)
+if ! is-container; then
   source "$ZSHRC_ROOT/bootstrap/01-antidote.zsh"
   source "$ZSHRC_ROOT/bootstrap/02-plugins.zsh"
 fi

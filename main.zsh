@@ -20,8 +20,11 @@ typeset -g -i FUNCNEST=1000
 
 source "$ZSHRC_ROOT/core/env.zsh"
 
-# Determine which environment we're running in
-export ZENV=$(determine-environment)
+# Determine which environment we're running in. This is the ONLY place $ZENV is
+# resolved — everything downstream reads it. Sets ZENV + ZENV_RESOLVED_BY.
+determine-environment
+export ZENV
+apply-environment-env
 
 # ============================================================================ #
 # NOTE: 2. CORE INCLUDES for ALL ENVIRONMENTS
@@ -35,7 +38,7 @@ source "$ZSHRC_ROOT/lib/fzf.zsh"
 # NOTE: 3. CODEX CHECK - EARLY EXIT for Codex agent shells
 # ============================================================================ #
 
-if [[ "${IS_CODEX:-}" = "true" || -n "${CODEX_CI:-}" || -n "${CODEX_THREAD_ID:-}" || "${__CFBundleIdentifier:-}" = "com.openai.codex" ]]; then
+if is-agent-shell; then
   source "$ZSHRC_ROOT/_zenvs/codex/codex.zsh"
   return 0
 fi
@@ -70,7 +73,7 @@ source "$ZSHRC_ROOT/lib/clean.zsh"
 # NOTE: 9. VSCODE CHECK - EARLY EXIT for IDE terminals
 # ============================================================================ #
 
-if [[ "$TERM_PROGRAM" = "vscode" ]]; then
+if is-ide-shell; then
   source "$ZSHRC_ROOT/_zenvs/vscode/vscode.zsh"
   return 0
 fi

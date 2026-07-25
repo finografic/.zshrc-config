@@ -247,11 +247,15 @@ Every item is "wrap in a function; let a profile or the user call it" (D8):
 
 > **`[OPUS]`** — Subtle correctness (unreachable branches, unified container/agent detection, explicit fallback semantics). PAUSE and suggest switching to Opus before starting. See [Model routing protocol](#model-routing-protocol).
 
-- [ ] `core/env.zsh:69` — `elif [[ $IS_OFFICE == true || $IS_DOCKER == true ]]` is **unreachable for `IS_OFFICE`** (handled one branch above), so `docker-dev` only ever resolves via `IS_DOCKER`. Reduce to `[[ $IS_DOCKER == true ]]`.
-- [ ] Docker detection is inconsistent: `bootstrap/index.zsh:24` checks `/.dockerenv`, `$IN_DOCKER`, `$DOCKER_CONTAINER`, while `core/env.zsh` relies on `$IS_DOCKER`. Unify into one `is-container` helper used by both.
-- [ ] Codex detection is duplicated verbatim in `bootstrap/index.zsh:10` and `main.zsh:38` (a four-clause condition). Extract to `core/env.zsh` as `is-agent-shell`.
-- [ ] Quote and default all the flag tests (`[[ ${IS_HOME:-false} == true ]]`) — with `set -u`-style habits these are currently unquoted bare `$IS_HOME`.
-- [ ] Move the whole detection block behind a single function with a documented precedence order, and make the fallback explicit rather than "default to `home-macos`" (a stranger's machine is not your home Mac — default to a generic profile).
+- [x] `core/env.zsh:69` — `elif [[ $IS_OFFICE == true || $IS_DOCKER == true ]]` is **unreachable for `IS_OFFICE`**. — Fixed; container detection is now its own branch above the flags, and a regression test asserts `IS_OFFICE` reaches `office-macos`.
+- [x] Docker detection is inconsistent: `bootstrap/index.zsh:24` checks `/.dockerenv`, `$IN_DOCKER`, `$DOCKER_CONTAINER`, while `core/env.zsh` relies on `$IS_DOCKER`. Unify into one `is-container` helper used by both. — Done; `bootstrap/02-plugins.zsh` had a third copy, now also using it. Also covers Podman's `/run/.containerenv`, and uses only builtin tests (no subprocess on the load path).
+- [x] Codex detection is duplicated verbatim in `bootstrap/index.zsh:10` and `main.zsh:38`. Extract to `core/env.zsh` as `is-agent-shell`. — Done, but the helpers live in **`core/detect.zsh`, not `core/env.zsh`**: `bootstrap/` runs before `core/env.zsh` is sourced, so they could not live there. `core/detect.zsh` is guarded, inert, and safe to source from both. `is-ide-shell` was extracted at the same time (the VS Code check was a fourth inline condition).
+- [x] Quote and default all the flag tests (`[[ ${IS_HOME:-false} == true ]]`).
+- [x] Move the whole detection block behind a single function with a documented precedence order, and make the fallback explicit. — Precedence is documented in the function header and asserted by `tests/test-detect.zsh` (22 cases, wired into CI). Fallback is now OS-based (`macOS` → home-macos, `Android` → android, anything else → home-linux) and records `$ZENV_RESOLVED_BY=fallback`. **A truly generic profile does not exist yet** — creating one is [P2.2](#p22--declarative-profile-manifests)/[P2.3](#p23--profile-inventory-pass) work, since it should be a preset. Surfacing "you have no `.env` flags set" to the user is deliberately _not_ done here: `core/` may not write to the terminal, so that belongs to the splash.
+- [x] **Two bugs found while testing, not in the original audit:**
+  - The override branch originally read `$ZENV` itself. Since `ZENV` is _exported_, every nested shell would inherit its parent's answer — a VS Code terminal opened from a normal shell would never resolve to `vscode`. The override now reads a dedicated **`ZENV_FORCE`**, and a test asserts an inherited `ZENV` does not pin a nested shell.
+  - `determine-environment` was called as `export ZENV=$(determine-environment)`, so any global it set (`ZENV_RESOLVED_BY`) was discarded with the subshell. It now sets `ZENV`/`ZENV_RESOLVED_BY` directly and `main.zsh` exports afterwards.
+- [x] Removed a second source of truth: `themes/default.theme.zsh:6` re-ran `determine-environment` and re-exported `ZENV`. `main.zsh` is now the only resolver. Profile-specific env that used to be set _inside_ the detection branches (`OS_NAME` for the server, `STORAGE_ROOT`/`PATH_ZSHRC` for Android) moved to `apply-environment-env`, called once after `$ZENV` is known.
 
 ### P1.5 — Collapse the `configs/` reference zshrc files
 
@@ -704,6 +708,15 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
 - 2026-07-26 — **P4.1**, **P4.2**, and the `typeset -U path PATH` item from **P1.3**,
   pulled forward (untracking `packages/node/dist/` broke the two startup `node` calls that
   depended on it). Node is now entirely off the startup path; `packages/node` is deleted.
+- 2026-07-26 — **P1.4** (`[OPUS]`): environment detection unified in new
+  `core/detect.zsh` (`is-container`, `is-agent-shell`, `is-ide-shell`,
+  `determine-environment`), sourced by both `bootstrap/` and `core/env.zsh`. The unreachable
+  `IS_OFFICE` branch is fixed, three copies of the container check and two of the Codex
+  check are collapsed, and `themes/` no longer re-derives `ZENV`. Two further bugs found by
+  testing: the override now reads `ZENV_FORCE` (reading the exported `ZENV` broke detection
+  in nested shells) and the function sets globals instead of printing (a command
+  substitution discarded `ZENV_RESOLVED_BY`). `tests/test-detect.zsh` (22 cases) and
+  `tests/test-lib-inert.zsh` now run in CI.
 - 2026-07-26 — **P1.2** (`[OPUS]`): source-time side effects purged. `lib/clean.zsh` no
   longer deletes files on shell start — it defines `zclean … [--dry-run]`. The djay
   LaunchAgent checks, the firewall shell-out and the unconditional ghostty config copy are

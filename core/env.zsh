@@ -66,26 +66,23 @@ function myip() {
 # Environment Detection
 # ============================================================================ #
 
-# These variables should be set in your .env file:
-# IS_HOME, IS_OFFICE, IS_SERVER
+# `determine-environment`, `is-container`, `is-agent-shell` and `is-ide-shell`
+# live in core/detect.zsh — bootstrap/ needs them before this file runs, so they
+# cannot live here. Sourcing again is free (the module is guarded).
+#
+# Flags come from your .env file: IS_HOME, IS_OFFICE, IS_SERVER.
+source "$ZSHRC_ROOT/core/detect.zsh"
 
-function determine-environment() {
-  if [[ $IS_HOME == true ]]; then
-    echo "home-macos"
-  elif [[ $IS_OFFICE == true ]]; then
-    echo "office-macos"
-  elif [[ $IS_OFFICE == true || $IS_DOCKER == true ]]; then
-    echo "docker-dev"
-  elif [[ $IS_SERVER == true ]]; then
-    export OS_NAME='Linux'
-    echo "apnaes"
-  elif [[ $OS_NAME == "Android" ]]; then
-    export STORAGE_ROOT="${HOME}"
-    export PATH_ZSHRC=$STORAGE_ROOT
-    echo "android"
-  else
-    echo "home-macos" # Default
-  fi
+# Profile-specific env that used to be set as a side effect inside the detection
+# branches. Applied after $ZENV is known, in main.zsh.
+function apply-environment-env() {
+  case "${ZENV:-}" in
+  apnaes) export OS_NAME='Linux' ;;
+  android)
+    export STORAGE_ROOT="$HOME"
+    export PATH_ZSHRC="$STORAGE_ROOT"
+    ;;
+  esac
 }
 
 # ============================================================================ #

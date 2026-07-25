@@ -103,46 +103,7 @@ update-ghostty-config
 #   echo "${_g}Docker is ready${_0}"
 # fi
 
-# ============================================================================ #
-# SECURITY CHECKS: Maximum Security for Work System
-# ============================================================================ #
-
-# Check macOS Firewall status (OFFICE: Show warning if disabled)
-FIREWALL_STATUS=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate 2>/dev/null | grep -i "enabled" || echo "")
-if [[ -z "$FIREWALL_STATUS" ]]; then
-  echo "${_y}⚠️  Firewall may not be enabled. For security, enable in System Settings → Network → Firewall${_0}"
-fi
-
-# WIP: Security check commented out for now
-# # Check for suspicious external ESTABLISHED connections (excluding known safe ports 11434, 3001)
-# # NOTE: Ports 11434 (Ollama) and 3001 (OpenWebUI) are intentionally excluded
-# if command -v lsof &>/dev/null; then
-#   SUSPICIOUS_CONN=$(lsof -i -P 2>/dev/null | grep "ESTABLISHED" | grep -vE "127.0.0.1|localhost|::1|:11434|:3001" || echo "")
-#   if [[ -n "$SUSPICIOUS_CONN" ]]; then
-#     echo "${_r}⚠️  SECURITY WARNING: Non-localhost ESTABLISHED connections detected!${_0}"
-#     echo "${_r}   Check: lsof -i -P | grep ESTABLISHED${_0}"
-#   fi
-# fi
-
-# ============================================================================ #
-# VERIFY: LaunchAgent Services (djay backup, etc.)
-# ============================================================================ #
-
-# Check djay backup service
-DJAY_BACKUP_PLIST="$HOME/Library/LaunchAgents/com.user.dj-crate-backup.plist"
-if [[ -f "$DJAY_BACKUP_PLIST" ]]; then
-  if ! launchctl list | grep -q "com.user.dj-crate-backup"; then
-    echo "${_y}⚠️  djay backup service not loaded. Loading...${_0}"
-    launchctl load "$DJAY_BACKUP_PLIST" 2>/dev/null && echo "${_g}✅ djay backup service loaded${_0}" || echo "${_r}❌ Failed to load djay backup service${_0}"
-  fi
-  # TODO: Initial setup - ensure plist has RunAtLoad=true for startup execution
-fi
-
-# Check djay sync service (if exists)
-DJAY_SYNC_PLIST="$HOME/Library/LaunchAgents/com.user.djay-sync.plist"
-if [[ -f "$DJAY_SYNC_PLIST" ]]; then
-  if ! launchctl list | grep -q "com.user.djay-sync"; then
-    echo "${_y}⚠️  djay sync service not loaded. Loading...${_0}"
-    launchctl load "$DJAY_SYNC_PLIST" 2>/dev/null && echo "${_g}✅ djay sync service loaded${_0}" || echo "${_r}❌ Failed to load djay sync service${_0}"
-  fi
-fi
+# The firewall check moved into `zdoctor` (lib/doctor.zsh) — a security warning
+# is worth showing when you ask for it, not a `socketfilterfw` shell-out on every
+# shell start. LaunchAgent status likewise:
+#   source "$ZSHRC_ROOT/extras/music/djay-services.zsh" && djay-services-check

@@ -86,6 +86,7 @@ if [[ -z "$SKIP_NVM_AUTOLOAD" ]]; then
   source "$ZSHRC_ROOT/vendor/nvm.zsh" 2>/dev/null || true
 fi
 source "$ZSHRC_ROOT/lib/node.zsh"
+(( $+functions[nvm-autoload-init] )) && nvm-autoload-init
 
 # ============================================================================ #
 # Docker-Specific Environment Variables

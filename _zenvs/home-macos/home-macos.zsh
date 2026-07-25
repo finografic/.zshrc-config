@@ -27,7 +27,6 @@ fi
 
 # INCLUDES: DEFAULTS
 source "$ZSHRC_ROOT/lib/git.zsh"
-source "$ZSHRC_ROOT/lib/dev.jest.zsh"
 source "$ZSHRC_ROOT/lib/llms.zsh"
 source "$ZSHRC_ROOT/lib/paths.zsh"
 
@@ -40,9 +39,11 @@ source "$ZENV_PATH/$ZENV.backups.zsh"
 source "$ZENV_PATH/$ZENV.aliases.zsh"
 source "$ZENV_PATH/$ZENV.dev.zsh"
 
-# INCLUDES: SCRIPTS
+# INCLUDES: SCRIPTS (opt-in extras — this profile is where they belong, per the
+# layer table; they used to be sourced from main.zsh for EVERY environment)
 source "$ZSHRC_ROOT/extras/music/backup-dj-crate.zsh"
-# djay-backup-music
+source "$ZSHRC_ROOT/extras/music/djay_icloud_sync.zsh"
+source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 
 # ============================================================================ #
 
@@ -103,25 +104,7 @@ update-ghostty-config
 #   fi
 # fi
 
-# ============================================================================ #
-# VERIFY: LaunchAgent Services (djay backup, etc.)
-# ============================================================================ #
-
-# Check djay backup service
-DJAY_BACKUP_PLIST="$HOME/Library/LaunchAgents/com.user.dj-crate-backup.plist"
-if [[ -f "$DJAY_BACKUP_PLIST" ]]; then
-  if ! launchctl list | grep -q "com.user.dj-crate-backup"; then
-    echo "${_y}⚠️  djay backup service not loaded. Loading...${_0}"
-    launchctl load "$DJAY_BACKUP_PLIST" 2>/dev/null && echo "${_g}✅ djay backup service loaded${_0}" || echo "${_r}❌ Failed to load djay backup service${_0}"
-  fi
-  # TODO: Initial setup - ensure plist has RunAtLoad=true for startup execution
-fi
-
-# Check djay sync service (if exists)
-DJAY_SYNC_PLIST="$HOME/Library/LaunchAgents/com.user.djay-sync.plist"
-if [[ -f "$DJAY_SYNC_PLIST" ]]; then
-  if ! launchctl list | grep -q "com.user.djay-sync"; then
-    echo "${_y}⚠️  djay sync service not loaded. Loading...${_0}"
-    launchctl load "$DJAY_SYNC_PLIST" 2>/dev/null && echo "${_g}✅ djay sync service loaded${_0}" || echo "${_r}❌ Failed to load djay sync service${_0}"
-  fi
-fi
+# LaunchAgent status for the djay backup/sync jobs is no longer checked on every
+# shell (it cost two `launchctl list` shell-outs and could load services behind
+# your back). To check them:
+#   source "$ZSHRC_ROOT/extras/music/djay-services.zsh" && djay-services-check

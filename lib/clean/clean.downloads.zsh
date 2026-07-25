@@ -4,19 +4,22 @@
 # ============================================================================ #
 
 function clean-downloads() {
-	echo -e "${_grey}"
-	echo "Cleaning Downloads..."
-	echo -e "${_0}"
+	print "${_grey}Cleaning Downloads...${_0}"
 
 	setopt local_options no_nomatch
 
-	local -a folders_to_clean=(
-		$HOME/Downloads/**/*.mp4.mp4
-		$HOME/dwhelper/**/*.mp4.mp4
+	local -a files_to_clean=(
+		$HOME/Downloads/**/*.mp4.mp4(N)
+		$HOME/dwhelper/**/*.mp4.mp4(N)
 	)
 
+	if (( ${#files_to_clean} == 0 )); then
+		print "  nothing to do"
+		return 0
+	fi
+
 	local file
-	for file in "${folders_to_clean[@]}"; do
-		mv "$file" "$(echo "$file" | sed -E 's/.mp4.mp4/.mp4/')" 2>/dev/null
+	for file in "${files_to_clean[@]}"; do
+		clean-exec mv "$file" "${file%.mp4.mp4}.mp4"
 	done
 }

@@ -41,5 +41,10 @@ function load-nvmrc() {
 	_sync-nvm-path-vars
 }
 
-add-zsh-hook chpwd load-nvmrc
-load-nvmrc
+# Activates the auto-switch: registers the chpwd hook and resolves the version
+# for the starting directory. Sourcing this file must stay inert, so the caller
+# (main.zsh, or a profile) decides when to turn the feature on.
+function nvm-autoload-init() {
+	add-zsh-hook chpwd load-nvmrc
+	load-nvmrc
+}

@@ -25,6 +25,7 @@ export NVM_DIR="$HOME/.nvm"
 
 # Node helpers (.nvmrc autoload + pn / pnr / npmls)
 source "$ZSHRC_ROOT/lib/node.zsh"
+(( $+functions[nvm-autoload-init] )) && nvm-autoload-init
 
 # PATH basics
 PATH_NODE="${NPM_GLOBALS:-$HOME/.nvm/versions/node/$(node --version)/bin}"

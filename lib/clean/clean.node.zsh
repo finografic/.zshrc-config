@@ -102,17 +102,23 @@ function clean-node-modules-report() {
 }
 
 function clean-caches-npm() {
-	echo -e "${_grey}"
-	echo "Cleaning node caches..."
-	echo -e "${_0}"
+	print "${_grey}Cleaning node caches...${_0}"
 
-	npm cache clean --force
+	if ! command -v npm >/dev/null; then
+		print "  npm not found — skipping"
+		return 0
+	fi
+
+	clean-exec npm cache clean --force
 }
 
 function clean-caches-pnpm() {
-	echo -e "${_grey}"
-	echo "Cleaning pnpm caches..."
-	echo -e "${_0}"
+	print "${_grey}Cleaning pnpm caches...${_0}"
 
-	pnpm store prune
+	if ! command -v pnpm >/dev/null; then
+		print "  pnpm not found — skipping"
+		return 0
+	fi
+
+	clean-exec pnpm store prune
 }

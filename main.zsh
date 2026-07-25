@@ -61,7 +61,7 @@ source "$ZSHRC_ROOT/core/options.zsh"
 source "$ZSHRC_ROOT/core/locale.zsh"
 
 # ============================================================================ #
-# NOTE: 8. CACHES CLEANUP
+# NOTE: 8. CLEANUP HELPERS - defines `zclean`; deletes nothing on its own
 # ============================================================================ #
 
 source "$ZSHRC_ROOT/lib/clean.zsh"
@@ -114,7 +114,10 @@ export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 # Common utilities
 source "$ZSHRC_ROOT/lib/utils.zsh"
 source "$ZSHRC_ROOT/lib/utils.disk.zsh"
+source "$ZSHRC_ROOT/lib/doctor.zsh"
 source "$ZSHRC_ROOT/lib/node.zsh"
+# Activate .nvmrc auto-switching (no-ops when nvm was not loaded by vendor/)
+(( $+functions[nvm-autoload-init] )) && nvm-autoload-init
 source "$ZSHRC_ROOT/lib/dev.zsh"
 
 # Terminal tools
@@ -137,13 +140,11 @@ source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
 
 # ============================================================================ #
 # NOTE: 15. CUSTOM SCRIPTS
+#
+# extras/ is opt-in and is never sourced from here — see the layer table in
+# docs/ARCHITECTURE.md. The djay sync and docker-cleanup helpers are sourced by
+# the profiles that actually want them (currently home-macos).
 # ============================================================================ #
-
-# DJ software sync
-source "$ZSHRC_ROOT/extras/music/djay_icloud_sync.zsh"
-
-# Docker cleanup utilities
-source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 
 # ============================================================================ #
 # NOTE: 16. FINALIZATION

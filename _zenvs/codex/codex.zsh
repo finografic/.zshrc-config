@@ -25,6 +25,7 @@ export NVM_DIR="$HOME/.nvm"
 
 # Node helpers (.nvmrc autoload + pn / pnr / npmls)
 source "$ZSHRC_ROOT/lib/node.zsh"
+(( $+functions[nvm-autoload-init] )) && nvm-autoload-init
 
 # PATH basics
 if command -v node >/dev/null 2>&1; then

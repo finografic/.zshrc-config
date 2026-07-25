@@ -222,12 +222,18 @@ the highest-leverage structural phase and everything after it gets easier.
 
 Every item is "wrap in a function; let a profile or the user call it" (D8):
 
-- [ ] `lib/clean.zsh:20-24` — **auto-runs `clean-downloads`, `clean-browsers`, `clean-caches-npm` on every full shell.** Deleting files on shell start is indefensible in a public repo. Replace with a `zclean [--all|--downloads|--browsers|--node] [--dry-run]` entry point. Optionally offer an opt-in `ZSHRC_AUTOCLEAN=1` honoured _once per day_ via a stamp file, not per shell.
-- [ ] `_zenvs/home-macos/home-macos.zsh` + `office-macos.zsh` — the djay / djay-sync LaunchAgent blocks run `launchctl list | grep` (×2) and can `launchctl load` on every shell. Move to `extras/music/`, expose as `djay-services-check`, and call it from nothing by default.
-- [ ] `office-macos.zsh:113-118` — the firewall `socketfilterfw --getglobalstate` shell-out. Move into `zdoctor`.
-- [ ] `update-ghostty-config` is invoked at profile load in both macOS profiles. Make it explicit or gate it on the config file actually being stale.
-- [ ] `main.zsh:147-150` — `extras/music/djay_icloud_sync.zsh` and `scripts/docker-cleanup.zsh` are sourced for **all** environments. Per the layer table, `extras/` is opt-in: move to `profiles/home-macos/`.
-- [ ] Sweep for remaining top-level work: any tracked `.zsh` under `lib/` whose body has a bare command at column 0 that isn't a `source`, `export`, `alias`, `typeset`, `autoload`, or `zstyle`. Automate this as a `zconf doctor` lint ([P5.2](#p52--zconf-commands)) so it stays fixed.
+- [x] `lib/clean.zsh:20-24` — **auto-runs `clean-downloads`, `clean-browsers`, `clean-caches-npm` on every full shell.** Deleting files on shell start is indefensible in a public repo. Replace with a `zclean [--all|--downloads|--browsers|--node] [--dry-run]` entry point. — Done. `--dry-run` is real, not cosmetic: a shared `clean-exec` helper wraps every destructive call and prints instead of executing. Two latent bugs fixed while in there: `clean-browsers` hardcoded one machine's random Firefox profile ID (now globbed, and the keep-list is overridable via `FIREFOX_KEEP_ORIGINS`), and it `rm -fr`'d the storage dir before re-globbing. The opt-in `ZSHRC_AUTOCLEAN=1` daily-stamp variant was **not** implemented — deliberate; ask for it if you want it.
+- [x] `_zenvs/home-macos/home-macos.zsh` + `office-macos.zsh` — the djay / djay-sync LaunchAgent blocks run `launchctl list | grep` (×2) and can `launchctl load` on every shell. Move to `extras/music/`, expose as `djay-services-check`, and call it from nothing by default. — Done: `extras/music/djay-services.zsh`. Verified it is _not_ defined in a normal shell.
+- [x] `office-macos.zsh:113-118` — the firewall `socketfilterfw --getglobalstate` shell-out. Move into `zdoctor`. — Done: new `lib/doctor.zsh` provides `zdoctor` (machine health: tool presence + firewall state), sourced from `main.zsh`. Distinct from the future `zconf doctor`, which lints the repo.
+- [x] `update-ghostty-config` is invoked at profile load in both macOS profiles. Make it explicit or gate it on the config file actually being stale. — Gated on staleness via the `-nt` **builtin** (no subprocess on the no-op path, unlike a `diff` shell-out). `--force` added for the `_config` helper.
+- [x] `main.zsh:147-150` — `extras/music/djay_icloud_sync.zsh` and `scripts/docker-cleanup.zsh` are sourced for **all** environments. Per the layer table, `extras/` is opt-in: move to `profiles/home-macos/`.
+- [x] Sweep for remaining top-level work: any tracked `.zsh` under `lib/` whose body has a bare command at column 0 that isn't a `source`, `export`, `alias`, `typeset`, `autoload`, or `zstyle`. Automate this as a `zconf doctor` lint ([P5.2](#p52--zconf-commands)) so it stays fixed. — Swept. Found and fixed:
+  - `lib/dev.jest.zsh` ran **`jest --clearCache` on source** (spawning jest on every home-macos shell). Deleted, per [P3.1](#p31--delete-orphans).
+  - `lib/mongodb.zsh` called `mverSet` on source. Deleted (orphan).
+  - `lib/k.plugin.zsh` — vendored `k`, already loaded via Antidote. Deleted, along with its `.editorconfig` shfmt exemption.
+  - `lib/template-tool/` — deleted outright. The "FINAL" script was one-off merge-conflict triage from a past template sync (hardcoded `TEST_DATE="2025-09-15"`, reads `MERGE_HEAD`); nothing reusable to extract, so its `README.tools.md` is dropped from the [P7.2](#p72--docs-set) fold-in list too.
+  - `lib/node/nvm-autoload.zsh` registered its `chpwd` hook **and** ran an initial `load-nvmrc` at source time. Both now live in `nvm-autoload-init`, called by `main.zsh` and the three profiles that boot node themselves. The load-order invariant this depends on is [P2.2](#p22--declarative-profile-manifests)'s job to encode.
+  - Untracked `plugins/.zsh_plugins.generated.{linux,macos}.zsh` (generated output).
 
 ### P1.3 — Single owner for `PATH`
 
@@ -329,12 +335,12 @@ file; `zsh -n` and a container smoke test pass for all profiles.
 
 Nothing sources these (verified by basename grep across all tracked `.zsh`/`.md`):
 
-- [ ] `lib/mongodb.zsh` (73 lines) — delete, or move to `extras/` if you still use MongoDB.
-- [ ] `lib/template-tool/` — **8 files, ~900 lines** of `__tool.zsh`, `__tool_01.zsh`, `__tool-02-DRAFT.zsh`, `__tool-03-DRAFT.zsh`, `__tool-FINAL.zsh`, `__tool-accept.zsh`, `__TOOLS.zsh`, plus `__colors.zsh` _and_ `colors.zsh` (a third copy of the palette) and three screenshots. This is a scratch workspace. Extract whatever the "FINAL" version was actually for, or delete the directory outright. Either way it must not ship publicly as-is.
-- [ ] `lib/k.plugin.zsh` (593 lines) — a vendored copy of `supercrabtree/k`, but `plugins/.zsh_plugins.txt` already loads `k` via Antidote from its own repo. Delete the vendored copy.
-- [ ] `lib/dev.jest.zsh` (91 lines) — sourced only by `home-macos`, and it is employer-era Jest tooling. Delete or move to `extras/`.
+- [x] `lib/mongodb.zsh` (73 lines) — delete, or move to `extras/` if you still use MongoDB. — Deleted in [P1.2](#p12--purge-source-time-side-effects) (it also ran `mverSet` at source time).
+- [x] `lib/template-tool/` — **8 files, ~900 lines** … This is a scratch workspace. Extract whatever the "FINAL" version was actually for, or delete the directory outright. — Deleted outright in [P1.2](#p12--purge-source-time-side-effects); nothing reusable (one-off merge-conflict triage with a hardcoded 2025 date).
+- [x] `lib/k.plugin.zsh` (593 lines) — a vendored copy of `supercrabtree/k`, but `plugins/.zsh_plugins.txt` already loads `k` via Antidote from its own repo. Delete the vendored copy. — Deleted in [P1.2](#p12--purge-source-time-side-effects), with its `.editorconfig` shfmt exemption.
+- [x] `lib/dev.jest.zsh` (91 lines) — sourced only by `home-macos`, and it is employer-era Jest tooling. Delete or move to `extras/`. — Deleted in [P1.2](#p12--purge-source-time-side-effects); it ran `jest --clearCache` at source time.
 - [ ] `themes/gallois-custom.zsh-theme`, `themes/restore-theme.zsh` — verify against `themes/default.theme.zsh`; delete whichever is superseded.
-- [ ] `.main.zsh.swp` (16 KB tracked vim swapfile), `plugins/.zsh_plugins.generated.{linux,macos}.zsh` (generated output — `.gitignore` already ignores `.zsh_plugins.generated.zsh` but not these two variants).
+- [x] `.main.zsh.swp` (16 KB tracked vim swapfile) — untracked in [P0.2](#p02--scrub-secrets-and-pii-from-the-working-tree); `plugins/.zsh_plugins.generated.{linux,macos}.zsh` untracked in [P1.2](#p12--purge-source-time-side-effects) and now covered by `.gitignore`.
 
 That's roughly **1,700 lines and 66 MB** removed before a single behavioural change.
 
@@ -698,3 +704,11 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
 - 2026-07-26 — **P4.1**, **P4.2**, and the `typeset -U path PATH` item from **P1.3**,
   pulled forward (untracking `packages/node/dist/` broke the two startup `node` calls that
   depended on it). Node is now entirely off the startup path; `packages/node` is deleted.
+- 2026-07-26 — **P1.2** (`[OPUS]`): source-time side effects purged. `lib/clean.zsh` no
+  longer deletes files on shell start — it defines `zclean … [--dry-run]`. The djay
+  LaunchAgent checks, the firewall shell-out and the unconditional ghostty config copy are
+  gone from the load path (`extras/music/djay-services.zsh`, new `zdoctor`, `-nt` staleness
+  gate). `extras/` is no longer sourced from `main.zsh`. Four orphans deleted along the way
+  (`dev.jest.zsh`, `mongodb.zsh`, `k.plugin.zsh`, `template-tool/`), closing most of
+  **P3.1**. **Exit criteria verified**: every `lib/**.zsh` sources with zero output under
+  `zsh -f`.

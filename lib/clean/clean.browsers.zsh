@@ -4,32 +4,52 @@
 # ============================================================================ #
 
 function clean-browsers() {
-	echo -e "${_grey}"
-	echo "Cleaning Browsers..."
-	echo -e "${_0}"
+	print "${_grey}Cleaning Browsers...${_0}"
 
 	setopt local_options no_nomatch
 
-	local PATH_FIREFOX_STORAGE="$HOME/Library/Application Support/Firefox/Profiles/3qn4h86i.dev-edition-default/storage/default"
-	local PATH_FIREFOX_STORAGE_TEMP="$PATH_FIREFOX_STORAGE/__TEMP"
-	local ignored
+	# Origins to preserve. Override in .env with FIREFOX_KEEP_ORIGINS=(...).
+	local -a clean_ignores
+	if (( ${+FIREFOX_KEEP_ORIGINS} )); then
+		clean_ignores=("${FIREFOX_KEEP_ORIGINS[@]}")
+	else
+		clean_ignores=(
+			"https+++mail.google.com"
+			"https+++calendar.google.com"
+			"https+++drive.google.com"
+			"https+++www.youtube.com"
+		)
+	fi
 
-	local -a clean_ignores=(
-		"https+++mail.google.com"
-		"https+++calendar.google.com"
-		"https+++drive.google.com"
-		"https+++www.youtube.com"
-		"https+++www.bing.com"
-	)
+	# The profile directory name is randomly generated per machine, so glob for
+	# it rather than hardcoding one.
+	local -a profiles=("$HOME/Library/Application Support/Firefox/Profiles"/*/storage/default(N/))
 
-	[[ ! -d "$PATH_FIREFOX_STORAGE_TEMP" ]] && mkdir "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null
+	if (( ${#profiles} == 0 )); then
+		print "  no Firefox profile storage found"
+		return 0
+	fi
 
-	for ignored in "${clean_ignores[@]}"; do
-		[[ -d "$PATH_FIREFOX_STORAGE/$ignored" ]] && mv "$PATH_FIREFOX_STORAGE/$ignored" "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null
+	local storage temp ignored
+	for storage in "${profiles[@]}"; do
+		local -a doomed=("$storage"/https+++*(N/))
+		if (( ${#doomed} == 0 )); then
+			continue
+		fi
+
+		temp="$storage/__TEMP"
+		clean-exec mkdir -p "$temp"
+
+		for ignored in "${clean_ignores[@]}"; do
+			[[ -d "$storage/$ignored" ]] && clean-exec mv "$storage/$ignored" "$temp"
+		done
+
+		# Re-glob: the allowlisted origins have been moved out of the way.
+		doomed=("$storage"/https+++*(N/))
+		(( ${#doomed} )) && clean-exec rm -rf "${doomed[@]}"
+
+		local -a preserved=("$temp"/*(N))
+		(( ${#preserved} )) && clean-exec mv "${preserved[@]}" "$storage"
+		clean-exec rmdir "$temp"
 	done
-
-	rm -fr "$PATH_FIREFOX_STORAGE"/https+++* 2>/dev/null
-
-	mv "$PATH_FIREFOX_STORAGE_TEMP"/* "$PATH_FIREFOX_STORAGE" 2>/dev/null
-	rm -fr "$PATH_FIREFOX_STORAGE_TEMP" 2>/dev/null
 }

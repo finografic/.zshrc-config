@@ -5,7 +5,7 @@
 ### 1. Helper Script (Easiest)
 
 ```bash
-./examples/run-docker-zsh.sh
+./extras/examples/run-docker-zsh.sh
 ```
 
 ### 2. One-Liner
@@ -18,7 +18,7 @@ docker run -it --rm -v ~/.zshrc-config:/root/.zshrc-config:ro -v $(pwd):/workspa
 
 ```bash
 # Build once
-docker build -t zsh-dev -f examples/Dockerfile.dev .
+docker build -t zsh-dev -f extras/examples/Dockerfile.dev .
 
 # Run anytime
 docker run -it --rm -v ~/.zshrc-config:/root/.zshrc-config:ro -v $(pwd):/workspace zsh-dev
@@ -27,7 +27,7 @@ docker run -it --rm -v ~/.zshrc-config:/root/.zshrc-config:ro -v $(pwd):/workspa
 ### 4. Docker Compose
 
 ```bash
-docker-compose -f examples/docker-compose.yml run --rm dev
+docker-compose -f extras/examples/docker-compose.yml run --rm dev
 ```
 
 ---
@@ -38,10 +38,10 @@ docker-compose -f examples/docker-compose.yml run --rm dev
 
 ```bash
 # Basic dev image
-docker build -t zsh-dev -f examples/Dockerfile.dev .
+docker build -t zsh-dev -f extras/examples/Dockerfile.dev .
 
 # Node.js image
-docker build -t zsh-node-dev -f examples/Dockerfile.node .
+docker build -t zsh-node-dev -f extras/examples/Dockerfile.node .
 ```
 
 ### Run Containers
@@ -71,22 +71,22 @@ docker run -it --rm \
 
 ```bash
 # Start in background
-docker-compose -f examples/docker-compose.yml up -d dev
+docker-compose -f extras/examples/docker-compose.yml up -d dev
 
 # Attach to running
-docker-compose -f examples/docker-compose.yml exec dev zsh
+docker-compose -f extras/examples/docker-compose.yml exec dev zsh
 
 # Run and attach (new container each time)
-docker-compose -f examples/docker-compose.yml run --rm dev
+docker-compose -f extras/examples/docker-compose.yml run --rm dev
 
 # Stop all
-docker-compose -f examples/docker-compose.yml down
+docker-compose -f extras/examples/docker-compose.yml down
 
 # Rebuild
-docker-compose -f examples/docker-compose.yml build
+docker-compose -f extras/examples/docker-compose.yml build
 
 # View logs
-docker-compose -f examples/docker-compose.yml logs -f dev
+docker-compose -f extras/examples/docker-compose.yml logs -f dev
 ```
 
 ### Container Management
@@ -127,7 +127,7 @@ Edit `_zenvs/docker-dev/docker-dev.zsh`:
 export SKIP_NVM_AUTOLOAD=1
 
 # Or add:
-source "$ZSHRC_ROOT/lib/nvm.zsh"
+source "$ZSHRC_ROOT/vendor/nvm.zsh"
 ```
 
 ### Disable Banner
@@ -177,8 +177,7 @@ RUN apt-get update && apt-get install -y zsh
 
 ## 📚 More Info
 
-- Full guide: `DOCKER.md`
-- Examples: `examples/` directory
+- Examples: `extras/examples/` directory
 - Container profile: `_zenvs/docker-dev/`
 
 ---

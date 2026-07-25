@@ -16,7 +16,7 @@ Modular Zsh configuration (`zshrc-config`) that adapts to the host: one config t
 
 ## Status
 
-A full project audit is complete: `PROJECT_ANALYSIS_AND_REFACTOR.md` (repo root) documents broken/orphaned tooling, dedupe and cleanup targets, an `office-macos` skeleton-reset plan, AI-agent-doc realignment, a `zupdate` rewrite proposal, and optional folder-restructure/TypeScript/git-history work, sequenced into a 6-phase plan. Phase 1 (tooling truth) is now done: real `oxlint` + `oxfmt` configs were added and wired into `lint-staged` via Husky `pre-commit`, with `commitlint` enforcing conventional commit messages via `commit-msg`. This replaces a prior setup where `oxlint`/`dprint` were referenced in `package.json`/`AGENTS.md` but never actually installed or configured. Phases 0 and 2–6 (quick-win cleanup, `office-macos` skeleton, `zupdate` rewrite, agent-doc rewrite, structure/TS decisions, git-history squash) are not yet started.
+A full project audit is maintained at `docs/todo/PROJECT_ANALYSIS_AND_REFACTOR.md`; the repo-root file is only a pointer to that canonical copy. It documents orphaned tooling/code, dedupe and cleanup targets, an `office-macos` skeleton-reset plan, AI-agent-doc realignment, a `zupdate` rewrite proposal, Docker profile triage, and optional folder-restructure/TypeScript/git-history work. Phase 1 changed after the original audit: real `oxlint` + `oxfmt` configs were added and wired into `lint-staged`, but current lint still reports Node typings/orphaned TS cleanup issues. Phases 0 and 2–6 (quick-win cleanup, `office-macos` skeleton, `zupdate` rewrite, agent-doc rewrite, structure/TS decisions, git-history squash) are not yet started.
 
 ### Recent commits
 
@@ -29,7 +29,7 @@ A full project audit is complete: `PROJECT_ANALYSIS_AND_REFACTOR.md` (repo root)
 
 ## Key Decisions
 
-- `oxlint` + `oxfmt` are the linting/formatting tools going forward; `dprint` is not used (no config exists, not treated as active tooling).
+- `oxlint` + `oxfmt` are the linting/formatting tools going forward; `dprint` is not used.
 - Commit messages must follow Conventional Commits (`commitlint.config.mjs`); the existing `zupdate` auto-message (`updated from: $ZENV`) does not conform and is slated for rewrite (see analysis doc §5).
 - `.agents/memory.md` is intentionally gitignored (session-local scratch); `.agents/handoff.md` is tracked and is the durable state snapshot.
 

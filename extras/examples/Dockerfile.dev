@@ -43,7 +43,7 @@ CMD ["zsh"]
 # USAGE:
 # ------
 # Build:
-#   docker build -t zsh-dev:latest -f examples/Dockerfile.dev .
+#   docker build -t zsh-dev:latest -f extras/examples/Dockerfile.dev .
 #
 # Run with host config mounted:
 #   docker run -it --rm \

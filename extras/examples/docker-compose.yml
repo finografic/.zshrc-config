@@ -7,8 +7,8 @@ services:
   # Main development container
   dev:
     build:
-      context: .
-      dockerfile: examples/Dockerfile.dev
+      context: ../..
+      dockerfile: extras/examples/Dockerfile.dev
     image: zsh-dev:latest
     container_name: zsh-dev-container
 
@@ -46,8 +46,8 @@ services:
   # Example: Node.js development container
   node-dev:
     build:
-      context: .
-      dockerfile: examples/Dockerfile.node
+      context: ../..
+      dockerfile: extras/examples/Dockerfile.node
     image: zsh-node-dev:latest
     container_name: zsh-node-dev-container
     stdin_open: true

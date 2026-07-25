@@ -15,12 +15,11 @@ sequences them into phases.
 
 ## TL;DR — the five things that matter most
 
-1. **Broken tooling is wired into commit hooks.** `lint-staged` calls
-   `oxlint -c oxlint.config.ts`, but **oxlint is not installed and the config
-   file does not exist**. `pnpm format` calls `dprint fmt` but there is **no
-   `dprint.json`**. AGENTS.md documents `oxfmt` and `pnpm format:fix`, **neither
-   of which exists**. This is the "oxc linting/formatting" you asked about — the
-   verdict is **remove it**, it does not apply.
+1. **Tooling changed after this audit, but still needs a truth pass.**
+   `oxlint.config.ts`, `oxfmt.config.ts`, `oxlint`, and `oxfmt` now exist and
+   are wired through `package.json`/`lint-staged`; the original "missing oxc"
+   finding is outdated. Current check: `pnpm exec oxlint -c oxlint.config.ts
+--quiet` fails on Node typings, orphaned TS cleanup, and package ESM metadata.
 2. **A node subprocess dedupes `PATH` that nothing actually deduped.** `main.zsh`
    claims `typeset -U PATH` runs in bootstrap — **it does not exist anywhere in
    the repo**. Instead `build-path.mjs` spawns Node on every shell start to do a
@@ -42,29 +41,33 @@ sequences them into phases.
 
 ---
 
-## 1. Broken / orphaned tooling (fix or remove first)
+## 1. Tooling truth & orphaned code (refresh after recent changes)
 
-These fail _today_ or are dead weight. Highest priority because they degrade
-every commit and confuse both humans and agents.
+This section was originally written before the oxc setup landed. Treat the old
+"oxlint/oxfmt missing" conclusion as superseded; the remaining issue is that
+tooling now exists but still reports real problems.
 
-| Item                                                                        | State                                                                                                                  | Evidence                                                                          |
-| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `oxlint` lint-staged hook                                                   | **Broken** — binary not installed, `oxlint.config.ts` missing                                                          | `package.json` `lint-staged`; `node_modules/.bin` has no `oxlint`; no config file |
-| `pnpm format` / `format.check`                                              | **Broken** — `dprint` installed but no `dprint.json`                                                                   | `dprint` present in `.bin`; no `dprint.json` in repo                              |
-| `oxfmt`, `pnpm format:fix`                                                  | **Phantom** — documented, never existed                                                                                | `AGENTS.md` L68–71                                                                |
-| `packages/node/src/detect-env.ts` (+ `dist/detect-env.*`, `.map`, `.d.mts`) | **Orphaned** — never sourced/imported                                                                                  | `grep detect-env` → 0 hits outside its own files                                  |
-| `packages/node/spinner.mjs` (stray copy at package root)                    | **Duplicate** — differs from `dist/spinner.mjs`, unused                                                                | `main.zsh` sources `dist/spinner.mjs` only                                        |
-| `build-path.mjs` PATH dedup                                                 | **Redundant** — `typeset -U PATH` does this natively; the claimed bootstrap `typeset -U` **does not exist**            | `main.zsh:115` comment vs. repo-wide grep = 0 hits                                |
-| Duplicate `build-path.mjs` call                                             | Legacy invocation in `lib/utils.zsh:16` overlaps `main.zsh:163`                                                        | both run the same script                                                          |
-| commitlint vs. `zupdate`                                                    | **Contradiction** — commit-msg hook enforces conventional commits, `zupdate` writes `"updated from: X"` (invalid type) | `commitlint.config.mjs` `type-enum`; `update-config.zsh:20`                       |
+| Item                                                                        | State                                                                                                                  | Evidence                                                                      |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `oxlint` / `oxfmt`                                                          | **Present, but verify before relying on hooks** — configs and deps now exist; lint currently fails                     | `package.json`, `oxlint.config.ts`, `oxfmt.config.ts`; `pnpm exec oxlint ...` |
+| `dprint`                                                                    | **Retired in repo guidance** — AGENTS.md now points at oxfmt; keep dprint out unless deliberately reintroduced         | `AGENTS.md`; `package.json`                                                   |
+| `package.json` ESM metadata                                                 | **Warning** — TS config files are reparsed as ESM because the package has no `"type": "module"`                        | Node warning from `oxlint.config.ts` load                                     |
+| Node typings for TS utilities                                               | **Broken lint/type surface** — `fs`, `process`, `child_process` are unresolved under type-aware oxlint                 | `packages/node/src/*.ts` lint output                                          |
+| `packages/node/src/detect-env.ts` (+ `dist/detect-env.*`, `.map`, `.d.mts`) | **Orphaned** — never sourced/imported                                                                                  | `grep detect-env` → 0 hits outside its own files                              |
+| `packages/node/spinner.mjs` (stray copy at package root)                    | **Duplicate** — differs from `dist/spinner.mjs`, unused                                                                | `main.zsh` sources `dist/spinner.mjs` only                                    |
+| `build-path.mjs` PATH dedup                                                 | **Redundant** — `typeset -U PATH` does this natively; the claimed bootstrap `typeset -U` **does not exist**            | `main.zsh:115` comment vs. repo-wide grep = 0 hits                            |
+| Duplicate `build-path.mjs` call                                             | Legacy invocation in `lib/utils.zsh:16` overlaps `main.zsh:163`                                                        | both run the same script                                                      |
+| commitlint vs. `zupdate`                                                    | **Contradiction** — commit-msg hook enforces conventional commits, `zupdate` writes `"updated from: X"` (invalid type) | `commitlint.config.mjs` `type-enum`; `update-config.zsh:20`                   |
 
 **Recommendation:**
 
-- Delete the `lint-staged` block and remove `oxlint` from the mental model
-  entirely (it was never installed).
-- For `dprint`: either add a minimal `dprint.json` **or** drop the
-  `format`/`format.check` scripts and the `dprint` dep. Given only 4 TS source
-  files, **dropping it** is the leaner choice; keep formatting an editor concern.
+- Keep the current oxc direction unless a future validation pass proves it too
+  heavy for the repo. The old "remove oxlint/oxfmt" recommendation is stale.
+- Keep AGENTS.md's formatter preference aligned with the active oxfmt setup.
+- Decide whether to add `"type": "module"` to `package.json` or rename config
+  files to avoid the ESM reparsing warning.
+- Fix Node typings only if `packages/node` survives; otherwise delete the Node
+  utilities first and let that remove the lint errors naturally.
 - Delete `detect-env.ts` + its build artifacts (see §7 for the alternative:
   promoting it to the single source of truth — pick one, don't leave both).
 - Delete stray `packages/node/spinner.mjs`.
@@ -163,10 +166,12 @@ duplication**, not absence.
   `general.instructions.md` mandating strict TS, camelCase, PascalCase
   components). **~90% does not apply** to a zsh config repo and actively
   misdirects agents.
-- **Fragmented planning docs**: `TODO_REFACTOR.md` (root), `docs/todo/ROADMAP.md`,
-  `docs/MODELS_FOR_REFACTOR.md`, `.agents/handoff.md`, `.agents/memory.md`, and
-  now this file. AGENTS.md also references `TODO_REFACTOR_PROGRESS.md` (learned
-  pref) which doesn't exist. An agent has no single source of truth.
+- **Fragmented planning docs**: root `TODO_REFACTOR.md` and
+  `docs/MODELS_FOR_REFACTOR.md` were already deleted in the current worktree;
+  `docs/todo/TODO_REFACTOR.md` was also deleted after review because its only
+  live items are better represented here. Remaining planning truth is still
+  split across `docs/todo/ROADMAP.md`, `.agents/handoff.md`, `.agents/memory.md`,
+  the root pointer for this analysis file, and this canonical `docs/todo/` copy.
 - AGENTS.md references rule files as if canonical, but their content targets a
   different kind of project.
 
@@ -176,9 +181,10 @@ duplication**, not absence.
   `function` + kebab-case, color-var usage, boxed comment style, `--dry-run`
   convention, "modules" terminology, the multi-system `.env`/`_zenvs` model.
   Keep only the genuinely shared docs (markdown/table conventions, git policy).
-- **Consolidate planning into one file** (e.g. this doc + a single
-  `docs/todo/ROADMAP.md`). Retire `TODO_REFACTOR.md`, `MODELS_FOR_REFACTOR.md`,
-  and the phantom `TODO_REFACTOR_PROGRESS.md` reference.
+- **Consolidate planning into one file** (this doc + a single
+  `docs/todo/ROADMAP.md`). `TODO_REFACTOR.md` and `MODELS_FOR_REFACTOR.md` are
+  now retired/deleted; the root `PROJECT_ANALYSIS_AND_REFACTOR.md` duplicate has
+  been replaced with a pointer.
 - Keep `AGENTS.md` as the entry point (CLAUDE.md → AGENTS.md is already good),
   but prune its "Learned User Preferences" to what's still true and add a short
   "Architecture in 60 seconds" map (bootstrap → main → env → zenv).
@@ -226,8 +232,10 @@ The current layout is reasonable. Targeted tweaks only:
   `pnpm-workspace.yaml`/monorepo framing unless you plan to grow it.
 - **`scripts/` mixes** install, cleanup, docker, and Python normalizers. Group:
   `scripts/setup/`, `scripts/clean/`, `scripts/maintenance/`.
-- **`docs/`** has `DOCKER.md` + `DOCKER_IMPLEMENTATION.md` (merge), and
-  `MODELS_FOR_REFACTOR.md` (retire — see §4).
+- **Docker docs**: `docs/DOCKER.md` and `docs/DOCKER_IMPLEMENTATION.md` were
+  stale and deleted after triage. Keep the lightweight
+  `extras/examples/DOCKER_QUICKSTART.md` only if the `docker-dev` profile stays.
+  Refresh it alongside the examples, not as a separate long-form guide.
 - **`lib/` is actively layering** (not “leave alone”) — see **§9** for the
   emerging `vendor` / `lib/node` / `lib/clean` model and remaining sweep ideas.
   Still worth splitting the large `lib/dev.zsh` by concern if it keeps growing.
@@ -257,8 +265,8 @@ runs off the hot path. Shell startup is the hot path — every Node spawn costs
 and reserve TS for tooling you invoke deliberately (build scripts, generators).
 Given that, the honest end-state is likely **spinner in zsh, no Node at
 startup** — which also lets you delete the whole `packages/node` build pipeline
-(`tsdown`, `tsx`, `dist/`). That folds into §5 of the existing `TODO_REFACTOR.md`
-caching goal from a different angle: don't cache the Node call, eliminate it.
+(`tsdown`, `tsx`, `dist/`). That replaces the old `TODO_REFACTOR.md` caching
+goal from a different angle: don't cache the Node call, eliminate it.
 
 ---
 
@@ -306,12 +314,13 @@ bits.
 - Remove commented-out `# source` lines and the `vim` alias footgun in `main.zsh`.
 - Fix the unreachable docker branch in `determine-environment`.
 
-### Phase 1 — Tooling truth (fix the broken pipeline)
+### Phase 1 — Tooling truth (refresh the pipeline)
 
-# NOTE: MAY BE DONE ALREADY, OR NOT APPLY
-
-- Remove the `oxlint` lint-staged block; drop `oxlint`/`oxfmt` from all docs.
-- Decide dprint: add `dprint.json` **or** remove `format` scripts + dep (lean: remove).
+- Treat oxlint/oxfmt as current tooling, not phantom tooling.
+- Make `pnpm exec oxlint -c oxlint.config.ts --quiet` pass, or deliberately
+  scope lint away from TS utilities that are about to be deleted.
+- Keep stale dprint references out of AGENTS.md and related editor guidance.
+- Resolve the Node ESM warning from TS config loading.
 - Replace `build-path.mjs` with `typeset -U path PATH`; remove both Node calls.
 - Align AGENTS.md with reality (no phantom scripts/tools).
 
@@ -333,7 +342,7 @@ bits.
 ### Phase 5 — Structure & TS (optional)
 
 - Flatten aspirational monorepo scaffolding; decide spinner-in-zsh vs. keep Node.
-- Group `scripts/`; merge docker docs.
+- Group `scripts/`; decide whether `docker-dev` should be generalized or removed.
 
 ### Phase 6 — Git history (optional, last)
 
@@ -410,9 +419,9 @@ must run _after_ nvm is loaded. Barrel (`lib/node.zsh`) is the right home;
   vscode/codex/docker-dev, _or_ document the intentional divergence.
 - `docker-dev` optional NVM: must keep **nvm before** `lib/node.zsh` (autoload
   no-ops if sourced too early). Easy to break when reordering.
-- Docs still mention dead `lib/nvm.zsh` in places (`docs/DOCKER*.md`,
-  `extras/examples/DOCKER_QUICKSTART.md`) — refresh to `vendor/nvm.zsh` /
-  `lib/node.zsh`.
+- Docker docs used to mention dead `lib/nvm.zsh` and stale `examples/*` paths.
+  `docs/DOCKER*.md` are now deleted; keep sweeping surviving Docker examples
+  toward `vendor/nvm.zsh`, `lib/node.zsh`, and `extras/examples/*`.
 
 **D. Module shape conventions (apply on touch)**
 
@@ -462,10 +471,87 @@ must run _after_ nvm is loaded. Barrel (`lib/node.zsh`) is the right home;
 
 ---
 
+## 10. Repo scan additions (2026-07-25)
+
+These are extra ideas from the current scan, not a final plan.
+
+### Docker profile: generalize or delete
+
+The Docker feature is real: `_zenvs/docker-dev/` exists, bootstrap skips heavy
+plugin setup in containers, and `extras/examples/` contains Dockerfiles,
+Compose, helper, and test scripts. The long docs were stale, but the profile
+itself may still be useful as a **generic container shell profile**.
+
+Decision options:
+
+- **Generalize and keep**: rename the mental model from "dev container for a
+  past work setup" to "generic Linux container profile"; keep only portable
+  Linux paths, git/dev basics, optional nvm, minimal prompt, and no host/work
+  assumptions.
+- **Delete entirely**: if you no longer mount this config into containers, drop
+  `_zenvs/docker-dev/`, Docker examples, `scripts/docker-cleanup.zsh`, Docker
+  detection branches, and README Docker references together.
+- **Middle path**: keep `_zenvs/docker-dev/` and the quickstart, but delete
+  image-building examples. The one-liner mount flow is enough for occasional
+  use.
+
+Suggested lean direction: **keep but simplify hard**. A generic container
+profile still fits the repo's multi-host model, but it should not carry its own
+large documentation system or work-specific assumptions.
+
+### Docker examples currently need path hygiene
+
+The examples live under `extras/examples/`, but older commands assumed
+`examples/`. Some paths were refreshed in this pass; future validation should
+still test:
+
+- `docker build -f extras/examples/Dockerfile.dev .`
+- `docker build -f extras/examples/Dockerfile.node .`
+- `docker compose -f extras/examples/docker-compose.yml run --rm dev`
+- `extras/examples/run-docker-zsh.sh`
+
+Also consider moving Docker artifacts into `extras/docker/` if they remain; the
+current `extras/examples/` name hides that these are runnable support files.
+
+### Tooling and package model
+
+- `package.json` is effectively ESM because config files use ESM syntax, but it
+  lacks `"type": "module"`. Add it only after checking script/runtime fallout.
+- Type-aware oxlint reports missing Node globals in `packages/node/src/*.ts`;
+  if Node utilities stay, add the correct Node typings/config. If Node startup
+  utilities go away, delete first and avoid repairing dead code.
+- `lint-staged` now formats Markdown with oxfmt and then `md-lint --fix`.
+  Confirm this order is intentional for agent-facing docs, especially tables.
+
+### Planning source of truth
+
+- `docs/todo/ROADMAP.md` is nearly empty while this analysis file is rich. Later
+  plan generation should promote only selected, sequenced work into ROADMAP,
+  not copy this whole audit.
+- Root `PROJECT_ANALYSIS_AND_REFACTOR.md` is now a short pointer to this
+  canonical `docs/todo/` copy.
+- `.agents/handoff.md` now points at the canonical `docs/todo/` analysis file.
+
+### Hygiene candidates surfaced by the scan
+
+- The stale `TODO_REFACTOR_PROGRESS.md` preference has been removed from
+  AGENTS.md; keep future refactor notes in this file or ROADMAP.
+- `extras/examples/run-docker-zsh.sh` is an executable-style script with a
+  shebang and local ANSI constants. If retained as an executable, that is fine;
+  if converted to a sourced module, bring it under module conventions.
+- `docker-dev.zsh` is sourced and currently has a shebang plus top-level output.
+  Bring it under sourced-module conventions if it stays: no shebang, `NOTE:`
+  header, color vars, and explicit functions for any nontrivial work.
+- Architecture health from lean-ctx reports a C-level score with many dead-code
+  and untested-function smells. Treat that as directional, not gospel, but it
+  supports doing the cleanup by domain rather than adding new abstractions.
+
+---
+
 ## Open questions for you
 
-1. **dprint:** keep formatting (add config) or drop entirely? (Recommend drop —
-   tiny TS surface.)
+1. **oxc tooling:** keep type-aware oxlint strict and fix the Node package
+   surface, or reduce lint scope while deleting the Node startup utilities?
 2. **Spinner:** worth a Node spawn on every shell, or convert to pure zsh and
    delete the whole `packages/node` build chain?
 3. **detect-env:** delete, or promote to single source of truth for env

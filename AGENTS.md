@@ -94,10 +94,10 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - Keep `~/.zshrc` section headers as `NOTE: {STEP_DESCRIPTION}` inside the canonical boxed comment style
 - Refer to sourced `.zsh` files as "modules"
 - Use color variables from `lib/colors.zsh` (e.g. `${_c}`, `${_0}`) for terminal output
-- Editor formatters: dprint for JS/TS/JSON/jsonc/YAML/TOML/CSS/SCSS/HTML; mkhl.shfmt for shellscript with tabs (`editor.insertSpaces: false`, `editor.detectIndentation: false`)
+- Editor formatters: oxfmt for JS/TS/JSON/jsonc/YAML/TOML/CSS/SCSS/HTML/Markdown; mkhl.shfmt for shellscript with tabs (`editor.insertSpaces: false`, `editor.detectIndentation: false`)
 - Prefer `pnpm -C "$path"` when running pnpm scripts in another repo without changing the shell PWD
 - Prefer root/`pnpm --filter` scripts over `cd <pkg> && pnpm …` for workspace packages
-- Update `TODO_REFACTOR_PROGRESS.md` when continuing refactor work across agent sessions
+- Use `docs/todo/PROJECT_ANALYSIS_AND_REFACTOR.md` for refactor analysis notes and `docs/todo/ROADMAP.md` for selected, sequenced work
 
 ## Learned Workspace Facts
 

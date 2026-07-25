@@ -63,7 +63,7 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 ├── scripts/            # Setup, cleanup, and repo-maintenance scripts
 ├── tools/              # bin-arm64/ + bin-x86_64/ arch-specific binaries (fastfetch, neofetch, …)
 ├── extras/             # music/, hardware/, examples/ — optional, not sourced by default
-├── docs/               # DOCKER.md, ROADMAP.md, process notes
+├── docs/               # ROADMAP.md, process notes, todo analysis
 ├── .agents/            # handoff.md (tracked state) + memory.md (local session log)
 ├── main.zsh            # Orchestrator: core → theme → lib → _zenvs/$ZENV → splash
 ├── update-config.zsh   # zupdate implementation (commit + rebase + push)
@@ -153,7 +153,7 @@ docker run -it --rm \
   zsh-dev:latest
 ```
 
-See `extras/examples/` for Dockerfiles and docker-compose.
+See `extras/examples/` for Dockerfiles, Docker Compose, and the quick reference.
 
 ---
 

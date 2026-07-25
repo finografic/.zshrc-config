@@ -1,5 +1,11 @@
 # Project Analysis & Refactor Plan — zshrc-config
 
+> **Superseded as the plan of record (2026-07-25).** The actionable, sequenced plan now lives
+> in [`TODO_PUBLIC_RELEASE_REFACTOR.md`](./TODO_PUBLIC_RELEASE_REFACTOR.md), which folds in
+> everything below plus the public-release, performance, and TypeScript-toolkit work.
+> This file remains the **audit and evidence log** — keep it for the reasoning and the
+> per-file findings; do not track work here.
+
 _Analysis date: 2026-07-24 · Branch: `master` · 1,214 commits since 2018-12-18_
 
 This document surveys the current state of `zshrc-config` and proposes a staged

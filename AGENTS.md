@@ -97,7 +97,7 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - Editor formatters: oxfmt for JS/TS/JSON/jsonc/YAML/TOML/CSS/SCSS/HTML/Markdown; mkhl.shfmt for shellscript with tabs (`editor.insertSpaces: false`, `editor.detectIndentation: false`)
 - Prefer `pnpm -C "$path"` when running pnpm scripts in another repo without changing the shell PWD
 - Prefer root/`pnpm --filter` scripts over `cd <pkg> && pnpm …` for workspace packages
-- Use `docs/todo/PROJECT_ANALYSIS_AND_REFACTOR.md` for refactor analysis notes and `docs/todo/ROADMAP.md` for selected, sequenced work
+- Use `docs/todo/TODO_PUBLIC_RELEASE_REFACTOR.md` for the current refactor plan and `docs/todo/ROADMAP.md` for selected, sequenced work
 
 ## Learned Workspace Facts
 

@@ -1,8 +1,8 @@
 # TODO — Public Release Refactor
 
 > **Status:** Not started (planned 2026-07-25). Consolidated plan of record for taking
-> `zshrc-config` public. Supersedes `PROJECT_ANALYSIS_AND_REFACTOR.md` as the _actionable_
-> document; that file remains the raw audit and evidence log.
+> `zshrc-config` public. Folds in and replaces the earlier `PROJECT_ANALYSIS_AND_REFACTOR.md`
+> audit (2026-07-24, since deleted) — its findings are preserved in Appendix A below.
 
 ---
 
@@ -18,6 +18,35 @@
 
 Phases are ordered by **risk of not doing them**, not by effort. Phase 0 is blocking:
 nothing else should be pushed to a public remote until it is done.
+
+**Before dispatching any agent, read [Model routing protocol](#model-routing-protocol) below — some tasks are tagged to pause and hand back for a manual model switch.**
+
+---
+
+## Model routing protocol
+
+This plan is tiered by model. **Most tasks are Sonnet-tier (the default — no marker):**
+mechanical, spec-driven transforms with explicit `file:line` targets. A minority are
+tagged for a stronger model or for human sign-off, with a callout directly under the task
+heading.
+
+| Tag           | Meaning                                                         | Agent behavior on reaching it                                                                                                                                                                                                     |
+| ------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _(none)_      | **Sonnet-tier.** Mechanical, spec-driven.                       | Proceed.                                                                                                                                                                                                                          |
+| **`[OPUS]`**  | Design, correctness-sensitive, or net-new authoring.            | **PAUSE before starting.** Do not begin the task. Post exactly: `MODEL SWITCH SUGGESTED -> Opus for <task id>: <one-line reason>`, then stop and wait. Resume only after the user confirms the switch or replies `proceed as-is`. |
+| **`[HUMAN]`** | Irreversible or safety-critical (git history, force-push, PII). | **STOP and hand back.** Lay out the exact steps, execute nothing, and wait for an explicit go.                                                                                                                                    |
+
+**Why pause, not self-switch:** an agent cannot change its own model mid-session. The
+switch is manual — in Claude Code, `/model opus` or a fresh session; in Cursor, the model
+picker. The tag exists so a fast model never silently executes a task that wanted a
+stronger one. When a run crosses back into unmarked tasks, suggest switching _down_ to
+Sonnet to save cost.
+
+**Batching:** contiguous `[OPUS]` tasks in a phase belong in one Opus session — pause once
+at the first, switch, clear the whole run, then switch back. Don't ping-pong per checkbox.
+
+**Greppable:** `grep -n '\[OPUS\]\|\[HUMAN\]' TODO_PUBLIC_RELEASE_REFACTOR.md` lists every
+gate and its line.
 
 ---
 
@@ -93,6 +122,8 @@ and will be world-readable the moment it flips public.
 
 ### P0.1 — Decide and execute the history strategy
 
+> **`[HUMAN]`** — Irreversible (fresh public repo, or `git-filter-repo` + force-push). Do **not** execute: lay out the exact commands and which machines need re-cloning, then STOP and wait for the user to run or explicitly authorize them. See [Model routing protocol](#model-routing-protocol).
+
 - [ ] Confirm the current visibility of `github.com/finografic/.zshrc-config` (private, hopefully).
 - [ ] Tag the current state on the private remote as an archive: `git tag archive/pre-public-2026-07-25 && git push origin --tags` (Bitbucket = archive of record).
 - [ ] **Recommended (D1a):** create a _new_ public GitHub repo and seed it with a clean, single-commit (or hand-curated) history from a scrubbed working tree. Keep Bitbucket + the existing GitHub repo private forever.
@@ -102,6 +133,8 @@ and will be world-readable the moment it flips public.
 - [ ] Either way: write down which machines need re-cloning and do them in one sitting.
 
 ### P0.2 — Scrub secrets and PII from the working tree
+
+> **`[OPUS]`** — High-stakes, easy to under-scrub. PAUSE and suggest switching to Opus before starting. Note: after the sweep, the `zconf scan` / CI regex — not the model — is the real backstop; a human confirms a clean grep before anything is pushed. See [Model routing protocol](#model-routing-protocol).
 
 Independent of D1 — the working tree must be clean regardless.
 
@@ -177,6 +210,8 @@ the highest-leverage structural phase and everything after it gets easier.
 
 ### P1.2 — Purge source-time side effects
 
+> **`[OPUS]`** — Load-order-sensitive: each side effect becomes a named function a profile opts into, without changing boot behavior. PAUSE and suggest switching to Opus before starting. See [Model routing protocol](#model-routing-protocol).
+
 Every item is "wrap in a function; let a profile or the user call it" (D8):
 
 - [ ] `lib/clean.zsh:20-24` — **auto-runs `clean-downloads`, `clean-browsers`, `clean-caches-npm` on every full shell.** Deleting files on shell start is indefensible in a public repo. Replace with a `zclean [--all|--downloads|--browsers|--node] [--dry-run]` entry point. Optionally offer an opt-in `ZSHRC_AUTOCLEAN=1` honoured _once per day_ via a stamp file, not per shell.
@@ -195,6 +230,8 @@ Every item is "wrap in a function; let a profile or the user call it" (D8):
 - [ ] Delete `lib/paths.zsh:14-16` `flatten-path` (legacy Node call) once [P4.1](#p41--remove-node-from-the-startup-path) lands.
 
 ### P1.4 — Fix the environment-detection logic
+
+> **`[OPUS]`** — Subtle correctness (unreachable branches, unified container/agent detection, explicit fallback semantics). PAUSE and suggest switching to Opus before starting. See [Model routing protocol](#model-routing-protocol).
 
 - [ ] `core/env.zsh:69` — `elif [[ $IS_OFFICE == true || $IS_DOCKER == true ]]` is **unreachable for `IS_OFFICE`** (handled one branch above), so `docker-dev` only ever resolves via `IS_DOCKER`. Reduce to `[[ $IS_DOCKER == true ]]`.
 - [ ] Docker detection is inconsistent: `bootstrap/index.zsh:24` checks `/.dockerenv`, `$IN_DOCKER`, `$DOCKER_CONTAINER`, while `core/env.zsh` relies on `$IS_DOCKER`. Unify into one `is-container` helper used by both.
@@ -243,6 +280,8 @@ touches no files; `docs/ARCHITECTURE.md` matches reality.
 - [ ] **Do not** touch the `home-macos` client-side shortcuts (`REPOS_APNAES`, `alias apnaes=…`, `alias mono=…`) — different concern; they're just local repo paths. Move their values into `.env` via the existing `REPO_ALIASES` registry pattern, which is already documented in the README and is the right answer for a public repo.
 
 ### P2.2 — Declarative profile manifests
+
+> **`[OPUS]`** — Genuine design, not transcription: the manifest loader, preset resolution, and the nvm-before-`lib/node.zsh` load-order invariant encoded so it can't be got wrong per-profile. PAUSE and suggest switching to Opus before starting. See [Model routing protocol](#model-routing-protocol).
 
 Today every `profiles/<name>/<name>.zsh` re-exports `ZSHRC_ROOT`, `ZENV_PATH`, `NVM`, then
 hand-lists `source` lines. `vscode.zsh`, `codex.zsh`, and `docker-dev.zsh` additionally
@@ -386,6 +425,8 @@ You cannot defend a budget you don't measure. This is a prerequisite for the res
 
 ### P4.4 — Structural speedups
 
+> **`[OPUS]`** — Highest payoff, silent-failure footgun (`autoload`/`fpath` ordering, `zcompile` staleness, lazy shell-outs). One change per benchmark run. PAUSE and suggest switching to Opus before starting. See [Model routing protocol](#model-routing-protocol).
+
 Ordered by payoff-to-risk. Do them one at a time with a benchmark run between each.
 
 - [ ] **`autoload` the cold functions.** ~7,300 lines of zsh are parsed on every shell, and most of it is functions you call rarely. Move rarely-used function bodies into a `functions/` directory on `fpath` with `autoload -Uz`, so startup registers a name instead of parsing a body. Best candidates: `lib/git/git.maintenance.zsh` (276 lines), `lib/git/git.commit.zsh` (230), `lib/git/git.tags.zsh` (147), `lib/git/git.stashes.zsh` (134), `lib/clean/*` (~350), `lib/llms.zsh`, `lib/utils/disk.zsh`. Aliases and completions must stay eager; function bodies need not be. This is the single biggest available win and it is the idiomatic zsh answer.
@@ -411,12 +452,16 @@ tests, and real argument parsing.
 
 ### P5.1 — Create `packages/zconf`
 
+> **`[OPUS]`** — Net-new TypeScript package: types, Vitest, `bin` entry, build wiring. PAUSE and suggest switching to Opus before starting. Contiguous with P5.2 — batch both in one Opus session. See [Model routing protocol](#model-routing-protocol).
+
 - [ ] A single CLI, `zconf`, in `packages/zconf/` — TS, built with tsdown (already your toolchain), `bin` entry, invoked via `pnpm zconf …` and a thin `zconf` zsh wrapper for interactive use.
 - [ ] Styling per your existing `.github/instructions/code/picocolors-cli-styling.instructions.md` — that instruction file finally has a real consumer.
 - [ ] Vitest tests for all pure logic (source-graph parsing, manifest validation, benchmark stats). This is what gives the public repo credibility, and none of it can be tested sanely in zsh.
 - [ ] Node typings configured properly this time (`@types/node`, `tsconfig` `"types"`), which closes the type-aware oxlint failures.
 
 ### P5.2 — `zconf` commands
+
+> **`[OPUS]`** — Static analysis over a file graph (`doctor`, `graph`, `scan`) with Vitest coverage. PAUSE and suggest switching to Opus before starting (or continue the P5.1 Opus session). See [Model routing protocol](#model-routing-protocol).
 
 | Command                    | What it does                                                                                                                                                                                                                                                                                                                     | Why TS, not zsh                                                                           |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -438,6 +483,8 @@ contains one real, tested package instead of aspirational scaffolding.
 ## Phase 6 — `zupdate` and git hygiene
 
 ### P6.1 — Rewrite `update-config.zsh`
+
+> **`[OPUS]`** — Must be correct and fail-safe on a Node-less server: staging semantics, rebase-conflict path, pre-push `zconf scan`. PAUSE and suggest switching to Opus before starting. See [Model routing protocol](#model-routing-protocol).
 
 Current flow: `fetch → add . → commit -m "updated from: $ZENV" → pull --rebase → push`. It
 `git add .`s everything unseen and writes a commit message that **its own commitlint hook
@@ -516,8 +563,8 @@ answer "why would I read this?" in the first screen.
 
 ## Appendix A — Evidence log
 
-Findings from the 2026-07-25 scan. `PROJECT_ANALYSIS_AND_REFACTOR.md` holds the earlier
-2026-07-24 audit; both are inputs to this plan.
+Findings from the 2026-07-25 scan, combined with the earlier 2026-07-24 audit
+(`PROJECT_ANALYSIS_AND_REFACTOR.md`, since folded in and deleted).
 
 ### Publish blockers
 

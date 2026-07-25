@@ -16,7 +16,7 @@ Modular Zsh configuration (`zshrc-config`) that adapts to the host: one config t
 
 ## Status
 
-A full project audit is maintained at `docs/todo/PROJECT_ANALYSIS_AND_REFACTOR.md`; the repo-root file is only a pointer to that canonical copy. It documents orphaned tooling/code, dedupe and cleanup targets, an `office-macos` skeleton-reset plan, AI-agent-doc realignment, a `zupdate` rewrite proposal, Docker profile triage, and optional folder-restructure/TypeScript/git-history work. Phase 1 changed after the original audit: real `oxlint` + `oxfmt` configs were added and wired into `lint-staged`, but current lint still reports Node typings/orphaned TS cleanup issues. Phases 0 and 2–6 (quick-win cleanup, `office-macos` skeleton, `zupdate` rewrite, agent-doc rewrite, structure/TS decisions, git-history squash) are not yet started.
+The plan of record is `docs/todo/TODO_PUBLIC_RELEASE_REFACTOR.md` (the older `PROJECT_ANALYSIS_AND_REFACTOR.md` audit was folded into it and deleted 2026-07-25). It sequences the work needed to take the repo public: Phase 0 (blocking — secrets/PII scrub, git history strategy, drop 70 MB of vendored binaries, stop mutating global git config, add LICENSE/CI), Phase 1 (load-model contract, side-effect purge, single `PATH` owner), Phase 2 (`office-macos` genericised, `apnaes` → `server-linux`, declarative profile manifests), Phases 3–4 (`lib/` consolidation, startup performance budget), Phase 5 (a `zconf` TypeScript toolkit off the hot path), Phases 6–8 (`zupdate` rewrite, docs/agent-rules/CI, optional polish). Nine open decisions (D1–D9) are listed at the top of that doc with recommendations; none are confirmed yet. No phase has started.
 
 ### Recent commits
 
@@ -35,9 +35,4 @@ A full project audit is maintained at `docs/todo/PROJECT_ANALYSIS_AND_REFACTOR.m
 
 ## Open Questions
 
-Carried from `PROJECT_ANALYSIS_AND_REFACTOR.md`:
-
-- Delete `packages/node/src/detect-env.ts` (orphaned) or promote it to the single source of truth for environment detection, replacing the zsh implementation in `core/env.zsh`?
-- Is the Node startup cost of `spinner.mjs` worth keeping, or should it move to pure zsh so `packages/node`'s build chain can be dropped entirely?
-- Flatten `packages/node` → `node/` (monorepo scaffolding is mostly unused), or grow into it?
-- When to run the one-time `chore(sync)` git-history squash — after the `zupdate` rewrite makes sync commits identifiable?
+Decisions D1–D9 in `docs/todo/TODO_PUBLIC_RELEASE_REFACTOR.md#decisions-needed-from-you` (git history strategy, `_zenvs/` → `profiles/` rename, profile manifest model, vendored binaries, Node on the startup path, where TypeScript lives, colors sourcing, source-time side effects, IP-based env detection). Each has a recommendation; none are confirmed.

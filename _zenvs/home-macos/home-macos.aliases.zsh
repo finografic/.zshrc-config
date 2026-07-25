@@ -264,6 +264,12 @@ function _deps() {
 
 alias pipe="cd $REPOS_FINO/@finografic-ai-agent-pipeline && l"
 
+@_agents() {
+  cd "$REPOS_FINO/@finografic-ai-agent-config" && l
+}
+
+alias agents="cd $REPOS_FINO/@finografic-ai-agent-config && l"
+
 @_lucide() {
   cd "$REPOS_FINO/@finografic-lucide-manager" && l
 }

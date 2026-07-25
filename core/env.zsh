@@ -39,19 +39,28 @@ fi
 export OS_ARCH=$(uname -m)
 export HOSTNAME=$(hostname)
 
-# IP Detection (with fallback)
-if command -v ipconfig >/dev/null; then
-  export IP=$(ipconfig getifaddr en0 2>/dev/null || curl -s ipinfo.io/ip)
-else
-  export IP=$(curl -s ipinfo.io/ip)
-fi
+# IP lookup is lazy and on demand — never at shell start. The previous
+# implementation ran `curl ipinfo.io/ip` on every shell, which is both a network
+# round-trip on the load path and a leak of your address to a third party.
+#
+#   myip            local address on the primary interface
+#   myip --public   public address (network call, explicit opt-in)
+function myip() {
+  if [[ "$1" == "--public" ]]; then
+    curl -s https://ipinfo.io/ip
+    print
+    return
+  fi
 
-# Known IP Addresses
-declare -A IP_ADDRESSES=(
-  [APNAES]='REDACTED-IP'
-  [OFFICE]='REDACTED-IP'
-  [HOME]='REDACTED-IP'
-)
+  if command -v ipconfig >/dev/null; then
+    ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null
+  elif command -v ip >/dev/null; then
+    ip -4 -o addr show scope global | awk '{print $4}' | cut -d/ -f1 | head -1
+  else
+    print "myip: no supported IP lookup tool found" >&2
+    return 1
+  fi
+}
 
 # ============================================================================ #
 # Environment Detection
@@ -67,7 +76,7 @@ function determine-environment() {
     echo "office-macos"
   elif [[ $IS_OFFICE == true || $IS_DOCKER == true ]]; then
     echo "docker-dev"
-  elif [[ $IS_SERVER == true || $IP == ${IP_ADDRESSES[APNAES]} ]]; then
+  elif [[ $IS_SERVER == true ]]; then
     export OS_NAME='Linux'
     echo "apnaes"
   elif [[ $OS_NAME == "Android" ]]; then

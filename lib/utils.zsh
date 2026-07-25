@@ -16,7 +16,11 @@ function config() {
 # ============================================================================ #
 
 # MISC COM
-alias ip="echo '\n\e[37mLocal IP addess: \e[0;35m$IP\n'"
+# Resolves at call time via core/env.zsh's `myip` — the old alias baked the
+# address in at definition time, so it went stale the moment the network changed.
+function ip() {
+  print "\n${_w}Local IP address: ${_m}$(myip)${_0}\n"
+}
 
 # NEW!! 2024-12-12
 function ports() {

@@ -110,6 +110,20 @@ deps-xscan-report.json
 
 # antidote generates new version on intialisation
 .zsh_plugins.generated.zsh
+.zsh_plugins.generated.*.zsh
+
+# Compiled zsh + machine-generated prompt caches (their filenames carry the
+# local username — these must never be tracked)
+*.zwc
+themes/p10k/**/*.cache/
+themes/p10k/**/.cache/
+
+# npm lockfile — this repo uses pnpm
+package-lock.json
+
+# Editor swapfiles + macOS custom-icon resource forks
+*.swp
+Icon?
 
 # Compiled source
 *.com

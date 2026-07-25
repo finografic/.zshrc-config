@@ -7,7 +7,9 @@
     <key>ProgramArguments</key>
     <array>
         <string>/bin/zsh</string>
-        <string>/Users/REDACTED/.zshrc-config/music/backup-dj-crate.zsh</string>
+        <!-- TEMPLATE: replace __HOME__ with your absolute home directory.
+             launchd does not expand $HOME, so this must be a literal path. -->
+        <string>__HOME__/.zshrc-config/extras/music/backup-dj-crate.zsh</string>
     </array>
     <key>RunAtLoad</key>
     <true/>

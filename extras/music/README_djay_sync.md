@@ -155,16 +155,16 @@ djay logs          # View recent activity
 ### Bundle Timestamp Issues
 
 The script now automatically updates bundle timestamps with intelligent logic. If you still see issues:
+
 1. Run `djay sync` manually
 2. Check the logs for timestamp update messages
 3. Verify the bundle shows appropriate time in Finder
 
 ### Cross-Machine Setup
 
-The service automatically adapts to different usernames:
-- **Home Mac** (`justin`): Automatically detected
-- **Office Mac** (`REDACTED-USERNAME`): Automatically detected
-- **Any future machine**: Will work without configuration changes
+The service automatically adapts to different usernames — the local account name is
+detected at runtime, so a personal Mac, a work Mac with a corporate account name, and any
+future machine all work without configuration changes.
 
 ## File Structure
 

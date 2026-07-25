@@ -50,7 +50,7 @@ source "$ZSHRC_ROOT/extras/music/backup-dj-crate.zsh"
 # source $ZSHRC_ROOT/.iterm2_shell_integration.zsh
 
 # PM2 + VERDACCIO
-# sudo env PATH=$PATH:/Users/REDACTED/.nvm/versions/node/v22.1.0/bin /Users/REDACTED/.nvm/versions/node/v22.1.0/lib/node_modules/pm2/bin/pm2 startup launchd -u justin --hp /Users/REDACTED
+# sudo env PATH=$PATH:$HOME/.nvm/versions/node/<version>/bin $HOME/.nvm/versions/node/<version>/lib/node_modules/pm2/bin/pm2 startup launchd -u "$USER" --hp "$HOME"
 
 # iTerm2 PROFILES > ADVANCED > SMART-SELECTION > ADD:
 # (REGEX for IGNORING CLI PROMPT WHEN SELECTING VIA TRIPLE-CLICK):

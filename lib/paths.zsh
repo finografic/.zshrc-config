@@ -9,7 +9,4 @@ Android) source "$ZSHRC_ROOT/lib/paths/paths.android.zsh" ;;
 *) source "$ZSHRC_ROOT/lib/paths/paths.linux.zsh" ;;
 esac
 
-# REMOVE DUPLICATES FROM PATH (legacy; build-path.mjs used at end of main.zsh)
-function flatten-path() {
-	export PATH=$(node "${ZSHRC_ROOT:-$HOME/.zshrc-config}/packages/node/dist/build-path.mjs")
-}
+# PATH de-duplication is handled by `typeset -U path PATH` in bootstrap/index.zsh.

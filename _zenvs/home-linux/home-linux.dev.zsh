@@ -13,8 +13,8 @@ alias pilot="cd $REPOS/auto-pilot/ && l"
 alias esm="cd $REPOS/starter-esm/ && l"
 alias apps="cd $HOME/.local/share/applications/ && l"
 
-# REMOTE: A2 HOSTING
-alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
+# REMOTE: tunnel for jmate / remote-vscode. Host details come from .env.
+alias a2="ssh -R 52698:localhost:52698 ${TUNNEL_SSH_HOST} -p ${TUNNEL_SSH_PORT:-22} -l ${TUNNEL_SSH_USER}"
 
 # DEVILBOX
 function devil() {

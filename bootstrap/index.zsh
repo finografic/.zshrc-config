@@ -11,6 +11,10 @@ if [[ "${IS_CODEX:-}" = "true" || -n "${CODEX_CI:-}" || -n "${CODEX_THREAD_ID:-}
   return 0
 fi
 
+# Keep $PATH de-duplicated for the whole session. zsh ties `path` to `PATH`, so
+# this one line does natively what build-path.mjs used to spawn node for.
+typeset -U path PATH
+
 # Load colors module (used throughout the config)
 source "$ZSHRC_ROOT/lib/colors.zsh"
 

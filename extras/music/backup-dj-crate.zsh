@@ -133,7 +133,7 @@ function djay-backup-music() {
 #     <key>ProgramArguments</key>
 #     <array>
 #         <string>/bin/zsh</string>
-#         <string>/Users/REDACTED/.zshrc-config/music/backup-dj-crate.zsh</string>
+#         <string>__HOME__/.zshrc-config/extras/music/backup-dj-crate.zsh</string>
 #     </array>
 #     <key>StartCalendarInterval</key>
 #     <dict>

@@ -138,19 +138,27 @@ and will be world-readable the moment it flips public.
 
 Independent of D1 — the working tree must be clean regardless.
 
-- [ ] `core/env.zsh:51-55` — delete the `IP_ADDRESSES` map (real home / office / server IPv4 addresses).
-- [ ] `core/env.zsh:71` — remove the `$IP == ${IP_ADDRESSES[APNAES]}` detection branch (D9). `.env` flags are sufficient.
-- [ ] `core/env.zsh:44-48` — drop the unconditional `curl -s ipinfo.io/ip` fallback. It is a **network call on every shell start** that also leaks your IP to a third party. Make `$IP` lazy: a `myip` function, called on demand.
-- [ ] `packages/node/src/types.ts:32` + `src/detect-env.ts` + all of `packages/node/dist/` — same IPs, plus committed build output. Deleted wholesale in [P4.2](#p42--delete-orphaned-node-utilities).
-- [ ] `tools/bin-arm64/install-binaries.sh:28` and `tools/bin-x86_64/install-binaries.sh:28` — same server IP. Removed with [P0.4](#p04--purge-vendored-third-party-binaries).
-- [ ] `_zenvs/office-macos/office-macos.zsh:101-102` — remove `git config --global user.name/user.email "justin.rankin@sage.com"`. See [P0.3](#p03--stop-mutating-global-git-config-and-authenticating-on-shell-start).
-- [ ] `_zenvs/home-linux/home-linux.dev.zsh:51` and `lib/git/git.core.zsh:92` — same pattern with the personal address. Remove; identity is a machine-setup step, not a shell-start step.
-- [ ] `_zenvs/home-macos/home-macos.dev.zsh:219` — `alias a="ssh -i ~/.ssh/id_hostinger.pub -p 22 apnaes@185.230.64.11"`. Move host/user/IP into `.env` (`SERVER_SSH_TARGET`) and reference the variable. Also note the alias points at a `.pub` file, which is the wrong half of the keypair — fix while you're there.
-- [ ] Root `.gitconfig` and `configs/.gitconfig` — both tracked, both carry your email and the Bitbucket URL. Convert to `configs/gitconfig.example` with placeholders; untrack the real ones.
-- [ ] `themes/p10k/$HOME.cache/p10k-*justin.rankin*` (6 tracked files, incl. `.zwc`) — machine-generated p10k caches with your username in the _path_. Untrack and gitignore `themes/p10k/**/*.cache/`, `*.zwc`.
-- [ ] `configs/.zshrc.OFFICE:1-5` — `CYPRESS_SBS_USER_PASSWORD`, `CYPRESS_CF_ACCESS_CLIENT_SECRET`, `AWS_CONFIG_FILE`. Values are empty, but the _names_ disclose employer infrastructure. Delete the file ([P1.5](#p15--collapse-the-configs-reference-zshrc-files)).
-- [ ] Grep sweep for anything left: `justin`, `rankin`, `sage`, `apnaes`, `finografic`, `hostinger`, `@gmail`, `Users/justin`, and an IPv4 regex. Everything that survives must be either a placeholder, an example, or in `.env`.
-- [ ] Add `.DS_Store` cleanup (`git rm --cached`) and untrack `Icon\r`, `scripts/Icon\r`, `scripts/Icon?-_DJ-BAG`, `.main.zsh.swp`, `package-lock.json` (repo uses pnpm).
+- [x] `core/env.zsh:51-55` — delete the `IP_ADDRESSES` map (real home / office / server IPv4 addresses).
+- [x] `core/env.zsh:71` — remove the `$IP == ${IP_ADDRESSES[APNAES]}` detection branch (D9). `.env` flags are sufficient.
+- [x] `core/env.zsh:44-48` — drop the unconditional `curl -s ipinfo.io/ip` fallback. It is a **network call on every shell start** that also leaks your IP to a third party. Make `$IP` lazy: a `myip` function, called on demand. (Added `myip` / `myip --public`; the two `$IP` consumers — the `ip` alias in `lib/utils.zsh`, which baked the address in at _definition_ time, and the splash footer — now call it at runtime.)
+- [x] `packages/node/src/types.ts:32` + `src/detect-env.ts` + all of `packages/node/dist/` — same IPs, plus committed build output. Deleted wholesale in [P4.2](#p42--delete-orphaned-node-utilities). (Pulled forward: removing `dist/` broke `main.zsh`'s two node calls, so [P4.1](#p41--remove-node-from-the-startup-path) and the rest of P4.2 were completed in the same pass.)
+- [x] `tools/bin-arm64/install-binaries.sh:28` and `tools/bin-x86_64/install-binaries.sh:28` — same server IP. Removed with [P0.4](#p04--purge-vendored-third-party-binaries).
+- [x] `_zenvs/office-macos/office-macos.zsh:101-102` — remove `git config --global user.name/user.email`. See [P0.3](#p03--stop-mutating-global-git-config-and-authenticating-on-shell-start).
+- [x] `_zenvs/home-linux/home-linux.dev.zsh:51` and `lib/git/git.core.zsh:92` — same pattern with the personal address. Remove; identity is a machine-setup step, not a shell-start step.
+- [x] `_zenvs/home-macos/home-macos.dev.zsh:219` — the `ssh` aliases. Host/user/port/key now come from `.env` (`SERVER_SSH_HOST`, `SERVER_SSH_USER`, `SERVER_SSH_PORT`, `SERVER_SSH_KEY`), documented in `.env.example`. The `.pub`-as-identity-file bug is fixed (`SERVER_SSH_KEY` is the private key). The second host in `home-linux.dev.zsh:17` got the same treatment via `TUNNEL_SSH_*`.
+- [x] Root `.gitconfig` and `configs/.gitconfig` — root one deleted outright (it was a copy of this repo's `.git/config`, only used by the office `cp` removed in P0.3); `configs/.gitconfig` → `configs/gitconfig.example` with placeholders.
+- [x] `themes/p10k/$HOME.cache/p10k-*justin.rankin*` (6 tracked files, incl. `.zwc`) — untracked, and `.gitignore` now covers `*.zwc` + `themes/p10k/**/*.cache/`.
+- [x] `configs/.zshrc.OFFICE:1-5` — deleted (confirmed it carried `CYPRESS_SBS_USER_PASSWORD`, `CYPRESS_CF_ACCESS_CLIENT_SECRET`, `AWS_CONFIG_FILE`). The remaining `configs/.zshrc.{HOME,SERVER,DOCKER}` are [P1.5](#p15--collapse-the-configs-reference-zshrc-files).
+- [x] Hardcoded absolute home paths made portable: `home-macos.paths.zsh:9` (bun), `home-linux.zsh:21` (konsole), `home-macos.zsh:53` (pm2 comment), and the djay LaunchAgent plist + its inline copy, which are templates and now use a `__HOME__` placeholder (launchd cannot expand `$HOME`).
+- [x] `_zenvs/docker-dev/configs/` deleted — `.zshrc-docker`, `.zshrc-docker-V2` (carried a `/Users/justin.rankin` path), and the stray `z` file. Also a [P1.5](#p15--collapse-the-configs-reference-zshrc-files) item.
+- [x] Untrack `Icon\r`, `scripts/Icon\r`, `scripts/Icon?-_DJ-BAG`, `.main.zsh.swp`, `package-lock.json` (repo uses pnpm); all now gitignored. `.DS_Store` was already untracked and ignored.
+- [ ] **Grep sweep — partially clear.** IPv4 literals: **zero** remain in tracked non-doc files. Emails, `@sage`, `hostinger`, `justin.rankin`: **zero**. Still outstanding, each owned by a later phase and each an _organisational name_ rather than a secret:
+  - `apnaes` throughout `_zenvs/apnaes/**`, `README.md`, `core/env.zsh` — resolved by the `server-linux` rename ([P2.1](#p21--the-two-renames-you-asked-for)).
+  - `finografic` repo-alias values in `_zenvs/home-macos/home-macos.aliases.zsh` (incl. `cv-justin-rankin`) — moved into `.env` via the `REPO_ALIASES` registry ([P2.1](#p21--the-two-renames-you-asked-for), final bullet).
+  - `bitbucket.org:justin-rankin/…` and the `$REPOS_FINO` note in `AGENTS.md:110-111` — [P7.3](#p73--agent-rules-made-relevant).
+  - `finograficKeyword*` example identifiers in `.github/instructions/naming/variable-naming.instructions.md` — [P7.3](#p73--agent-rules-made-relevant).
+  - `@finografic/*` npm package names (`.npmrc`, `package.json`, `.markdownlint.jsonc`, `.vscode/settings.json`) — **intentional and correct**; these are real published dependencies, not PII.
+  - **Phase 0 exit criteria is therefore not met until P2.1 and P7.3 land.** CI's `secret-scan` job enforces this and currently fails by design.
 
 ### P0.3 — Stop mutating global git config and authenticating on shell start
 
@@ -224,7 +232,7 @@ Every item is "wrap in a function; let a profile or the user call it" (D8):
 ### P1.3 — Single owner for `PATH`
 
 - [ ] Document the rule in `docs/ARCHITECTURE.md`: `vendor/*` owns tool paths, `lib/paths/*` owns OS paths, `profiles/*/…paths.zsh` owns host paths. Nothing else appends.
-- [ ] Add `typeset -U path PATH` **once**, early in `bootstrap/index.zsh`. This is what `main.zsh:115` already claims exists and what `build-path.mjs` was emulating.
+- [x] Add `typeset -U path PATH` **once**, early in `bootstrap/index.zsh`. This is what `main.zsh:115` already claims exists and what `build-path.mjs` was emulating. (Done with [P4.1](#p41--remove-node-from-the-startup-path).)
 - [ ] Remove ad-hoc appends from the wrong layers: `main.zsh:100-101` (homebrew coreutils/`hs`), `main.zsh:116`, `_zenvs/office-macos/office-macos.zsh:11` (Python 3.11 framework path), `:56-57` (`gen-test-summary`, `gen-todo-coverage`).
 - [ ] `_zenvs/apnaes/apnaes.paths.zsh:19` — `export PATH=$PATH:$(which curl)` appends a _file_ path, not a directory. Delete.
 - [ ] Delete `lib/paths.zsh:14-16` `flatten-path` (legacy Node call) once [P4.1](#p41--remove-node-from-the-startup-path) lands.
@@ -246,9 +254,9 @@ Every item is "wrap in a function; let a profile or the user call it" (D8):
 `_zenvs/docker-dev/configs/`. Eight copies of a three-line file.
 
 - [ ] Keep exactly one: `.zshrc` at the repo root, as the reference template (already the documented convention).
-- [ ] Delete `configs/.zshrc.{HOME,OFFICE,SERVER,DOCKER}`, `configs/.zshrc-docker-orig`, `_zenvs/docker-dev/configs/.zshrc-docker*`.
+- [ ] Delete `configs/.zshrc.{HOME,SERVER,DOCKER}`, `configs/.zshrc-docker-orig`. (`configs/.zshrc.OFFICE` and all of `_zenvs/docker-dev/configs/` — incl. the stray `z` file — already deleted in [P0.2](#p02--scrub-secrets-and-pii-from-the-working-tree).)
 - [ ] Keep `configs/{ghostty.config,kitty.conf,.vimrc,plug.vim}` — those are real reference configs. Consolidate `.vimrc.V1`/`.vimrc.V2` to one and drop `ghostty.config.office` if it differs only in font size.
-- [ ] Delete `_zenvs/docker-dev/configs/z` (stray file).
+- [x] Delete `_zenvs/docker-dev/configs/z` (stray file).
 
 **Exit criteria:** `source`-ing any `lib/**.zsh` in a bare `zsh -f` produces no output and
 touches no files; `docs/ARCHITECTURE.md` matches reality.
@@ -402,17 +410,21 @@ modules that work standalone (`zsh -f -c 'source lib/git.zsh'`), and no double-p
 
 Two `node` process spawns per interactive shell, ~30–80 ms each on macOS:
 
-- [ ] `main.zsh:110` — `node packages/node/dist/spinner.mjs`. This is a **deliberate 200 ms delay to give a "busy" impression**. Delete it. If you want the visual, a pure-zsh spinner around the actual work is a few lines and costs nothing; a fake delay is 200 ms of your life per shell.
-- [ ] `main.zsh:163` — `export PATH=$(node …/build-path.mjs)`. Replaced by `typeset -U path PATH` in `bootstrap/index.zsh` ([P1.3](#p13--single-owner-for-path)).
-- [ ] `lib/paths.zsh:14-16` — `flatten-path`, the third caller of the same script. Delete.
+> **Done 2026-07-26**, pulled forward from Phase 4 because the [P0.2](#p02--scrub-secrets-and-pii-from-the-working-tree) scrub untracked `packages/node/dist/`, which these calls depended on.
+
+- [x] `main.zsh:110` — `node packages/node/dist/spinner.mjs`. This is a **deliberate 200 ms delay to give a "busy" impression**. Delete it. If you want the visual, a pure-zsh spinner around the actual work is a few lines and costs nothing; a fake delay is 200 ms of your life per shell.
+- [x] `main.zsh:163` — `export PATH=$(node …/build-path.mjs)`. Replaced by `typeset -U path PATH` in `bootstrap/index.zsh` ([P1.3](#p13--single-owner-for-path)). Verified live: `typeset -p path` reports `typeset -aUT`, and all 54 entries are unique.
+- [x] `lib/paths.zsh:14-16` — `flatten-path`, the third caller of the same script. Delete.
 
 ### P4.2 — Delete orphaned Node utilities
 
-- [ ] `packages/node/src/detect-env.ts` — a full TypeScript reimplementation of `core/env.zsh`'s `determine-environment`, referenced nowhere. Delete (D6: env detection stays in zsh — it must work before Node exists, e.g. on a fresh server).
-- [ ] `packages/node/spinner.mjs` (stray root copy, differs from `dist/`) — delete.
-- [ ] `packages/node/dist/**` — committed build output, and `.gitignore` already lists `dist/`. Untrack.
-- [ ] With `spinner`, `build-path`, and `detect-env` all gone, `packages/node` is empty: delete it, along with `tsdown.config.ts`, its `tsconfig.json`, and the `build:node`/`typecheck:node` scripts. This also resolves the type-aware oxlint failures on unresolved `fs`/`process`/`child_process` — by deleting the dead code rather than repairing it.
-- [ ] Keep `pnpm-workspace.yaml` **only** if [Phase 5](#phase-5--typescript-where-it-actually-earns-its-place) goes ahead (it will re-populate `packages/`). Otherwise flatten.
+> **Done 2026-07-26**, same pass as [P4.1](#p41--remove-node-from-the-startup-path).
+
+- [x] `packages/node/src/detect-env.ts` — a full TypeScript reimplementation of `core/env.zsh`'s `determine-environment`, referenced nowhere. Delete (D6: env detection stays in zsh — it must work before Node exists, e.g. on a fresh server).
+- [x] `packages/node/spinner.mjs` (stray root copy, differs from `dist/`) — delete.
+- [x] `packages/node/dist/**` — committed build output, and `.gitignore` already lists `dist/`. Untrack.
+- [x] With `spinner`, `build-path`, and `detect-env` all gone, `packages/node` is empty: delete it, along with `tsdown.config.ts`, its `tsconfig.json`, and the `build:node`/`typecheck:node` scripts. This also resolves the type-aware oxlint failures on unresolved `fs`/`process`/`child_process` — by deleting the dead code rather than repairing it.
+- [x] Keep `pnpm-workspace.yaml` **only** if [Phase 5](#phase-5--typescript-where-it-actually-earns-its-place) goes ahead (it will re-populate `packages/`). Otherwise flatten. — **Kept** (D6 confirms Phase 5 goes ahead; `packages/` is now empty awaiting `zconf`).
 
 ### P4.3 — Measure it
 
@@ -674,3 +686,15 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
   `lib/widgets.zsh` splash fallback simplified; `docs/OLLAMA.md` folded in), P0.5 (`LICENSE`,
   `SECURITY.md`, `CONTRIBUTING.md`, `package.json` fields, `.github/workflows/ci.yml`).
   **P0.1** (`[HUMAN]`) and **P0.2** (`[OPUS]`) are still open — see their sections above.
+- 2026-07-26 — **P0.2** (`[OPUS]`): IPs/PII scrubbed. `IP_ADDRESSES` map and the
+  `curl ipinfo.io` startup network call removed in favour of a lazy `myip`; SSH/deploy/NAS
+  host details moved to `.env`; **a hardcoded SMB password** (`//touch:1234@…`) and a
+  deploy alias carrying a real server IP were found and removed; tracked `.gitconfig`s,
+  p10k username caches, `package-lock.json`, vim swapfile and `Icon\r` files untracked;
+  `configs/.zshrc.OFFICE` + `_zenvs/docker-dev/configs/` deleted. **Zero IPv4 literals and
+  zero personal identifiers remain** under the CI `secret-scan` pattern. Residual `apnaes`
+  / `finografic` organisational names are owned by P2.1 and P7.3 and are deliberately not
+  yet in the CI pattern.
+- 2026-07-26 — **P4.1**, **P4.2**, and the `typeset -U path PATH` item from **P1.3**,
+  pulled forward (untracking `packages/node/dist/` broke the two startup `node` calls that
+  depended on it). Node is now entirely off the startup path; `packages/node` is deleted.

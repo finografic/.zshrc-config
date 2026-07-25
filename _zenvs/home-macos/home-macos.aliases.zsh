@@ -286,7 +286,16 @@ alias agents="cd $REPOS_FINO/@finografic-ai-agent-config && l"
   cd "$REPOS_FINO/@finografic-zustand-context-creator" && l
 }
 
-@_pi() {
-  sudo mount_smbfs //REDACTED-CREDENTIAL/touch ~/Public/touch
-  cd ~/Public/touch && l
+# Mounts a LAN SMB share. Credentials and host come from .env — never inline them
+# here; the previous version had the password in the alias body.
+function mount-nas() {
+  if [[ -z "${NAS_HOST:-}" || -z "${NAS_SHARE:-}" ]]; then
+    print "mount-nas: set NAS_HOST, NAS_SHARE (and optionally NAS_USER) in .env" >&2
+    return 1
+  fi
+  local target="$HOME/Public/${NAS_SHARE}"
+  mkdir -p "$target"
+  # Omitting the password makes mount_smbfs prompt for it, or use the Keychain.
+  sudo mount_smbfs "//${NAS_USER:-$USER}@${NAS_HOST}/${NAS_SHARE}" "$target"
+  cd "$target" && l
 }

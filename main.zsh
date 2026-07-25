@@ -105,10 +105,6 @@ fi
 # NOTE: 12. FULL ENVIRONMENT SETUP (Terminal only, not VSCode/Docker)
 # ============================================================================ #
 
-# Loading indicator (200ms - gives "busy" impression during bootstrap)
-# Uses compiled TypeScript: node/src/spinner.ts -> node/dist/spinner.mjs (tsdown/rolldown)
-node "$ZSHRC_ROOT/packages/node/dist/spinner.mjs"
-
 # Core libraries
 # source "$ZSHRC_ROOT/lib/colors.zsh"
 
@@ -155,6 +151,3 @@ source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 
 # Splash screen
 source "$ZSHRC_ROOT/main-splash.zsh"
-
-# Remove duplicate PATH entries (uses TypeScript: node/src/build-path.ts)
-export PATH=$(node "$ZSHRC_ROOT/packages/node/dist/build-path.mjs")

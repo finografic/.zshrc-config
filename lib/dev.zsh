@@ -231,9 +231,21 @@ alias i="pnpm install"
 # REPO DEPLOY
 # ============================================================================ #
 
-# DEPLOYMENT FOR REACT --> FINOGRAFIC-DEV.COM
-# RUN FROM REPO ROOT
-alias deploy="cross-env GENERATE_SOURCEMAP=false react-scripts build && mv build finografic-dev.com && rsync -avru --delete-before -e 'ssh -p 7822' ./finografic-dev.com ubuntu@REDACTED-IP:/var/www && rm finografic-dev.com -fr"
+# DEPLOYMENT FOR A STATIC/REACT BUILD TO A REMOTE WEBROOT
+# RUN FROM REPO ROOT. Host details come from .env — see .env.example.
+function deploy-static() {
+  if [[ -z "${DEPLOY_SSH_TARGET:-}" || -z "${DEPLOY_SITE:-}" ]]; then
+    print "deploy-static: set DEPLOY_SSH_TARGET, DEPLOY_SITE (and optionally" >&2
+    print "  DEPLOY_SSH_PORT, DEPLOY_REMOTE_ROOT) in .env" >&2
+    return 1
+  fi
+
+  cross-env GENERATE_SOURCEMAP=false react-scripts build || return 1
+  mv build "$DEPLOY_SITE" || return 1
+  rsync -avru --delete-before -e "ssh -p ${DEPLOY_SSH_PORT:-22}" \
+    "./${DEPLOY_SITE}" "${DEPLOY_SSH_TARGET}:${DEPLOY_REMOTE_ROOT:-/var/www}"
+  rm -rf "$DEPLOY_SITE"
+}
 
 # ============================================================================ #
 # DEV + TESTING

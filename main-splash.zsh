@@ -2,7 +2,7 @@
 # FINAL INI + RESET MESSAGE
 # ============================================================================ #
 
-# NOTE: PATH deduplication done at end of main.zsh via build-path.mjs
+# NOTE: PATH deduplication is handled by `typeset -U path PATH` in bootstrap/index.zsh
 
 # ============================================================================ #
 # SPLASH SCREEN - CUSTOM WIDGETS

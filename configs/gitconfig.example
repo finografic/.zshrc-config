@@ -1,0 +1,42 @@
+; Reference git config. Copy to ~/.gitconfig and fill in your own identity, or run
+; scripts/setup/configure-git-identity.zsh to set name/email interactively.
+
+[user]
+	name = Your Name
+	email = you@example.com
+
+[color]
+	ui = true
+
+[credential]
+	helper = cache --timeout=1209600
+
+[alias]
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	b = branch-select
+
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+
+[core]
+	autocrlf = input
+
+[init]
+	defaultBranch = main
+
+[rerere]
+	enabled = true
+	autoupdate = true

@@ -205,18 +205,20 @@ function _release() {
 # NOTE: APNAES - RSYNC TRANSFERS, BACKUPS, and PUBLISHING..
 # ============================================================================ #
 
-export ROOT_ACCESS="root@REDACTED-IP"
-export REMOTE_LSWS="/usr/local/lsws"
+# Remote host details come from .env — see .env.example.
+export ROOT_ACCESS="${SERVER_SSH_ROOT_USER:-root}@${SERVER_SSH_HOST}"
+export REMOTE_LSWS="${LSWS_ROOT:-/usr/local/lsws}"
 
-export LOCAL_WEB="$HOME/repos-apnaes/apnaes-web"
-export LOCAL_API="$HOME/repos-apnaes/apnaes-api"
-export REMOTE_WEB="/usr/local/lsws/Example"
-export REMOTE_API="/usr/local/lsws/api"
+export LOCAL_WEB="${SERVER_LOCAL_WEB:-$HOME/repos/web}"
+export LOCAL_API="${SERVER_LOCAL_API:-$HOME/repos/api}"
+export REMOTE_WEB="${REMOTE_LSWS}/Example"
+export REMOTE_API="${REMOTE_LSWS}/api"
 
 # REMOTE: HOSTING
-# alias a2="ssh -R 52698:localhost:52698 REDACTED-IP -p 7822 -l REDACTED-CODENAME"
-alias h="ssh -i ~/.ssh/id_hostinger.pub -p 22 $ROOT_ACCESS"
-alias a="ssh -i ~/.ssh/id_hostinger.pub -p 22 apnaes@REDACTED-IP"
+# NOTE: SERVER_SSH_KEY is the PRIVATE key — passing the .pub half to `ssh -i`
+# (as this previously did) is never correct.
+alias h="ssh -i ${SERVER_SSH_KEY:-$HOME/.ssh/id_rsa} -p ${SERVER_SSH_PORT:-22} ${ROOT_ACCESS}"
+alias a="ssh -i ${SERVER_SSH_KEY:-$HOME/.ssh/id_rsa} -p ${SERVER_SSH_PORT:-22} ${SERVER_SSH_USER}@${SERVER_SSH_HOST}"
 
 function h-get-all() {
   echo "${_c}\nDownloading FULL 'lsws' folder + contents from remote...\n${_0}"

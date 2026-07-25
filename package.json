@@ -15,9 +15,6 @@
     "·········· FORMATTING": "················································",
     "format:check": "oxfmt --check",
     "format:fix": "oxfmt",
-    "·········· NODE": "··················································",
-    "build:node": "pnpm --filter @zshrc/node build",
-    "typecheck:node": "pnpm --filter @zshrc/node typecheck",
     "prepare": "husky"
   },
   "dependencies": {

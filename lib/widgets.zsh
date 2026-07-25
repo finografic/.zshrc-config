@@ -112,7 +112,7 @@ function show-splash-sys-banner() {
 
 function show-splash-sys-banner-footer-info() {
   D="${_c}::${_0}"
-  RESET_STRING="$HOSTNAME $D ${_w}$IP"
+  RESET_STRING="$HOSTNAME $D ${_w}$(myip)"
   echo "\n${_c} ---=====${_w} $RESET_STRING ${_c}=====--- \n"
 }
 

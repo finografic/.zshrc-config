@@ -18,7 +18,7 @@ REPOS="$HOME/dev_projects"
 alias proj="cd $REPOS && l"
 
 # UNIVERSAL - DEV ALIAS TO **CURRENT** REPO
-alias dev="konsole --tabs-from-file /home/REDACTED/bin/konsole-tabs.sh"
+alias dev="konsole --tabs-from-file $HOME/bin/konsole-tabs.sh"
 
 # GET CURRENT ENVIRONMENT - ADDITIONAL CONFIGS
 

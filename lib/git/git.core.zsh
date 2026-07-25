@@ -85,11 +85,6 @@ alias b="branch"
 alias .="git status"
 alias s="git status"
 
-# Git config (non-office only)
-if [ $ZENV != "office-macos" ]; then
-  git config --global color.ui true
-  git config --global user.name "Justin"
-  git config --global user.email "justin.blair.rankin@gmail.com"
-  git config --global credential.helper 'cache --timeout=1209600' # TWO WEEKS!
-fi
+# Git identity is a one-time machine-setup step, not a shell-start step.
+# Run scripts/setup/configure-git-identity.zsh once per machine instead.
 

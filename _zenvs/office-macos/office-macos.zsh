@@ -86,22 +86,8 @@ update-ghostty-config
 
 # ============================================================================ #
 
-# Setup git config
-if [ -f "$ZSHRC_ROOT/.gitconfig" ]; then
-  chmod 600 "$ZSHRC_ROOT/.gitconfig"
-  cp "$ZSHRC_ROOT/.gitconfig" "$ZSHRC_ROOT/.git/config"
-  # git config --local --get user.name || git config --local user.name "Justin Rankin"
-  # git config --local --get user.email || git config --local user.email "justin.blair.rankin@gmail.com"
-fi
-
-if [ -f "$ZSHRC_ROOT/.git/config" ]; then
-  chmod 600 "$ZSHRC_ROOT/.git/config"
-fi
-
-git config --global user.name "Justin Rankin"
-git config --global user.email "REDACTED-EMAIL"
-
-# ...existing code...
+# Git identity is a one-time machine-setup step, not a shell-start step.
+# Run scripts/setup/configure-git-identity.zsh once per machine instead.
 
 # ============================================================================ #
 # NOTE: START docker (Docker Desktop)..

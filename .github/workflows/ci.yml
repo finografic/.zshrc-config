@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  zsh-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: zsh -n on every tracked .zsh file
+        run: |
+          set -e
+          fail=0
+          while IFS= read -r -d '' f; do
+            zsh -n "$f" || fail=1
+          done < <(git ls-files -z '*.zsh')
+          exit $fail
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Grep for known personal/employer identifiers
+        run: |
+          set -e
+          pattern='justin\.rankin|justin\.blair\.rankin|@sage\.com|apnaes|finografic|hostinger|/Users/justin|([0-9]{1,3}\.){3}[0-9]{1,3}'
+          if git grep -InE "$pattern" -- . ':!docs/todo/**' ':!.github/workflows/ci.yml'; then
+            echo "::error::possible secret/PII match above — see docs/todo/TODO_PUBLIC_RELEASE_REFACTOR.md P0.2"
+            exit 1
+          fi
+
+  lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint:ci
+      - run: pnpm format:check
+      - run: pnpm lint:md

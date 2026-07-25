@@ -14,7 +14,6 @@ fi
 # Load environment variables (skip when flagged above)
 if [[ -z "${SKIP_ENV_LOAD:-}" && -f "$ZSHRC_ROOT/.env" ]]; then
   source "$ZSHRC_ROOT/.env"
-  export NPM_TOKEN=$(awk -F= '/^NPM_TOKEN=/ {print $2; exit}' "$ZSHRC_ROOT/.env" 2>/dev/null)
 fi
 
 # VSCode memory allocation

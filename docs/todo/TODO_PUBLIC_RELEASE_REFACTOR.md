@@ -156,10 +156,10 @@ Independent of D1 — the working tree must be clean regardless.
 
 Three separate footguns, all on the load path:
 
-- [ ] `_zenvs/office-macos/office-macos.zsh:90-99` — `cp "$ZSHRC_ROOT/.gitconfig" "$ZSHRC_ROOT/.git/config"` **overwrites this repo's git config, including its remotes, on every office shell.** This is the single most destructive line in the repo. Delete it.
-- [ ] `git config --global …` calls in three profiles — delete. Provide `scripts/setup/configure-git-identity.zsh`, run once, interactively.
-- [ ] `main.zsh:153` — `gh auth login --with-token < <(printf '%s' "$NPM_TOKEN")` runs on **every interactive shell**: it spawns `gh`, passes a token through a process substitution, and silently swallows failures with `2>/dev/null`. Delete. Authenticate once, manually.
-- [ ] `core/env.zsh:17` — `awk`-parsing `NPM_TOKEN` out of `.env` after already sourcing `.env` is redundant; the `source` already set it. Remove the `awk` call (and the duplicate in `lib/node/pnpm.zsh:40`).
+- [x] `_zenvs/office-macos/office-macos.zsh:90-99` — `cp "$ZSHRC_ROOT/.gitconfig" "$ZSHRC_ROOT/.git/config"` **overwrites this repo's git config, including its remotes, on every office shell.** This is the single most destructive line in the repo. Delete it.
+- [x] `git config --global …` calls in three profiles — delete. Provide `scripts/setup/configure-git-identity.zsh`, run once, interactively.
+- [x] `main.zsh:153` — `gh auth login --with-token < <(printf '%s' "$NPM_TOKEN")` runs on **every interactive shell**: it spawns `gh`, passes a token through a process substitution, and silently swallows failures with `2>/dev/null`. Delete. Authenticate once, manually.
+- [x] `core/env.zsh:17` — `awk`-parsing `NPM_TOKEN` out of `.env` after already sourcing `.env` is redundant; the `source` already set it. Remove the `awk` call (and the duplicate in `lib/node/pnpm.zsh:40`).
 
 ### P0.4 — Purge vendored third-party binaries
 
@@ -175,10 +175,10 @@ Three separate footguns, all on the load path:
 | `neofetch` (×2)                                    | 672 KB  | Yes, `lib/widgets.zsh:94`                           |
 | `lsof`, `df`, `pfetch`, `nerdfetch`, `ollama-test` | ~800 KB | No                                                  |
 
-- [ ] Delete `tools/bin-arm64/` and `tools/bin-x86_64/` from tracking (D4).
-- [ ] Replace with `scripts/setup/install-tools.zsh` — Homebrew on macOS, apt/pacman fallback on Linux, for `fastfetch`, `bat`, `eza`, `rclone`, `fzf`, and the Nerd Font.
-- [ ] `lib/widgets.zsh:88-110` — simplify to "use `fastfetch` if on `PATH`, else `neofetch` if on `PATH`, else print a plain banner". Drop the `$ZSHRC_ROOT/tools/bin-$OS_ARCH/` fallbacks.
-- [ ] Keep `tools/bin-*/INSTALLS.md` + `OLLAMA.md` content by folding the useful notes into `docs/`, then delete the directories.
+- [x] Delete `tools/bin-arm64/` and `tools/bin-x86_64/` from tracking (D4).
+- [x] Replace with `scripts/setup/install-tools.zsh` — Homebrew on macOS, apt/pacman fallback on Linux, for `fastfetch`, `bat`, `eza`, `rclone`, `fzf`, and the Nerd Font.
+- [x] `lib/widgets.zsh:88-110` — simplify to "use `fastfetch` if on `PATH`, else `neofetch` if on `PATH`, else print a plain banner". Drop the `$ZSHRC_ROOT/tools/bin-$OS_ARCH/` fallbacks.
+- [x] Keep `tools/bin-*/INSTALLS.md` + `OLLAMA.md` content by folding the useful notes into `docs/`, then delete the directories. (`OLLAMA.md` folded into `docs/OLLAMA.md`, scrubbed of the `/Users/justin` path; `INSTALLS.md` was stale/broken placeholders — superseded by `scripts/setup/install-tools.zsh` instead of transcribed.)
 
 > Beyond size: shipping other people's compiled macOS binaries in a public repo means
 > shipping their licences and their CVEs, and unsigned binaries from a GitHub clone will
@@ -186,11 +186,11 @@ Three separate footguns, all on the load path:
 
 ### P0.5 — Legal and repo furniture
 
-- [ ] Add `LICENSE` — MIT is the norm for dotfiles and imposes nothing on you.
-- [ ] Add `SECURITY.md` (one paragraph: this is a personal config, report issues via issues).
-- [ ] Add `CONTRIBUTING.md` — short: conventional commits, run `pnpm lint`, PRs welcome for portability fixes.
-- [ ] `package.json` — add `"license"`, `"repository"`, `"author"`, `"private": true` (until you decide to publish anything to npm).
-- [ ] Add `.github/workflows/ci.yml` with the _cheap_ guards now, expanded in [P7.4](#p74--ci): `zsh -n` syntax check on every tracked `.zsh` file, a secret/PII regex scan, `shfmt --diff`, `oxlint`, `oxfmt --check`, `md-lint`, and `commitlint` on PR titles.
+- [x] Add `LICENSE` — MIT is the norm for dotfiles and imposes nothing on you.
+- [x] Add `SECURITY.md` (one paragraph: this is a personal config, report issues via issues).
+- [x] Add `CONTRIBUTING.md` — short: conventional commits, run `pnpm lint`, PRs welcome for portability fixes.
+- [x] `package.json` — add `"license"`, `"author"`, `"private": true`. (`"repository"` deliberately omitted — the public repo URL is undecided pending [P0.1](#p01--decide-and-execute-the-history-strategy), a `[HUMAN]` gate.)
+- [x] Add `.github/workflows/ci.yml` with the _cheap_ guards now, expanded in [P7.4](#p74--ci): `zsh -n` syntax check on every tracked `.zsh` file, a secret/PII regex scan, `oxlint`, `oxfmt --check`, `md-lint`. (`shfmt --diff` and PR-title `commitlint` deferred to P7.4 — `shfmt` isn't installed in CI yet and commitlint already runs locally via husky.)
 
 **Exit criteria:** the PII grep sweep returns only placeholders; CI is green; `LICENSE` exists;
 `du -sh` of the working tree is single-digit MB.
@@ -668,4 +668,9 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
 
 ## Done
 
-_Nothing yet — plan written 2026-07-25._
+- 2026-07-26 — Phase 0 (Sonnet-tier subset): P0.3 (git-config mutation + `gh auth login` +
+  redundant `NPM_TOKEN` awk parse removed; `scripts/setup/configure-git-identity.zsh` added),
+  P0.4 (`tools/bin-{arm64,x86_64}` purged — 66 MB; `scripts/setup/install-tools.zsh` added;
+  `lib/widgets.zsh` splash fallback simplified; `docs/OLLAMA.md` folded in), P0.5 (`LICENSE`,
+  `SECURITY.md`, `CONTRIBUTING.md`, `package.json` fields, `.github/workflows/ci.yml`).
+  **P0.1** (`[HUMAN]`) and **P0.2** (`[OPUS]`) are still open — see their sections above.

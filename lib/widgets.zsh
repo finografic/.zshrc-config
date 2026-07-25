@@ -88,29 +88,13 @@ function show-docker-containers() {
 # ============================================================================ #
 
 function show-splash-neofetch() {
-  if [[ "$ZENV" == "apnaes" ]]; then
-    if command -v neofetch >/dev/null; then
-      neofetch
-    elif [[ -x "$ZSHRC_ROOT/tools/bin-$OS_ARCH/neofetch" ]]; then
-      "$ZSHRC_ROOT/tools/bin-$OS_ARCH/neofetch"
-    else
-      echo "neofetch not found"
-    fi
+  if command -v fastfetch >/dev/null; then
+    fastfetch
+  elif command -v neofetch >/dev/null; then
+    neofetch
   else
-    # Prefer system fastfetch (brew, etc.), then bundled
-    local fastfetch_cmd=""
-    if command -v fastfetch >/dev/null; then
-      fastfetch_cmd="fastfetch"
-    elif [[ -x "$ZSHRC_ROOT/tools/bin-$OS_ARCH/fastfetch" ]]; then
-      fastfetch_cmd="$ZSHRC_ROOT/tools/bin-$OS_ARCH/fastfetch"
-    fi
-    if [[ -n "$fastfetch_cmd" ]]; then
-      $fastfetch_cmd
-    elif [[ "$OS_NAME" == "macOS" ]] && command -v brew >/dev/null; then
-      brew install fastfetch 2>/dev/null && fastfetch
-    else
-      echo "fastfetch not found"
-    fi
+    echo "${_c:-}${OS_NAME:-$(uname -s)} · ${ZENV:-unknown}${_0:-}"
+    echo "install fastfetch or neofetch for a richer splash: scripts/setup/install-tools.zsh"
   fi
 }
 

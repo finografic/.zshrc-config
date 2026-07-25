@@ -149,9 +149,6 @@ source "$ZSHRC_ROOT/extras/music/djay_icloud_sync.zsh"
 # Docker cleanup utilities
 source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 
-# GitHub authentication (silent)
-[[ -n "$NPM_TOKEN" ]] && gh auth login --with-token < <(printf '%s' "$NPM_TOKEN") 2>/dev/null
-
 # ============================================================================ #
 # NOTE: 16. FINALIZATION
 # ============================================================================ #

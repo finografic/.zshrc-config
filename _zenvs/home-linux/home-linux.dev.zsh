@@ -46,8 +46,6 @@ function devil() {
   fi
 }
 
-git config --global color.ui true
-git config --global user.name "Justin"
-git config --global user.email "justin.blair.rankin@gmail.com"
-git config --global credential.helper 'cache --timeout=1209600' # TWO WEEKS!
+# Git identity is a one-time machine-setup step, not a shell-start step.
+# Run scripts/setup/configure-git-identity.zsh once per machine instead.
 

@@ -35,10 +35,7 @@ function pn() {
 
 	# Handle GitHub authentication if needed
 	if [[ "$needs_github" == true ]]; then
-		# Try to load NPM_TOKEN from .env
-		if [[ -f "$root_dir/.env" ]]; then
-			export NPM_TOKEN=$(awk -F= '/^NPM_TOKEN=/ {print $2; exit}' "$root_dir/.env" 2>/dev/null)
-		fi
+		# NPM_TOKEN is already exported by core/env.zsh sourcing .env at shell start
 
 		# Check if we have authentication (either via .netrc or NPM_TOKEN)
 		if [[ ! -f "$HOME/.netrc" ]] && [[ -z "$NPM_TOKEN" ]]; then

@@ -57,7 +57,7 @@ function show-custom-launch-agents() {
 # ============================================================================ #
 
 function show-ports() {
-  if [[ "$OS_NAME" == "Linux" && "$ZENV" != "apnaes" ]]; then
+  if [[ "$OS_NAME" == "Linux" && "$ZENV" != "server-linux" ]]; then
     ports
   elif [[ "$OS_NAME" == "macOS" ]]; then
     ports

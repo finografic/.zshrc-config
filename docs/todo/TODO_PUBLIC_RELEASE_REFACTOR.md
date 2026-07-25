@@ -240,7 +240,7 @@ Every item is "wrap in a function; let a profile or the user call it" (D8):
 - [ ] Document the rule in `docs/ARCHITECTURE.md`: `vendor/*` owns tool paths, `lib/paths/*` owns OS paths, `profiles/*/…paths.zsh` owns host paths. Nothing else appends.
 - [x] Add `typeset -U path PATH` **once**, early in `bootstrap/index.zsh`. This is what `main.zsh:115` already claims exists and what `build-path.mjs` was emulating. (Done with [P4.1](#p41--remove-node-from-the-startup-path).)
 - [ ] Remove ad-hoc appends from the wrong layers: `main.zsh:100-101` (homebrew coreutils/`hs`), `main.zsh:116`, `_zenvs/office-macos/office-macos.zsh:11` (Python 3.11 framework path), `:56-57` (`gen-test-summary`, `gen-todo-coverage`).
-- [ ] `_zenvs/apnaes/apnaes.paths.zsh:19` — `export PATH=$PATH:$(which curl)` appends a _file_ path, not a directory. Delete.
+- [x] `_zenvs/apnaes/apnaes.paths.zsh:19` — `export PATH=$PATH:$(which curl)` appends a _file_ path, not a directory. Delete. — Done with [P2.1](#p21--the-two-renames-you-asked-for) (now `_zenvs/server-linux/server-linux.paths.zsh`), which rewrote the file anyway.
 - [ ] Delete `lib/paths.zsh:14-16` `flatten-path` (legacy Node call) once [P4.1](#p41--remove-node-from-the-startup-path) lands.
 
 ### P1.4 — Fix the environment-detection logic
@@ -277,25 +277,29 @@ touches no files; `docs/ARCHITECTURE.md` matches reality.
 
 ### P2.1 — The two renames you asked for
 
-**`office-macos` → generic office profile** (568 lines → target ~80):
+> **Done 2026-07-26.** `_zenvs/` stays `_zenvs/` for now — the `profiles/` rename is D2/[Phase 8](#phase-8--optional-polish), a separate decision, and this task didn't need it. Path below is `_zenvs/server-linux/`, not `profiles/server-linux/`.
 
-- [ ] Remove all employer-specific content: the `SBS-` branch-prefix helper `_gb` (`office-macos.zsh:66-76`), `parse-coverage` / `gen-test-summary` / `gen-todo-coverage` PATH hacks, `office-macos.dev.jest.zsh`, `parse-test-coverage.zsh`, the Cypress/CF secrets in `configs/.zshrc.OFFICE`, and everything in [P0.3](#p03--stop-mutating-global-git-config-and-authenticating-on-shell-start).
-- [ ] Replace the banner with a plain `OFFICE` figlet (`office-macos.banner.zsh`).
-- [ ] Strip the commented-out dead blocks: PM2/launchd, Docker Desktop autostart, `lsof` security scan, iTerm2 integration, Loupedeck paths.
-- [ ] Keep the genuinely reusable bones: dynamic Homebrew prefix detection (Apple Silicon vs Intel — this is good, and should be **promoted to a shared helper** used by every macOS profile rather than copy-pasted between home and office), and the file-set shape.
-- [ ] End state: a populated-but-neutral "work Mac" profile that demonstrates the pattern — a few example aliases, a `paths.zsh` stub, a `TODO: populate per employer` marker. Not an empty skeleton (an empty profile teaches a reader nothing), not your old job.
+**`office-macos` → generic office profile** (515 lines across 8 files → **118 lines across 5**):
 
-**`apnaes` → `server-linux`** (307 lines → target ~120):
+- [x] Remove all employer-specific content: the `SBS-` branch-prefix helper `_gb` (`office-macos.zsh:66-76`), `parse-coverage` / `gen-test-summary` / `gen-todo-coverage` PATH hacks, `office-macos.dev.jest.zsh`, `parse-test-coverage.zsh`, the Cypress/CF secrets in `configs/.zshrc.OFFICE`, and everything in [P0.3](#p03--stop-mutating-global-git-config-and-authenticating-on-shell-start). Also deleted as dead + personal (not called out by name here, but same rationale): `office-macos.backups.zsh` (hardcoded a Sage OneDrive path, sourced nowhere) and `office-macos.hardware.zsh` (Spanish-keyboard locale settings, its `source` line was already commented out).
+- [x] Replace the banner with a plain `OFFICE` figlet (`office-macos.banner.zsh`).
+- [x] Strip the commented-out dead blocks: PM2/launchd, Docker Desktop autostart, `lsof` security scan, iTerm2 integration, Loupedeck paths.
+- [x] Keep the genuinely reusable bones: dynamic Homebrew prefix detection … should be **promoted to a shared helper** used by every macOS profile. — New `lib/macos/macos.brew.zsh` (`macos-brew-shellenv`), used by both `home-macos.zsh` and `office-macos.zsh`.
+- [x] End state: a populated-but-neutral "work Mac" profile … a few example aliases, a `paths.zsh` stub, a `TODO: populate per employer` marker. — `office-macos.zsh` is 32 lines; `office-macos.paths.zsh` is a new stub, not yet sourced.
+- [x] **Bugs fixed while genericising, not in the original audit**: `confirm()` in `office-macos.dev.zsh` was dead code that just echoed its own input back — rewritten to actually return a yes/no result. Two `[[ $1 > "" ]]` non-empty-test bugs (in `confirm()`'s sibling `commit()`, matching the audit's [P3.3](#p33--consistency-sweep) finding) fixed to `[[ -n "$1" ]]`.
 
-- [ ] `git mv _zenvs/apnaes profiles/server-linux`, rename all seven files, delete `apnaes.paths-V1.zsh` and `apnaes.paths-V2.zsh` (two stale versions of a live file).
-- [ ] Genericise: `REPOS="/home/apnaes/repos"` → `${SERVER_REPOS:-$HOME/repos}`; `chown-apnaes` → drop; keep `chown-no` / `chown-ls` but rewrite them as one `chown-to <user>:<group>` with `--dry-run`.
-- [ ] **Keep LSWS as an optional module**, per your note — `profiles/server-linux/server-linux.lsws.zsh`, sourced only when `/usr/local/lsws` exists. It holds: the `logs [std|acc|err] [--clear]` viewer, the `vh`/`lsws`/`ws` navigation aliases, and the `lu` (`sudo -u lsadm`) wrapper. Parameterise `/usr/local/lsws` as `${LSWS_ROOT:-/usr/local/lsws}`.
-- [ ] Keep the PM2-under-`lsadm` wrappers but gate them on `command -v pm2`.
-- [ ] Replace the `APNAES` ASCII banner with `SERVER`, and show hostname + distro + uptime instead of a figlet — more useful on a box you SSH into.
-- [ ] Fix `apnaes.zsh:9` — `function edit() { "$EDITOR $@"; }` has the quotes wrong: it tries to execute the whole string as one command name. And `code() { eval "$(which jmate) $@"; }` should not `eval`.
-- [ ] `apnaes.aliases.zsh:2-3` — `alias logout="~."` / `lo="~."` is an SSH escape sequence, not a command; it cannot work as an alias. Delete or document as a manual keystroke.
-- [ ] Sweep the ghost references: `core/env.zsh:71-73`, `lib/node/nvm-autoload.zsh:13`, `lib/widgets.zsh:60,91`, `packages/node/src/types.ts:8`, `README.md`, `.agents/handoff.md`.
-- [ ] **Do not** touch the `home-macos` client-side shortcuts (`REPOS_APNAES`, `alias apnaes=…`, `alias mono=…`) — different concern; they're just local repo paths. Move their values into `.env` via the existing `REPO_ALIASES` registry pattern, which is already documented in the README and is the right answer for a public repo.
+**`apnaes` → `server-linux`** (307 lines across 8 files → **~230 lines across 6**, one of which is new):
+
+- [x] `git mv _zenvs/apnaes _zenvs/server-linux`, rename all files, delete `apnaes.paths-V1.zsh` and `apnaes.paths-V2.zsh`. Also deleted `apnaes.hardware.zsh` (same dead-and-personal reasoning as office's copy — its `source` line was commented out, and keyboard locale settings make no sense for a headless server).
+- [x] Genericise: `REPOS="/home/apnaes/repos"` → `${SERVER_REPOS:-$HOME/repos}`; `chown-apnaes` → drop; keep `chown-no` / `chown-ls` but rewrite them as one `chown-to <user>:<group>` with `--dry-run`. — Done as `chown-to [-R] [--dry-run] <user>[:<group>] <path>`, parsed with a proper flag loop rather than positional juggling. `-R` was optional in the original two functions; preserved rather than forced on.
+- [x] **Keep LSWS as an optional module** … `server-linux.lsws.zsh`, sourced only when `/usr/local/lsws` exists … `logs [std|acc|err] [--clear]`, `vh`/`lsws`/`ws`, `lu`. Parameterise as `${LSWS_ROOT:-/usr/local/lsws}`. — Done exactly as specified; verified standalone (sourcing it directly defines all four, and the nav aliases correctly interpolate `$LSWS_ROOT`).
+- [x] Keep the PM2-under-`lsadm` wrappers but gate them on `command -v pm2`. — Done; moved into the LSWS module alongside `lu` (same `lsadm`-user context). Verified both branches: absent when `pm2` isn't on `PATH`, present when it is.
+- [x] Replace the `APNAES` ASCII banner with `SERVER`, and show hostname + distro + uptime. — Done, reading `/etc/os-release` for distro with a fallback.
+- [x] Fix `apnaes.zsh:9` — `edit()`/`code()` quoting and `eval` bugs. — `edit() { "$EDITOR" "$@"; }`; `code() { jmate "$@"; }` (no `eval`, and no dependency on `which` succeeding).
+- [x] `apnaes.aliases.zsh:2-3` — `logout`/`lo` SSH escape-sequence aliases. — Deleted, documented as a manual keystroke instead (they cannot work as shell aliases).
+- [x] **Bug found while rewriting, not in the original audit**: `alias lr1="find $(pwd) -mtime -1 …"` baked in `$(pwd)` at shell-**start** time — always the login directory, never wherever you'd actually `cd`'d to. Now a function using `$PWD`, evaluated at call time.
+- [x] Sweep the ghost references: `core/env.zsh`, `core/detect.zsh` (didn't exist at audit time; created in [P1.4](#p14--fix-the-environment-detection-logic)), `lib/node/nvm-autoload.zsh`, `lib/widgets.zsh`, `vendor/nvm.zsh`, `README.md`. `packages/node` no longer exists ([P4.2](#p42--delete-orphaned-node-utilities)). `.agents/handoff.md` rewritten wholesale, not swept. **Zero `apnaes` references remain in tracked code** — added to the CI `secret-scan` pattern to keep it that way (`.agents/**` and `docs/todo/**` excluded, since they narrate history).
+- [x] **Do not** touch the `home-macos` client-side shortcuts (`REPOS_APNAES`, `alias apnaes=…`, `alias mono=…`) … Move their values into `.env` via the existing `REPO_ALIASES` registry pattern. — Done for the `apnaes`-specific four (`REPOS_APNAES`, `REPO_APNAES`, `apnaes`/`mono`/`admin`/`api` aliases, the `find-monorepo-root` fallback); they're gone from tracked code with a `.env`-example comment showing the pattern. **The much larger `finografic`-branded block in the same file (~50 functions/aliases) was deliberately left untouched** — the doc's checkbox names only the `apnaes` shortcuts, migrating the rest is a materially bigger job (different alias shape — `@`-prefixed fuzzy-jump functions, not simple `cd` aliases) and risks breaking a workflow the user actually relies on daily. Flagged for [P7.1](#p71--readme-for-strangers)/[P7.3](#p73--agent-rules-made-relevant) instead.
 
 ### P2.2 — Declarative profile manifests
 
@@ -317,7 +321,7 @@ hand-roll the entire nvm + pnpm + `lib/node.zsh` boot sequence, three slightly d
   ```
 
 - [ ] Add presets so the three minimal profiles stop diverging: `minimal` = colors + node + git + a `vcs_info` prompt; `container` = `minimal` minus macOS anything; `full` = everything.
-- [ ] Extract the shared macOS Homebrew-prefix eval into `lib/macos/macos.brew.zsh` (currently duplicated in `home-macos.zsh:18-24` and `office-macos.zsh:19-27`).
+- [x] Extract the shared macOS Homebrew-prefix eval into `lib/macos/macos.brew.zsh` (was duplicated in `home-macos.zsh:18-24` and `office-macos.zsh:19-27`). — Done in [P2.1](#p21--the-two-renames-you-asked-for) rather than waiting for the full manifest loader; no reason the two were coupled.
 - [ ] Preserve the **load-order invariant**: nvm must be initialised before `lib/node.zsh` (`nvm-autoload` silently no-ops otherwise). Encode it in the loader so it cannot be got wrong per-profile.
 - [ ] Validate manifests in `zconf doctor` — unknown module name = error, not a silent skip.
 
@@ -717,6 +721,18 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
   in nested shells) and the function sets globals instead of printing (a command
   substitution discarded `ZENV_RESOLVED_BY`). `tests/test-detect.zsh` (22 cases) and
   `tests/test-lib-inert.zsh` now run in CI.
+- 2026-07-26 — **P2.1** (Sonnet-tier): the two renames. `office-macos` genericised from 515
+  lines/8 files to 118 lines/5 (deleted `dev.jest.zsh`, `parse-test-coverage.zsh`,
+  `backups.zsh`, `hardware.zsh`); shared `lib/macos/macos.brew.zsh` extracted, pulling
+  forward a P2.2 checkbox. `_zenvs/apnaes` → `_zenvs/server-linux` (7 files), `chown-*`
+  trio → one `chown-to`, LSWS work isolated to an optional `server-linux.lsws.zsh` module
+  (verified standalone), `edit`/`code` eval/quoting bugs fixed. The `apnaes`-specific
+  `home-macos` repo aliases moved to the `REPO_ALIASES` `.env` pattern; the much larger
+  `finografic` block in the same file is untouched by design (flagged for P7.1/P7.3, since
+  migrating ~50 `@`-prefixed functions is a different, riskier job than this task's remit).
+  `apnaes` added to the CI `secret-scan` pattern — zero references remain in tracked code.
+  Two bugs found and fixed that weren't in the original audit: a dead `confirm()` that just
+  echoed its input, and an `alias lr1=...` baking in `$(pwd)` at shell-start time.
 - 2026-07-26 — **P1.2** (`[OPUS]`): source-time side effects purged. `lib/clean.zsh` no
   longer deletes files on shell start — it defines `zclean … [--dry-run]`. The djay
   LaunchAgent checks, the firewall shell-out and the unconditional ghostty config copy are

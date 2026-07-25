@@ -87,7 +87,7 @@ function determine-environment() {
 		return 0
 	fi
 	if [[ "${IS_SERVER:-false}" == true ]]; then
-		typeset -g ZENV=apnaes ZENV_RESOLVED_BY=flags
+		typeset -g ZENV=server-linux ZENV_RESOLVED_BY=flags
 		return 0
 	fi
 

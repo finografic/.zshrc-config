@@ -14,14 +14,8 @@ export GRAPHIFY_PYTHON_PINNED="$HOME/.local/pipx/venvs/graphifyy/bin/python"
 # export BUN_INSTALL="$HOME/.bun"
 # export PATH="$BUN_INSTALL/bin:$PATH"
 
-# Dynamic brew path detection
-if [[ -f "/opt/homebrew/bin/brew" ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [[ -f "/usr/local/bin/brew" ]]; then
-  eval "$(/usr/local/bin/brew shellenv)"
-else
-  echo "Warning: Homebrew not found in /opt/homebrew/bin/brew or /usr/local/bin/brew"
-fi
+# Dynamic brew path detection (shared: lib/macos/macos.brew.zsh)
+macos-brew-shellenv
 
 # ============================================================================ #
 

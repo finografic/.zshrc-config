@@ -1,6 +1,6 @@
 # 💻 zshrc-config
 
-**Modular Zsh configuration that adapts to your environment.** One config, eight host profiles—home-macos, office-macos, home-linux, docker-dev, vscode, android, apnaes, codex—with environment-specific aliases, paths, and tools, plus AI-agent-friendly project docs.
+**Modular Zsh configuration that adapts to your environment.** One config, eight host profiles—home-macos, office-macos, home-linux, docker-dev, vscode, android, server-linux, codex—with environment-specific aliases, paths, and tools, plus AI-agent-friendly project docs.
 
 ---
 
@@ -57,7 +57,7 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 │   ├── vscode/         #   VSCode integrated terminal (early exit)
 │   ├── codex/          #   OpenAI Codex agent shells (early exit)
 │   ├── android/        #   Termux
-│   └── apnaes/         #   remote server
+│   └── server-linux/   #   remote server
 ├── plugins/            # Antidote plugin list (.zsh_plugins.txt + generated)
 ├── packages/node/      # TypeScript CLI utilities (spinner, PATH build), built via tsdown
 ├── scripts/            # Setup, cleanup, and repo-maintenance scripts

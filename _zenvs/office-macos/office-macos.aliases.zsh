@@ -1,43 +1,8 @@
-REPOS_MY="$HOME/repos-my"
+# TODO: populate per employer. This profile ships intentionally neutral —
+# it demonstrates the pattern, not a real workplace setup.
 
-alias _aws="aws sso login"
-
-function _select() {
-  gli select
-}
-
-
-# ============================================================================ #
-
-@release() {
-  cd "$REPOS_GAC/s1_config"
-  git checkout release
-  l
-  # NOTE:
-  # 1. ./vbump.sh -p -e preprod -v 5.243.1
-  # 2. ./vbump.sh -e production -v 5.243.1
-  # 3. ./vbump.sh -e qa_base_config -v 5.243.1
-}
-
-# ============================================================================ #
-# NOTE: PERSONAL
-# ============================================================================ #
-
-# UNIVERSAL - DEV ALIAS TO **CURRENT** REPO
-alias dev="echo '${_y}CHOOSE AN ALIAS!${_0}'"
-alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls -lAh'
-
-@my() {
-  cd "$HOME/repos-my" && l
-}
-
-@_gli() {
-  cd "$REPOS_MY/@finografic-gli" && l
-}
-
-@_lay() {
-  cd "$REPOS_MY/macos-layouts" && l
-}
+# Example: a repo shortcut for wherever your work checkouts live.
+alias work="cd \"${WORK_REPOS:-$HOME/repos-work}\" && l"
 
 # ============================================================================ #
 # NOTE: GENERATED ALIASES - (SEE .env FOR CONFIGURATION)
@@ -45,6 +10,9 @@ alias loup='cd "$HOME/Library/Application Support/Logi/LogiPluginService" && ls 
 
 # Optional `.env` source of truth.
 # Use full paths as values so local folder layout stays out of tracked files:
+#   typeset -gA OFFICE_REPO_ALIASES=(
+#     [proj]="$HOME/repos-work/project"
+#   )
 
 function _register-office-repo-aliases() {
   (( ${+OFFICE_REPO_ALIASES} )) || return 0

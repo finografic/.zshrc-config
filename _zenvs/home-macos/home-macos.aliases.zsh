@@ -5,7 +5,6 @@ REPOS="$REPOS_FINO"
 REPOS_NEXT="$HOME/repos-next"
 REPOS_SERVER="$HOME/repos-server"
 REPOS_LOUPEDECK="$HOME/repos-loupedeck"
-REPOS_APNAES="$HOME/repos-apnaes"
 
 alias repos="cd $REPOS && l"
 alias skills="cd $HOME/ai-agent-skills && l"
@@ -42,7 +41,6 @@ function _lab() {
 REPO_SCRIPTS="$REPOS_FINO/@finografic-project-scripts"
 REPO_PLATE="$REPOS_FINO/@finografic-plate-editor"
 REPO_ZUSTAND_CONTEXT="$REPOS_FINO/@finografic-zustand-context-creator"
-REPO_APNAES="$REPOS_APNAES/apnaes-monorepo"
 
 REPO_IOX_LOUPEDECK="$REPOS_FINO/iox-loupedeck"
 REPO_FNX_MONOREPO="$REPOS_FINO/fnx-monorepo"
@@ -52,11 +50,15 @@ REPO_TOUCH_MONOREPO_ORIG="$REPOS_FINO_REF/touch-monorepo"
 alias fnx="cd $REPO_FNX_MONOREPO && l"
 alias iox="cd $REPO_IOX_LOUPEDECK && l"
 
-# APNAES
-alias apnaes="cd $REPO_APNAES && l"
-alias mono="cd $REPO_APNAES && l"
-alias admin="cd $REPO_APNAES/apps/client && l"
-alias api="cd $REPOS_APNAES/apnaes-api && l"
+# The server-linux client-side shortcuts (repo root, "mono"/"admin"/"api" nav)
+# are just local paths to a personal project, not shell logic — they live in
+# .env via REPO_ALIASES (see README "Make it yours") instead of being
+# hardcoded here. Example:
+#   typeset -gA REPO_ALIASES=(
+#     [mono]="$HOME/repos-server/server-monorepo"
+#     [admin]="$HOME/repos-server/server-monorepo/apps/client"
+#     [api]="$HOME/repos-server/server-api"
+#   )
 
 @fino() {
   cd "$REPOS_FINO" && l
@@ -100,7 +102,7 @@ function find-monorepo-root() {
     fi
     current=$(dirname "$current")
   done
-  echo "$REPO_APNAES"
+  echo "$PWD"
   return 1
 }
 

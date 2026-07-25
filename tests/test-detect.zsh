@@ -42,7 +42,7 @@ check "container IN_DOCKER"  "docker-dev:container"  "$(resolve 'export IN_DOCKE
 check "container IS_DOCKER"  "docker-dev:container"  "$(resolve 'export IS_DOCKER=true')"
 check "flag IS_HOME"         "home-macos:flags"      "$(resolve 'export IS_HOME=true OS_NAME=macOS')"
 check "flag IS_OFFICE"       "office-macos:flags"    "$(resolve 'export IS_OFFICE=true OS_NAME=macOS')"
-check "flag IS_SERVER"       "apnaes:flags"          "$(resolve 'export IS_SERVER=true OS_NAME=Linux')"
+check "flag IS_SERVER"       "server-linux:flags"    "$(resolve 'export IS_SERVER=true OS_NAME=Linux')"
 check "fallback macOS"       "home-macos:fallback"   "$(resolve 'export OS_NAME=macOS')"
 check "fallback Linux"       "home-linux:fallback"   "$(resolve 'export OS_NAME=Linux')"
 check "fallback Android"     "android:fallback"      "$(resolve 'export OS_NAME=Android')"

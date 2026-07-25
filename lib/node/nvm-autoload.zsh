@@ -10,7 +10,7 @@ fi
 autoload -U add-zsh-hook
 
 function _sync-nvm-path-vars() {
-	if [[ "$ZENV" == 'apnaes' ]]; then
+	if [[ "$ZENV" == 'server-linux' ]]; then
 		return 0
 	fi
 

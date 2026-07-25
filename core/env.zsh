@@ -77,7 +77,7 @@ source "$ZSHRC_ROOT/core/detect.zsh"
 # branches. Applied after $ZENV is known, in main.zsh.
 function apply-environment-env() {
   case "${ZENV:-}" in
-  apnaes) export OS_NAME='Linux' ;;
+  server-linux) export OS_NAME='Linux' ;;
   android)
     export STORAGE_ROOT="$HOME"
     export PATH_ZSHRC="$STORAGE_ROOT"

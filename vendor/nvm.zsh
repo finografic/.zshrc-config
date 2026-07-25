@@ -17,7 +17,7 @@ esac
 # NOTE: OFFICE + SERVER
 case "$ZENV" in
 	"office-macos") NODE_VERSION_PREFERRED="22.14.0" ;;
-	"apnaes") NODE_VERSION_PREFERRED="22.17.1" ;;
+	"server-linux") NODE_VERSION_PREFERRED="22.17.1" ;;
 esac
 
 # Load NVM if it exists

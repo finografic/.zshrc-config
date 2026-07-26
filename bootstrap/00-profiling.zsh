@@ -13,9 +13,9 @@ source "$ZSHRC_ROOT/core/history.zsh"
 # The report prints automatically on exit via a zshexit hook.
 if [[ "${ZSHRC_PROFILE:-0}" == 1 ]]; then
   zmodload zsh/zprof
-  function _zshrc_profile_report() { zprof }
+  function _zshrc-profile-report() { zprof }
   autoload -Uz add-zsh-hook
-  add-zsh-hook zshexit _zshrc_profile_report
+  add-zsh-hook zshexit _zshrc-profile-report
 fi
 
 # Disable compfix warnings

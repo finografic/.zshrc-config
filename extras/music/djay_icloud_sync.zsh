@@ -5,7 +5,7 @@
 # Based on the iCloud Drive structure shown in the user's screenshots
 
 # Source colors (with fallback)
-source ~/.zshrc-config/lib/colors.zsh
+source "${ZSHRC_ROOT:-$HOME/.zshrc-config}/lib/colors.zsh"
 
 # Configuration
 DJAY_PATH="$HOME/Music/djay"

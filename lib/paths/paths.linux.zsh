@@ -24,7 +24,10 @@ export PATH=$PATH:$ZSHRC_ROOT/zupdate
 
 # ESSENTIALS
 export PATH=$PATH:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin
-export PATH=$PATH:$(which curl)
+# NOTE: `export PATH=$PATH:$(which curl)` used to sit here. It was wrong twice
+# over: it spawned `which` on every Linux shell start, and it appended the
+# curl BINARY to PATH — PATH holds directories, so the entry could never match
+# anything. If `which curl` succeeded, curl's directory was already on PATH.
 export PATH=$PATH:$HOME/.cargo/bin
 
 # RUBY SIMPLE

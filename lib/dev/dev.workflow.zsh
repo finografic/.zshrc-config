@@ -7,7 +7,16 @@ source "$ZSHRC_ROOT/lib/colors.zsh"
 
 REPOS="$HOME/dev_projects"
 
-[[ "$OSTYPE" == darwin* ]] && export CPATH=$(xcrun --show-sdk-path)/usr/include
+# CPATH for tools that compile against the macOS SDK.
+#
+# NOTE: this used to run `xcrun --show-sdk-path` at SOURCE time — a subprocess
+# on every single shell start, on the load path, to set a variable almost
+# nothing reads. `xcrun` is not fast (it consults the active developer dir).
+# Now it is resolved on demand.
+function cpath-init() {
+  [[ "$OSTYPE" == darwin* ]] || return 0
+  export CPATH="$(xcrun --show-sdk-path)/usr/include"
+}
 
 function run() {
   # requires "ntl" node package installed globally

@@ -6,6 +6,13 @@
   "private": true,
   "scripts": {
     "install:globals": "npm i -g fd-find vtop",
+    "·········· ZCONF": "·····················································",
+    "zconf": "pnpm -C packages/zconf dev",
+    "zconf:build": "pnpm -C packages/zconf build",
+    "doctor": "pnpm -C packages/zconf dev doctor",
+    "scan": "pnpm -C packages/zconf dev scan",
+    "test": "pnpm -C packages/zconf test",
+    "typecheck": "pnpm -C packages/zconf typecheck",
     "·········· LINTING": "···················································",
     "lint": "oxlint -c oxlint.config.ts",
     "lint:fix": "oxlint -c oxlint.config.ts --fix",

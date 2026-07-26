@@ -1,0 +1,34 @@
+{
+  "name": "@zshrc-config/zconf",
+  "version": "0.1.0",
+  "description": "Maintainer CLI for zshrc-config: lints the load-model contract, scans for PII, renders the load graph.",
+  "license": "MIT",
+  "author": "Justin Rankin",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "zconf": "./dist/index.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsdown": "^0.15.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

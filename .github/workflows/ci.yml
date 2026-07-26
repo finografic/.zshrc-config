@@ -90,3 +90,25 @@ jobs:
       - run: pnpm lint:ci
       - run: pnpm format:check
       - run: pnpm lint:md
+
+  zconf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: zconf unit tests
+        run: pnpm test
+      - name: zconf typecheck
+        run: pnpm typecheck
+      - name: Lint the load-model contract
+        run: pnpm doctor
+      # Complements the grep-based `secret-scan` job above rather than
+      # replacing it: that one is a dependency-free backstop that still runs
+      # if this package is ever broken, and the two use different patterns.
+      - name: Scan for secrets and PII
+        run: pnpm scan

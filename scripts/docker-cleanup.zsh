@@ -4,7 +4,7 @@
 # Safely removes unused Docker resources to free up disk space
 
 # Source colors
-source ~/.zshrc-config/lib/colors.zsh
+source "${ZSHRC_ROOT:-$HOME/.zshrc-config}/lib/colors.zsh"
 
 # echo -e "\n${_m}🐳 Docker Cleanup Script${_0}\n"
 

@@ -39,8 +39,13 @@ alias l="listing-eza"
 alias l2="listing"
 # alias ls="eval `dircolors -b ${HOME}/.dircolors` && ls -Alh --color" # list hidden
 
-# ???
-alias lr="find $(pwd) -mtime -1 -ls -maxdepth 1"
+# Recently-modified files in the CURRENT directory.
+# NOTE: single-quoted on purpose. Double quotes expanded `$(pwd)` when this file
+# was SOURCED, baking the shell's startup directory into the alias for its whole
+# life — `lr` then listed that directory no matter where you ran it, and spawned
+# a `pwd` process on every shell start to do it. Same class of bug as the old
+# `alias vim="${EDITOR} $@"`.
+alias lr='find "$(pwd)" -maxdepth 1 -mtime -1 -ls'
 
 # ============================================================================ #
 # TREE LISTING

@@ -4,7 +4,7 @@
 # This script applies custom folder icons to the backup directories
 
 # Source colors
-source ~/.zshrc-config/lib/colors.zsh
+source "${ZSHRC_ROOT:-$HOME/.zshrc-config}/lib/colors.zsh"
 
 # Configuration
 BACKUP_ROOT="/Volumes/timemachine-music/_DJ-CRATE backups"

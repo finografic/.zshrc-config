@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Source colors (for standalone execution via launchctl)
-source ~/.zshrc-config/lib/colors.zsh
+source "${ZSHRC_ROOT:-$HOME/.zshrc-config}/lib/colors.zsh"
 
 # Set locale to handle special characters
 export LC_ALL=en_US.UTF-8

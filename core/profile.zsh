@@ -49,6 +49,7 @@ typeset -gA ZENV_MODULE_PATHS=(
 	[macos]=lib/macos.zsh
 	[ghostty]=lib/ghostty.zsh
 	[splash]=lib/splash.zsh
+	[zconf]=lib/zconf.zsh
 )
 
 # Canonical source order. Anything requested is sourced in THIS order, not the
@@ -69,6 +70,7 @@ typeset -ga ZENV_MODULE_ORDER=(
 	macos
 	ghostty
 	splash
+	zconf
 )
 
 # Presets. A profile's own ZENV_MODULES/ZENV_FEATURES are merged on top.
@@ -83,7 +85,7 @@ typeset -ga ZENV_MODULE_ORDER=(
 #     for `full`. The macOS profiles list it explicitly.
 # Both stay in the registry so a profile can still ask for them.
 typeset -gA ZENV_PRESET_MODULES=(
-	[full]="colors paths common utils disk doctor fzf git node dev clean"
+	[full]="colors paths common utils disk doctor fzf git node dev clean zconf"
 	[minimal]="colors git node dev"
 	[container]="colors utils git node dev"
 	[none]=""

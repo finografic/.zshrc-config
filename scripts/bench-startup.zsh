@@ -88,6 +88,13 @@ function bench-one-profile() {
   *) env_prefix=(ZENV_FORCE="$zenv") ;;
   esac
 
+  # Force the splash on. Its default is "outermost interactive shell only"
+  # (main-splash.zsh), and the benchmark's `zsh -i` is neither a login shell nor
+  # SHLVL 1 — so without this the benchmark would silently stop measuring ~475 ms
+  # of work that a real terminal window still does, and every number would
+  # improve for no reason. Measure the real terminal's path, not the cheap one.
+  env_prefix+=(ZSHRC_SPLASH=1)
+
   for (( i = 1; i <= n; i++ )); do
     if [[ -t 2 ]]; then
       # \r + \033[K (clear to end of line) redraws in place — a real spinner

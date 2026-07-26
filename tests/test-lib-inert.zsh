@@ -21,7 +21,7 @@ for f in lib/**/*.zsh(N); do
   fi
 done
 
-# ---------------------------------------------------------------------------
+# ============================================================================ #
 # Files with a "run only when executed directly" CLI block.
 #
 # Regression guard for a real bug: the guards used to be
@@ -30,7 +30,8 @@ done
 # `[[ ${BASH_SOURCE[0]} == $0 ]]` (BASH_SOURCE does not exist in zsh, so always
 # false). djay_icloud_sync.zsh would therefore dispatch while being sourced,
 # defaulting to "sync" — starting a real iCloud sync at shell startup.
-# ---------------------------------------------------------------------------
+# ============================================================================ #
+
 typeset -a cli_files=(
   extras/music/djay_icloud_sync.zsh
   scripts/docker-cleanup.zsh
@@ -69,7 +70,7 @@ EOF
 done
 rm -f "$harness"
 
-# ---------------------------------------------------------------------------
+# ============================================================================ #
 # lib/colors.zsh must not export its vars into child processes.
 #
 # Regression guard for a real bug: `typeset -g` on a name that is ALREADY
@@ -80,7 +81,8 @@ rm -f "$harness"
 # reproduce that, because it starts with a clean environment. This harness
 # simulates the contaminated-ancestor case explicitly: export the vars the
 # old way FIRST, then source the current file, then check a child process.
-# ---------------------------------------------------------------------------
+# ============================================================================ #
+
 color_harness="${TMPDIR:-/tmp}/zenv-color-export-$$.zsh"
 cat > "$color_harness" <<EOF
 export ZSHRC_ROOT='$ZSHRC_ROOT'

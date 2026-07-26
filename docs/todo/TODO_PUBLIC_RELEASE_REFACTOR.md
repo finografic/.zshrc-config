@@ -524,10 +524,10 @@ tests, and real argument parsing.
 
 > **`[OPUS]`** — Net-new TypeScript package: types, Vitest, `bin` entry, build wiring. PAUSE and suggest switching to Opus before starting. Contiguous with P5.2 — batch both in one Opus session. See [Model routing protocol](#model-routing-protocol).
 
-- [ ] A single CLI, `zconf`, in `packages/zconf/` — TS, built with tsdown (already your toolchain), `bin` entry, invoked via `pnpm zconf …` and a thin `zconf` zsh wrapper for interactive use.
-- [ ] Styling per your existing `.github/instructions/code/picocolors-cli-styling.instructions.md` — that instruction file finally has a real consumer.
-- [ ] Vitest tests for all pure logic (source-graph parsing, manifest validation, benchmark stats). This is what gives the public repo credibility, and none of it can be tested sanely in zsh.
-- [ ] Node typings configured properly this time (`@types/node`, `tsconfig` `"types"`), which closes the type-aware oxlint failures.
+- [x] A single CLI, `zconf`, in `packages/zconf/` — TS, built with tsdown (already your toolchain), `bin` entry, invoked via `pnpm zconf …` and a thin `zconf` zsh wrapper for interactive use. — Done. The wrapper prefers `dist/`, falls back to running from source via `tsx` so the tool works in a fresh checkout before anyone has built it, and refuses cleanly when Node is absent. Registered as a `zconf` module in the `full` preset.
+- [x] Styling per your existing `.github/instructions/code/picocolors-cli-styling.instructions.md` — that instruction file finally has a real consumer. — `src/utils/picocolors.ts` exports the shared `pc` alias; nothing else imports `picocolors` directly.
+- [x] Vitest tests for all pure logic (source-graph parsing, manifest validation, benchmark stats). This is what gives the public repo credibility, and none of it can be tested sanely in zsh. — 169 tests across 10 files covering the zsh reader, the load graph, manifest resolution, all nine doctor rules, the PII patterns, the benchmark stats, both normalisers, and argument parsing.
+- [x] Node typings configured properly this time (`@types/node`, `tsconfig` `"types"`), which closes the type-aware oxlint failures. — `@types/node` installed, `"types": ["node"]` set, `strict` plus `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`. `tsc --noEmit` and type-aware oxlint both pass.
 
 ### P5.2 — `zconf` commands
 
@@ -542,8 +542,8 @@ tests, and real argument parsing.
 | `zconf bench`              | Wraps `scripts/bench-startup.zsh`, does the stats, renders the table, diffs the baseline.                                                                                                                                                                                                                                        | Stats and formatting; the _measuring_ stays a zsh script since it must spawn real shells. |
 | `zconf normalize`          | Ports the two Python normalizers (comment blocks, function style) so the repo has one tooling language instead of three.                                                                                                                                                                                                         | Removes the Python dependency entirely.                                                   |
 
-- [ ] Wire `doctor` + `scan` into CI and `lint-staged`.
-- [ ] Explicitly **out of scope for TS**: environment detection, `PATH` building, the spinner, and `zupdate`. All must work without Node.
+- [x] Wire `doctor` + `scan` into CI and `lint-staged`. — Added a `zconf` CI job running tests, typecheck, `doctor` and `scan`. Deliberately kept the existing grep-based `secret-scan` job alongside it: that one is dependency-free and still runs if this package is ever broken, and the two use different patterns. Not wired into `lint-staged` — `doctor` and `scan` are whole-repo checks whose answers do not depend on which files are staged, so per-commit runs would cost time without changing the result; CI and a pre-push hook ([P6.1](#p61--rewrite-update-configzsh)) are the right places.
+- [x] Explicitly **out of scope for TS**: environment detection, `PATH` building, the spinner, and `zupdate`. All must work without Node. — Honoured. `lib/zconf.zsh` is only a wrapper and checks for `node` before doing anything, printing a clear message (and reminding you the shell itself does not need it) rather than failing obscurely.
 
 **Exit criteria:** `pnpm zconf doctor` is green, CI runs `doctor` + `scan`, and `packages/`
 contains one real, tested package instead of aspirational scaffolding.
@@ -856,3 +856,27 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
   (`--zenv home-macos -n 15`: 563/591/692 ms min/p50/p95) — no measurable regression from
   the added guards, matching the <1ms prediction. Full test suite + live shell boot clean.
   Phase 3 exit criteria met.
+- 2026-07-26 — **Phase 5** (`[OPUS]`): `packages/zconf` — TypeScript, tsdown, 169 vitest
+  tests, picocolors via the shared `pc` helper, `tsc --noEmit` and type-aware oxlint clean.
+  All six planned commands: `doctor`, `scan`, `graph`, `bench`, `normalize`, `new-profile`.
+  The load graph is seeded from profile manifests as well as literal `source` lines, since
+  `zenv-modules` resolves barrels through `${ZENV_MODULE_PATHS[$name]}` — a grep-based
+  graph would call every barrel an orphan. **Six real bugs found by `doctor` on its first
+  run**, all fixed: `alias lr="find $(pwd) …"` expanded at source time (baking the startup
+  directory into the alias for its whole life, plus a process spawn per shell); `xcrun` and
+  `which` shell-outs at source time in `dev.workflow.zsh` and `paths.linux.zsh` (the latter
+  also appending a _binary_ to PATH, which holds directories, so the entry could never
+  match); a missing `function` keyword; a snake_case function name; and four hardcoded
+  `~/.zshrc-config` source paths. **Two bugs found in the Python normalisers while porting
+  them**, both verified by running the originals: `normalize-functions.py` emitted
+  `function thing(){` with no space, which would have restyled every definition in the
+  repo; and `normalize-comment-blocks.py` injected a closing rule straight after a block
+  title, shoving the prose out of multi-line `# NOTE:` blocks — it would have mangled 28
+  files. The port fixes both, and both deviations are documented in the source. Running
+  `zconf normalize` now changes exactly one file (`tests/test-lib-inert.zsh`, dashed rules
+  → canonical) and is idempotent thereafter. `scan` was proved non-vacuous by planting a
+  canary address and confirming it fired. **Not wired into `lint-staged`**: `doctor` and
+  `scan` are whole-repo checks whose result does not depend on what is staged, so CI and a
+  pre-push hook are the right homes. Still open in Phase 5: nothing — `docs/ARCHITECTURE.md`
+  does not exist yet, so `zconf graph --write` has no target until [P1.1](#p11--write-the-contract-down)
+  creates it (the command reports that clearly rather than failing obscurely).

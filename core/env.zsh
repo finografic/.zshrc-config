@@ -25,10 +25,14 @@ export SIMPLE_GIT_HOOKS_RC="$HOME/.simple-git-hooks.rc"
 # ============================================================================ #
 
 # Detect OS and Version
+#
+# PERF: `sw_vers` costs ~15ms per call. OS_BUILD used to be exported here from a
+# second `sw_vers -buildVersion` and was read by nothing in the repo — 15ms per
+# shell for an unused variable. Removed; add it back next to OS_VERSION if
+# something ever needs it.
 if command -v sw_vers >/dev/null; then
   export OS_NAME="macOS"
   export OS_VERSION=$(sw_vers -productVersion)
-  export OS_BUILD=$(sw_vers -buildVersion)
 else
   export OS_NAME=$(uname -s)
   export OS_VERSION=$(uname -v)
@@ -36,8 +40,13 @@ else
 fi
 
 # System Architecture and Network
-export OS_ARCH=$(uname -m)
-export HOSTNAME=$(hostname)
+#
+# PERF: both of these were subprocesses (`uname -m`, `hostname`) for values zsh
+# already has. $CPUTYPE is byte-identical to `uname -m`; ${(%):-%M} is the FULL
+# hostname, matching `hostname` — note %m would give the short form ("Mac"
+# rather than "Mac.lan") and silently change the splash footer.
+export OS_ARCH="$CPUTYPE"
+export HOSTNAME="${(%):-%M}"
 
 # IP lookup is lazy and on demand — never at shell start. The previous
 # implementation ran `curl ipinfo.io/ip` on every shell, which is both a network

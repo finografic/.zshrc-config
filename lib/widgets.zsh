@@ -120,16 +120,65 @@ function show-splash-sys-banner-footer-info() {
 # SPLASH SCREEN VERSIONS + OS INFO
 # ============================================================================ #
 
+# Prints "$tool --version", cached on disk and keyed by the resolved binary path
+# plus its mtime.
+#
+# `pnpm --version` measured 192 ms — pnpm is itself a Node program, so asking it
+# its own version pays a full Node startup. That was the single most expensive
+# thing in the splash, repeated on every shell, to print a string that only
+# changes when the tool is upgraded. The key includes the resolved path, not just
+# the mtime, so switching Node versions (which moves pnpm to a different prefix)
+# correctly misses the cache instead of reporting a stale version.
+function cached-tool-version() {
+  local tool="$1"
+  local bin cache key
+  bin="$(command -v "$tool" 2> /dev/null)" || return 1
+  [[ -n "$bin" ]] || return 1
+
+  zmodload -F zsh/stat b:zstat 2> /dev/null
+  local -a st
+  if zstat -A st +mtime "$bin" 2> /dev/null; then
+    key="${bin}:${st[1]}"
+  else
+    key="${bin}:nostat"
+  fi
+
+  cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/tool-versions/${tool}"
+
+  if [[ -r "$cache" ]]; then
+    local -a lines
+    lines=("${(@f)$(< "$cache")}")
+    if [[ "${lines[1]}" == "$key" && -n "${lines[2]}" ]]; then
+      print -r -- "${lines[2]}"
+      return 0
+    fi
+  fi
+
+  local version
+  version="$("$tool" --version 2> /dev/null)" || return 1
+  [[ -n "$version" ]] || return 1
+
+  mkdir -p "${cache:h}" 2> /dev/null
+  print -rl -- "$key" "$version" > "$cache" 2> /dev/null
+  print -r -- "$version"
+}
+
 # versions of macOS, NodeJS, npm... etc
 
 function show-os-version-and-sys-info() {
   echo "${_y}$OS_NAME \t $([[ $OS != "Android" ]] && echo "$OS_VERSION") $([[ $OS = "Linux" ]] && echo $OS_KERNEL)"
   [ -e /etc/os-release ] && echo "${_y}$(env -i bash -c '. /etc/os-release; echo $PRETTY_NAME')"
-  echo "${_c}NodeJS \t$(node --version)"
+
+  # $NVM_BIN already encodes the active version (.../versions/node/v24.16.0/bin),
+  # so parameter expansion answers this for free rather than spawning node.
+  local node_version="${${NVM_BIN%/bin}##*/}"
+  [[ -n "$node_version" ]] || node_version="$(cached-tool-version node)"
+  echo "${_c}NodeJS \t${node_version}"
+
   # Prefer pnpm to avoid npm warnings for pnpm-specific .npmrc options (node-linker, hoist-workspace-packages)
-  if command -v pnpm >/dev/null; then
-    echo "${_c}pnpm \tv$(pnpm --version)\n${_0}"
+  if command -v pnpm > /dev/null; then
+    echo "${_c}pnpm \tv$(cached-tool-version pnpm)\n${_0}"
   else
-    echo "${_c}npm \tv$(npm --version)\n${_0}"
+    echo "${_c}npm \tv$(cached-tool-version npm)\n${_0}"
   fi
 }

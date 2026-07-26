@@ -42,7 +42,9 @@ Remaining in P4.4: `autoload` for cold functions and `zcompile` for the hot path
 
 **P4.5 done**: `_zenvs/` → `profiles/` (D2, confirmed by the user, promoted out of "optional"). `git mv`, all `$ZENV_PATH` construction sites updated (`main.zsh`, all 8 profile headers, `lib/widgets.zsh`'s banner lookup, both test files), README/AGENTS.md/CI updated. Zero `_zenvs` references remain outside `docs/todo/` history entries (which narrate the past on purpose). While touching the README, fixed three more drift items found along the way: stale `tools/`/`packages/node` structure-tree lines, a stale "Spinner + PATH deduplication" feature row, and a stale manual-zprof troubleshooting snippet.
 
-**Next: Phase 3** (`lib/` consolidation — Sonnet-tier), then Phases 5–7 (Phase 5's `zconf` TS package is `[OPUS]`).
+**Phase 3 done**: P3.3 consistency sweep (`[[ ]]` over `[ ]` across `lib/`/`core/`/`profiles/*`, shebangs removed from sourced modules, `vendor/index.zsh` deleted, `lib/fzf.zsh`'s raw `\e[` escapes in `android.banner.zsh` replaced) and P3.5 (every `lib/*.zsh` barrel got a `_ZSHRC_<NAME>_LOADED` guard; every leaf module/profile file using `${_c}`-style vars now sources `lib/colors.zsh` explicitly instead of relying on load order). Three real bugs found along the way, none in the original audit: `_ga()`/`_gb()` used `[[ $1 > "" ]]` (string comparison) instead of `[[ -n "$1" ]]`; `lib/fzf.zsh` ran `git clone` unconditionally at source time on Linux whenever `~/.fzf` was missing (moved into `install-fzf()`); `lib/git/git.tags.zsh` hand-rolled its own hardcoded-bold color palette instead of sourcing `lib/colors.zsh` (deleted, now shares the one palette — `_gtag`'s output weight changes slightly as a result, cosmetic only). Deliberately deferred, written up in the TODO doc: `echo`→`print` sweep, confirm-prompt label normalization, `main.zsh` section-number cleanup, CI wiring for the two `normalize-*.py` scripts.
+
+**Next: Phases 5–7** (Phase 5's `zconf` TS package is `[OPUS]`; Phase 6's `zupdate` rewrite is `[OPUS]`; Phase 7 is mostly Sonnet-tier docs/CI).
 
 ### Recent commits
 

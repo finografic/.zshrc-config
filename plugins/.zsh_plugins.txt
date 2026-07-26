@@ -25,7 +25,14 @@ Aloxaf/fzf-tab
 unixorn/fzf-zsh-plugin
 
 # Node/Development tools
-lukechilds/zsh-nvm
+# NOTE: lukechilds/zsh-nvm intentionally NOT loaded. It sources nvm itself
+# (~500ms), and this config already owns the entire nvm lifecycle:
+#   vendor/nvm.zsh          — sources nvm.sh, pins the per-env default version
+#   lib/node/nvm-autoload.zsh — .nvmrc switching via a chpwd hook
+# Loading both meant paying nvm's ~500ms startup cost TWICE per shell. Nothing
+# in this repo referenced the plugin's own features (NVM_AUTO_USE, _zsh_nvm_*).
+# Its NVM_LAZY_LOAD option is not a fix: measured at 490ms unset / 597ms true /
+# 515ms false — the cost is nvm.sh itself, not eagerness.
 ohmyzsh/ohmyzsh path:plugins/yarn
 
 # Directory enhancement

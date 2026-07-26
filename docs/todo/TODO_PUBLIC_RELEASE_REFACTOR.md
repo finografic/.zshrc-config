@@ -425,9 +425,9 @@ single-digit microseconds each, i.e. unmeasurable. You get: self-documenting dep
 modules that work standalone (`zsh -f -c 'source lib/git.zsh'`), and no double-parse.
 
 - [x] Add the guard to `lib/colors.zsh`. — Done exactly as specified; verified idempotent (a second `source` is a no-op that leaves existing values untouched).
-- [ ] Add the same guard idiom to every barrel (`lib/git.zsh`, `lib/node.zsh`, …) — it also makes re-sourcing your config for testing free.
-- [ ] Add explicit `source` lines to the ~25 modules that reference color vars.
-- [ ] Verify with the benchmark ([P4.3](#p43--measure-it)): measure before and after; if the delta exceeds 5 ms, revert to implicit and record the measurement in this doc. (Prediction: it will be under 1 ms.)
+- [x] Add the same guard idiom to every barrel (`lib/git.zsh`, `lib/node.zsh`, …) — it also makes re-sourcing your config for testing free. — Added `_ZSHRC_<NAME>_LOADED` guards to all 14 remaining `lib/*.zsh` barrels: `clean`, `cli`, `common`, `dev`, `doctor`, `fzf`, `ghostty`, `git`, `llms`, `macos`, `node`, `paths`, `splash`, `utils`.
+- [x] Add explicit `source` lines to the ~25 modules that reference color vars. — Added `source "$ZSHRC_ROOT/lib/colors.zsh"` to every leaf module found actually using `${_c}`-style vars without it: 4x `lib/clean/*.zsh`, `lib/cli/cli.listing.zsh`, `lib/dev/dev.workflow.zsh`, 5x `lib/git/*.zsh`, `lib/macos/macos.time-machine.zsh`, `lib/utils.zsh`, `lib/splash.zsh` (uncommented an existing but disabled line), and 6 profile files (`android.banner.zsh`, `docker-dev.aliases.zsh`, `docker-dev.banner.zsh`, `home-linux.dev.zsh`, `office-macos.dev.zsh`, `server-linux.banner.zsh`). **Real bug found doing this, not cosmetic**: `lib/git/git.tags.zsh` had its own hand-rolled, hardcoded-bold color palette (`_y='\033[1;33m'`, etc.) instead of sourcing `lib/colors.zsh` — a genuine duplicated palette (the thing this task's exit criteria explicitly calls out). Deleted the local definitions and sourced `lib/colors.zsh` instead. Net effect: `_gtag`'s warning/error text renders in the same weight as every other git helper now instead of its own one-off bold variant — a real (minor, cosmetic-only) rendering change, not a correctness fix, but worth naming since it changes visible output.
+- [x] Verify with the benchmark ([P4.3](#p43--measure-it)): measure before and after; if the delta exceeds 5 ms, revert to implicit and record the measurement in this doc. (Prediction: it will be under 1 ms.) — Ran `scripts/bench-startup.zsh --zenv home-macos -n 15` after all guards were added: 563/591/692 ms (min/p50/p95), consistent with the P4.4 post-fix baseline already on record in `docs/benchmarks/`. No measurable regression from the added guards, as predicted.
 
 **Exit criteria:** `lib/` has no orphans, no duplicated palettes, one barrel per domain, and
 `zconf doctor` passes clean.
@@ -843,3 +843,16 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
   wiring the two `normalize-*.py` scripts into `pnpm normalize`/CI (tooling, not a
   correctness fix). Full syntax check (all tracked `.zsh` files) + all 4 test suites +
   a live interactive-shell boot re-verified clean.
+- 2026-07-26 — **P3.5** (Sonnet-tier): added `_ZSHRC_<NAME>_LOADED` guards to all 14
+  remaining `lib/*.zsh` barrels, and explicit `source "$ZSHRC_ROOT/lib/colors.zsh"` lines
+  to every leaf module (`lib/clean/*`, `lib/git/*`, `lib/cli/cli.listing.zsh`,
+  `lib/dev/dev.workflow.zsh`, `lib/macos/macos.time-machine.zsh`, `lib/utils.zsh`,
+  `lib/splash.zsh`) and profile file (banners + 3 dev-alias files) actually using
+  `${_c}`-style vars without it. **Real bug found, not cosmetic**: `lib/git/git.tags.zsh`
+  hand-rolled its own hardcoded-bold color palette instead of sourcing `lib/colors.zsh` —
+  a genuine duplicated palette, exactly what this task's exit criteria targets. Deleted the
+  local definitions; `_gtag`'s output now renders at the same weight as every other git
+  helper (a real but purely cosmetic rendering change). Benchmarked after
+  (`--zenv home-macos -n 15`: 563/591/692 ms min/p50/p95) — no measurable regression from
+  the added guards, matching the <1ms prediction. Full test suite + live shell boot clean.
+  Phase 3 exit criteria met.

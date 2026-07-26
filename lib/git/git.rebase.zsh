@@ -33,7 +33,7 @@ function _grb() {
   fi
 
   # Exit if rebase fails
-  if [ $? -ne 0 ]; then
+  if [[ $? -ne 0 ]]; then
     echo "\n${_y}⚠️  Rebase conflicts detected. Resolve them before proceeding.${_0}"
     return 1
   fi
@@ -72,11 +72,11 @@ function _grbs() {
   local CURRENT_BRANCH=$(_gcurrent)
   local COMMIT_COUNT=$(git rev-list --count origin/master..HEAD)
 
-  if [ "$COMMIT_COUNT" -gt 1 ]; then
+  if [[ "$COMMIT_COUNT" -gt 1 ]]; then
     # export EDITOR="sed -i -e '/^# This is the [2-9].*commit message:/,/^#$/d'"
     # If more than 1 commit, do an automatic rebase with squash
     GIT_SEQUENCE_EDITOR="sed -i -e '2,\$s/^pick/squash/'" git rebase -i origin/master
-  elif [ "$COMMIT_COUNT" -eq 1 ]; then
+  elif [[ "$COMMIT_COUNT" -eq 1 ]]; then
     # If only 1 commit, just do a regular rebase
     git rebase origin/master
   else
@@ -84,7 +84,7 @@ function _grbs() {
   fi
 
   # git rebase -i origin/master
-  if [ $? -eq 0 ]; then
+  if [[ $? -eq 0 ]]; then
     echo -e "\n${_m}Force-push with lease $CURRENT_BRANCH to origin? ${_grey}(y/N)${_0}"
     read -r response
     response=${response:-Y}

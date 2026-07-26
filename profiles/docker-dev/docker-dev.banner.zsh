@@ -1,6 +1,5 @@
-#!/bin/zsh
-
-# Docker Container Environment Banner
+# ============================================================================ #
+# NOTE: DOCKER-DEV BANNER - Docker Container Environment
 echo -e "${_c}╔════════════════════════════════════════════════════════════╗${_0}"
 echo -e "${_c}║              🐳 Docker Container Environment               ║${_0}"
 echo -e "${_c}╚════════════════════════════════════════════════════════════╝${_0}"

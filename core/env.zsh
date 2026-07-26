@@ -1,6 +1,5 @@
-#!/bin/zsh
 # ============================================================================ #
-# NOTE: CORE ENV - Environment detection and variables
+# NOTE: CORE ENV - Environment detection and variables (sourced, not executed)
 # ============================================================================ #
 
 # Detect when running inside GitHub Desktop's minimal environment and avoid

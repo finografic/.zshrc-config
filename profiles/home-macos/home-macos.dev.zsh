@@ -25,7 +25,7 @@ function npmi() {
 }
 
 function _gclean-orig() {
-  [ ! -d "./.git" ] && return
+  [[ ! -d "./.git" ]] && return
   echo "\n${_y}CLEAN / DELETE LOCAL GIT BRANCHES.. sure to proceed? (y/n)\n${_0}"
   read -r response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -39,9 +39,9 @@ function _gclean-orig() {
 
 function _gclean() {
   local pattern=$1
-  [ ! -d "./.git" ] && return
+  [[ ! -d "./.git" ]] && return
 
-  if [ -z "$pattern" ]; then
+  if [[ -z "$pattern" ]]; then
     echo "\n${_y}Error: Please provide a pattern (e.g., 'T*' for branches starting with T)\n${_0}"
     return 1
   fi

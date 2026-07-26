@@ -27,7 +27,7 @@ function _format-branch() {
   local width=${2:-$DEFAULT_COL_WIDTH}
   local align=${3:-$ALIGN_LEFT}
 
-  if [ "$align" = "$ALIGN_RIGHT" ]; then
+  if [[ "$align" == "$ALIGN_RIGHT" ]]; then
     printf "  %${width}s" "$text" # Two spaces before right-aligned text
   else
     printf "  %-${width}s" "$text" # Two spaces before left-aligned text
@@ -62,7 +62,7 @@ function _generate-changes-meter() {
   local inserts=$1
   local deletes=$2
 
-  if [ $((inserts + deletes)) -gt 0 ]; then
+  if (( inserts + deletes > 0 )); then
     local total=$((inserts + deletes))
     local plus_count=$((inserts * METER_LENGTH / total))
     local minus_count=$((deletes * METER_LENGTH / total))
@@ -102,7 +102,7 @@ function _stashes() {
     stash_ref=$(echo "$line" | grep -o "stash@{[0-9]*}")
 
     # Fallback to finding stash reference if not directly present
-    if [ -z "$stash_ref" ]; then
+    if [[ -z "$stash_ref" ]]; then
       stash_index=$(git stash list --format="%ad %gd %gs" | grep -nF "$line" | cut -d: -f1)
       stash_ref="stash@{$((stash_index - 1))}"
     fi

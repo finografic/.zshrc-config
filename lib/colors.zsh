@@ -84,7 +84,7 @@ typeset +x _d _0 _bold _grey _gray _r _g _y _b _p _m _c _w \
 # FROM ZGEN:
 function setup-color() {
   # Only use colors if connected to a terminal
-  if [ -t 1 ]; then
+  if [[ -t 1 ]]; then
     RED=$(printf '\033[31m')
     GREEN=$(printf '\033[32m')
     YELLOW=$(printf '\033[33m')

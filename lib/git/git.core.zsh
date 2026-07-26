@@ -19,10 +19,10 @@ function _g() {
 
 # New branch checkout
 function _gb() {
-  if [[ $1 > "" ]]; then
+  if [[ -n "$1" ]]; then
     branch="$1"
     # NOTE: DO NOT AUTO-ADD FOR OFFICE..
-    [ $ZENV != "office-macos" ] && git add .
+    [[ "$ZENV" != "office-macos" ]] && git add .
     git checkout -b "$branch"
   else
     echo "\n${_y}⚠️   NO BRANCH NAME SUPPLIED\n"

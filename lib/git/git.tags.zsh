@@ -126,7 +126,7 @@ function _gtag() {
 
   echo "${_grey}Creating tag at HEAD:${_0} $FULL_TAG"
   git tag "$FULL_TAG"
-  if [ $? -ne 0 ]; then
+  if [[ $? -ne 0 ]]; then
     echo "\n${_r}❌ Failed to create tag\n${_0}"
     return 1
   fi
@@ -138,7 +138,7 @@ function _gtag() {
 
   echo "${_grey}Pushing tag:${_0} $FULL_TAG"
   git push origin "$FULL_TAG"
-  if [ $? -ne 0 ]; then
+  if [[ $? -ne 0 ]]; then
     echo "\n${_r}❌ Failed to push tag\n${_0}"
     return 1
   fi

@@ -1,6 +1,5 @@
-#!/bin/zsh
 # ============================================================================ #
-# NOTE: MAIN.ZSH - Orchestrator for zshrc-config
+# NOTE: MAIN.ZSH - Orchestrator for zshrc-config (sourced, not executed)
 # ============================================================================ #
 
 # This file is sourced AFTER bootstrap/ sequence which handles:

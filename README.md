@@ -123,7 +123,7 @@ typeset -gA REPO_ALIASES=(
 Then add this parser to your `${ZENV}.aliases.zsh` file:
 
 ```zsh
-_register_repo_aliases() {
+function _register-repo-aliases() {
   (( ${+REPO_ALIASES} )) || return 0
 
   local alias_name target_path
@@ -132,8 +132,8 @@ _register_repo_aliases() {
   done
 }
 
-_register_repo_aliases
-unset -f _register_repo_aliases
+_register-repo-aliases
+unset -f _register-repo-aliases
 ```
 
 Each key becomes the alias name, and each value becomes the `cd ... && l` target.

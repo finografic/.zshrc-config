@@ -33,7 +33,7 @@ function clean-node-modules() {
 
 	failed_dirs=()
 
-	if [ ${#dirs[@]} -eq 0 ]; then
+	if (( ${#dirs[@]} == 0 )); then
 		echo "${_w}No node_modules directories found.${_0}\n"
 		return 0
 	fi
@@ -41,10 +41,10 @@ function clean-node-modules() {
 	echo "${_y}Found ${#dirs[@]} node_modules directories.${_0}\n"
 
 	for dir in "${dirs[@]}"; do
-		if [ -d "$dir" ]; then
+		if [[ -d "$dir" ]]; then
 			size=$(du -sh "$dir" 2>/dev/null | cut -f1)
 
-			if [ ! -z "$size" ]; then
+			if [[ -n "$size" ]]; then
 				if [[ $dry_run -eq 1 ]]; then
 					echo "\n${_grey}🔎 Would remove $dir (size: $size)${_0}\n"
 					continue
@@ -69,7 +69,7 @@ function clean-node-modules() {
 		echo "\n${_g}✨ Cleanup complete!${_0}\n"
 	fi
 
-	if [ ${#failed_dirs[@]} -gt 0 ]; then
+	if (( ${#failed_dirs[@]} > 0 )); then
 		echo "\n${_y}Warning: The following directories had permission issues:${_0}"
 		for failed in "${failed_dirs[@]}"; do
 			echo "${_r}  - $failed${_0}"

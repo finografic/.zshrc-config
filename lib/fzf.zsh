@@ -1,12 +1,23 @@
 # FZF Configuration
-if [ "$OS_NAME" = "macOS" ]; then
+if [[ "$OS_NAME" == "macOS" ]]; then
   # Add Homebrew FZF to path if not present
   if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
     export PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"
   fi
-elif [ "$OS_NAME" = "Linux" ]; then
-  # Auto-install FZF if missing
-  [ ! -d "$HOME/.fzf" ] && git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
+elif [[ "$OS_NAME" == "Linux" ]]; then
+  # PERF/SAFETY: this used to run `git clone` unconditionally at SOURCE time
+  # whenever ~/.fzf was missing — a network call on every single shell start
+  # until it succeeded, violating the "sourcing lib/ must not run anything"
+  # rule (P1.2). It went unnoticed because it is Linux-only, and the P1.2
+  # inertness sweep runs on macOS. Now a named function the user calls, same
+  # as scripts/setup/install-tools.zsh for everything else optional.
+  function install-fzf() {
+    if [[ -d "$HOME/.fzf" ]]; then
+      print "fzf already installed at ~/.fzf"
+      return 0
+    fi
+    git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf" && "$HOME/.fzf/install"
+  }
 fi
 
 # Optional: Custom FZF settings

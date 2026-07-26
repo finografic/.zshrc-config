@@ -159,7 +159,7 @@ function _gcc() {
 
 # Amend commit
 function _ga() {
-  if [[ $1 > "" ]]; then
+  if [[ -n "$1" ]]; then
     git commit -am "$1" --allow-empty
   else
     echo "\n${_y}⚠️   NO COMMIT MESSAGE TO AMEND\n"
@@ -168,7 +168,7 @@ function _ga() {
 
 # Continue merge
 function _gmc() {
-  if [ -f .git/MERGE_HEAD ]; then
+  if [[ -f .git/MERGE_HEAD ]]; then
     echo -e "${_m}Merge in progress. Commit with --no-verify..? ${_grey}(y/N)${_0}"
     read -r response
     response=${response:-N}

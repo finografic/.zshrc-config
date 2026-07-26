@@ -167,7 +167,7 @@ function cached-tool-version() {
 
 function show-os-version-and-sys-info() {
   echo "${_y}$OS_NAME \t $([[ $OS != "Android" ]] && echo "$OS_VERSION") $([[ $OS = "Linux" ]] && echo $OS_KERNEL)"
-  [ -e /etc/os-release ] && echo "${_y}$(env -i bash -c '. /etc/os-release; echo $PRETTY_NAME')"
+  [[ -e /etc/os-release ]] && echo "${_y}$(env -i bash -c '. /etc/os-release; echo $PRETTY_NAME')"
 
   # $NVM_BIN already encodes the active version (.../versions/node/v24.16.0/bin),
   # so parameter expansion answers this for free rather than spawning node.

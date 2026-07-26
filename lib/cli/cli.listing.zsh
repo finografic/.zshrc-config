@@ -18,14 +18,14 @@ alias lp="stat -c '%A  %a  %U:%G  ___  %n' *" # SIMPLE
 
 function listing() {
   k -Ah $1
-  [ -d .git ] && git status -uno
+  [[ -d .git ]] && git status -uno
 }
 
 function listing-eza() {
   # eza --long --all --group-directories-first --accessed --time-style=long-iso --git $1
   EZA_IGNORES=".DS_Store|Icon*|.directory"
   eza --long --all --ignore-glob="${EZA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
-  [ -d .git ] && git status -uno
+  [[ -d .git ]] && git status -uno
 }
 
 function lr() {

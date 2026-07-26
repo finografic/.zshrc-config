@@ -12,7 +12,7 @@ function _gps() {
 
   # Get parent repository path
   local PARENT_REPO=$(git rev-parse --show-superproject-working-tree)
-  if [ -z "$PARENT_REPO" ]; then
+  if [[ -z "$PARENT_REPO" ]]; then
     echo "⚠️  Warning: This doesn't appear to be a submodule."
     echo "Are you sure you want to continue? (Y/n)"
     read -r response
@@ -25,7 +25,7 @@ function _gps() {
 
   # Get current branch (should be master for submodules)
   local CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-  if [ "$CURRENT_BRANCH" != "master" ]; then
+  if [[ "$CURRENT_BRANCH" != "master" ]]; then
     echo "⚠️  Warning: You're not on master branch (current: $CURRENT_BRANCH)"
     echo "Submodules typically use master branch. Continue? (Y/n)"
     read -r response
@@ -51,7 +51,7 @@ function _gps() {
   echo "✅ Submodule push successful!"
 
   # If this is a submodule, update parent repository
-  if [ -n "$PARENT_REPO" ]; then
+  if [[ -n "$PARENT_REPO" ]]; then
     echo -e "\n🔄 Updating parent repository..."
 
     # Store current path

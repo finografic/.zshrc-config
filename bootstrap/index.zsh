@@ -1,6 +1,5 @@
-#!/bin/zsh
 # ============================================================================ #
-# NOTE: BOOTSTRAP INDEX - Loads all bootstrap files in correct order
+# NOTE: BOOTSTRAP INDEX - Loads all bootstrap files in correct order (sourced, not executed)
 # ============================================================================ #
 
 # This file is sourced by ~/.zshrc after setting ZSHRC_ROOT

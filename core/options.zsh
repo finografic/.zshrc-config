@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ============================================================================ #
 # NOTE: CORE OPTIONS - Zsh settings, completion, keybindings
 # ============================================================================ #
@@ -8,7 +7,7 @@
 # ============================================================================ #
 
 # Use modern completion system
-[ "$(dircolors -b 2>/dev/null)" ] && eval "$(dircolors -b)"
+[[ -n "$(dircolors -b 2>/dev/null)" ]] && eval "$(dircolors -b)"
 
 # Essential completion settings..
 zstyle ':completion:*' menu select=2

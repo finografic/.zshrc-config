@@ -1,6 +1,10 @@
 #!/bin/zsh
 # Exit criteria for P1.2: sourcing any lib/**.zsh must be inert.
 # Each module is sourced in a fresh `zsh -f`; any stdout/stderr is a failure.
+#
+# Also covers the opt-in extras and scripts that ship a CLI dispatcher: those
+# must be inert when SOURCED (however deeply, and whatever the caller's
+# positional parameters are) and must still dispatch when EXECUTED.
 
 # Resolve the repo root from this script's own location unless one is passed in.
 export ZSHRC_ROOT="${1:-${0:A:h:h}}"
@@ -17,9 +21,57 @@ for f in lib/**/*.zsh(N); do
   fi
 done
 
+# ---------------------------------------------------------------------------
+# Files with a "run only when executed directly" CLI block.
+#
+# Regression guard for a real bug: the guards used to be
+# `[[ $ZSH_EVAL_CONTEXT == "toplevel"* ]]` (matches ALWAYS — it is a
+# colon-separated stack that always begins with "toplevel") and
+# `[[ ${BASH_SOURCE[0]} == $0 ]]` (BASH_SOURCE does not exist in zsh, so always
+# false). djay_icloud_sync.zsh would therefore dispatch while being sourced,
+# defaulting to "sync" — starting a real iCloud sync at shell startup.
+# ---------------------------------------------------------------------------
+typeset -a cli_files=(
+  extras/music/djay_icloud_sync.zsh
+  scripts/docker-cleanup.zsh
+)
+
+# The harness MUST drive this from a real script file, not `zsh -c`. The two
+# produce different eval contexts — `zsh script.zsh` gives "toplevel...", while
+# `zsh -c` gives "cmdarg..." — and the historical broken guard only misfired
+# under the former. A `zsh -c` harness silently passes even with the bug present.
+harness="${TMPDIR:-/tmp}/zenv-cli-guard-$$.zsh"
+
+for f in $cli_files; do
+  [[ -r "$ZSHRC_ROOT/$f" ]] || continue
+
+  # Sourced from inside a function that still holds positional parameters —
+  # the exact shape core/profile.zsh's loaders use.
+  cat > "$harness" <<EOF
+export ZSHRC_ROOT='$ZSHRC_ROOT'
+source '$ZSHRC_ROOT/lib/colors.zsh'
+function loader() { source '$ZSHRC_ROOT/$f'; }
+loader 'music/a music/b'
+EOF
+  out="$(zsh -f "$harness" 2>&1)"
+  if [[ -n "$out" ]]; then
+    print "FAIL $f — dispatched while being sourced"
+    print "$out" | sed 's/^/     | /' | head -5
+    (( failures++ ))
+  fi
+
+  # ...but executing it must still reach the CLI.
+  out="$(zsh "$ZSHRC_ROOT/$f" help 2>&1)"
+  if [[ -z "$out" ]]; then
+    print "FAIL $f — executed directly but produced nothing (dead CLI guard)"
+    (( failures++ ))
+  fi
+done
+rm -f "$harness"
+
 print ""
 if (( failures == 0 )); then
-  print "PASS — all lib/ modules source inertly"
+  print "PASS — lib/ modules source inertly; CLI guards correct"
 else
-  print "$failures module(s) produced output"
+  print "$failures failure(s)"
 fi

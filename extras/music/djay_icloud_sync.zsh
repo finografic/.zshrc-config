@@ -683,8 +683,26 @@ function djay-icloud-sync-main() {
     log-message "djay Pro iCloud synced"
 }
 
-# Command line interface (only runs when script is executed directly)
-if [[ "${ZSH_EVAL_CONTEXT}" == "toplevel"* ]] || [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+# Command line interface (only runs when script is EXECUTED, never when sourced).
+#
+# NOTE: the previous guard was
+#   [[ "$ZSH_EVAL_CONTEXT" == "toplevel"* ]] || [[ "${BASH_SOURCE[0]}" == "$0" ]]
+# and both halves were wrong in zsh:
+#   - $ZSH_EVAL_CONTEXT ALWAYS starts with "toplevel" — it is a colon-separated
+#     stack, e.g. "toplevel:file" when sourced from a script, "toplevel" when
+#     executed. `toplevel*` therefore matches every case.
+#   - $BASH_SOURCE does not exist in zsh, so that half is always false.
+# The net effect was a CLI dispatcher that fired while being *sourced*: with an
+# empty $1 it defaults to "sync" and would start a real iCloud sync at shell
+# startup. It only stayed dormant because an interactive shell happens to
+# produce a context of "file:file:..." rather than "toplevel:...".
+#
+# ${zsh_eval_context[-1]} is the correct test. It is "file" whenever this file is
+# being sourced, at any depth; when it is being run it is the invocation kind —
+# "toplevel" for `zsh script.zsh`, "cmdarg" for `zsh -c`. Testing `!= file`
+# therefore means exactly "not being sourced", and covers both run styles.
+# Read it before any $( ), which would push another context level.
+if [[ "${zsh_eval_context[-1]}" != file ]]; then
     # Parse command line arguments
     case "${1:-sync}" in
         "sync")

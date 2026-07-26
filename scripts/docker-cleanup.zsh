@@ -132,7 +132,14 @@ function docker-cleanup() {
     esac
 }
 
-# Command line interface (only runs when script is executed directly)
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+# Command line interface (only runs when script is EXECUTED, never when sourced).
+#
+# NOTE: this used to test [[ "${BASH_SOURCE[0]}" == "${0}" ]]. $BASH_SOURCE does
+# not exist in zsh, so the condition was always false and this dispatcher never
+# ran — not even when the script WAS executed directly. ${zsh_eval_context[-1]}
+# is "file" whenever sourced (at any depth); when run it is the invocation kind
+# ("toplevel" for `zsh script.zsh`, "cmdarg" for `zsh -c`), so `!= file` means
+# exactly "not being sourced".
+if [[ "${zsh_eval_context[-1]}" != file ]]; then
     docker-cleanup "$@"
 fi

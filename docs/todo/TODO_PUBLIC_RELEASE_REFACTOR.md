@@ -454,12 +454,18 @@ Two `node` process spawns per interactive shell, ~30–80 ms each on macOS:
 
 ### P4.3 — Measure it
 
+> **Done 2026-07-26.** Done out of Phase order, ahead of Phase 3, because three phases of
+> load-path changes (node removal, side-effect purge, manifest loader) had already landed
+> with zero measurements — the exact situation this task exists to prevent from
+> compounding further.
+
 You cannot defend a budget you don't measure. This is a prerequisite for the rest of the phase.
 
-- [ ] Add `scripts/bench-startup.zsh`: N cold `zsh -i -c exit` runs, report min/p50/p95, accept `ZENV=<profile>` to benchmark each profile, and diff against a committed baseline in `docs/benchmarks/`.
-- [ ] Record the current baseline in this doc _before_ changing anything, so each subsequent phase can claim a real number.
-- [ ] Add `bootstrap/00-profiling.zsh` documentation: how to get a `zprof` breakdown in one command (`ZSHRC_PROFILE=1 zsh -i -c exit`).
-- [ ] Add the budget assertion to CI (soft-fail at first — CI runners are noisy; compare ratios between profiles rather than absolute ms).
+- [x] Add `scripts/bench-startup.zsh`: N cold `zsh -i -c exit` runs, report min/p50/p95, accept `ZENV=<profile>` to benchmark each profile, and diff against a committed baseline in `docs/benchmarks/`. — Built as `--zenv <profile>` / `--all-profiles`, `-n`, `--json`, `--save`. **Real correctness finding, not cosmetic**: `ZENV_FORCE=vscode`/`codex` alone does _not_ exercise those profiles' fast paths — `main.zsh`'s early exits call `is-agent-shell`/`is-ide-shell` directly against real env signals (`IS_CODEX`, `TERM_PROGRAM`), not `$ZENV`. A benchmark using only `ZENV_FORCE` would have quietly measured the _slow_ path for the two profiles that most need to be fast. The script sets the real trigger per profile instead (`TERM_PROGRAM=vscode`, `IS_CODEX=true`, `IN_DOCKER=1` for docker-dev).
+- [x] **Bug found and fixed while building this, not in the audit**: the first version of the JSON writer used `local name` (bare, no `=`) to redeclare a variable that was already `local` from an outer scope, inside a `{ ... } > file` redirect. In zsh this is not a no-op — `typeset`/`local` with a bare name on an _existing_ parameter switches into **display mode** and prints `name=value` to stdout. That printed straight into the JSON file on the very first `--save` run, corrupting it with three stray lines. Fixed by declaring locals once, with explicit values, and factoring row-parsing into one `parse-row` helper instead of three inline copies.
+- [x] Record the current baseline in this doc _before_ changing anything, so each subsequent phase can claim a real number. — Recorded in `docs/benchmarks/baseline.json`, **with a load-bearing caveat**: it was captured inside this AI agent's sandboxed execution environment, not a real machine, and the sandbox shows clear signs of resource contention during shell startup specifically (a `gitstatusd` init failure; `node --version` costing 1.5s of self-time in `zprof` when the same command measured 17ms standalone in the same sandbox). Absolute numbers are **not** trustworthy against the 400ms/150ms budget as a result — see `docs/benchmarks/README.md` for the full writeup and instructions to re-run on a real machine. What the baseline _does_ show reliably (a same-environment ratio): `codex` (~1.3s) ≪ `docker-dev` (~1.7s) < `vscode` (~3.4s) ≪ full profiles (~4.3–5.6s) — which is the bootstrap early-exit architecture working exactly as designed, and also surfaces that `vscode`'s "minimal" profile still pays the full `antidote`/`compinit`/p10k-prompt cost in `bootstrap/`, unlike `codex`. Real finding for [P4.4](#p44--structural-speedups).
+- [x] Add `bootstrap/00-profiling.zsh` documentation: how to get a `zprof` breakdown in one command (`ZSHRC_PROFILE=1 zsh -i -c exit`). — Implemented as an actual one-command mechanism, not just documentation: `ZSHRC_PROFILE=1` now gates `zmodload zsh/zprof` and a `zshexit` hook that prints the report automatically, replacing a manual comment-out-this-line workflow. While there, removed a second, redundant `typeset -U PATH` in this file — [P1.3](#p13--single-owner-for-path)'s `typeset -U path PATH` in `bootstrap/index.zsh` already owns this and runs first.
+- [x] Add the budget assertion to CI (soft-fail at first — CI runners are noisy; compare ratios between profiles rather than absolute ms). — New `startup-budget` job, `continue-on-error: true`, asserts `codex` p50 < `home-linux` p50 on the Ubuntu runner (the two Linux-compatible profiles). Verified locally end-to-end with the exact extraction logic CI runs.
 
 ### P4.4 — Structural speedups
 
@@ -766,3 +772,14 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
   (`dev.jest.zsh`, `mongodb.zsh`, `k.plugin.zsh`, `template-tool/`), closing most of
   **P3.1**. **Exit criteria verified**: every `lib/**.zsh` sources with zero output under
   `zsh -f`.
+- 2026-07-26 — **P4.3** (Sonnet-tier, done out of order ahead of Phase 3 — see rationale in
+  its section above): `scripts/bench-startup.zsh`, `ZSHRC_PROFILE=1` one-command `zprof`,
+  a soft-fail CI ratio check, and a baseline recorded with a load-bearing caveat that it was
+  captured in an AI-agent sandbox, not a real machine — full writeup in
+  `docs/benchmarks/README.md`. Two real bugs found while building the tool, not in the
+  audit: (1) `ZENV_FORCE` alone doesn't reach `vscode`/`codex`'s fast paths, since
+  `main.zsh`'s early exits test real env signals, not `$ZENV` — a benchmark that didn't
+  account for this would have quietly measured the slow path for exactly the profiles that
+  most need to be fast; (2) a bare `local name` redeclaration inside a `{ ... } > file`
+  block triggered zsh's `typeset` display-mode side effect and corrupted the first
+  `--save` output with three stray `name=value` lines straight into the JSON.

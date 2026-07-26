@@ -34,6 +34,27 @@ jobs:
       - name: Every profile boots clean
         run: zsh tests/test-profile-boot.zsh
 
+  startup-budget:
+    runs-on: ubuntu-latest
+    # Soft-fail (P4.3/P7.4): CI runners are noisy shared hardware, so this
+    # compares a RATIO between profiles rather than asserting an absolute ms
+    # budget. See docs/benchmarks/README.md for why absolute numbers from any
+    # sandboxed/virtualised runner are not trustworthy on their own.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install -y zsh
+      - name: codex must be meaningfully faster than the full profile
+        run: |
+          set -e
+          extract_p50() { grep -oE '"p50_ms": [0-9]+(\.[0-9]+)?' | grep -oE '[0-9]+(\.[0-9]+)?$'; }
+          full_p50="$(zsh scripts/bench-startup.zsh --zenv home-linux -n 10 --json | extract_p50)"
+          codex_p50="$(zsh scripts/bench-startup.zsh --zenv codex -n 10 --json | extract_p50)"
+          echo "home-linux p50: ${full_p50}ms, codex p50: ${codex_p50}ms"
+          awk -v full="$full_p50" -v codex="$codex_p50" 'BEGIN { exit !(codex < full) }' \
+            || { echo "::warning::codex (${codex_p50}ms) is not faster than home-linux (${full_p50}ms) — expected, since is-agent-shell should short-circuit bootstrap/index.zsh entirely"; exit 1; }
+
   secret-scan:
     runs-on: ubuntu-latest
     steps:

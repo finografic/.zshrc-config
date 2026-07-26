@@ -1,12 +1,12 @@
 {
   "folders": [
-	{
-		"path": ".."
-	}
-],
-	"settings": {
-		"chat.tools.terminal.autoApprove": {
-			"command": true
-		}
-	}
+    {
+      "path": "..",
+    },
+  ],
+  "settings": {
+    "chat.tools.terminal.autoApprove": {
+      "command": true,
+    },
+  },
 }

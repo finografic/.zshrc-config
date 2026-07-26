@@ -5,6 +5,7 @@ This directory contains scripts and services for managing djay Pro music library
 ## Overview
 
 These scripts handle:
+
 - **iCloud Sync**: Synchronizing djay Pro library between local machine and iCloud Drive
 - **Time Machine Backup**: Automated backups of the `_DJ-CRATE` folder to Time Machine
 - **Icon Management**: Utilities for maintaining custom folder icons in backups
@@ -16,6 +17,7 @@ These scripts handle:
 Main iCloud synchronization service for djay Pro files.
 
 **Features:**
+
 - Bidirectional sync between local and iCloud Drive
 - Automatic model detection and timestamp management
 - iOS export functionality
@@ -38,6 +40,7 @@ djay agent-start   # Enable automatic sync
 Time Machine backup service for the `_DJ-CRATE` music folder.
 
 **Features:**
+
 - Automated backups to Time Machine volume
 - Hard linking for efficient storage
 - Automatic cleanup (keeps last 30 days)
@@ -49,6 +52,7 @@ Time Machine backup service for the `_DJ-CRATE` music folder.
 **Function:** `djay_backup_music()`
 
 **Paths:**
+
 - Source: `/Volumes/SSD.MUSIC/_DJ-CRATE`
 - Destination: `/Volumes/timemachine-music/_DJ-CRATE backups`
 
@@ -69,6 +73,7 @@ Utility script to apply custom folder icons to backup directories.
 **Location:** `~/Library/LaunchAgents/com.user.dj-crate-backup.plist`
 
 **Schedule:**
+
 - Runs on system startup/login (`RunAtLoad`)
 - Every Monday at 4:00 AM
 - Every Thursday at 4:00 AM
@@ -84,6 +89,7 @@ launchctl list | grep com.user.dj-crate-backup
 **Location:** `~/Library/LaunchAgents/com.user.djay-sync.plist`
 
 **Schedule:**
+
 - Runs on system startup/login (`RunAtLoad`)
 - Every 15 minutes (`StartInterval: 900`)
 
@@ -178,4 +184,4 @@ tail -f /tmp/musicbackup.err
 
 ---
 
-*Last Updated: December 2024*
+_Last Updated: December 2024_

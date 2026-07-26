@@ -17,7 +17,7 @@ function _gclean() {
     return 1
   fi
 
-  echo "\n\n${_grey}${_B}Using '${_y}${_B}${GLOB_ARG}${_grey}${_B}*' will ${_y}${_B}DELETE${_grey}${_B} the following branches:${_0}\n"
+  echo "\n\n${_grey}${_bold}Using '${_y}${_bold}${GLOB_ARG}${_grey}${_bold}*' will ${_y}${_bold}DELETE${_grey}${_bold} the following branches:${_0}\n"
   echo "${_y}$AFFECTED_BRANCHES${_0}\n"
 
   # Get preserved branches by excluding the deletion pattern
@@ -25,7 +25,7 @@ function _gclean() {
   local PRESERVED_BRANCHES=$(git branch | grep "$BASE_PATTERN" | grep -v "$GLOB_ARG" || true)
 
   if [[ ! -z "$PRESERVED_BRANCHES" ]]; then
-    echo "${_grey}${_B}Preserves the following branches:${_0}\n"
+    echo "${_grey}${_bold}Preserves the following branches:${_0}\n"
     echo "${_c}$PRESERVED_BRANCHES${_0}\n"
   fi
 

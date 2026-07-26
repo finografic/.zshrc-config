@@ -69,6 +69,33 @@ EOF
 done
 rm -f "$harness"
 
+# ---------------------------------------------------------------------------
+# lib/colors.zsh must not export its vars into child processes.
+#
+# Regression guard for a real bug: `typeset -g` on a name that is ALREADY
+# exported does not strip the export flag, only updates the value. Every one
+# of these vars WAS `export`ed by this file until this fix, so any ancestor
+# shell still running old config (a tmux server, a login shell predating an
+# update) has already exported them — and a plain `zsh -f` test cannot
+# reproduce that, because it starts with a clean environment. This harness
+# simulates the contaminated-ancestor case explicitly: export the vars the
+# old way FIRST, then source the current file, then check a child process.
+# ---------------------------------------------------------------------------
+color_harness="${TMPDIR:-/tmp}/zenv-color-export-$$.zsh"
+cat > "$color_harness" <<EOF
+export ZSHRC_ROOT='$ZSHRC_ROOT'
+export _c="old" _r="old" _g="old" _y="old" _0="old"
+source "\$ZSHRC_ROOT/lib/colors.zsh"
+env | grep -E '^_(c|r|g|y|0)='
+EOF
+out="$(zsh -f "$color_harness" 2>&1)"
+if [[ -n "$out" ]]; then
+  print "FAIL lib/colors.zsh — vars still exported after sourcing, even with a clean env:"
+  print "$out" | sed 's/^/     | /'
+  (( failures++ ))
+fi
+rm -f "$color_harness"
+
 print ""
 if (( failures == 0 )); then
   print "PASS — lib/ modules source inertly; CLI guards correct"

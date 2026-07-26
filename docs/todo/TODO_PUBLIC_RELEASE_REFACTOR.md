@@ -359,7 +359,7 @@ Nothing sources these (verified by basename grep across all tracked `.zsh`/`.md`
 - [x] `lib/template-tool/` — **8 files, ~900 lines** … This is a scratch workspace. Extract whatever the "FINAL" version was actually for, or delete the directory outright. — Deleted outright in [P1.2](#p12--purge-source-time-side-effects); nothing reusable (one-off merge-conflict triage with a hardcoded 2025 date).
 - [x] `lib/k.plugin.zsh` (593 lines) — a vendored copy of `supercrabtree/k`, but `plugins/.zsh_plugins.txt` already loads `k` via Antidote from its own repo. Delete the vendored copy. — Deleted in [P1.2](#p12--purge-source-time-side-effects), with its `.editorconfig` shfmt exemption.
 - [x] `lib/dev.jest.zsh` (91 lines) — sourced only by `home-macos`, and it is employer-era Jest tooling. Delete or move to `extras/`. — Deleted in [P1.2](#p12--purge-source-time-side-effects); it ran `jest --clearCache` at source time.
-- [ ] `themes/gallois-custom.zsh-theme`, `themes/restore-theme.zsh` — verify against `themes/default.theme.zsh`; delete whichever is superseded.
+- [x] `themes/gallois-custom.zsh-theme`, `themes/restore-theme.zsh` — verify against `themes/default.theme.zsh`; delete whichever is superseded. — Both deleted: `gallois` is commented out in `plugins/.zsh_plugins.txt`, `powerlevel10k` is the real active theme (confirmed via `bootstrap/04-prompt.zsh`). `themes/README.md` was still documenting gallois as "MY PICK" — corrected to describe p10k as the default and the oh-my-zsh list as alternatives. `default.theme.zsh`'s dead commented-out `gallois-custom` line updated to say what's actually true.
 - [x] `.main.zsh.swp` (16 KB tracked vim swapfile) — untracked in [P0.2](#p02--scrub-secrets-and-pii-from-the-working-tree); `plugins/.zsh_plugins.generated.{linux,macos}.zsh` untracked in [P1.2](#p12--purge-source-time-side-effects) and now covered by `.gitignore`.
 
 That's roughly **1,700 lines and 66 MB** removed before a single behavioural change.
@@ -399,10 +399,11 @@ Apply the recorded conventions everywhere, ideally via a script + a `zconf docto
 
 ### P3.4 — `lib/colors.zsh`: stop exporting
 
-- [ ] 23 `export _X=` color vars leak into the environment of **every child process** (`env` output, subprocess memory, anything that dumps env in logs). They are only needed in-shell: change to `typeset -g`.
-- [ ] Caveat first: verify nothing that runs as a _separate process_ depends on them — check `extras/music/*.zsh` (launchd jobs), `scripts/*.sh`, and `extras/examples/run-docker-zsh.sh`. Anything that does should source `lib/colors.zsh` itself.
-- [ ] `lib/colors.zsh:5` — `export env EXA_COLORS=…` exports a variable literally named `env`. Fix to `export EXA_COLORS=…`.
+- [x] 23 `export _X=` color vars leak into the environment of **every child process** (`env` output, subprocess memory, anything that dumps env in logs). They are only needed in-shell: change to `typeset -g`. — **Real bug found while doing this, not cosmetic**: `typeset -g` on a name that is _already_ exported does not strip the export flag, only the value. Every one of these vars had been `export`ed by the old file, so any long-lived ancestor shell still running old config (a tmux server, a login shell predating the update) already has them exported — and `typeset -g` alone would keep silently leaking them into child processes on exactly the machines this fix is meant to help. A bare `zsh -f` test cannot catch this: it starts with a clean environment. Fixed with an explicit `typeset +x` pass after all assignments; verified against a harness that pre-exports the old-style vars before sourcing (the contaminated-ancestor-shell scenario), which reproducibly failed before the fix and passes after. New permanent regression test in `tests/test-lib-inert.zsh`.
+- [x] Caveat first: verify nothing that runs as a _separate process_ depends on them — check `extras/music/*.zsh` (launchd jobs), `scripts/*.sh`, and `extras/examples/run-docker-zsh.sh`. Anything that does should source `lib/colors.zsh` itself. — Confirmed: all five consumer scripts already self-source `lib/colors.zsh`. `run-docker-zsh.sh` is bash, not zsh, and defines its own raw ANSI vars — correct as-is, since it cannot source a zsh-syntax file.
+- [x] `lib/colors.zsh:5` — `export env EXA_COLORS=…` exports a variable literally named `env`. Fix to `export EXA_COLORS=…`.
 - [ ] Consider `%F{…}`/`autoload colors` for prompt contexts, but raw escapes are fine for `print` output — not worth churning.
+- [x] **Second real bug found while rewriting this file, not in the audit**: `_B` was defined twice — first as generic bold (`\033[1m`), then a few lines later silently reassigned to bold+blue (`"$_B\033[34m"`) to fit the uppercase-letter convention for the other colors. Any caller wanting plain bold via `${_B}` got bold-**blue** instead — and since ANSI foreground codes don't compose (the last one wins), `lib/git/git.maintenance.zsh`'s `${_y}${_B}DELETE` actually rendered blue, not yellow-bold as the code implies. Fixed by giving generic bold its own name (`_bold`) and updating the one real consumer.
 
 ### P3.5 — Colors: guarded explicit sourcing
 
@@ -420,7 +421,7 @@ first call does the work; the other ~25 return after one arithmetic test — cal
 single-digit microseconds each, i.e. unmeasurable. You get: self-documenting dependencies,
 modules that work standalone (`zsh -f -c 'source lib/git.zsh'`), and no double-parse.
 
-- [ ] Add the guard to `lib/colors.zsh`.
+- [x] Add the guard to `lib/colors.zsh`. — Done exactly as specified; verified idempotent (a second `source` is a no-op that leaves existing values untouched).
 - [ ] Add the same guard idiom to every barrel (`lib/git.zsh`, `lib/node.zsh`, …) — it also makes re-sourcing your config for testing free.
 - [ ] Add explicit `source` lines to the ~25 modules that reference color vars.
 - [ ] Verify with the benchmark ([P4.3](#p43--measure-it)): measure before and after; if the delta exceeds 5 ms, revert to implicit and record the measurement in this doc. (Prediction: it will be under 1 ms.)

@@ -4,7 +4,8 @@
 
 # $ZENV is resolved once in main.zsh; re-deriving it here was a second source of
 # truth for the same fact (and a second call to the detection logic).
-# TODO: TESTING DEFAULT THEME
-# export ZSH_THEME="gallois-custom" # Using consistent theme across environments
-# source "$ZSHRC_ROOT/themes/prompt.zsh"
-# source "$ZSHRC_ROOT/themes/themes.functions.zsh"
+#
+# The active theme is powerlevel10k (plugins/.zsh_plugins.txt,
+# bootstrap/04-prompt.zsh). This file is now a placeholder — main.zsh sources
+# it, themes/themes.functions.zsh, and themes/prompt.zsh as three separate
+# steps.

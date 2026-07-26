@@ -2,15 +2,15 @@
 
 ## DEFAULT Theme
 
-ohmyzsh/ohmyzsh path:themes/gallois.zsh-theme
+`romkatv/powerlevel10k` — see `plugins/.zsh_plugins.txt` and `bootstrap/04-prompt.zsh`,
+which loads `~/.p10k.zsh`. Run `p10k configure` to customize.
 
 ---
 
-## CHANGE BASIC THEMES
+## CHANGE BASIC THEMES (oh-my-zsh alternatives)
 
-### Replace gallois in your config with any of these
+### Swap p10k for any of these instead
 
-`gallois` - MY PICK
 `refined` - clean, git-focused
 `jonathan` - minimal but informative
 `lambda` - super minimal
@@ -46,9 +46,9 @@ romkatv/powerlevel10k
 
 ## RESOURCES
 
-Oh-My-Zsh Themes: <https://github.com/ohmyzsh/ohmyzsh/wiki/Themes>
-Awesome Zsh Plugins: <https://github.com/unixorn/awesome-zsh-plugins>
-r/zsh Subreddit: <https://www.reddit.com/r/zsh/>
+[Oh-My-Zsh Themes](https://github.com/ohmyzsh/ohmyzsh/wiki/Themes)
+[Awesome Zsh Plugins](https://github.com/unixorn/awesome-zsh-plugins)
+[r/zsh Subreddit](https://www.reddit.com/r/zsh/)
 
 ## QUICK THEME SWITCH SCRIPT
 

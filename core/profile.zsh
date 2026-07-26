@@ -130,6 +130,27 @@ function zenv-validate() {
 # NOTE: RESOLUTION
 # ============================================================================ #
 
+# Sources a file with an EMPTY positional parameter list.
+#
+# `source file` (with no trailing args) does not clear $@ — the sourced file
+# inherits the caller's positional parameters. Since every loader function here
+# takes its work list as "$1", a naive `source "$path"` would hand each sourced
+# file a $1 of e.g. "music/backup-dj-crate music/djay_icloud_sync". Any script
+# that inspects $1 at source time then acts on garbage.
+#
+# `shift` after capturing the path leaves $@ empty for the sourced file, which
+# is what a config module should see. Real case this protects:
+# extras/music/djay_icloud_sync.zsh has a `case "${1:-sync}"` CLI dispatcher at
+# the bottom, guarded on $ZSH_EVAL_CONTEXT. In a real interactive shell that
+# guard happens not to match, so the bug stayed latent — but it fires in any
+# context where ZSH_EVAL_CONTEXT starts with "toplevel" (a plain `zsh script.zsh`
+# harness, for instance), where it would print a usage error and `exit 1`.
+function zenv-source() {
+	local __zenv_path="$1"
+	shift
+	source "$__zenv_path"
+}
+
 # Sources the requested `lib/` barrels in canonical order, honouring the nvm
 # load-order invariant. Takes a space-separated list of module names.
 function zenv-modules() {
@@ -145,13 +166,13 @@ function zenv-modules() {
 		# different ways; it lives here now so it cannot be got wrong.
 		if [[ "$name" == node ]]; then
 			# pnpm PATH / PNPM_HOME
-			source "$ZSHRC_ROOT/vendor/pnpm-path.zsh"
+			zenv-source "$ZSHRC_ROOT/vendor/pnpm-path.zsh"
 			# nvm must be initialised BEFORE lib/node.zsh: nvm-autoload
 			# early-returns (silently) if nvm_find_nvmrc doesn't exist yet.
-			[[ "${NVM:-false}" == true ]] && source "$ZSHRC_ROOT/vendor/nvm.zsh"
+			[[ "${NVM:-false}" == true ]] && zenv-source "$ZSHRC_ROOT/vendor/nvm.zsh"
 		fi
 
-		source "$ZSHRC_ROOT/${ZENV_MODULE_PATHS[$name]}"
+		zenv-source "$ZSHRC_ROOT/${ZENV_MODULE_PATHS[$name]}"
 
 		# Activate .nvmrc auto-switching once the barrel has defined it.
 		if [[ "$name" == node ]]; then
@@ -168,7 +189,7 @@ function zenv-features() {
 
 	local name
 	for name in $requested; do
-		source "$ZENV_PATH/${ZENV}.${name}.zsh"
+		zenv-source "$ZENV_PATH/${ZENV}.${name}.zsh"
 	done
 }
 
@@ -181,7 +202,7 @@ function zenv-opt-in() {
 	for name in $requested; do
 		path="$ZSHRC_ROOT/extras/${name}.zsh"
 		if [[ -r "$path" ]]; then
-			source "$path"
+			zenv-source "$path"
 		else
 			print "zenv: opt-in '$name' -> missing file $path" >&2
 		fi

@@ -113,6 +113,38 @@ check "full excludes widgets (main-splash.zsh owns it)" "1" \
 check "full excludes ghostty (macOS-specific path)" "1" \
   "$([[ "$out" != *ghostty* ]] && print 1 || print 0)"
 
+print "\npositional-parameter isolation (real sourcing, no source stub):"
+# `source file` does NOT clear $@ — a sourced file inherits the caller's
+# positional parameters. Since every loader function takes its work list as
+# "$1", a naive `source "$path"` hands each sourced file a $1 of e.g.
+# "music/backup-dj-crate music/djay_icloud_sync". Any extra with a CLI
+# dispatcher at the bottom (extras/music/djay_icloud_sync.zsh has exactly that)
+# then acts on garbage. These cases source a REAL probe file, so the source
+# stub used above cannot hide the problem.
+probe_dir="${TMPDIR:-/tmp}/zenv-argtest-$$"
+mkdir -p "$probe_dir/extras/probe" "$probe_dir/_zenvs/argtest"
+print 'print "argc=$# argv=[$*]"' > "$probe_dir/extras/probe/target.zsh"
+print 'print "argc=$# argv=[$*]"' > "$probe_dir/_zenvs/argtest/argtest.feature.zsh"
+
+out="$(zsh -f -c "
+  export ZSHRC_ROOT='$probe_dir'
+  export ZENV=argtest
+  export ZENV_PATH=\"\$ZSHRC_ROOT/_zenvs/\$ZENV\"
+  source '$ZSHRC_ROOT/core/profile.zsh'
+  zenv-opt-in 'probe/target'
+" 2>&1)"
+check "opt-in sees empty \$@, not the opt-in list" "argc=0 argv=[]" "$out"
+
+out="$(zsh -f -c "
+  export ZSHRC_ROOT='$probe_dir'
+  export ZENV=argtest
+  export ZENV_PATH=\"\$ZSHRC_ROOT/_zenvs/\$ZENV\"
+  source '$ZSHRC_ROOT/core/profile.zsh'
+  zenv-features 'feature'
+" 2>&1)"
+check "feature sees empty \$@, not the feature list" "argc=0 argv=[]" "$out"
+rm -rf "$probe_dir"
+
 print "\nvalidation:"
 out="$(trace-load 'zenv-validate "git nosuchmodule" "" && print OK || print FAILED')"
 check-contains "unknown module is an error, not a silent skip" "unknown module 'nosuchmodule'" "$out"

@@ -212,9 +212,9 @@ the highest-leverage structural phase and everything after it gets easier.
 
 ### P1.1 — Write the contract down
 
-- [ ] Add `docs/ARCHITECTURE.md`: the layer table, the side-effect rule, `PATH` ownership, and a mermaid load-order diagram (`.zshrc` → `bootstrap/*` → `main.zsh` → `core/env` → `lib/*` → `profiles/$ZENV` → splash).
-- [ ] Add "Architecture in 60 seconds" to `AGENTS.md` pointing at it.
-- [ ] Auto-generate the diagram from the real source graph in [P5.2](#p52--zconf-commands) so it cannot drift.
+- [x] Add `docs/ARCHITECTURE.md`: the layer table, the side-effect rule, `PATH` ownership, and a mermaid load-order diagram (`.zshrc` → `bootstrap/*` → `main.zsh` → `core/env` → `lib/*` → `profiles/$ZENV` → splash). — A small hand-drawn conceptual diagram leads the doc (readable — 12 nodes); the full 118-node/180-edge graph from `zconf graph --write --grouped` sits at the bottom as ground truth, clearly labelled as the literal complement to the concept above it, not a replacement for it.
+- [x] Add "Architecture in 60 seconds" to `AGENTS.md` pointing at it.
+- [x] Auto-generate the diagram from the real source graph in [P5.2](#p52--zconf-commands) so it cannot drift. — Done via the `<!-- zconf:graph:start/end -->` markers `zconf graph --write` targets; re-running it after a structural change is a documented one-liner (`pnpm zconf graph --write --grouped`).
 
 ### P1.2 — Purge source-time side effects
 
@@ -600,11 +600,11 @@ answer "why would I read this?" in the first screen.
 
 ### P7.2 — Docs set
 
-- [ ] `docs/ARCHITECTURE.md` — layers, contract, generated mermaid diagram, `PATH` ownership.
-- [ ] `docs/PROFILES.md` — the manifest reference, and a worked "add your own host" walkthrough.
-- [ ] `docs/PERFORMANCE.md` — budget, how to profile, benchmark results.
-- [ ] `docs/CONVENTIONS.md` — the zsh style rules from [P3.3](#p33--consistency-sweep), as the human-readable pair to `zconf doctor`.
-- [ ] Fold in the scattered readmes: `lib/widgets.readme.md`, `lib/git/git.tags.README.md`, `lib/template-tool/README.tools.md`, `themes/README.md`, `tools/bin-*/INSTALLS.md`, `tools/bin-arm64/OLLAMA.md`, `extras/music/README*.md`.
+- [x] `docs/ARCHITECTURE.md` — layers, contract, generated mermaid diagram, `PATH` ownership. — Done as part of [P1.1](#p11--write-the-contract-down).
+- [x] `docs/PROFILES.md` — the manifest reference, and a worked "add your own host" walkthrough. — Includes the preset table, the `determine-environment` precedence order, an inventory of all 8 current profiles, and the `zconf new-profile` fast path plus the by-hand fallback.
+- [x] `docs/PERFORMANCE.md` — budget, how to profile, benchmark results. — Deliberately a short entry point (budget, current numbers table, how-to-measure) that links onward to `docs/benchmarks/README.md` for the full change log, rather than duplicating ~240 lines — one source of truth per fact, same rule this repo enforces on the code.
+- [x] `docs/CONVENTIONS.md` — the zsh style rules from [P3.3](#p33--consistency-sweep), as the human-readable pair to `zconf doctor`. — Covers every rule `doctor` checks (function naming, `[[ ]]`, no shebang in sourced files, comment blocks, colors, `--dry-run`, confirm-prompt defaults, `echo`→`print`) plus the side-effect rule and how to check your work locally before CI does.
+- [x] Fold in the scattered readmes: `lib/widgets.readme.md`, `lib/git/git.tags.README.md`, `lib/template-tool/README.tools.md`, `themes/README.md`, `tools/bin-*/INSTALLS.md`, `tools/bin-arm64/OLLAMA.md`, `extras/music/README*.md`. — Confirmed already done by earlier phases: `git.tags.README.md` → `docs/git-tags.md`, `tools/bin-arm64/OLLAMA.md` → `docs/OLLAMA.md`, `template-tool` and all of `tools/` deleted outright. `themes/README.md` and the two `extras/music/README*.md` files are left as-is — each is a small, self-contained doc correctly scoped to its own directory, not a stray fragment to consolidate.
 
 ### P7.3 — Agent rules, made relevant
 

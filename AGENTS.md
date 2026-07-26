@@ -1,5 +1,14 @@
 # AGENTS.md — AI Assistant Guide
 
+## Architecture in 60 Seconds
+
+One config tree, N host profiles. `.zshrc` → `bootstrap/` (ordered init) →
+`main.zsh` (detects `$ZENV`, early-exits for agent/IDE shells) →
+`profiles/$ZENV/$ZENV.zsh` (a manifest — `ZENV_MODULES`/`ZENV_FEATURES`,
+resolved by `core/profile.zsh`) → splash. `lib/` is definitions-only; sourcing
+it must never run anything. Full details, the layer table, and the
+auto-generated load graph: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md).
+
 ## Project Memory Model
 
 - `docs/todo/ROADMAP.md` = milestone plan, near-term tasks, and completed history.

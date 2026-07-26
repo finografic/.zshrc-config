@@ -44,7 +44,7 @@ unset -f _zshrc-splash-wanted
 # SPLASH SCREEN - CUSTOM WIDGETS
 # ============================================================================ #
 
-source "$ZSHRC_ROOT/lib/widgets.zsh"
+source "$ZSHRC_ROOT/lib/splash.zsh"
 
 show-tmutil-snapshots
 show-custom-launch-agents

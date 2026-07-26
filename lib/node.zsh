@@ -5,3 +5,4 @@
 
 source "$ZSHRC_ROOT/lib/node/nvm-autoload.zsh"
 source "$ZSHRC_ROOT/lib/node/pnpm.zsh"
+source "$ZSHRC_ROOT/lib/node/node.globals.zsh"

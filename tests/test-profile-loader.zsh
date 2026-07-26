@@ -55,15 +55,15 @@ print "canonical ordering (declaration order must NOT matter):"
 # Declare deliberately backwards; expect canonical order out.
 out="$(trace-load '
   ZENV_PRESET=none
-  ZENV_MODULES=(widgets git colors dev)
+  ZENV_MODULES=(splash git colors dev)
   ZENV_FEATURES=()
-  zenv-modules "widgets git colors dev"
+  zenv-modules "splash git colors dev"
 ')"
 check "reversed declaration resolves in canonical order" \
   "lib/colors.zsh
 lib/git.zsh
 lib/dev.zsh
-lib/widgets.zsh" "$out"
+lib/splash.zsh" "$out"
 
 print "\nnvm load-order invariant:"
 out="$(trace-load '
@@ -108,8 +108,8 @@ check "container has no macOS module" "1" \
 
 out="$(trace-load 'print -- "${ZENV_PRESET_MODULES[full]}"')"
 check-contains "full includes clean" "clean" "$out"
-check "full excludes widgets (main-splash.zsh owns it)" "1" \
-  "$([[ "$out" != *widgets* ]] && print 1 || print 0)"
+check "full excludes splash (main-splash.zsh owns it)" "1" \
+  "$([[ "$out" != *splash* ]] && print 1 || print 0)"
 check "full excludes ghostty (macOS-specific path)" "1" \
   "$([[ "$out" != *ghostty* ]] && print 1 || print 0)"
 

@@ -1,5 +1,4 @@
-source "$ZSHRC_ROOT/lib/cli/cli.listing.zsh"
-source "$ZSHRC_ROOT/lib/cli/cli.navigation.zsh"
+source "$ZSHRC_ROOT/lib/cli.zsh"
 
 # ============================================================================ #
 # UNIVERSAL ALIASES

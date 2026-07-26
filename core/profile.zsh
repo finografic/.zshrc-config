@@ -38,7 +38,7 @@ typeset -gA ZENV_MODULE_PATHS=(
 	[common]=lib/common.zsh
 	[paths]=lib/paths.zsh
 	[utils]=lib/utils.zsh
-	[disk]=lib/utils.disk.zsh
+	[disk]=lib/utils/disk.zsh
 	[doctor]=lib/doctor.zsh
 	[fzf]=lib/fzf.zsh
 	[git]=lib/git.zsh
@@ -48,7 +48,7 @@ typeset -gA ZENV_MODULE_PATHS=(
 	[clean]=lib/clean.zsh
 	[macos]=lib/macos.zsh
 	[ghostty]=lib/ghostty.zsh
-	[widgets]=lib/widgets.zsh
+	[splash]=lib/splash.zsh
 )
 
 # Canonical source order. Anything requested is sourced in THIS order, not the
@@ -68,7 +68,7 @@ typeset -ga ZENV_MODULE_ORDER=(
 	clean
 	macos
 	ghostty
-	widgets
+	splash
 )
 
 # Presets. A profile's own ZENV_MODULES/ZENV_FEATURES are merged on top.
@@ -76,8 +76,9 @@ typeset -ga ZENV_MODULE_ORDER=(
 #   minimal   — IDE/agent shells: fast, quiet, still useful for dev
 #   container — minimal minus anything macOS or host-specific
 # Two deliberate absences:
-#   `widgets` — main-splash.zsh sources it directly and is its only consumer;
-#     listing it would double-source. (P3.2 renames it to lib/splash.zsh.)
+#   `splash` (lib/splash.zsh, formerly lib/widgets.zsh) — main-splash.zsh
+#     sources it directly and is its only consumer; listing it here would
+#     double-source.
 #   `ghostty` — hardcodes a macOS config path, so it is not OS-agnostic enough
 #     for `full`. The macOS profiles list it explicitly.
 # Both stay in the registry so a profile can still ask for them.

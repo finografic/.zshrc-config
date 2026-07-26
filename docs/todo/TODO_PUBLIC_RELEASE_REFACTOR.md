@@ -366,21 +366,24 @@ That's roughly **1,700 lines and 66 MB** removed before a single behavioural cha
 
 ### P3.2 — Finish the domain barrels
 
+> **Done 2026-07-26.**
+
 The `vendor` / barrel / `lib/<domain>/` model is already half-built. Finish it:
 
-| Domain    | Now                                                     | Target                                                                                                                                              |
-| --------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `git`     | `lib/git.zsh` + `lib/git/` (7 leaves + `index.zsh`)     | Resolve the `git.zsh` vs `git/index.zsh` double-barrel — one entry point. Move `git.tags.README.md` to `docs/`.                                     |
-| `node`    | `lib/node.zsh` + `lib/node/`                            | Done. Keep as the reference example.                                                                                                                |
-| `clean`   | `lib/clean.zsh` + `lib/clean/`                          | Barrel is right; remove the auto-run ([P1.2](#p12--purge-source-time-side-effects)).                                                                |
-| `macos`   | `lib/macos.zsh` + `lib/macos/{dock,time-machine,utils}` | Add `macos.brew.zsh` ([P2.2](#p22--declarative-profile-manifests)). Rename `utils` — a grab-bag named "utils" inside a domain folder attracts junk. |
-| `dev`     | `lib/dev.zsh`, **340 lines**, the largest live module   | Split into `lib/dev/` — the npm/global-install helpers belong in `lib/node/`, the rest into `dev.workflow.zsh`.                                     |
-| `cli`     | `lib/cli/{listing,navigation}` with no barrel           | Add `lib/cli.zsh`; `lib/common.zsh` currently sources the leaves directly.                                                                          |
-| `utils`   | `lib/utils.zsh` + `lib/utils.disk.zsh`                  | Inconsistent with the `<domain>/` convention. Make it `lib/utils.zsh` + `lib/utils/disk.zsh`.                                                       |
-| `paths`   | `lib/paths.zsh` + `lib/paths/{macos,linux,android}`     | Good. Just drop `flatten-path`.                                                                                                                     |
-| `widgets` | `lib/widgets.zsh` (151 lines) + `lib/widgets.readme.md` | Splash-specific. Rename to `lib/splash.zsh` — it is only ever used by `main-splash.zsh` — and move the readme to `docs/`.                           |
+| Domain    | Was                                                     | Now                                                                                                                                                                                                                                           |
+| --------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `git`     | `lib/git.zsh` + `lib/git/` (7 leaves + `index.zsh`)     | `lib/git/index.zsh` was a near-byte-identical, **unsourced duplicate** of `lib/git.zsh` — deleted. `git.tags.README.md` → `docs/git-tags.md`.                                                                                                 |
+| `node`    | `lib/node.zsh` + `lib/node/`                            | Unchanged, plus one new leaf (see `dev` row).                                                                                                                                                                                                 |
+| `clean`   | `lib/clean.zsh` + `lib/clean/`                          | Already done in [P1.2](#p12--purge-source-time-side-effects).                                                                                                                                                                                 |
+| `macos`   | `lib/macos.zsh` + `lib/macos/{dock,time-machine,utils}` | `macos.brew.zsh` already added in [P2.2](#p22--declarative-profile-manifests). `macos.utils.zsh` → `macos.media.zsh` (its actual content: one HEIC-conversion function).                                                                      |
+| `dev`     | `lib/dev.zsh`, 340 lines, the largest live module       | Split: `lib/node/node.globals.zsh` (npm/global-install: `versions`, `v`, `latest`, `update`, `kn`, `i`), `lib/dev/dev.workflow.zsh` (everything else — `min`, `deploy-static`, `cx`, log/pm2 helpers). `lib/dev.zsh` is now a 4-line barrel.  |
+| `cli`     | `lib/cli/{listing,navigation}` with no barrel           | Added `lib/cli.zsh`; `lib/common.zsh` sources the barrel instead of both leaves directly.                                                                                                                                                     |
+| `utils`   | `lib/utils.zsh` + `lib/utils.disk.zsh`                  | `lib/utils.disk.zsh` → `lib/utils/disk.zsh`. Module registry updated (`[disk]=lib/utils/disk.zsh`).                                                                                                                                           |
+| `paths`   | `lib/paths.zsh` + `lib/paths/{macos,linux,android}`     | `flatten-path` was already dropped, earlier in the session (P1.3/P4.1).                                                                                                                                                                       |
+| `widgets` | `lib/widgets.zsh` (151 lines) + `lib/widgets.readme.md` | Renamed to `lib/splash.zsh`; readme → `docs/splash-widgets.md`. Registry key also renamed `widgets` → `splash` for consistency with the filename — nothing referenced the old key except tests, which are updated. `main-splash.zsh` updated. |
 
-- [ ] **Rule to codify:** identical basenames in two places is a smell (this is what made `pnpm` confusing until `vendor/pnpm-path.zsh` was renamed). Role-name the vendor/boot files; domain-name the UX modules.
+- [x] **Rule to codify:** identical basenames in two places is a smell (this is what made `pnpm` confusing until `vendor/pnpm-path.zsh` was renamed). Role-name the vendor/boot files; domain-name the UX modules. — The `lib/git.zsh` / `lib/git/index.zsh` pair found in this same pass is exactly this smell; resolving it is the rule's first real application.
+- [x] Full test suite (63 cases) plus a live interactive shell boot re-verified after every rename in this table: all new function locations resolve (`run`, `min`, `deploy-static`, `cx`, `lg`, `tailc`, `logsr`, `pm2da`, `pm2ll` from `dev.workflow.zsh`; `versions`, `v`, `latest`, `update`, `kn`, `i` from `node.globals.zsh`; `convert-heic` from `macos.media.zsh`; `listing` via the new `cli.zsh` barrel), zero `MISS`.
 
 ### P3.3 — Consistency sweep
 

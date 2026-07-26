@@ -1,6 +1,6 @@
 # fastfetch
 
-https://github.com/fastfetch-cli/fastfetch/wiki/Support+Status#available-modules
+[fastfetch available modules](https://github.com/fastfetch-cli/fastfetch/wiki/Support+Status#available-modules)
 
 ## Available Modules
 

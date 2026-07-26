@@ -1,0 +1,16 @@
+#!/bin/zsh
+# ============================================================================ #
+# NOTE: ZUPDATE LAUNCHER - reference copy, symlink or install to ~/bin/zupdate
+#
+# Runs update-config.zsh from anywhere. Kept in the repo so the launcher is
+# version-controlled alongside the thing it launches.
+#
+# Install with:
+#   ln -sf "$HOME/.zshrc-config/bin/zupdate" "$HOME/bin/zupdate"
+#
+# NOTE: "$@" matters. The previous ~/bin/zupdate called the script with no
+# arguments at all, so every flag and the commit message were silently dropped
+# — `zupdate "my message"` behaved exactly like a bare `zupdate`.
+# ============================================================================ #
+
+exec "${ZSHRC_ROOT:-$HOME/.zshrc-config}/update-config.zsh" "$@"

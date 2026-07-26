@@ -560,14 +560,20 @@ Current flow: `fetch → add . → commit -m "updated from: $ZENV" → pull --re
 `git add .`s everything unseen and writes a commit message that **its own commitlint hook
 rejects** — 570 commits of history prove the hook is being bypassed.
 
-- [ ] `zupdate "<message>"` → uses it; if there's no conventional-commit type prefix, default to `chore:`.
-- [ ] `zupdate` (no args) → open `$EDITOR` for a real message, like `git commit`. Never auto-generate silently.
-- [ ] `zupdate --sync` → the only path that auto-messages, as `chore(sync): update from ${ZENV}` — valid per commitlint, and greppable for the later squash.
-- [ ] `zupdate --dry-run` → show what would be staged, committed, and pushed. Nothing else.
-- [ ] Show a `git status --short` summary and require confirmation before `git add .` (default `(Y/n)`), or better: stage tracked modifications only (`git add -u`) and list untracked files separately so a stray 50 MB file can't sneak in — which is how the binaries got committed in the first place.
-- [ ] Keep `set -e`, `fetch` first, `pull --rebase`, and add a clean failure path when the rebase conflicts (currently `set -e` leaves you mid-rebase with no message).
-- [ ] Add a pre-push `zconf scan` call so PII can never be pushed again.
-- [ ] Stays **pure zsh** — it must work on a server with no Node.
+- [x] `zupdate "<message>"` → uses it; if there's no conventional-commit type prefix, default to `chore:`. — `zu-normalize-message`, tested against scoped types, `!` breaking-change markers, and the near-miss cases (`features are nice` must NOT count as a `feat` prefix).
+- [x] `zupdate` (no args) → open `$EDITOR` for a real message, like `git commit`. Never auto-generate silently. — Implemented by calling `git commit` with no `-m`, so the editor, the template and the commitlint hook all behave exactly as they normally do rather than being re-implemented.
+- [x] `zupdate --sync` → the only path that auto-messages, as `chore(sync): update from ${ZENV}` — valid per commitlint, and greppable for the later squash.
+- [x] `zupdate --dry-run` → show what would be staged, committed, and pushed. Nothing else. — Verified by test that it creates no commit and leaves the index empty.
+- [x] Show a `git status --short` summary and require confirmation before `git add .` (default `(Y/n)`), or better: stage tracked modifications only (`git add -u`) and list untracked files separately so a stray 50 MB file can't sneak in — which is how the binaries got committed in the first place. — Took the "or better" option. Untracked files are listed **with their sizes** so a large one is obvious, and need `--all` or an explicit `git add`. Confirmation prompt has the default last, per convention; `-y` skips it.
+- [x] Keep `set -e`, `fetch` first, `pull --rebase`, and add a clean failure path when the rebase conflicts (currently `set -e` leaves you mid-rebase with no message). — `err_exit`/`pipe_fail` are set via `setopt local_options` inside the main function rather than globally, so the file can be sourced by its tests without leaving `err_exit` on in the caller. Rebase conflicts now print the recovery steps. It also refuses to start if a rebase is already in progress.
+- [x] Add a pre-push `zconf scan` call so PII can never be pushed again. — Uses `zconf scan` when Node and a build are present, and falls back to a dependency-free `git grep` mirroring the CI job otherwise, so the check still runs on a bare server. Never silently skipped — only skippable with an explicit `--no-scan`, which warns.
+- [x] Stays **pure zsh** — it must work on a server with no Node.
+
+**Also found and fixed while doing this, not in the plan:**
+
+- `~/bin/zupdate` called the script with **no arguments at all**, so every flag and the commit message would have been silently dropped — `zupdate "my message"` behaved identically to a bare `zupdate`. The launcher now lives in the repo at `bin/zupdate` (version-controlled next to what it launches) and forwards `"$@"`; `~/bin/zupdate` is a symlink to it.
+- The old script pushed to a hardcoded `origin`, but `master` actually tracks `github`. It now resolves the branch's real upstream and **prints where it is about to push**, which matters while [P0.1](#p01--decide-and-execute-the-history-strategy) is still open.
+- **A real bug the new test suite caught in the new code**: the secret scan runs _after_ the commit, so a blocked push leaves a committed-but-unpushed change. The next run saw a clean working tree, took the "nothing to commit" path, and returned without pushing — stranding that commit on the machine indefinitely. Fixed by sharing one `zu-push-if-ahead` step between both paths; the regression test was confirmed to fail when the fix is reverted.
 
 ### P6.2 — History
 
@@ -880,3 +886,20 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
   pre-push hook are the right homes. Still open in Phase 5: nothing — `docs/ARCHITECTURE.md`
   does not exist yet, so `zconf graph --write` has no target until [P1.1](#p11--write-the-contract-down)
   creates it (the command reports that clearly rather than failing obscurely).
+- 2026-07-26 — **P6.1** (`[OPUS]`): `update-config.zsh` rewritten. Staging is now
+  `git add -u` with untracked files listed **and sized** rather than swept in by `git add .`;
+  every message path produces a commitlint-valid subject (so the hook stops being bypassed);
+  rebase conflicts print recovery steps instead of dumping you mid-rebase; and a secret scan
+  runs before every push, via `zconf scan` where Node exists and a dependency-free `git grep`
+  where it does not. Stays pure zsh. New `tests/test-zupdate.zsh` — 23 cases, running
+  against a throwaway repo with a local remote so it never touches this one — now in CI.
+  **Three bugs found that the plan had not listed**: `~/bin/zupdate` forwarded no arguments
+  at all (every flag and message silently dropped, so the whole new interface would have
+  been unreachable — the launcher now lives at `bin/zupdate` and is symlinked); the old
+  script pushed to a hardcoded `origin` while `master` actually tracks `github` (it now
+  resolves the real upstream and prints the destination, which matters while
+  [P0.1](#p01--decide-and-execute-the-history-strategy) is open); and the test suite caught a
+  bug in the _new_ code — a commit whose push the scan blocked was stranded forever, because
+  the next run saw a clean tree and returned without pushing. Fixed by sharing one
+  `zu-push-if-ahead` step across both paths, with the regression test confirmed to fail when
+  the fix is reverted. **P6.2 (history squash) remains open and is downstream of P0.1.**

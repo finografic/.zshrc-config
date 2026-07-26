@@ -65,7 +65,8 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 ├── docs/               # ROADMAP.md, process notes, todo analysis
 ├── .agents/            # handoff.md (tracked state) + memory.md (local session log)
 ├── main.zsh            # Orchestrator: core → theme → lib → profiles/$ZENV → splash
-├── update-config.zsh   # zupdate implementation (commit + rebase + push)
+├── bin/zupdate         # launcher; symlink to ~/bin/zupdate
+├── update-config.zsh   # zupdate implementation (review + commit + rebase + scan + push)
 └── AGENTS.md           # AI-agent entry point (linked from CLAUDE.md)
 ```
 
@@ -98,11 +99,30 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 | `lib/clean/clean.ides.zsh`                      | Clear VSCode / Insiders / Cursor caches (Cursor: safe only)          |
 | `lib/node.zsh`                                  | Barrel for Node UX: nvm-autoload + `pn`/`pnr`/`npmls`                |
 | `zupdate`                                       | Commit and push with `fetch` + `pull --rebase` for multi-system sync |
+| `pnpm zconf doctor`                             | Lint the repo against the load-model contract                        |
+| `pnpm zconf scan`                               | Scan tracked files for secrets and PII                               |
+| `pnpm zconf graph --profile <name>`             | Show a profile's resolved load order (or mermaid for the whole tree) |
+| `pnpm zconf normalize`                          | Normalise comment blocks and function style                          |
 | `pnpm lint` / `pnpm lint:fix`                   | Run `oxlint` (optionally with `--fix`)                               |
 | `pnpm format:check` / `pnpm format:fix`         | Run `oxfmt` in check or write mode                                   |
 | `pnpm lint:md` / `pnpm lint:md:fix`             | Markdown lint via `@finografic/md-lint`                              |
 
-Run `zupdate` from anywhere (symlink in `~/bin`) to sync changes.
+### `zupdate`
+
+Run from anywhere — `ln -sf ~/.zshrc-config/bin/zupdate ~/bin/zupdate`.
+
+```bash
+zupdate "tidy up the git aliases"   # gets a `chore: ` prefix if it has no type
+zupdate                             # opens $EDITOR, like `git commit`
+zupdate --sync                      # chore(sync): update from <profile>
+zupdate --dry-run                   # show what would happen; change nothing
+```
+
+It stages **tracked changes only** (`git add -u`). Untracked files are listed
+with their sizes and require `--all`, so a stray large file cannot be swept in.
+Every message it produces satisfies the commitlint hook, and it runs a secret
+scan before pushing — `zconf scan` when Node is available, a dependency-free
+grep otherwise, so the check still happens on a bare server.
 
 ---
 

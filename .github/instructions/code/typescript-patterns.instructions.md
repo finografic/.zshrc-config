@@ -1,4 +1,13 @@
+---
+applyTo: "packages/zconf/**"
+---
+
 # TypeScript Patterns & Best Practices
+
+This is a zsh config repo; TypeScript exists only in `packages/zconf`, the
+maintainer CLI. These React/general-TS conventions apply there and nowhere
+else — everything else in the repo is zsh, and follows
+`docs/CONVENTIONS.md` instead.
 
 ## Parameters
 

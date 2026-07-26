@@ -1,4 +1,12 @@
+---
+applyTo: "packages/zconf/**"
+---
+
 # File Naming & Organization Rules
+
+TS-specific (`index.ts` barrels, `.types.ts`/`.utils.ts` suffixes) — scoped to
+`packages/zconf`, the only TypeScript in this zsh config repo. Zsh file
+naming is covered by `docs/CONVENTIONS.md` instead.
 
 ## Naming
 

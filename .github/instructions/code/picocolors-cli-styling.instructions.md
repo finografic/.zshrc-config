@@ -1,18 +1,22 @@
+---
+applyTo: "packages/zconf/**"
+---
+
 # Picocolors — CLI terminal styling
 
 ## Purpose
 
-Use **[picocolors](https://github.com/alexeyraspopov/picocolors)** for ANSI colors in CLI output. It is tiny, dependency-free, and avoids pulling in heavier styling libraries.
+Use **[picocolors](https://github.com/alexeyraspopov/picocolors)** for ANSI colors in CLI output. It is tiny, dependency-free, and avoids pulling in heavier styling libraries. The one real consumer in this repo is `packages/zconf` — the maintainer CLI.
 
 ## Import (required pattern)
 
 Always import the shared alias **`pc`** from the project helper (so call sites stay consistent and easy to grep):
 
 ```typescript
-import { pc } from 'utils/picocolors';
+import { pc } from '../utils/picocolors.js';
 ```
 
-Do **not** import `picocolors` directly in feature modules unless you are editing `src/utils/picocolors.ts`.
+Do **not** import `picocolors` directly in feature modules unless you are editing `packages/zconf/src/utils/picocolors.ts`.
 
 ## Basic usage
 
@@ -48,9 +52,9 @@ console.log((dryRun ? pc.gray : pc.magenta)(`Final pattern: ${finalPattern}`));
 
 ## Tests
 
-When tests mock terminal styling, mock the module **`utils/picocolors`** and return a **`pc`** object whose methods pass through the string (identity), matching the colors used in the code under test.
+When tests mock terminal styling, mock the module **`../utils/picocolors.js`** and return a **`pc`** object whose methods pass through the string (identity), matching the colors used in the code under test.
 
 ## References
 
-- Implementation: `src/utils/picocolors.ts`
-- Dependency: `picocolors` in `package.json`
+- Implementation: `packages/zconf/src/utils/picocolors.ts`
+- Dependency: `picocolors` in `packages/zconf/package.json`

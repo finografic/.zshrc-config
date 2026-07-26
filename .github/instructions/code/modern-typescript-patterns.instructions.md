@@ -1,4 +1,10 @@
+---
+applyTo: "packages/zconf/**"
+---
+
 # Modern TypeScript Patterns
+
+Scoped to `packages/zconf` — the only TypeScript in this zsh config repo.
 
 ## Purpose
 

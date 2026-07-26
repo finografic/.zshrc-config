@@ -1,4 +1,16 @@
+---
+applyTo: "packages/zconf/**"
+---
+
 # Variable Naming Conventions
+
+TypeScript-specific — scoped to `packages/zconf`, the only TS in this zsh
+config repo. Note: the `@clack/prompts` import-alias rule below is inherited
+from another project's template and doesn't apply — `zconf` has no
+dependency on `@clack/prompts`; it uses `picocolors` (see
+`code/picocolors-cli-styling.instructions.md`). Left as-is rather than
+rewritten, since the core naming guidance (full words, no abbreviations) is
+still sound; the stale example is just noise, not something enforced.
 
 ## General Rule
 

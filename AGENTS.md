@@ -115,6 +115,6 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - Bootstrap sequence under `bootstrap/`: compinit must run before plugins; plugin list in `plugins/.zsh_plugins.txt` (Antidote)
 - Canonical comment block separators: 78-char boxed equals (`# ============================================================================ #`); run `pnpm zconf normalize` (or `zconf normalize --dry-run`) to apply them
 - `.nvmrc` auto-switch is handled by `lib/node/nvm-autoload.zsh` (`chpwd` hook via `add-zsh-hook`; sourced from `lib/node.zsh` after nvm is loaded)
-- Node/TS utilities live under `packages/node/` (pnpm workspace; built with tsdown)
-- Git remote host is Bitbucket (`bitbucket.org:justin-rankin/.zshrc-config.git`)
+- The maintainer CLI (`zconf`) lives under `packages/zconf/` (pnpm workspace; TypeScript, built with tsdown, tested with vitest)
+- Two git remotes: `origin` (Bitbucket, `bitbucket.org:justin-rankin/.zshrc-config.git`) and `github` (`github.com:finografic/.zshrc-config.git`); `master` tracks `github`
 - `$REPOS_FINO` in `profiles/home-macos/` points at Finografic repos (e.g. `_@finografic-deps-policy`)

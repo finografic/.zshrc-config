@@ -6,7 +6,7 @@
 # ============================================================================ #
 
 export ZSHRC_ROOT="${ZSHRC_ROOT:-$HOME/.zshrc-config}"
-export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
+export ZENV_PATH="$ZSHRC_ROOT/profiles/$ZENV"
 export NVM="false"
 
 # STORAGE_ROOT / PATH_ZSHRC are set by apply-environment-env (core/env.zsh).

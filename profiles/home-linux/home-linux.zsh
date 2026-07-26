@@ -6,7 +6,7 @@
 # ============================================================================ #
 
 export ZSHRC_ROOT="$HOME/.zshrc-config"
-export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
+export ZENV_PATH="$ZSHRC_ROOT/profiles/$ZENV"
 export NVM="true"
 
 # ============================================================================ #

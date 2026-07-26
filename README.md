@@ -8,7 +8,7 @@
 
 Provide a single, maintainable Zsh setup that:
 
-- Detects environment (`.env` flags + hostname/IP) and loads the matching `_zenvs/` profile
+- Detects environment (`.env` flags + hostname/IP) and loads the matching `profiles/` profile
 - Keeps `~/.zshrc` minimal—everything else lives in this repo
 - Optimizes startup (VSCode/Docker/Codex use lighter, early-exit profiles)
 - Supports multi-system sync (commit/push from any machine via `zupdate`)
@@ -36,7 +36,7 @@ Installs: Homebrew, Antidote, Powerlevel10k, Meslo Nerd Font, fzf.
 
 **3. Environment file**
 
-Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct `_zenvs/` profile loads.
+Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct `profiles/` profile loads.
 
 ---
 
@@ -49,7 +49,7 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 ├── themes/             # p10k config, prompt, theme switcher
 ├── lib/                # colors, utils, node/, clean/, dev, git, fzf, widgets
 ├── vendor/             # pnpm, nvm init/PATH
-├── _zenvs/             # One profile per host:
+├── profiles/           # One profile per host:
 │   ├── home-macos/     #   personal macOS
 │   ├── office-macos/   #   work macOS (minimal skeleton — populate per job)
 │   ├── home-linux/     #   personal Linux
@@ -59,35 +59,34 @@ Create `.env` with `IS_HOME`, `IS_OFFICE`, `IS_SERVER` as needed so the correct 
 │   ├── android/        #   Termux
 │   └── server-linux/   #   remote server
 ├── plugins/            # Antidote plugin list (.zsh_plugins.txt + generated)
-├── packages/node/      # TypeScript CLI utilities (spinner, PATH build), built via tsdown
+├── packages/           # zconf TypeScript toolkit (planned; empty for now)
 ├── scripts/            # Setup, cleanup, and repo-maintenance scripts
-├── tools/              # bin-arm64/ + bin-x86_64/ arch-specific binaries (fastfetch, neofetch, …)
 ├── extras/             # music/, hardware/, examples/ — optional, not sourced by default
 ├── docs/               # ROADMAP.md, process notes, todo analysis
 ├── .agents/            # handoff.md (tracked state) + memory.md (local session log)
-├── main.zsh            # Orchestrator: core → theme → lib → _zenvs/$ZENV → splash
+├── main.zsh            # Orchestrator: core → theme → lib → profiles/$ZENV → splash
 ├── update-config.zsh   # zupdate implementation (commit + rebase + push)
 └── AGENTS.md           # AI-agent entry point (linked from CLAUDE.md)
 ```
 
 ### Load order
 
-`~/.zshrc` sources `bootstrap/index.zsh` (profiling → Antidote → plugins → compinit → p10k), then `main.zsh`, which detects `$ZENV` (`core/env.zsh`), early-exits for Codex/VSCode shells, loads theme + core options + shared `lib/` modules, then sources the matching `_zenvs/$ZENV/$ZENV.zsh` profile before the splash screen.
+`~/.zshrc` sources `bootstrap/index.zsh` (profiling → Antidote → plugins → compinit → p10k), then `main.zsh`, which detects `$ZENV` (`core/env.zsh`), early-exits for Codex/VSCode shells, loads theme + core options + shared `lib/` modules, then sources the matching `profiles/$ZENV/$ZENV.zsh` profile before the splash screen.
 
 ---
 
 ## Features
 
-| Feature                   | Description                                                           |
-| ------------------------- | --------------------------------------------------------------------- |
-| **Environment detection** | `.env` + IP/hostname → load `_zenvs/home-macos`, `office-macos`, etc. |
-| **Bootstrap**             | Antidote, plugins, compinit, p10k—correct load order                  |
-| **VSCode/Docker**         | Early exit with minimal config for fast IDE terminals                 |
-| **Splash**                | Time Machine, launch agents, ports, fastfetch/neofetch                |
-| **Node/TS**               | Spinner + PATH deduplication (`packages/node`, built via tsdown)      |
-| **Lint/format**           | `oxlint` + `oxfmt`, run via Husky `pre-commit` (`lint-staged`)        |
-| **Commit hygiene**        | `commitlint` (Conventional Commits) via Husky `commit-msg`            |
-| **AI-agent docs**         | `AGENTS.md` entry point, `.agents/` memory, `docs/todo/ROADMAP.md`    |
+| Feature                   | Description                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------- |
+| **Environment detection** | `.env` + IP/hostname → load `profiles/home-macos`, `office-macos`, etc.               |
+| **Bootstrap**             | Antidote, plugins, compinit, p10k—correct load order                                  |
+| **VSCode/Docker**         | Early exit with minimal config for fast IDE terminals                                 |
+| **Splash**                | Time Machine, launch agents, ports, fastfetch/neofetch                                |
+| **Node**                  | Lazy nvm (`.nvmrc`-aware, no `nvm.sh` load on the common path) + cached tool versions |
+| **Lint/format**           | `oxlint` + `oxfmt`, run via Husky `pre-commit` (`lint-staged`)                        |
+| **Commit hygiene**        | `commitlint` (Conventional Commits) via Husky `commit-msg`                            |
+| **AI-agent docs**         | `AGENTS.md` entry point, `.agents/` memory, `docs/todo/ROADMAP.md`                    |
 
 ---
 
@@ -143,7 +142,7 @@ Each key becomes the alias name, and each value becomes the `cd ... && l` target
 
 ## Docker
 
-Mount the config into a container—it auto-detects Docker and loads `_zenvs/docker-dev/`:
+Mount the config into a container—it auto-detects Docker and loads `profiles/docker-dev/`:
 
 ```bash
 docker run -it --rm \
@@ -169,9 +168,8 @@ sudo chown -R $USER /path    # fix ownership
 **Profiling startup**
 
 ```zsh
-# Add at top of .zshrc: zmodload zsh/zprof
-# Add at bottom: zprof
-time zsh -i -c exit          # quick measure
+scripts/bench-startup.zsh --all-profiles -n 20   # min/p50/p95 per profile
+ZSHRC_PROFILE=1 zsh -i -c exit                    # per-function zprof breakdown
 ```
 
 ---

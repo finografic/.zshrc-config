@@ -148,7 +148,7 @@
     },
     {
       "icon": "config",
-      "extensions": ["env", "configs", "_zenvs"],
+      "extensions": ["env", "configs", "profiles"],
       "format": "svg"
     },
     {

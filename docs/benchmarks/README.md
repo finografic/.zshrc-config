@@ -34,9 +34,9 @@ scheduling artifact). `p50` is robust to both; `p95` tells you what a bad run lo
 - Full interactive shell: **< 400 ms**
 - Minimal profiles (`vscode`, `codex`, `docker-dev`): **< 150 ms**
 
-**The current `baseline.json` does not meet this budget — by roughly 8–10x on every
-profile.** This is now a _real-machine_ measurement (see history below), so that gap is
-real and is Phase 4's actual work, not a measurement artifact to explain away.
+**`baseline.json` now reflects the post-P4.4 state and meets the minimal-profile budget for
+`codex`** (~56 ms, well under 150 ms); the full profiles are close to the 400 ms target and
+would be under it with the splash off (kept on by choice — see the splash change log entry).
 
 ## Provenance
 
@@ -46,18 +46,18 @@ real and is Phase 4's actual work, not a measurement artifact to explain away.
   costing ~1.5s of `zprof` self-time when the same command measured ~17ms standalone in
   the same sandbox — so its absolute numbers were never trusted, only its cross-profile
   ratios.
-- **2026-07-26, superseding capture (current `baseline.json`)**: re-run by the maintainer
-  on their real Mac (`scripts/bench-startup.zsh --all-profiles -n 20 --save`), overwriting
-  the sandbox numbers. **These are real-machine numbers, and they are the PRE-change
-  reference** — captured before the `zsh-nvm` removal in the change log below. They confirm
-  the sandbox run's shape at lower absolute cost, and the same conclusion: this config was
-  genuinely far over budget, not merely measured in a slow environment.
+- **2026-07-26, real-machine pre-change capture**: re-run by the maintainer on their real
+  Mac before any P4.4 work landed. Confirmed the sandbox run's shape at lower absolute
+  cost, and the same conclusion: this config was genuinely far over budget, not merely
+  measured in a slow environment. (No longer current — see below.)
+- **2026-07-26, real-machine post-change capture (current `baseline.json`)**: re-run by the
+  maintainer after the `zsh-nvm` removal, splash caching, and lazy nvm all landed
+  (`scripts/bench-startup.zsh --all-profiles -n 20 --save`). Matches the sandbox A/B
+  percentages: `codex` ~56 ms, `home-macos` ~547 ms — both close to or better than the
+  sandbox predicted. **This is the current, authoritative baseline.**
 
-  ⚠️ **This file is now stale as a description of current performance.** It predates a
-  change measured at ~65% faster. Re-run `--all-profiles -n 20 --save` to refresh it.
-
-**What both captures show, consistently** — the bootstrap early-exit architecture working
-as designed:
+**What all three captures show, consistently** — the bootstrap early-exit architecture
+working as designed. Pre-change numbers below; see the change log for post-change figures.
 
 | Profile                                      | p50 (ms, real Mac, pre-change) | Why                                                                                                                      |
 | -------------------------------------------- | -----------------------------: | ------------------------------------------------------------------------------------------------------------------------ |
@@ -123,10 +123,9 @@ Verified unchanged after the removal: `nvm` is a function, `nvm_find_nvmrc` and
 quirk (`nvm current: system`, and `node --version` not reflecting the `.nvmrc` switch within
 the same command list) was confirmed identical _before_ the change, so it is unrelated.
 
-> **These deltas were measured in an AI-agent sandbox.** The percentages should hold on real
-> hardware since it is a same-environment A/B, but `baseline.json` above is still the
-> maintainer's _pre-change_ real-machine capture. Re-run `--all-profiles -n 20 --save` on a
-> real machine to record the new absolute numbers.
+> **These deltas were measured in an AI-agent sandbox.** Confirmed on real hardware
+> afterwards — see the post-change capture in Provenance above, which matches this A/B's
+> percentages closely (`home-macos` landed even faster than the sandbox predicted).
 
 ### 2026-07-26 — splash made opt-OUT (P4.4)
 

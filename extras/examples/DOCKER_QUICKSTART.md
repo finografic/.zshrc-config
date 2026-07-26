@@ -120,7 +120,7 @@ docker inspect <container-id>
 
 ### Enable NVM
 
-Edit `_zenvs/docker-dev/docker-dev.zsh`:
+Edit `profiles/docker-dev/docker-dev.zsh`:
 
 ```bash
 # Remove this line:
@@ -134,7 +134,7 @@ source "$ZSHRC_ROOT/vendor/nvm.zsh"
 
 ```bash
 # Comment out in docker-dev.zsh:
-# source "$ZSHRC_ROOT/_zenvs/docker-dev/docker-dev.banner.zsh"
+# source "$ZSHRC_ROOT/profiles/docker-dev/docker-dev.banner.zsh"
 ```
 
 ### Add Custom Aliases
@@ -178,7 +178,7 @@ RUN apt-get update && apt-get install -y zsh
 ## 📚 More Info
 
 - Examples: `extras/examples/` directory
-- Container profile: `_zenvs/docker-dev/`
+- Container profile: `profiles/docker-dev/`
 
 ---
 

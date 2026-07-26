@@ -65,7 +65,7 @@ jobs:
           # `apnaes` closed out by the P2.1 server-linux rename. `finografic` is
           # deliberately NOT here: it is both a real npm scope (@finografic/*, a
           # legitimate dependency) and still present in the untouched personal
-          # repo-alias block in _zenvs/home-macos/home-macos.aliases.zsh, which
+          # repo-alias block in profiles/home-macos/home-macos.aliases.zsh, which
           # P7.3/README work is expected to address separately.
           pattern='justin\.rankin|justin\.blair\.rankin|@sage\.com|hostinger|/Users/justin|/home/justin|apnaes|([0-9]{1,3}\.){3}[0-9]{1,3}'
           # docs/todo and .agents/handoff.md are process/planning docs that

@@ -40,7 +40,7 @@ function trace-load() {
     unset NVM ZENV_PRESET ZENV_MODULES ZENV_FEATURES ZENV_OPT_IN
     export ZSHRC_ROOT='$ZSHRC_ROOT'
     export ZENV='${2:-testenv}'
-    export ZENV_PATH=\"\$ZSHRC_ROOT/_zenvs/\$ZENV\"
+    export ZENV_PATH=\"\$ZSHRC_ROOT/profiles/\$ZENV\"
     source '$ZSHRC_ROOT/core/profile.zsh'
 
     # Stub: record instead of load. Keeps the real file-existence checks in
@@ -122,14 +122,14 @@ print "\npositional-parameter isolation (real sourcing, no source stub):"
 # then acts on garbage. These cases source a REAL probe file, so the source
 # stub used above cannot hide the problem.
 probe_dir="${TMPDIR:-/tmp}/zenv-argtest-$$"
-mkdir -p "$probe_dir/extras/probe" "$probe_dir/_zenvs/argtest"
+mkdir -p "$probe_dir/extras/probe" "$probe_dir/profiles/argtest"
 print 'print "argc=$# argv=[$*]"' > "$probe_dir/extras/probe/target.zsh"
-print 'print "argc=$# argv=[$*]"' > "$probe_dir/_zenvs/argtest/argtest.feature.zsh"
+print 'print "argc=$# argv=[$*]"' > "$probe_dir/profiles/argtest/argtest.feature.zsh"
 
 out="$(zsh -f -c "
   export ZSHRC_ROOT='$probe_dir'
   export ZENV=argtest
-  export ZENV_PATH=\"\$ZSHRC_ROOT/_zenvs/\$ZENV\"
+  export ZENV_PATH=\"\$ZSHRC_ROOT/profiles/\$ZENV\"
   source '$ZSHRC_ROOT/core/profile.zsh'
   zenv-opt-in 'probe/target'
 " 2>&1)"
@@ -138,7 +138,7 @@ check "opt-in sees empty \$@, not the opt-in list" "argc=0 argv=[]" "$out"
 out="$(zsh -f -c "
   export ZSHRC_ROOT='$probe_dir'
   export ZENV=argtest
-  export ZENV_PATH=\"\$ZSHRC_ROOT/_zenvs/\$ZENV\"
+  export ZENV_PATH=\"\$ZSHRC_ROOT/profiles/\$ZENV\"
   source '$ZSHRC_ROOT/core/profile.zsh'
   zenv-features 'feature'
 " 2>&1)"
@@ -170,7 +170,7 @@ print "\nreal profile manifests must validate:"
 # without executing the rest of the profile body.
 cat > "$TMPDIR/zenv-validate-profile.zsh" <<'VALIDATOR'
 export ZENV="$1"
-export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
+export ZENV_PATH="$ZSHRC_ROOT/profiles/$ZENV"
 source "$ZSHRC_ROOT/core/profile.zsh"
 eval "$(grep -E '^(ZENV_PRESET|ZENV_MODULES|ZENV_FEATURES|ZENV_OPT_IN)=' "$ZENV_PATH/$ZENV.zsh")"
 typeset -a mods

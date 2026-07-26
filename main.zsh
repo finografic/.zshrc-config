@@ -28,7 +28,7 @@ apply-environment-env
 
 # Every profile resolves its own path; set it once here so the manifest loader
 # and the profiles agree on it.
-export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
+export ZENV_PATH="$ZSHRC_ROOT/profiles/$ZENV"
 
 # Profile manifest loader (definitions only — profiles call `zenv-load`).
 source "$ZSHRC_ROOT/core/profile.zsh"
@@ -46,7 +46,7 @@ source "$ZSHRC_ROOT/lib/fzf.zsh"
 # ============================================================================ #
 
 if is-agent-shell; then
-  source "$ZSHRC_ROOT/_zenvs/codex/codex.zsh"
+  source "$ZSHRC_ROOT/profiles/codex/codex.zsh"
   return 0
 fi
 
@@ -75,7 +75,7 @@ source "$ZSHRC_ROOT/core/locale.zsh"
 # ============================================================================ #
 
 if is-ide-shell; then
-  source "$ZSHRC_ROOT/_zenvs/vscode/vscode.zsh"
+  source "$ZSHRC_ROOT/profiles/vscode/vscode.zsh"
   return 0
 fi
 
@@ -108,7 +108,7 @@ fi
 # resolved from that manifest, in the canonical order core/profile.zsh defines.
 # ============================================================================ #
 
-source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
+source "$ZSHRC_ROOT/profiles/$ZENV/$ZENV.zsh"
 
 # ============================================================================ #
 # NOTE: 11. FINALIZATION

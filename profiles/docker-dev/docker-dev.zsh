@@ -12,7 +12,7 @@ export EDITOR="nvim"
 export VISUAL="nvim"
 
 export ZSHRC_ROOT="$HOME/.zshrc-config"
-export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
+export ZENV_PATH="$ZSHRC_ROOT/profiles/$ZENV"
 
 # nvm is opt-out in containers: many images pin their own node.
 export NVM="${NVM:-true}"

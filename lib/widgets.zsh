@@ -103,7 +103,7 @@ function show-splash-neofetch() {
 # ============================================================================ #
 
 function show-splash-sys-banner() {
-  source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.banner.zsh"
+  source "$ZSHRC_ROOT/profiles/${ZENV}/${ZENV}.banner.zsh"
 }
 
 # ============================================================================ #

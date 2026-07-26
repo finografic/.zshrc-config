@@ -35,10 +35,10 @@ for profile in ${(ko)sentinel}; do
       determine-environment
       export ZENV
       apply-environment-env
-      export ZENV_PATH=\"\$ZSHRC_ROOT/_zenvs/\$ZENV\"
+      export ZENV_PATH=\"\$ZSHRC_ROOT/profiles/\$ZENV\"
       source \"\$ZSHRC_ROOT/core/profile.zsh\"
       source \"\$ZSHRC_ROOT/lib/colors.zsh\"
-      source \"\$ZSHRC_ROOT/_zenvs/\$ZENV/\$ZENV.zsh\"
+      source \"\$ZSHRC_ROOT/profiles/\$ZENV/\$ZENV.zsh\"
       (( \$+functions[${sentinel[$profile]}] )) || { print 'MISSING-SENTINEL' >&2; exit 1; }
       print BOOTED
     " 2>&1

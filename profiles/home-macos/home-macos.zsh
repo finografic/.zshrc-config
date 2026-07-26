@@ -3,7 +3,7 @@
 # ============================================================================ #
 
 export ZSHRC_ROOT="$HOME/.zshrc-config"
-export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
+export ZENV_PATH="$ZSHRC_ROOT/profiles/$ZENV"
 export NVM="true"
 
 export GRAPHIFY_PYTHON_PINNED="$HOME/.local/pipx/venvs/graphifyy/bin/python"

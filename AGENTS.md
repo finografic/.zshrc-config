@@ -101,11 +101,11 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 
 ## Learned Workspace Facts
 
-- Multi-system zsh bootstrap: minimal `~/.zshrc` sources `$ZSHRC_ROOT/main.zsh`; `.env` vars `IS_HOME` / `IS_OFFICE` select `_zenvs/*` profiles
+- Multi-system zsh bootstrap: minimal `~/.zshrc` sources `$ZSHRC_ROOT/main.zsh`; `.env` vars `IS_HOME` / `IS_OFFICE` select `profiles/*` profiles
 - Committed repo file `.zshrc` is the reference template for system `~/.zshrc` (sync on major refactors or new system setup)
 - Bootstrap sequence under `bootstrap/`: compinit must run before plugins; plugin list in `plugins/.zsh_plugins.txt` (Antidote)
 - Canonical comment block separators: 78-char boxed equals (`# ============================================================================ #`); normalization script at `scripts/normalize-comment-blocks.py`
 - `.nvmrc` auto-switch is handled by `lib/node/nvm-autoload.zsh` (`chpwd` hook via `add-zsh-hook`; sourced from `lib/node.zsh` after nvm is loaded)
 - Node/TS utilities live under `packages/node/` (pnpm workspace; built with tsdown)
 - Git remote host is Bitbucket (`bitbucket.org:justin-rankin/.zshrc-config.git`)
-- `$REPOS_FINO` in `_zenvs/home-macos/` points at Finografic repos (e.g. `_@finografic-deps-policy`)
+- `$REPOS_FINO` in `profiles/home-macos/` points at Finografic repos (e.g. `_@finografic-deps-policy`)

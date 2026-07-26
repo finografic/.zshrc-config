@@ -58,7 +58,9 @@ Three bugs found beyond the plan: `~/bin/zupdate` forwarded no arguments at all 
 
 CI gained a `commitlint` job (the husky hook is bypassable with `--no-verify`, and a fork's PR never runs a hook it never installed), a soft-fail `shell-format` job (`shfmt --diff`, scoped to the 4 real `.sh` files only — `shfmt` cannot parse zsh's syntax extensions, and its own `.editorconfig`/`.vscode` settings disagree on tabs vs. spaces, both flagged rather than silently resolved), and `"type": "module"` in the root `package.json` (fixed the Node ESM warning, verified no fallout). The "container smoke matrix" item was judged already satisfied by the existing `tests/test-profile-boot.zsh`, which already runs in CI and does the same thing properly.
 
-**Remaining: P7.1** (README pitch rewrite — lead with the idea, startup numbers, fix stale references) — the only unchecked Sonnet-tier item left. **P6.2** (history squash) is downstream of P0.1 and stays blocked; **P0.1** itself is the open `[HUMAN]` gate.
+**P7.1 done — Phase 7 complete.** README rewritten: leads with the pitch and two real startup numbers in the first paragraph, "Try it in 30 seconds" (the Docker one-liner) moved second, a startup highlight table linking to `docs/PERFORMANCE.md`, the full structure tree and load-order detail moved to `docs/ARCHITECTURE.md` (a trimmed top-level tree stays for orientation), and the stale `packages/` row (still described `zconf` as "planned; empty for now") fixed to describe what actually shipped in Phase 5. **One thing genuinely not done**: replacing `zsh.png` with a current screenshot or asciinema cast — confirmed it's stale (2021, predates this refactor) but capturing a real terminal isn't something achievable from here; needs the maintainer.
+
+**Everything in Phases 0–7 is now done except the three items that were never Sonnet/Opus work to begin with**: **P0.1** (history/publish strategy, the open `[HUMAN]` gate — nothing goes public until this is decided), **P6.2** (history squash, downstream of P0.1), and the `zsh.png` replacement above. `master` is now well ahead of `github/master`, still unpushed pending P0.1.
 
 ### Recent commits
 

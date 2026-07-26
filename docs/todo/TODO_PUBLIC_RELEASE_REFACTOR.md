@@ -590,13 +590,13 @@ rejects** — 570 commits of history prove the hook is being bypassed.
 The current README is a good _inventory_ and a poor _pitch_. For a public repo it needs to
 answer "why would I read this?" in the first screen.
 
-- [ ] Lead with the idea: one config tree, N host profiles, auto-detected, measurably fast.
-- [ ] A terminal screenshot or asciinema cast (you have `zsh.png` — replace it with something current).
-- [ ] Startup numbers from the real benchmark, per profile. This is the credibility line.
-- [ ] "Try it in 30 seconds" — the Docker one-liner, before any install instructions.
-- [ ] "Make it yours" — `.env` flags, `zconf new-profile`, the `REPO_ALIASES` registry.
-- [ ] Move the structure tree and load order to `docs/ARCHITECTURE.md`; link, don't inline.
-- [ ] Fix what's now wrong: "eight host profiles … apnaes", the `packages/node` row, `tools/` binaries, and the `_register_repo_aliases` example (snake_case, violating your own convention).
+- [x] Lead with the idea: one config tree, N host profiles, auto-detected, measurably fast. — New opening line does this directly, with the two most credible numbers (`codex` ~56 ms, a full shell ~550 ms) in the first paragraph rather than buried in a table further down.
+- [ ] A terminal screenshot or asciinema cast (you have `zsh.png` — replace it with something current). — **Not done — genuinely can't be from here.** Capturing a real terminal screenshot or asciinema cast isn't something a coding agent can produce; this needs you. Confirmed `zsh.png` is stale (last committed 2021, predates this entire refactor) rather than guessing it might still be fine — it should be replaced, not restored.
+- [x] Startup numbers from the real benchmark, per profile. This is the credibility line. — A 3-row highlight table right after the pitch (`codex`/`vscode`/`home-macos` against their budgets), linking to `docs/PERFORMANCE.md` for the full 8-profile table and the change log behind the biggest win.
+- [x] "Try it in 30 seconds" — the Docker one-liner, before any install instructions. — Now the second section, immediately after the pitch and before "Quick setup".
+- [x] "Make it yours" — `.env` flags, `zconf new-profile`, the `REPO_ALIASES` registry.
+- [x] Move the structure tree and load order to `docs/ARCHITECTURE.md`; link, don't inline. — The full tree and boot sequence live in `docs/ARCHITECTURE.md`; the README keeps a trimmed, top-level-only tree (enough to orient, not the full `profiles/*` fan-out) plus a one-line summary of the load order with a link onward.
+- [x] Fix what's now wrong: "eight host profiles … apnaes", the `packages/node` row, `tools/` binaries, and the `_register_repo_aliases` example (snake_case, violating your own convention). — `apnaes` reference and `tools/` row were already gone (fixed in earlier phases); `_register_repo_aliases` was already corrected to kebab-case in an earlier pass. The one real fix needed here: the structure tree's `packages/` row said "zconf TypeScript toolkit (planned; empty for now)" — stale since Phase 5 shipped it — now reads `packages/zconf/ # Maintainer CLI (TypeScript): doctor, scan, graph, bench, normalize`.
 
 ### P7.2 — Docs set
 

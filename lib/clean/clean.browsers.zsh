@@ -3,6 +3,8 @@
 # Usage: clean-browsers
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 function clean-browsers() {
 	print "${_grey}Cleaning Browsers...${_0}"
 

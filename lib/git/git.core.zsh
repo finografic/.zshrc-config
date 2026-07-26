@@ -2,6 +2,8 @@
 # CORE GIT OPERATIONS
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 # Checkout master
 function master() {
   git checkout master

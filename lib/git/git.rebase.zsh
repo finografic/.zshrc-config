@@ -2,6 +2,8 @@
 # REBASE AND MERGE OPERATIONS
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 # Fetch and rebase
 # Usage: _grb [-y]
 #   -y  Non-interactive rebase (skips editor) and auto-accepts force-push

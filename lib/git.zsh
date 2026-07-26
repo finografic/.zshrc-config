@@ -2,6 +2,9 @@
 # GIT UTILITIES INDEX - Loads all git modules from lib/git/
 # ============================================================================ #
 
+(( ${+_ZSHRC_GIT_LOADED} )) && return 0
+typeset -g _ZSHRC_GIT_LOADED=1
+
 # Source core git operations
 source "$ZSHRC_ROOT/lib/git/git.core.zsh"
 

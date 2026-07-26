@@ -1,3 +1,5 @@
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 # TODO: populate per employer with real repo paths / workflow helpers.
 # What's here is generic enough to be useful as-is.
 

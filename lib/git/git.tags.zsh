@@ -1,9 +1,4 @@
-# Color variables
-_y='\033[1;33m'      # Yellow (warnings)
-_r='\033[1;31m'      # Red (errors)
-_g='\033[1;32m'      # Green (success)
-_grey='\033[0;90m'   # Grey (informational)
-_0='\033[0m'         # Reset
+source "$ZSHRC_ROOT/lib/colors.zsh"
 
 # ============================================================================ #
 # GIT TAG OPERATIONS -- FOR CI

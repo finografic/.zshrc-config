@@ -5,6 +5,8 @@
 # Usage: tm-monitor
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 function tm-monitor() {
   while true; do
     clear

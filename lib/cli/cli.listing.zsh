@@ -2,6 +2,8 @@
 # FILE LISTINGS
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 # CORE
 alias ls="ls -lAh"
 alias ll="ls -la --color -h --group-directories-first"

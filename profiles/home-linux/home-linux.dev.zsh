@@ -1,3 +1,5 @@
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 # PLAYGROUND + SANDBOX
 alias play="cd $REPOS/___PLAYGROUND___ && l"
 

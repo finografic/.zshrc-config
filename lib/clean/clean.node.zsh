@@ -7,6 +7,8 @@
 #   clean-caches-pnpm
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 # ============================================================================ #
 # Recursively remove top-level `node_modules` dirs (via fd --prune).
 # Options: --dry-run  (list targets and sizes only; no rm)

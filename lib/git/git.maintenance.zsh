@@ -2,6 +2,8 @@
 # MAINTENANCE OPERATIONS
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 # Clean (delete multiple branches)
 function _gclean() {
   if [[ -z "$1" ]]; then

@@ -1,3 +1,5 @@
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 export CONTAINER_HOME="/workspace"
 
 # CD NAVIGATION

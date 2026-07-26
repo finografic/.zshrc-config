@@ -1,4 +1,7 @@
 # FZF Configuration
+(( ${+_ZSHRC_FZF_LOADED} )) && return 0
+typeset -g _ZSHRC_FZF_LOADED=1
+
 if [[ "$OS_NAME" == "macOS" ]]; then
   # Add Homebrew FZF to path if not present
   if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then

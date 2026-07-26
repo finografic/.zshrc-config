@@ -2,8 +2,11 @@
 # FUNCTIONS + ALIASES
 # ============================================================================ #
 
+(( ${+_ZSHRC_SPLASH_LOADED} )) && return 0
+typeset -g _ZSHRC_SPLASH_LOADED=1
+
 # Colors and emoji
-# source "$ZSHRC_ROOT/lib/colors.zsh"
+source "$ZSHRC_ROOT/lib/colors.zsh"
 
 # ============================================================================ #
 

@@ -1,3 +1,6 @@
+(( ${+_ZSHRC_LLMS_LOADED} )) && return 0
+typeset -g _ZSHRC_LLMS_LOADED=1
+
 ollama-reset-check() {
   local models_dir="/Volumes/SSD.DEV/.ollama/models"
 

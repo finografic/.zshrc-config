@@ -2,6 +2,9 @@
 # PATHS INDEX - Loads OS paths from lib/paths/ (by $OS_NAME, not $ZENV)
 # ============================================================================ #
 
+(( ${+_ZSHRC_PATHS_LOADED} )) && return 0
+typeset -g _ZSHRC_PATHS_LOADED=1
+
 case "$OS_NAME" in
 macOS) source "$ZSHRC_ROOT/lib/paths/paths.macos.zsh" ;;
 Linux) source "$ZSHRC_ROOT/lib/paths/paths.linux.zsh" ;;

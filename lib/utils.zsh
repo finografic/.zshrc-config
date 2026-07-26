@@ -2,6 +2,11 @@
 # FUNCTIONS + ALIASES
 # ============================================================================ #
 
+(( ${+_ZSHRC_UTILS_LOADED} )) && return 0
+typeset -g _ZSHRC_UTILS_LOADED=1
+
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 # ZSH CONFIG
 export FZF_DEFAULT_COMMAND='fd --type f --ignore-file .ignore'
 

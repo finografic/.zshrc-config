@@ -1,5 +1,8 @@
 # ============================================================================ #
 # NOTE: DOCKER-DEV BANNER - Docker Container Environment
+
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 echo -e "${_c}╔════════════════════════════════════════════════════════════╗${_0}"
 echo -e "${_c}║              🐳 Docker Container Environment               ║${_0}"
 echo -e "${_c}╚════════════════════════════════════════════════════════════╝${_0}"

@@ -7,6 +7,9 @@
 # Everything here used to run inline at profile load. It is now on demand.
 # ============================================================================ #
 
+(( ${+_ZSHRC_DOCTOR_LOADED} )) && return 0
+typeset -g _ZSHRC_DOCTOR_LOADED=1
+
 source "$ZSHRC_ROOT/lib/colors.zsh"
 
 function zdoctor() {

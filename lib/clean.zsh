@@ -2,6 +2,9 @@
 # NOTE: CLEAN - Barrel for lib/clean/ modules (source-only; call functions to run)
 # ============================================================================ #
 
+(( ${+_ZSHRC_CLEAN_LOADED} )) && return 0
+typeset -g _ZSHRC_CLEAN_LOADED=1
+
 source "$ZSHRC_ROOT/lib/colors.zsh"
 
 # Modules (define functions only)

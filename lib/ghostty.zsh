@@ -2,6 +2,9 @@
 # GHOSTTY
 # ============================================================================ #
 
+(( ${+_ZSHRC_GHOSTTY_LOADED} )) && return 0
+typeset -g _ZSHRC_GHOSTTY_LOADED=1
+
 GHOSTTY_CONFIG_FILE_PATH="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
 
 # Resolves which tracked ghostty config this environment should use.

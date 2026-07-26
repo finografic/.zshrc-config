@@ -2,6 +2,8 @@
 # COMMIT OPERATIONS
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 function _is-finografic-repo() {
   local root
   root=$(git rev-parse --show-toplevel 2>/dev/null) || return 1

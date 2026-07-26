@@ -3,6 +3,8 @@
 # Usage: clean-downloads
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 function clean-downloads() {
 	print "${_grey}Cleaning Downloads...${_0}"
 

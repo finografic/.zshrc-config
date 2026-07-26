@@ -3,6 +3,8 @@
 # npm/global-install helper — those moved to lib/node/node.globals.zsh)
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 REPOS="$HOME/dev_projects"
 
 [[ "$OSTYPE" == darwin* ]] && export CPATH=$(xcrun --show-sdk-path)/usr/include

@@ -5,6 +5,8 @@
 #          Chat and AI data are NOT cleared.
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 function clean-ides() {
 	local APPLICATION_SUPPORT="$HOME/Library/Application Support"
 	local CODE_PATH BASE_PATH IS_CURSOR=0

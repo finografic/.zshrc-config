@@ -2,6 +2,8 @@
 # NOTE: LIST GIT STASHES..
 # ============================================================================ #
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 # OUTPUT LAYOUT CONSTANTS
 export MAX_CHARS=131
 export BRANCH_NAME_FALLBACK="n/a"

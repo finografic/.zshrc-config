@@ -1,3 +1,6 @@
+(( ${+_ZSHRC_COMMON_LOADED} )) && return 0
+typeset -g _ZSHRC_COMMON_LOADED=1
+
 source "$ZSHRC_ROOT/lib/cli.zsh"
 
 # ============================================================================ #

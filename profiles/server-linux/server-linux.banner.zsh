@@ -1,6 +1,8 @@
 # BANNER - hostname + distro + uptime is more useful than a figlet on a box
 # you SSH into.
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 local distro="Linux"
 if [[ -r /etc/os-release ]]; then
   distro="$(source /etc/os-release; print -- "$PRETTY_NAME")"

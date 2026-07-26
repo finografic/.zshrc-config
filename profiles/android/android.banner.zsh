@@ -1,6 +1,8 @@
 # BANNER
 # ASCII GENERATOR: https://www.askapache.com/online-tools/figlet-ascii/
 
+source "$ZSHRC_ROOT/lib/colors.zsh"
+
 echo "${_y}${_bold}"
 
 cat << EOF

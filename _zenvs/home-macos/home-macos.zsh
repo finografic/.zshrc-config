@@ -1,4 +1,6 @@
-# SPECIFIC ===================================================== #
+# ============================================================================ #
+# NOTE: HOME-MACOS - Personal Mac, full interactive terminal
+# ============================================================================ #
 
 export ZSHRC_ROOT="$HOME/.zshrc-config"
 export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
@@ -7,98 +9,43 @@ export NVM="true"
 export GRAPHIFY_PYTHON_PINNED="$HOME/.local/pipx/venvs/graphifyy/bin/python"
 
 # ============================================================================ #
-
-# BUN - https://bun.sh
-# TODO: CAUSING ERROR IN $PATH !!
-# [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-# export BUN_INSTALL="$HOME/.bun"
-# export PATH="$BUN_INSTALL/bin:$PATH"
-
-# Dynamic brew path detection (shared: lib/macos/macos.brew.zsh)
-macos-brew-shellenv
-
+# NOTE: MANIFEST
 # ============================================================================ #
 
-# INCLUDES: DEFAULTS
-source "$ZSHRC_ROOT/lib/git.zsh"
-source "$ZSHRC_ROOT/lib/llms.zsh"
-source "$ZSHRC_ROOT/lib/paths.zsh"
+ZENV_PRESET=full
+ZENV_MODULES=(llms macos ghostty)
+ZENV_FEATURES=(backups aliases dev)
+ZENV_OPT_IN=(music/backup-dj-crate music/djay_icloud_sync)
 
-# INCLUDES: MISC
-source "$ZENV_PATH/$ZENV.backups.zsh"
+zenv-load
 
-# INCLUDES: DEV ZENV-SPECIFIC
-# source "$ZENV_PATH//$ZENV.hardware.zsh";
+# ============================================================================ #
+# NOTE: PROFILE-SPECIFIC
+#
+# Everything below needs functions the manifest just defined, so it has to come
+# after `zenv-load` — `macos-brew-shellenv` comes from the `macos` module and
+# `update-ghostty-config` from `ghostty`.
+# ============================================================================ #
 
-source "$ZENV_PATH/$ZENV.aliases.zsh"
-source "$ZENV_PATH/$ZENV.dev.zsh"
+# Dynamic brew prefix (Apple Silicon vs Intel) — lib/macos/macos.brew.zsh
+macos-brew-shellenv
 
-# INCLUDES: SCRIPTS (opt-in extras — this profile is where they belong, per the
-# layer table; they used to be sourced from main.zsh for EVERY environment)
-source "$ZSHRC_ROOT/extras/music/backup-dj-crate.zsh"
-source "$ZSHRC_ROOT/extras/music/djay_icloud_sync.zsh"
+# Keeps the installed ghostty config in sync with the tracked one. No-ops (and
+# spawns nothing) unless the tracked file is actually newer.
+update-ghostty-config
+
+# Docker cleanup helpers. Lives under scripts/ rather than extras/, so it is
+# sourced directly instead of via ZENV_OPT_IN.
 source "$ZSHRC_ROOT/scripts/docker-cleanup.zsh"
 
 # ============================================================================ #
-
-# iTERM SHELL INTEGRATION
-# source $ZSHRC_ROOT/.iterm2_shell_integration.zsh
-
-# PM2 + VERDACCIO
-# sudo env PATH=$PATH:$HOME/.nvm/versions/node/<version>/bin $HOME/.nvm/versions/node/<version>/lib/node_modules/pm2/bin/pm2 startup launchd -u "$USER" --hp "$HOME"
-
-# iTerm2 PROFILES > ADVANCED > SMART-SELECTION > ADD:
-# (REGEX for IGNORING CLI PROMPT WHEN SELECTING VIA TRIPLE-CLICK):
-# \b[^\]\$]*$
-
-# INCLUDE PM2 USING macOS "lanchd" // NOTE: MAY REQUIRE "sudo"
-# PM2 startup DOCS: https://pm2.keymetrics.io/docs/usage/startup/
-# [ -e ${NPM_GLOBALS}/pm2 ] && eval "sudo env PATH=\$PATH:${NPM_GLOBALS}/../lib/node_modules/pm2/bin/pm2 startup launchd -u ${USER} --hp ${HOME}";
-
-# NOTE: UPDATE GHOSTTY CONFIG
-update-ghostty-config
-
+# NOTE: NOTES
+#
+# - LaunchAgent status for the djay backup/sync jobs is no longer checked on
+#   every shell (it cost two `launchctl list` shell-outs and could load services
+#   behind your back). To check them:
+#     source "$ZSHRC_ROOT/extras/music/djay-services.zsh" && djay-services-check
+# - Machine health (firewall, tool presence): run `zdoctor`.
+# - PM2 under launchd, iTerm2 shell integration and the Loupedeck path fixup all
+#   used to sit here commented out; they are in git history if ever needed.
 # ============================================================================ #
-
-# TODO: NOT EVERY LAUNCH - ESPECIALLY IF NOT ON M1
-# ENSURE LOUPDECK POINTS to CORRECT $HOME FOLDER
-# sh $HOME/.local/share/Loupedeck/_Loupedeck_DEV/scripts/loupedeck/setHomeUserPaths.sh
-
-# ============================================================================ #
-
-# ============================================================================ #
-# NOTE: START docker (Docker Desktop)..
-# ============================================================================ #
-
-# if ! docker info &>/dev/null; then
-#   echo "${_grey}Starting Docker Desktop...${_0}"
-#   open -a Docker &>/dev/null
-#   # Wait for Docker to be ready
-#   while ! docker info &>/dev/null; do
-#     sleep 1
-#   done
-#   echo "${_g}Docker is ready${_0}"
-# fi
-
-# ============================================================================ #
-# SECURITY CHECKS: Minimal Security for Home System
-# ============================================================================ #
-
-# NOTE: No firewall warning for home (relaxed security)
-# Ports 11434 (Ollama) and 3001 (OpenWebUI) are intentionally excluded from checks
-
-# WIP: Security check commented out for now
-# # Check for suspicious external ESTABLISHED connections (excluding known safe ports 11434, 3001)
-# # NOTE: Ports 11434 (Ollama) and 3001 (OpenWebUI) are intentionally excluded
-# if command -v lsof &>/dev/null; then
-#   SUSPICIOUS_CONN=$(lsof -i -P 2>/dev/null | grep "ESTABLISHED" | grep -vE "127.0.0.1|localhost|::1|:11434|:3001" || echo "")
-#   if [[ -n "$SUSPICIOUS_CONN" ]]; then
-#     echo "${_r}⚠️  SECURITY WARNING: Non-localhost ESTABLISHED connections detected!${_0}"
-#     echo "${_r}   Check: lsof -i -P | grep ESTABLISHED${_0}"
-#   fi
-# fi
-
-# LaunchAgent status for the djay backup/sync jobs is no longer checked on every
-# shell (it cost two `launchctl list` shell-outs and could load services behind
-# your back). To check them:
-#   source "$ZSHRC_ROOT/extras/music/djay-services.zsh" && djay-services-check

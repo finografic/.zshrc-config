@@ -239,7 +239,7 @@ Every item is "wrap in a function; let a profile or the user call it" (D8):
 
 - [ ] Document the rule in `docs/ARCHITECTURE.md`: `vendor/*` owns tool paths, `lib/paths/*` owns OS paths, `profiles/*/…paths.zsh` owns host paths. Nothing else appends.
 - [x] Add `typeset -U path PATH` **once**, early in `bootstrap/index.zsh`. This is what `main.zsh:115` already claims exists and what `build-path.mjs` was emulating. (Done with [P4.1](#p41--remove-node-from-the-startup-path).)
-- [ ] Remove ad-hoc appends from the wrong layers: `main.zsh:100-101` (homebrew coreutils/`hs`), `main.zsh:116`, `_zenvs/office-macos/office-macos.zsh:11` (Python 3.11 framework path), `:56-57` (`gen-test-summary`, `gen-todo-coverage`).
+- [x] Remove ad-hoc appends from the wrong layers — done in [P2.2](#p22--declarative-profile-manifests): `main.zsh`'s homebrew coreutils/`hs` appends moved to `lib/paths/paths.macos.zsh` (the OS-paths owner), and its generic `$HOME/bin:$HOME/.local/bin:/usr/local/bin` append went with the step-12 block the manifest absorbed. The office Python 3.11 framework path and the `gen-test-summary`/`gen-todo-coverage` appends were deleted with the profile in [P2.1](#p21--the-two-renames-you-asked-for). While in `paths.macos.zsh`, also fixed a `/opt/homebrew/binnpm` typo and removed `$(which curl)` / `$(which python3)` — the same append-a-file-not-a-directory bug as the server profile, costing two subprocesses per shell to do nothing. (Original targets: `main.zsh:100-101`, `main.zsh:116`, `office-macos.zsh:11`, `:56-57`.)
 - [x] `_zenvs/apnaes/apnaes.paths.zsh:19` — `export PATH=$PATH:$(which curl)` appends a _file_ path, not a directory. Delete. — Done with [P2.1](#p21--the-two-renames-you-asked-for) (now `_zenvs/server-linux/server-linux.paths.zsh`), which rewrote the file anyway.
 - [ ] Delete `lib/paths.zsh:14-16` `flatten-path` (legacy Node call) once [P4.1](#p41--remove-node-from-the-startup-path) lands.
 
@@ -309,27 +309,39 @@ Today every `profiles/<name>/<name>.zsh` re-exports `ZSHRC_ROOT`, `ZENV_PATH`, `
 hand-lists `source` lines. `vscode.zsh`, `codex.zsh`, and `docker-dev.zsh` additionally
 hand-roll the entire nvm + pnpm + `lib/node.zsh` boot sequence, three slightly different ways.
 
-- [ ] Add `core/profile.zsh` providing the loader and two helpers: `zenv-modules` (resolve names → `lib/` barrels) and `zenv-features` (resolve names → profile files).
-- [ ] Each profile becomes a declaration:
+> **Done 2026-07-26.** All eight profiles converted. Entry points are now 32–58 lines each (target was "under 100"); `main.zsh` lost ~60 lines of unconditional sourcing.
+
+- [x] Add `core/profile.zsh` providing the loader and two helpers: `zenv-modules` (resolve names → `lib/` barrels) and `zenv-features` (resolve names → profile files). — Plus `zenv-opt-in` (extras), `zenv-validate` (reusable by `zconf doctor`), and `zenv-load` as the entry point.
+- [x] Each profile becomes a declaration. Actual shape (the doc's sketch listed `paths` and `banner` as features — see the two deviations below):
 
   ```zsh
-  # profiles/home-macos/home-macos.zsh
-  ZENV_PRESET=full                      # full | minimal | container
-  ZENV_MODULES=(git dev node llms paths macos)
-  ZENV_FEATURES=(aliases dev paths banner backups)
-  ZENV_OPT_IN=(music/backup-dj-crate)
+  # _zenvs/home-macos/home-macos.zsh
+  ZENV_PRESET=full                      # full | minimal | container | none
+  ZENV_MODULES=(llms macos ghostty)     # merged on top of the preset
+  ZENV_FEATURES=(backups aliases dev)   # -> $ZENV_PATH/$ZENV.<name>.zsh
+  ZENV_OPT_IN=(music/backup-dj-crate music/djay_icloud_sync)
+  zenv-load
   ```
 
-- [ ] Add presets so the three minimal profiles stop diverging: `minimal` = colors + node + git + a `vcs_info` prompt; `container` = `minimal` minus macOS anything; `full` = everything.
+- [x] Add presets so the three minimal profiles stop diverging: `minimal` = colors + node + git; `container` = `minimal` + utils, minus macOS anything; `full` = everything portable. `none` added for profiles that want to list every module explicitly (codex uses it).
+- [x] **Deviation — `banner` is not a feature.** The doc's example lists it, but banners `echo`, and `lib/widgets.zsh`'s `show-splash-sys-banner` already sources `$ZENV.banner.zsh` during the splash. Making it a manifest feature would print the banner twice. It stays convention-based. (This also fixed a real pre-existing double-banner in `docker-dev`, which sourced its own banner _and_ got the splash one.)
+- [x] **Deviation — `widgets` and `ghostty` are in no preset.** `main-splash.zsh` sources `widgets` itself and is its only consumer; `ghostty` hardcodes a macOS config path so it is not portable enough for `full`. Both remain in the registry for profiles to request explicitly.
+- [x] **Canonical ordering.** Modules are sourced in the order `ZENV_MODULE_ORDER` defines, _not_ the order a profile listed them — a profile declaring `(widgets git colors dev)` still gets colors first. Asserted by a test.
+- [x] **`main.zsh` absorbed into the manifest.** Steps 10–13 (vendor tools, `lib/utils`/`disk`/`doctor`/`node`/`dev`/`ghostty`, and the macOS block) were unconditional; they are now preset content resolved per profile. `vendor/index.zsh` is consequently unused.
 - [x] Extract the shared macOS Homebrew-prefix eval into `lib/macos/macos.brew.zsh` (was duplicated in `home-macos.zsh:18-24` and `office-macos.zsh:19-27`). — Done in [P2.1](#p21--the-two-renames-you-asked-for) rather than waiting for the full manifest loader; no reason the two were coupled.
-- [ ] Preserve the **load-order invariant**: nvm must be initialised before `lib/node.zsh` (`nvm-autoload` silently no-ops otherwise). Encode it in the loader so it cannot be got wrong per-profile.
-- [ ] Validate manifests in `zconf doctor` — unknown module name = error, not a silent skip.
+- [x] Preserve the **load-order invariant**: nvm must be initialised before `lib/node.zsh` (`nvm-autoload` silently no-ops otherwise). Encode it in the loader so it cannot be got wrong per-profile. — The `node` module now owns the whole boot: `vendor/pnpm-path.zsh` → `vendor/nvm.zsh` (only when `NVM=true`) → `lib/node.zsh` → `nvm-autoload-init`. That is exactly what `vscode`, `codex` and `docker-dev` each hand-rolled differently. Three tests assert the ordering, including that it holds when other modules are interleaved.
+- [x] Validate manifests in `zconf doctor` — unknown module name = error, not a silent skip. — Implemented now as `zenv-validate`, called by `zenv-load` on every shell: an unknown module, unknown preset, or missing feature file fails loudly with the list of known names. `zconf doctor` ([P5.2](#p52--zconf-commands)) can reuse the same function rather than reimplementing it.
+- [x] **Bug found while testing, not in the audit**: the loader's local was originally named `modules`, which is a **special read-only parameter** once `zsh/parameter` is loaded — and p10k loads it. Harmless inside a function (the local shadows it) but a live landmine for any top-level use. Renamed to `resolved_modules`.
+- [x] Two new test files, both wired into CI: `tests/test-profile-loader.zsh` (23 cases — ordering, the nvm invariant, presets, validation failures, and that all eight real manifests validate) and `tests/test-profile-boot.zsh` (boots every profile with `ZENV_FORCE` and asserts a sentinel function exists — the "profile you can't easily reach" test [P7.4](#p74--ci) asks for).
 
 ### P2.3 — Profile inventory pass
 
-- [ ] `android` — four files, Termux-only. Keep, but verify it still boots; it references `STORAGE_ROOT`/`PATH_ZSHRC` set only inside `determine-environment`.
-- [ ] `docker-dev` — keep and simplify per your existing triage (§10 of the audit): generic Linux container profile, no work assumptions. Remove the shebang and top-level output (`docker-dev.zsh` is _sourced_), fold `extras/examples/` Dockerfiles down to one `Dockerfile` + one `docker-compose.yml`, and move them to `extras/docker/` so it's obvious they're runnable.
-- [ ] `vscode` / `codex` — collapse onto the `minimal` preset. They differ meaningfully only in the prompt.
+> Partly addressed by [P2.2](#p22--declarative-profile-manifests), which converted all eight profiles. What remains below is per-profile content review, not structure.
+
+- [x] `android` — four files, Termux-only. Keep, but verify it still boots; it references `STORAGE_ROOT`/`PATH_ZSHRC` set only inside `determine-environment`. — Converted (`container` preset + `paths`) and boot-tested. The `STORAGE_ROOT` coupling is fixed: it is set by `apply-environment-env` ([P1.4](#p14--fix-the-environment-detection-logic)) and the profile now self-defaults it rather than depending on detection having run. Its `edit()`/`code()` had the same broken quoting as the server profile — `edit` fixed, `code` dropped (it referenced `$IDE`, which is `false` here).
+- [ ] **New finding (P2.2 boot test):** `home-linux`'s `hardware` feature runs real hardware probing at profile load (`/dev/input` globbing, `pactl`), printing 4 lines on every shell. Legal per the layer table (profiles may have side effects) but noisy, and it is the same class of thing [P1.2](#p12--purge-source-time-side-effects) removed from `lib/`. Consider making it a `linux-hardware-check` function the user calls. Not changed blind — needs testing on a real Linux desktop.
+- [ ] `docker-dev` — keep and simplify per your existing triage (§10 of the audit): generic Linux container profile, no work assumptions. ~~Remove the shebang and top-level output (`docker-dev.zsh` is _sourced_)~~ **done in [P2.2](#p22--declarative-profile-manifests)** (shebang, the "Docker container environment loaded" echoes, the redundant `core/history.zsh` source, and the duplicate banner source all gone; `container` preset now). Still to do: fold `extras/examples/` Dockerfiles down to one `Dockerfile` + one `docker-compose.yml`, and move them to `extras/docker/` so it's obvious they're runnable.
+- [x] `vscode` / `codex` — collapse onto the `minimal` preset. They differ meaningfully only in the prompt. — Both converted in [P2.2](#p22--declarative-profile-manifests) and no longer hand-roll the node boot. `vscode` uses `minimal`; **`codex` deliberately does not** — it uses `none` + `(colors node)`, because `git` and `dev` define a large interactive alias surface an agent shell will never use and that can surprise a non-interactive caller. They now differ in the prompt _and_ in that one justified way.
 - [ ] `home-linux` — 4 files, currently the least-maintained profile. Either bring it up to the manifest standard as the _reference generic Linux desktop_ profile, or fold it into `server-linux` + a `linux-desktop` feature flag. Recommend keeping it: a public repo benefits from a non-macOS path that actually works.
 
 **Exit criteria:** every profile is under 100 lines; adding a new host is a single 15-line
@@ -733,6 +745,19 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
   `apnaes` added to the CI `secret-scan` pattern — zero references remain in tracked code.
   Two bugs found and fixed that weren't in the original audit: a dead `confirm()` that just
   echoed its input, and an `alias lr1=...` baking in `$(pwd)` at shell-start time.
+- 2026-07-26 — **P2.2** (`[OPUS]`): declarative profile manifests. New `core/profile.zsh`
+  provides `zenv-load` / `zenv-modules` / `zenv-features` / `zenv-opt-in` / `zenv-validate`,
+  three presets, a module registry, and a canonical source order that makes declaration
+  order irrelevant. The `node` module owns the whole nvm/pnpm boot, so the invariant that
+  three profiles hand-rolled three ways is now unforgeable. All eight profiles converted;
+  entry points are 32–58 lines. `main.zsh` shed ~60 lines of unconditional sourcing (its
+  steps 10–13 are preset content now) and `vendor/index.zsh` is unused as a result.
+  Deviations from the doc's sketch, both deliberate: `banner` is not a manifest feature (it
+  would double-print, since the splash sources it — this actually _fixed_ a live
+  double-banner in docker-dev), and `widgets`/`ghostty` are in no preset. Bug found by
+  testing: the loader's local was named `modules`, a special read-only parameter once
+  `zsh/parameter` is loaded (p10k loads it). Two new CI test files, 31 assertions total,
+  including a boot test for every profile.
 - 2026-07-26 — **P1.2** (`[OPUS]`): source-time side effects purged. `lib/clean.zsh` no
   longer deletes files on shell start — it defines `zclean … [--dry-run]`. The djay
   LaunchAgent checks, the firewall shell-out and the unconditional ghostty config copy are

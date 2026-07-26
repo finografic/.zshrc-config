@@ -1,12 +1,8 @@
-#!/bin/zsh
-
 # ============================================================================ #
-# Docker Container Environment Configuration
-# ============================================================================ #
-
-# This profile is automatically loaded when running inside Docker containers
-# It provides a lightweight, container-friendly shell setup using the host's
-# mounted zshrc-config directory
+# NOTE: DOCKER-DEV - Generic Linux container
+#
+# Auto-selected by `is-container` (core/detect.zsh). Lightweight, no host
+# assumptions: uses the container's own binaries, never the mounted macOS ones.
 # ============================================================================ #
 
 export ZSHRC_ENV="docker-dev"
@@ -15,123 +11,48 @@ export LANG="en_US.UTF-8"
 export EDITOR="nvim"
 export VISUAL="nvim"
 
-# SPECIFIC =================================================================== #
-
 export ZSHRC_ROOT="$HOME/.zshrc-config"
 export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
-export NVM="true"
 
-# TODO: LEAVE DISABLED ??
-# Skip hardware detection in containers
-# export SKIP_HARDWARE_DETECT=1
-
-# TODO: LEAVE DISABLED ??
-# Skip resource-intensive features
-# export SKIP_NVM_AUTOLOAD=1
-# export SKIP_FANCY_PROMPTS=0  # Keep minimal prompt
+# nvm is opt-out in containers: many images pin their own node.
+export NVM="${NVM:-true}"
+[[ -n "$SKIP_NVM_AUTOLOAD" ]] && export NVM="false"
 
 # ============================================================================ #
-# PATH Configuration
+# NOTE: PATH
+#
+# Container-native paths only. core/history.zsh is already sourced by
+# bootstrap/00-profiling.zsh, so this profile does not repeat it.
 # ============================================================================ #
 
-# Use container's native binaries, not host macOS binaries
-# Add common Linux paths
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/linuxbrew/.linuxbrew/bin:$PATH"
-
-# Add user bin if exists
 [[ -d "$HOME/bin" ]] && export PATH="$HOME/bin:$PATH"
 
-# Don't load host macOS binary directories
-# export PATH="$ZSHRC_ROOT/tools/bin-$(uname -m):$PATH"  # SKIP - these are macOS binaries
-
 # ============================================================================ #
-# Core Libraries (Container-Safe)
+# NOTE: MANIFEST
 # ============================================================================ #
 
-# Common utilities (safe for containers)
-source "$ZSHRC_ROOT/lib/utils.zsh"
+ZENV_PRESET=container
+ZENV_FEATURES=(aliases dev)
 
-# Git configuration (very useful in dev containers)
-source "$ZSHRC_ROOT/lib/git.zsh"
+# fzf is genuinely optional in a container image.
+ZENV_MODULES=()
+command -v fzf >/dev/null 2>&1 && ZENV_MODULES+=(fzf)
 
-# Development tools
-source "$ZSHRC_ROOT/lib/dev.zsh"
-
-# History configuration
-source "$ZSHRC_ROOT/core/history.zsh"
+zenv-load
 
 # ============================================================================ #
-# Container-Specific Aliases
+# NOTE: CONTAINER ENVIRONMENT
 # ============================================================================ #
 
-# INCLUDES: DEV ZENV-SPECIFIC
-# source "$ZENV_PATH/paths.zsh"
-source "$ZENV_PATH/$ZENV.aliases.zsh"
-source "$ZENV_PATH/$ZENV.dev.zsh"
-
-# ============================================================================ #
-# Optional: FZF (if available in container)
-# ============================================================================ #
-
-if command -v fzf >/dev/null 2>&1; then
-  source "$ZSHRC_ROOT/lib/fzf.zsh" 2>/dev/null || true
-fi
-
-# ============================================================================ #
-# Optional: Node Version Manager + Node UX helpers
-# ============================================================================ #
-
-# Load nvm first (when enabled), then lib/node.zsh (autoload + pn / pnr / npmls)
-if [[ -z "$SKIP_NVM_AUTOLOAD" ]]; then
-  source "$ZSHRC_ROOT/vendor/nvm.zsh" 2>/dev/null || true
-fi
-source "$ZSHRC_ROOT/lib/node.zsh"
-(( $+functions[nvm-autoload-init] )) && nvm-autoload-init
-
-# ============================================================================ #
-# Docker-Specific Environment Variables
-# ============================================================================ #
-
-# Indicate we're in a container
 export IN_DOCKER=1
 export DOCKER_CONTAINER=1
 
-# Disable interactive prompts for apt, npm, etc.
+# Non-interactive package managers
 export DEBIAN_FRONTEND=noninteractive
 export NPM_CONFIG_LOGLEVEL=warn
 
-# ============================================================================ #
-# Banner (optional - comment out if too verbose)
-# ============================================================================ #
-
-source "$ZSHRC_ROOT/_zenvs/docker-dev/docker-dev.banner.zsh"
-
-# ============================================================================ #
-# Cleanup
-# ============================================================================ #
-
-# Remove duplicate PATH entries
-if command -v flatten-path >/dev/null 2>&1; then
-  flatten-path
-fi
-
-# ============================================================================ #
-# Simple Prompt (fallback if none set)
-# ============================================================================ #
-
+# Simple prompt (fallback if none set)
 if [[ -z "$PROMPT" ]]; then
   PROMPT='%F{cyan}🐳%f %F{green}%n@%m%f:%F{blue}%~%f %# '
 fi
-
-# ============================================================================ #
-# Welcome Message
-# ============================================================================ #
-
-echo -e "${_g}✓${_0} Docker container environment loaded"
-echo -e "${_y}💡${_0} Working directory: ${_c}$(pwd)${_0}"
-
-if [[ -d /workspace ]]; then
-  echo -e "${_y}💡${_0} Workspace mounted at: ${_c}/workspace${_0}"
-fi
-
-echo ""

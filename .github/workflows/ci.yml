@@ -29,6 +29,10 @@ jobs:
         run: zsh tests/test-detect.zsh
       - name: lib/ modules must source inertly
         run: zsh tests/test-lib-inert.zsh "$GITHUB_WORKSPACE"
+      - name: Profile manifest loader
+        run: zsh tests/test-profile-loader.zsh
+      - name: Every profile boots clean
+        run: zsh tests/test-profile-boot.zsh
 
   secret-scan:
     runs-on: ubuntu-latest

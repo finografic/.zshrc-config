@@ -1,40 +1,49 @@
-# SPECIFIC
+# ============================================================================ #
+# NOTE: HOME-LINUX - Personal Linux desktop
+#
+# This is the reference non-macOS desktop profile: if something here needs a
+# macOS-only tool, it belongs in a macOS profile instead.
+# ============================================================================ #
+
 export ZSHRC_ROOT="$HOME/.zshrc-config"
+export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
 export NVM="true"
 
-# EDITOR + IDE OVERRIDES (set originally in main.zsh)
-# ...
+# ============================================================================ #
+# NOTE: MANIFEST
+# ============================================================================ #
+
+ZENV_PRESET=full
+ZENV_MODULES=()
+ZENV_FEATURES=(hardware dev)
+
+zenv-load
+
+# ============================================================================ #
+# NOTE: PROFILE-SPECIFIC
+# ============================================================================ #
 
 # DIRCOLORS
-[ -d "${HOME}/.dircolors" ] && eval $(dircolors ${HOME}/.dircolors/dircolors-solarized-master/dircolors.ansi-dark)
+[[ -d "$HOME/.dircolors" ]] &&
+  eval "$(dircolors "$HOME/.dircolors/dircolors-solarized-master/dircolors.ansi-dark")"
 
 # UNIVERSAL
-alias python="$(which python3) $@"
+alias python="python3"
 alias dls="cd $HOME/Downloads && l"
 alias www="cd /var/www && l"
 
 # UNIVERSAL - DEV
-REPOS="$HOME/dev_projects"
+REPOS="${LINUX_REPOS:-$HOME/dev_projects}"
 alias proj="cd $REPOS && l"
 
 # UNIVERSAL - DEV ALIAS TO **CURRENT** REPO
 alias dev="konsole --tabs-from-file $HOME/bin/konsole-tabs.sh"
 
-# GET CURRENT ENVIRONMENT - ADDITIONAL CONFIGS
-
-# TODO: HARDWARE (OR MOST?) SHOULD BE ENV-SPECIFIC
-source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.hardware.zsh"
-source "$ZSHRC_ROOT/_zenvs/${ZENV}/${ZENV}.dev.zsh"
-
 # FIX FOR KDE PLASMA DISPLAY BUG
 function kde-restart-plasma() {
-    killall plasmashell
-    kstart5 plasmashell
+  killall plasmashell
+  kstart5 plasmashell
 }
-
-# INCLUDE PM2
-# PM2 startup DOCS: https://pm2.keymetrics.io/docs/usage/startup/
-# [ -e ${NPM_GLOBALS}/pm2 ] && eval "env PATH=\$PATH:${NPM_GLOBALS}/pm2 startup systemd -u ${USER} --hp ${HOME}";
 
 alias kde-restart=kde-restart-plasma
 alias kde=kde-restart-plasma

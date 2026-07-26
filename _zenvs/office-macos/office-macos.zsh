@@ -1,23 +1,29 @@
-# SPECIFIC ===================================================== #
+# ============================================================================ #
+# NOTE: OFFICE-MACOS - Work Mac. Intentionally neutral: this is a template
+# demonstrating the pattern, not a real workplace setup.
+# TODO: populate per employer.
+# ============================================================================ #
+
 export ZSHRC_ROOT="$HOME/.zshrc-config"
 export ZENV_PATH="$ZSHRC_ROOT/_zenvs/${ZENV}"
 export NVM="true"
 
 # ============================================================================ #
+# NOTE: MANIFEST
+# ============================================================================ #
 
-# Dynamic brew path detection (shared: lib/macos/macos.brew.zsh)
+ZENV_PRESET=full
+ZENV_MODULES=(macos ghostty)
+ZENV_FEATURES=(aliases dev)
+
+zenv-load
+
+# ============================================================================ #
+# NOTE: PROFILE-SPECIFIC (needs functions the manifest just defined)
+# ============================================================================ #
+
+# Dynamic brew prefix (Apple Silicon vs Intel) — lib/macos/macos.brew.zsh
 macos-brew-shellenv
-
-# ============================================================================ #
-
-# INCLUDES: DEFAULTS
-source "$ZSHRC_ROOT/lib/git.zsh"
-
-# INCLUDES: DEV ZENV-SPECIFIC
-source "$ZENV_PATH/$ZENV.aliases.zsh"
-source "$ZENV_PATH/$ZENV.dev.zsh"
-
-# ============================================================================ #
 
 # NOTE: UPDATE GHOSTTY CONFIG
 update-ghostty-config

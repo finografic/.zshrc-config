@@ -26,6 +26,13 @@ determine-environment
 export ZENV
 apply-environment-env
 
+# Every profile resolves its own path; set it once here so the manifest loader
+# and the profiles agree on it.
+export ZENV_PATH="$ZSHRC_ROOT/_zenvs/$ZENV"
+
+# Profile manifest loader (definitions only — profiles call `zenv-load`).
+source "$ZSHRC_ROOT/core/profile.zsh"
+
 # ============================================================================ #
 # NOTE: 2. CORE INCLUDES for ALL ENVIRONMENTS
 # ============================================================================ #
@@ -64,13 +71,7 @@ source "$ZSHRC_ROOT/core/options.zsh"
 source "$ZSHRC_ROOT/core/locale.zsh"
 
 # ============================================================================ #
-# NOTE: 8. CLEANUP HELPERS - defines `zclean`; deletes nothing on its own
-# ============================================================================ #
-
-source "$ZSHRC_ROOT/lib/clean.zsh"
-
-# ============================================================================ #
-# NOTE: 9. VSCODE CHECK - EARLY EXIT for IDE terminals
+# NOTE: 8. VSCODE CHECK - EARLY EXIT for IDE terminals
 # ============================================================================ #
 
 if is-ide-shell; then
@@ -79,78 +80,41 @@ if is-ide-shell; then
 fi
 
 # ============================================================================ #
-# NOTE: 10. VENDOR TOOLS (pnpm, nvm)
-# ============================================================================ #
-
-# source "$ZSHRC_ROOT/lib/fzf.zsh"
-source "$ZSHRC_ROOT/vendor/index.zsh"
-
-# ============================================================================ #
-# NOTE: 11. EDITOR CONFIGURATION
+# NOTE: 9. EDITOR CONFIGURATION
 # ============================================================================ #
 
 export EDITOR="nvim"
 export VISUAL="nvim"
 export IDE="code"
-alias vim="${EDITOR} $@"
+
+# NOTE: `$@` in an alias expands at DEFINITION time (to nothing), not at call
+# time — the argument passing this looked like it did never worked.
+alias vim="$EDITOR"
 
 function edit() { $EDITOR "$@"; }
 
-# VSCode aliases (macOS specific)
+# VSCode alias (macOS specific). PATH belongs to lib/paths/paths.macos.zsh —
+# see the PATH-ownership rule in docs/ARCHITECTURE.md.
 if [[ "$OS_NAME" = "macOS" ]]; then
-  # alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
   alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
-  PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
-  export PATH="/opt/homebrew/bin/hs:$PATH"
 fi
 
 # ============================================================================ #
-# NOTE: 12. FULL ENVIRONMENT SETUP (Terminal only, not VSCode/Docker)
-# ============================================================================ #
-
-# Core libraries
-# source "$ZSHRC_ROOT/lib/colors.zsh"
-
-# PATH additions (consolidated; typeset -U PATH in bootstrap prevents duplicates)
-export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
-
-# Common utilities
-source "$ZSHRC_ROOT/lib/utils.zsh"
-source "$ZSHRC_ROOT/lib/utils.disk.zsh"
-source "$ZSHRC_ROOT/lib/doctor.zsh"
-source "$ZSHRC_ROOT/lib/node.zsh"
-# Activate .nvmrc auto-switching (no-ops when nvm was not loaded by vendor/)
-(( $+functions[nvm-autoload-init] )) && nvm-autoload-init
-source "$ZSHRC_ROOT/lib/dev.zsh"
-
-# Terminal tools
-source "$ZSHRC_ROOT/lib/ghostty.zsh"
-
-# ============================================================================ #
-# NOTE: 13. ENVIRONMENT-SPECIFIC CONFIGURATION
-# ============================================================================ #
-
-# macOS specific
-if [[ "$OS_NAME" = "macOS" ]]; then
-  source "$ZSHRC_ROOT/lib/macos.zsh"
-fi
-
-# ============================================================================ #
-# NOTE: 14. ZENV-SPECIFIC CONFIGURATION
+# NOTE: 10. ZENV-SPECIFIC CONFIGURATION
+#
+# The profile declares what it wants (ZENV_PRESET / ZENV_MODULES /
+# ZENV_FEATURES) and calls `zenv-load`. Everything main.zsh used to source
+# unconditionally here — vendor tools, lib/ barrels, the macOS modules — is now
+# resolved from that manifest, in the canonical order core/profile.zsh defines.
 # ============================================================================ #
 
 source "$ZSHRC_ROOT/_zenvs/$ZENV/$ZENV.zsh"
 
 # ============================================================================ #
-# NOTE: 15. CUSTOM SCRIPTS
+# NOTE: 11. FINALIZATION
 #
 # extras/ is opt-in and is never sourced from here — see the layer table in
-# docs/ARCHITECTURE.md. The djay sync and docker-cleanup helpers are sourced by
-# the profiles that actually want them (currently home-macos).
-# ============================================================================ #
-
-# ============================================================================ #
-# NOTE: 16. FINALIZATION
+# docs/ARCHITECTURE.md. A profile declares them via ZENV_OPT_IN.
 # ============================================================================ #
 
 # Splash screen

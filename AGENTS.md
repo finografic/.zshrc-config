@@ -107,6 +107,7 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - Prefer `pnpm -C "$path"` when running pnpm scripts in another repo without changing the shell PWD
 - Prefer root/`pnpm --filter` scripts over `cd <pkg> && pnpm …` for workspace packages
 - Use `docs/todo/TODO_PUBLIC_RELEASE_REFACTOR.md` for the current refactor plan and `docs/todo/ROADMAP.md` for selected, sequenced work
+- Prefer deleting unused helpers entirely rather than leaving them commented out
 
 ## Learned Workspace Facts
 
@@ -118,3 +119,4 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - The maintainer CLI (`zconf`) lives under `packages/zconf/` (pnpm workspace; TypeScript, built with tsdown, tested with vitest)
 - Two git remotes: `origin` (Bitbucket, `bitbucket.org:justin-rankin/.zshrc-config.git`) and `github` (`github.com:finografic/.zshrc-config.git`); `master` tracks `github`
 - `$REPOS_FINO` in `profiles/home-macos/` points at Finografic repos (e.g. `_@finografic-deps-policy`)
+- `lib/` uses concern barrels (`lib/<area>.zsh`) that source modules under matching `lib/<area>/` subfolders

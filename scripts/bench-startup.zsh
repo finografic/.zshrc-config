@@ -73,10 +73,12 @@ done
 # docker-dev's antidote/plugin skip is gated on is-container(), not $ZENV.
 # This function sets the real trigger for each, so the benchmark exercises
 # the same code path a real shell of that kind would.
+typeset -ga _SPINNER_FRAMES=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+
 function bench-one-profile() {
-  local zenv="$1" n="$2"
+  local zenv="$1" n="$2" label="${3:-${1:-<default>}}"
   local -a samples env_prefix
-  local start end elapsed_ms i
+  local start end elapsed_ms i frame
 
   case "$zenv" in
   vscode) env_prefix=(TERM_PROGRAM=vscode) ;;
@@ -87,12 +89,21 @@ function bench-one-profile() {
   esac
 
   for (( i = 1; i <= n; i++ )); do
+    if [[ -t 2 ]]; then
+      # \r + \033[K (clear to end of line) redraws in place — a real spinner
+      # only when stderr is an actual terminal. Piped/redirected (CI, `| tee`,
+      # a log file) gets none of this noise.
+      frame="${_SPINNER_FRAMES[$(( (i - 1) % ${#_SPINNER_FRAMES} + 1 ))]}"
+      printf '\r\033[K  %s %-14s run %d/%d' "$frame" "$label" "$i" "$n" >&2
+    fi
     start=$EPOCHREALTIME
     env "${env_prefix[@]}" zsh -i -c exit >/dev/null 2>&1
     end=$EPOCHREALTIME
     elapsed_ms=$(( (end - start) * 1000 ))
     samples+=("$elapsed_ms")
   done
+  # Clear the progress line; the caller prints the finished row in its place.
+  [[ -t 2 ]] && printf '\r\033[K' >&2
 
   # Sort numerically for percentiles.
   samples=(${(on)samples})
@@ -153,12 +164,23 @@ function run-benchmarks() {
   local zenv result_min result_p50 result_p95
   local -a result_parts rows
 
+  # Table mode streams a row per profile as soon as it finishes, rather than
+  # waiting for every profile to complete — the spinner (stderr) shows
+  # progress within a profile, and each finished row (stdout) appears
+  # immediately below the header. JSON mode holds output until the end
+  # instead: a partial JSON object isn't valid JSON, so nothing streams there.
+  [[ "$AS_JSON" == false ]] && printf "%-14s %8s %8s %8s\n" "PROFILE" "MIN(ms)" "P50(ms)" "P95(ms)"
+
   for zenv in "${targets[@]}"; do
-    result_parts=(${=$(bench-one-profile "$zenv" "$RUNS")})
+    result_parts=(${=$(bench-one-profile "$zenv" "$RUNS" "${zenv:-<default>}")})
     result_min="${result_parts[1]}"
     result_p50="${result_parts[2]}"
     result_p95="${result_parts[3]}"
     rows+=("${zenv:-<default>}|$result_min|$result_p50|$result_p95")
+
+    if [[ "$AS_JSON" == false ]]; then
+      printf "%-14s %8s %8s %8s\n" "${zenv:-<default>}" "$result_min" "$result_p50" "$result_p95"
+    fi
   done
 
   if [[ "$AS_JSON" == true ]]; then
@@ -168,13 +190,6 @@ function run-benchmarks() {
     render-json-entries "${rows[@]}"
     print "  }"
     print '}'
-  else
-    printf "%-14s %8s %8s %8s\n" "PROFILE" "MIN(ms)" "P50(ms)" "P95(ms)"
-    local row
-    for row in "${rows[@]}"; do
-      parse-row "$row"
-      printf "%-14s %8s %8s %8s\n" "$PROFILE" "$MIN" "$P50" "$P95"
-    done
   fi
 
   if [[ "$SAVE" == true ]]; then

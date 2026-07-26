@@ -3,13 +3,13 @@
   "runs": 5,
   "host": "Darwin arm64",
   "profiles": {
-    "home-macos": { "min_ms": 1529.3, "p50_ms": 1556.5, "p95_ms": 1809.7 },
-    "office-macos": { "min_ms": 1541.7, "p50_ms": 1582.5, "p95_ms": 1587.3 },
-    "home-linux": { "min_ms": 1676.7, "p50_ms": 1685.1, "p95_ms": 1747.1 },
-    "server-linux": { "min_ms": 1442.2, "p50_ms": 1451.4, "p95_ms": 1513.9 },
-    "docker-dev": { "min_ms": 1364.4, "p50_ms": 1390.7, "p95_ms": 1458.6 },
-    "vscode": { "min_ms": 1063.6, "p50_ms": 1099.5, "p95_ms": 1156.2 },
-    "codex": { "min_ms": 1049.5, "p50_ms": 1077.4, "p95_ms": 1473.7 },
-    "android": { "min_ms": 734.4, "p50_ms": 776.6, "p95_ms": 836.0 }
+    "home-macos": { "min_ms": 1624.9, "p50_ms": 1654.6, "p95_ms": 1776.6 },
+    "office-macos": { "min_ms": 1598.9, "p50_ms": 1649.7, "p95_ms": 1688.5 },
+    "home-linux": { "min_ms": 1730.9, "p50_ms": 1758.9, "p95_ms": 1831.8 },
+    "server-linux": { "min_ms": 1463.5, "p50_ms": 1472.1, "p95_ms": 1537.4 },
+    "docker-dev": { "min_ms": 1414.2, "p50_ms": 1486.6, "p95_ms": 1534.5 },
+    "vscode": { "min_ms": 1101.2, "p50_ms": 1133.9, "p95_ms": 1229.4 },
+    "codex": { "min_ms": 1054.1, "p50_ms": 1081.4, "p95_ms": 1496.2 },
+    "android": { "min_ms": 707.6, "p50_ms": 728.9, "p95_ms": 781.7 }
   }
 }

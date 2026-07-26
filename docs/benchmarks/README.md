@@ -128,20 +128,30 @@ the same command list) was confirmed identical _before_ the change, so it is unr
 > maintainer's _pre-change_ real-machine capture. Re-run `--all-profiles -n 20 --save` on a
 > real machine to record the new absolute numbers.
 
-### 2026-07-26 — splash gated to the outermost shell (P4.4)
+### 2026-07-26 — splash made opt-OUT (P4.4)
 
 The splash measured ~475 ms, per widget: `show-os-version-and-sys-info` 181 ms
 (`node`/`pnpm --version`), `show-ports` 76 ms (`lsof`), `show-tmutil-snapshots` 73 ms,
 `show-splash-neofetch` 48 ms, `show-custom-launch-agents` 36 ms.
 
-Now gated by `ZSHRC_SPLASH` (`1` always / `0` never / unset = outermost interactive shell
-only). The default checks `-o login` **before** falling back to `SHLVL`, so a terminal
-emulator window always keeps its splash — `SHLVL` is inherited and can be >1 for reasons
-unrelated to nesting. Nested-shell load fell **477 ms → 4.4 ms**; a real terminal window is
-unchanged by design.
+`ZSHRC_SPLASH=0` disables it; **anything else, including unset, shows it** — for every
+interactive shell, nested ones included. The only unconditional skip is a non-interactive
+shell, where a banner would corrupt piped output.
 
-`bench-startup.zsh` forces `ZSHRC_SPLASH=1` so the benchmark keeps measuring the path a real
-terminal takes. Without it, every number would have improved by ~475 ms for no real reason.
+> **Corrected same day.** The first version of this gate defaulted to "outermost interactive
+> shell only" (login shell, or `SHLVL` 1), on the theory that a splash in the second and
+> third nested shell is waste. The maintainer immediately hit it: typing `zsh` in an existing
+> terminal showed nothing, and needed `ZSHRC_SPLASH=1` to force. That is the right
+> correction — typing `zsh` is a deliberate act and the splash is its expected result. The
+> performance argument does not outrank what the config's owner wants their shell to do;
+> the cost is opt-out, not opt-in.
+>
+> Consequence: **this change now saves nothing by default.** It is a switch for people who
+> want one (and for `docker`/CI images), not a startup win. The ~475 ms is still paid on
+> every interactive shell, and remains the largest single target left after `nvm.sh`.
+
+`bench-startup.zsh` still forces `ZSHRC_SPLASH=1` explicitly, so the benchmark cannot drift
+if that default is ever revisited.
 
 ### 2026-07-26 — nvm no-op guards (P4.4)
 

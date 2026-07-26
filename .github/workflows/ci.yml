@@ -61,6 +61,34 @@ jobs:
           awk -v full="$full_p50" -v codex="$codex_p50" 'BEGIN { exit !(codex < full) }' \
             || { echo "::warning::codex (${codex_p50}ms) is not faster than home-linux (${full_p50}ms) — expected, since is-agent-shell should short-circuit bootstrap/index.zsh entirely"; exit 1; }
 
+  shell-format:
+    runs-on: ubuntu-latest
+    # Soft-fail (P7.4): this repo's own settings disagree with themselves on
+    # tabs vs. spaces for shell files — .editorconfig defaults to spaces,
+    # but .vscode/settings.json's [shellscript] block configures mkhl.shfmt
+    # with editor.insertSpaces: false (tabs). Until that's resolved, shfmt's
+    # own opinion may disagree with either, so this reports rather than gates.
+    #
+    # Scoped to *.sh only, not *.zsh: shfmt parses bash/posix/mksh, not zsh's
+    # syntax extensions (${(z)...}, array flags, etc.), which this repo's
+    # .zsh files use throughout — running it against them would fail to
+    # parse, not just produce a formatting diff.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shfmt
+        run: |
+          curl -sSL https://github.com/mvdan/sh/releases/download/v3.10.0/shfmt_v3.10.0_linux_amd64 \
+            -o /usr/local/bin/shfmt
+          chmod +x /usr/local/bin/shfmt
+      - name: shfmt --diff on every tracked *.sh file
+        run: |
+          fail=0
+          while IFS= read -r -d '' f; do
+            shfmt --diff "$f" || fail=1
+          done < <(git ls-files -z '*.sh')
+          exit $fail
+
   secret-scan:
     runs-on: ubuntu-latest
     steps:
@@ -96,6 +124,30 @@ jobs:
       - run: pnpm lint:ci
       - run: pnpm format:check
       - run: pnpm lint:md
+
+  commitlint:
+    runs-on: ubuntu-latest
+    # The husky commit-msg hook enforces this locally, but --no-verify
+    # bypasses it (which is exactly how ~570 pre-rewrite commits got past it)
+    # and a fork's PR never runs a hook it didn't install. This is the same
+    # check, run somewhere it can't be skipped.
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Lint commit messages
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pnpm exec commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.event.pull_request.head.sha }}"
+          else
+            pnpm exec commitlint --from HEAD~1 --to HEAD
+          fi
 
   zconf:
     runs-on: ubuntu-latest

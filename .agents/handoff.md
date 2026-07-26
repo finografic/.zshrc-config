@@ -52,7 +52,13 @@ Remaining in P4.4: `autoload` for cold functions and `zcompile` for the hot path
 
 Three bugs found beyond the plan: `~/bin/zupdate` forwarded no arguments at all (the whole new interface would have been unreachable — the launcher now lives at `bin/zupdate`, symlinked); the old script pushed to a hardcoded `origin` while `master` actually tracks `github` (it now resolves the real upstream and prints the destination); and the new test suite caught a bug in the new code — a commit whose push the scan blocked was stranded, because the next run saw a clean tree and returned without pushing.
 
-**Next: Phase 7** (docs/agent-rules/CI, mostly Sonnet-tier) and **P1.1**'s `docs/ARCHITECTURE.md`, which is what `zconf graph --write` needs as a target. **P6.2** (history squash) is downstream of P0.1 and stays blocked.
+**P1.1 + Phase 7 (P7.2, P7.3, most of P7.4) done.** `docs/ARCHITECTURE.md` written (layer table, PATH ownership, a small hand-drawn boot-sequence diagram, plus the full auto-generated load graph via `zconf graph --write` markers so it can't drift); `docs/PROFILES.md` (manifest reference, preset table, `new-profile` walkthrough); `docs/PERFORMANCE.md` (a short entry point linking to the existing `docs/benchmarks/README.md` rather than duplicating it); `docs/CONVENTIONS.md` (every rule `zconf doctor` checks, explained). `AGENTS.md` got an "Architecture in 60 Seconds" pointer.
+
+`.github/instructions/` made zsh-relevant: `provider-context-patterns.instructions.md` deleted (pure React); the three TS-pattern files scoped to `packages/zconf/**` via `applyTo` frontmatter (plus, on inspection, `file-naming`/`variable-naming` too — both turned out to be entirely TS-specific despite the plan saying "keep as-is"); `general.instructions.md` rewritten zsh-first, leading with the load-model contract and `zconf doctor`. Two stale `AGENTS.md` facts fixed (`packages/node/` → `packages/zconf/`; the remote line now names both `origin` (Bitbucket) and `github` (finografic) instead of just one).
+
+CI gained a `commitlint` job (the husky hook is bypassable with `--no-verify`, and a fork's PR never runs a hook it never installed), a soft-fail `shell-format` job (`shfmt --diff`, scoped to the 4 real `.sh` files only — `shfmt` cannot parse zsh's syntax extensions, and its own `.editorconfig`/`.vscode` settings disagree on tabs vs. spaces, both flagged rather than silently resolved), and `"type": "module"` in the root `package.json` (fixed the Node ESM warning, verified no fallout). The "container smoke matrix" item was judged already satisfied by the existing `tests/test-profile-boot.zsh`, which already runs in CI and does the same thing properly.
+
+**Remaining: P7.1** (README pitch rewrite — lead with the idea, startup numbers, fix stale references) — the only unchecked Sonnet-tier item left. **P6.2** (history squash) is downstream of P0.1 and stays blocked; **P0.1** itself is the open `[HUMAN]` gate.
 
 ### Recent commits
 

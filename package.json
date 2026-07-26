@@ -4,6 +4,7 @@
   "license": "MIT",
   "author": "Justin Rankin",
   "private": true,
+  "type": "module",
   "scripts": {
     "install:globals": "npm i -g fd-find vtop",
     "·········· ZCONF": "·····················································",

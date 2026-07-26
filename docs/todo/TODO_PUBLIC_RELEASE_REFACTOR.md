@@ -617,13 +617,13 @@ answer "why would I read this?" in the first screen.
 
 ### P7.4 — CI
 
-- [ ] `zsh -n` syntax check on every tracked `.zsh` (catches the `[[ $1 > "" ]]`-class bugs and anything a rename breaks).
-- [ ] `shfmt --diff` on shell scripts, honouring the existing ignores (`lib/k.plugin.zsh` — moot once deleted).
-- [ ] `oxlint`, `oxfmt --check`, `md-lint`, `commitlint`.
-- [ ] `zconf doctor` and `zconf scan`.
-- [ ] **Container smoke matrix** — boot the config in `zsh:latest` with each profile forced (`ZENV=<name>`), assert exit 0, no stderr, and that a known function exists. This is the test that proves the refactor didn't break a profile you can't easily reach (server, android).
-- [ ] `pnpm test` for `packages/zconf` (Vitest).
-- [ ] Resolve the `package.json` ESM warning — add `"type": "module"` (verify no script fallout) or rename the TS config files.
+- [x] `zsh -n` syntax check on every tracked `.zsh` (catches the `[[ $1 > "" ]]`-class bugs and anything a rename breaks). — Already in place (`zsh-syntax` job) since an earlier phase.
+- [x] `shfmt --diff` on shell scripts, honouring the existing ignores (`lib/k.plugin.zsh` — moot once deleted). — New `shell-format` job, **scoped to `*.sh` only, not `*.zsh`**: shfmt parses bash/posix/mksh, not zsh's syntax extensions (`${(z)...}`, array flags, `(( ))` arithmetic used throughout this repo), so running it against `.zsh` files would fail to parse, not just report a diff — confirmed only 4 tracked `.sh` files exist and are genuinely bash. **Soft-fail** (`continue-on-error: true`): the repo's own settings disagree with themselves on tabs vs. spaces for shell files (`.editorconfig` defaults to spaces; `.vscode/settings.json`'s `[shellscript]` block configures `mkhl.shfmt` with `editor.insertSpaces: false`), and `shfmt` itself is blocked by this session's sandbox allowlist so its actual diff output could not be verified locally before committing — reporting rather than gating until a human confirms what it says and that ambiguity is resolved.
+- [x] `oxlint`, `oxfmt --check`, `md-lint`, `commitlint`. — First three already wired (`lint-and-format` job). **`commitlint` added** as its own job: the husky `commit-msg` hook enforces this locally, but `--no-verify` bypasses it (how ~570 pre-rewrite commits got through) and a fork's PR never runs a hook it didn't install. Lints the single new commit on push, the full commit range on a PR.
+- [x] `zconf doctor` and `zconf scan`. — Done in [P5.2](#p52--zconf-commands)'s CI wiring.
+- [ ] **Container smoke matrix** — boot the config in `zsh:latest` with each profile forced (`ZENV=<name>`), assert exit 0, no stderr, and that a known function exists. This is the test that proves the refactor didn't break a profile you can't easily reach (server, android). — **Judged already satisfied, not implemented separately.** `tests/test-profile-boot.zsh` already does exactly this — boots all 8 profiles through the real load chain, asserts exit 0/no unexpected stderr/a known sentinel function per profile — and already runs in CI (`zsh-tests` job) on every push and PR. A first draft of a literal `container: zshusers/zsh:5.9` matrix job was written and then removed: it didn't actually route through the real boot chain (`core/env.zsh` → `determine-environment` → `core/profile.zsh` → the profile entry), making it a strictly weaker, redundant check next to the one that already exists — not worth shipping untested.
+- [x] `pnpm test` for `packages/zconf` (Vitest). — Done in [P5.2](#p52--zconf-commands)'s CI wiring (`zconf` job).
+- [x] Resolve the `package.json` ESM warning — add `"type": "module"` (verify no script fallout) or rename the TS config files. — Added `"type": "module"` to the root `package.json`. Verified no fallout: the warning is gone from `oxlint`/`oxfmt` output, `commitlint.config.mjs` is unaffected (already `.mjs`), no other root-level `.js`/`.cjs` file exists to break, and `packages/zconf` already had its own `"type": "module"`. Full re-verification after the change: lint, format:check, md-lint, doctor, scan, typecheck, and all 169 vitest tests still pass.
 
 ---
 

@@ -171,22 +171,65 @@ nvm and restored `24.16.0`.
 
 **1,217 → ~499 ms from `$HOME` (−59%)**, same resolved node version.
 
+### 2026-07-26 — lazy nvm (P4.4)
+
+`source $NVM_DIR/nvm.sh` was ~449 ms plus ~58 ms for its `bash_completion` — the largest
+single item left on the startup path, paid by every shell to arrive at a state it could
+have had for free: the default Node version active.
+
+`vendor/nvm.zsh` now reads `$NVM_DIR/alias/default` (a one-line file), puts that version's
+`bin` directory straight on `PATH`, and does **not** source `nvm.sh`. Everything in that
+directory — `node`, `npm`, `npx`, `pnpm`, `yarn`, `corepack` — works immediately. `nvm.sh`
+is sourced on demand: the first time `nvm` is called, or the first time `load-nvmrc` finds
+an `.nvmrc` wanting a _different_ version than the one already active.
+
+That last condition is what makes it pay off. `load-nvmrc` now compares the wanted version
+against `$NVM_BIN` first, so the common case — an `.nvmrc` matching the default — resolves
+with no subprocess and no nvm load at all.
+
+The fast path is only taken when `alias/default` is a plain `X.Y.Z` that is actually
+installed. An alias like `lts/*`, or a missing version, falls through to the original eager
+behaviour, so an unusual setup degrades rather than silently ending up without Node.
+`ZSHRC_NVM_LAZY=0` forces the eager path.
+
+Verified across every scenario, not just the fast one:
+
+| Scenario                               | node       | `nvm.sh` sourced |    time |
+| -------------------------------------- | ---------- | ---------------- | ------: |
+| `$HOME`, no `.nvmrc` (the common case) | `v24.16.0` | no               |  2.5 ms |
+| `.nvmrc` matches the default           | `v24.16.0` | no               |  3.0 ms |
+| `.nvmrc` differs → must really switch  | `v22.17.1` | yes, on demand   | 1310 ms |
+| `ZSHRC_NVM_LAZY=0` escape hatch        | `v24.16.0` | yes, eagerly     |  584 ms |
+
+Plus the actual daily workflow — `cd` between directories: start (no `.nvmrc`) →
+`v24.16.0`, into `.nvmrc 22.17.1` → `v22.17.1`, into `.nvmrc 24.16.0` → `v24.16.0`, back to
+`$HOME` → reverts to `v24.16.0`. All correct. `npm` and `pnpm` resolve in every case, and
+the `nvm` command itself works through the stub.
+
+**2.5 ms vs 584 ms on the common path — the eager load is now only paid when a version
+actually has to change.**
+
 ### Cumulative so far (sandbox, n=10, splash forced on)
 
-| Profile        | session start |      now |    delta |
-| -------------- | ------------: | -------: | -------: |
-| `home-macos`   |      5,656 ms | 1,778 ms | **−69%** |
-| `office-macos` |     ~5,300 ms | 1,790 ms | **−66%** |
-| `home-linux`   |     ~5,100 ms | 1,913 ms | **−63%** |
-| `server-linux` |     ~4,300 ms | 1,602 ms | **−63%** |
-| `vscode`       |      3,707 ms | 1,238 ms | **−67%** |
-| `android`      |     ~3,100 ms |   708 ms | **−77%** |
-| `docker-dev`   |     ~1,680 ms | 1,573 ms |      −6% |
-| `codex`        |     ~1,340 ms | 1,253 ms |      −6% |
+| Profile        | session start |    now |    delta | vs budget       |
+| -------------- | ------------: | -----: | -------: | --------------- |
+| `codex`        |     ~1,340 ms |  63 ms | **−95%** | ✅ under 150 ms |
+| `vscode`       |      3,707 ms | 225 ms | **−94%** | over 150 ms     |
+| `server-linux` |     ~4,300 ms | 424 ms | **−90%** | ~at 400 ms      |
+| `docker-dev`   |     ~1,680 ms | 477 ms | **−72%** | over 150 ms     |
+| `android`      |     ~3,100 ms | 499 ms | **−84%** | over 400 ms     |
+| `office-macos` |     ~5,300 ms | 552 ms | **−90%** | over 400 ms     |
+| `home-macos`   |      5,656 ms | 553 ms | **−90%** | over 400 ms     |
+| `home-linux`   |     ~5,100 ms | 778 ms | **−85%** | over 400 ms     |
 
-`codex` and `docker-dev` moved least — they already skipped the plugin bundle via their
-bootstrap early exits, which is exactly where the nvm duplication lived. That they barely
-changed is a useful consistency check on the diagnosis rather than a disappointment.
+Measured with `ZSHRC_SPLASH=1`, so the full profiles are still paying the ~475 ms splash
+that was deliberately kept on by default. `codex` now **meets** the 150 ms minimal-profile
+budget outright; the full profiles are within striking distance of 400 ms and would already
+be under it with the splash off.
+
+Remaining, roughly by size: the splash (~475 ms, kept by choice), the antidote plugin bundle
+(~97 ms), `compinit` (~22 ms), and parsing the eager `lib/` barrels — the last being what
+`autoload`/`zcompile` would address, still not done.
 
 To re-run and refresh the baseline after a change:
 

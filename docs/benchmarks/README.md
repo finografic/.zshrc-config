@@ -128,6 +128,56 @@ the same command list) was confirmed identical _before_ the change, so it is unr
 > maintainer's _pre-change_ real-machine capture. Re-run `--all-profiles -n 20 --save` on a
 > real machine to record the new absolute numbers.
 
+### 2026-07-26 — splash gated to the outermost shell (P4.4)
+
+The splash measured ~475 ms, per widget: `show-os-version-and-sys-info` 181 ms
+(`node`/`pnpm --version`), `show-ports` 76 ms (`lsof`), `show-tmutil-snapshots` 73 ms,
+`show-splash-neofetch` 48 ms, `show-custom-launch-agents` 36 ms.
+
+Now gated by `ZSHRC_SPLASH` (`1` always / `0` never / unset = outermost interactive shell
+only). The default checks `-o login` **before** falling back to `SHLVL`, so a terminal
+emulator window always keeps its splash — `SHLVL` is inherited and can be >1 for reasons
+unrelated to nesting. Nested-shell load fell **477 ms → 4.4 ms**; a real terminal window is
+unchanged by design.
+
+`bench-startup.zsh` forces `ZSHRC_SPLASH=1` so the benchmark keeps measuring the path a real
+terminal takes. Without it, every number would have improved by ~475 ms for no real reason.
+
+### 2026-07-26 — nvm no-op guards (P4.4)
+
+Sourcing `vendor/nvm.zsh` measured **1,217 ms from `$HOME`** vs 505 ms inside a repo. The
+712 ms difference is `nvm use` (~478 ms) and `nvm alias default` (~260 ms), which run only
+in the no-`.nvmrc` branch — the ordinary case of opening a terminal in `$HOME`, making the
+expensive path the common one.
+
+Both were no-ops in the steady state: sourcing `nvm.sh` already activates the default
+version, so `NVM_BIN`, `nvm current` and `alias/default` are all correct _before_ those two
+commands run. They are now guarded by an equivalent check costing microseconds (a parameter
+test plus one small file read); nvm is invoked only when something genuinely differs.
+
+Verified it still _repairs_ a wrong state rather than merely skipping work: with
+`alias/default` deliberately set to a stale `20.0.0`, sourcing the file correctly invoked
+nvm and restored `24.16.0`.
+
+**1,217 → ~499 ms from `$HOME` (−59%)**, same resolved node version.
+
+### Cumulative so far (sandbox, n=10, splash forced on)
+
+| Profile        | session start |      now |    delta |
+| -------------- | ------------: | -------: | -------: |
+| `home-macos`   |      5,656 ms | 1,778 ms | **−69%** |
+| `office-macos` |     ~5,300 ms | 1,790 ms | **−66%** |
+| `home-linux`   |     ~5,100 ms | 1,913 ms | **−63%** |
+| `server-linux` |     ~4,300 ms | 1,602 ms | **−63%** |
+| `vscode`       |      3,707 ms | 1,238 ms | **−67%** |
+| `android`      |     ~3,100 ms |   708 ms | **−77%** |
+| `docker-dev`   |     ~1,680 ms | 1,573 ms |      −6% |
+| `codex`        |     ~1,340 ms | 1,253 ms |      −6% |
+
+`codex` and `docker-dev` moved least — they already skipped the plugin bundle via their
+bootstrap early exits, which is exactly where the nvm duplication lived. That they barely
+changed is a useful consistency check on the diagnosis rather than a disappointment.
+
 To re-run and refresh the baseline after a change:
 
 ```sh

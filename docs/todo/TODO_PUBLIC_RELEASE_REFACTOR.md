@@ -389,16 +389,16 @@ The `vendor` / barrel / `lib/<domain>/` model is already half-built. Finish it:
 
 Apply the recorded conventions everywhere, ideally via a script + a `zconf doctor` check so it doesn't rot:
 
-- [ ] `function` keyword + kebab-case names. Offenders include `_gb` (office), `_register_repo_aliases` (README example), `_pm2` (server).
-- [ ] No shebang in sourced modules; a boxed `# NOTE:` header instead. Offenders: `main.zsh`, `bootstrap/index.zsh`, `vendor/index.zsh`, `core/env.zsh`, `update-config.zsh` (this one is executed, so it keeps its shebang), `_zenvs/vscode/vscode.zsh`, `codex.zsh`, `docker-dev.zsh`.
-- [ ] `[[ ]]` not `[ ]`; quote all expansions. `office-macos.zsh` and `apnaes.dev.zsh` use bare `[ ... ]` and `[[ $1 > "" ]]` (a string _comparison_ used as a non-empty test — should be `[[ -n $1 ]]`).
-- [ ] `print` or `printf` over `echo "\n..."` (the `echo -e` behaviour is not portable and several files rely on it).
-- [ ] `${_c}` / `${_0}` from `lib/colors.zsh` — never local ANSI constants. Offenders: `lib/template-tool/colors.zsh` + `__colors.zsh` (deleted anyway), `extras/examples/run-docker-zsh.sh`, the `_zenvs/*/banner.zsh` files (raw `\e[32m`).
-- [ ] `--dry-run` (not `--dry`) on every destructive helper, and confirm prompts with the default last: `(Y/n)` / `(n/Y)`.
-- [ ] The two existing helpers — `scripts/normalize-comment-blocks.py` and `scripts/normalize-functions.py` — should be wired to `pnpm normalize` (or ported to `zconf`, [P5.2](#p52--zconf-commands)) and run in CI as a check.
-- [ ] Section numbers in `main.zsh` comments (`1.`–`16.`) already drift — `7.` is missing entirely. Drop the numbers, keep the boxes.
-- [ ] `main.zsh:92` — `alias vim="${EDITOR} $@"` — `$@` in an alias expands at _definition_ time to nothing. Just `alias vim="$EDITOR"`.
-- [ ] Remove the commented-out duplicate `source` lines in `main.zsh` (`fzf.zsh:82`, `colors.zsh:113`).
+- [x] `function` keyword + kebab-case names. Offenders included `_gb` (office), `_register_repo_aliases` (README example), `_pm2` (server) — all fixed in earlier passes ([P2.1](#p21--the-two-renames-you-asked-for)/[P3.1](#p31--delete-orphans)).
+- [x] No shebang in sourced modules; a boxed `# NOTE:` header instead. Fixed: `main.zsh`, `bootstrap/index.zsh`, `core/env.zsh`, `bootstrap/00-profiling.zsh`, `01-antidote.zsh`, `02-plugins.zsh`, `03-compinit.zsh`, `04-prompt.zsh`, `core/locale.zsh`, `core/options.zsh`, `profiles/docker-dev/docker-dev.banner.zsh`. Confirmed genuinely-executed scripts (`extras/music/*.zsh`, `scripts/docker-cleanup.zsh`, `scripts/bench-startup.zsh`, `scripts/setup/*.zsh`, `tests/*.zsh`, `update-config.zsh`) correctly keep their shebangs. `vendor/index.zsh` was orphaned — deleted outright instead of fixed.
+- [x] `[[ ]]` not `[ ]`; quote all expansions. Swept the testable `lib/` tree, `core/`, and `profiles/*` (excluding `extras/hardware/*` — untestable Linux-only hardware scripts — and `extras/music/*` — personal launchd utility scripts — both explicitly deferred as out of scope, matching the P1.2/inertness scoping precedent). `vendor/nvm.zsh`'s bare `[ ]` left untouched — it's vendored upstream nvm code, not ours to restyle. **Two real bugs found, not cosmetic**: `_ga()` in `git.commit.zsh` and `_gb()` in `git.core.zsh` both had `if [[ $1 > "" ]]` — a string _comparison_ (lexicographic `>`) misused as a non-empty test, which is true/false unpredictably depending on `$1`'s content rather than whether it's set. Fixed both to `[[ -n "$1" ]]`. Also fixed: `git.rebase.zsh`, `git.tags.zsh`, `git.stashes.zsh`, `git.submodule.zsh`, `clean/clean.node.zsh` (some converted to `(( ))` arithmetic), `cli/cli.listing.zsh`, `core/options.zsh`, `lib/splash.zsh`, `profiles/home-macos/home-macos.dev.zsh`. **Third real bug found while doing this sweep, not in the original audit**: `lib/fzf.zsh` ran `git clone --depth 1 …/fzf.git ~/.fzf && ~/.fzf/install` **unconditionally at source time** on Linux whenever `~/.fzf` was missing — a network call on every shell start, a real [P1.2](#p12--purge-source-time-side-effects) violation that went undetected because it's Linux-only and all P1.2 inertness testing runs on macOS. Fixed by moving the clone into a named `install-fzf()` function the user calls explicitly, matching `scripts/setup/install-tools.zsh`'s existing pattern for optional installs.
+- [x] `${_c}` / `${_0}` from `lib/colors.zsh` — never local ANSI constants. `lib/template-tool/` and its two `colors.zsh`/`__colors.zsh` files were already deleted in an earlier pass. `extras/examples/run-docker-zsh.sh` confirmed correctly exempt — it's bash, not zsh, and cannot source a zsh-syntax file. `profiles/android/android.banner.zsh` was the one real offender left (raw `echo "\e[33m"`/`\e[1m"` instead of sourced vars, plus two dead commented-out color lines) — replaced with `echo "${_y}${_bold}"`, matching the convention already used in `profiles/docker-dev/docker-dev.banner.zsh`.
+- [x] `--dry-run` (not `--dry`) on every destructive helper — audited (`lib/clean.zsh`, `profiles/server-linux/server-linux.dev.zsh`); every occurrence repo-wide already uses `--dry-run`, nothing to fix. Confirm-prompt default-last ordering (`(Y/n)`/`(n/Y)`) — audited and **deliberately left as-is**: `git.maintenance.zsh:85` and `home-macos.dev.zsh`'s `_gclean`/`_gclean-orig` label their prompts `(y/n)` with no default (`read -r response` with no `${response:-Y}` fallback, so an empty Enter aborts) — that's intentionally stricter for destructive `reset --hard`/branch-delete operations, not a bug, just an inconsistent label vs. `git.submodule.zsh`'s `(Y/n)` (which does default). Left unchanged rather than force a default onto destructive prompts; a full label-only pass is cosmetic and deferred.
+- [ ] The two existing helpers — `scripts/normalize-comment-blocks.py` and `scripts/normalize-functions.py` — should be wired to `pnpm normalize` (or ported to `zconf`, [P5.2](#p52--zconf-commands)) and run in CI as a check. **Deferred** — CI/tooling wiring, not a correctness fix; revisit alongside Phase 7.
+- [ ] Section numbers in `main.zsh` comments (`1.`–`16.`) already drift — `7.` is missing entirely. Drop the numbers, keep the boxes. **Deferred** — `main.zsh` has been restructured repeatedly across P2.2/P3.3/P4.4; needs a fresh read-through once structural churn settles, not worth doing mid-churn.
+- [x] `main.zsh:92` — `alias vim="${EDITOR} $@"` — already fixed to `alias vim="$EDITOR"` in an earlier pass; confirmed clean.
+- [x] Remove the commented-out duplicate `source` lines in `main.zsh` (`fzf.zsh:82`, `colors.zsh:113`) — confirmed already gone (no commented-out `source` lines remain), superseded by earlier P2.2/P4.5 restructuring.
+- [ ] `print`/`printf` over `echo "\n..."`/`echo -e` — **explicitly deferred**, out of scope for this batch: touches `lib/clean.zsh`, `lib/clean/clean.node.zsh`, `lib/git/git.submodule.zsh`, `lib/git/git.maintenance.zsh`, `lib/git/git.commit.zsh`, `profiles/server-linux/server-linux.dev.zsh`, `profiles/home-macos/home-macos.dev.zsh` — behavior-neutral but wide (many lines per file); revisit as its own focused pass rather than folding into this batch.
 
 ### P3.4 — `lib/colors.zsh`: stop exporting
 
@@ -825,3 +825,21 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
   of Phase 8's optional list). `git mv` plus every `$ZENV_PATH`/`source` call site updated;
   zero `_zenvs` references remain outside `docs/todo/` history. Full test suite (63 cases)
   and a live shell boot both re-verified clean after the rename.
+- 2026-07-26 — **P3.3** (Sonnet-tier), most of it: kebab-case/shebang/bracket-style items
+  already resolved by earlier passes were confirmed clean; the `[[ ]]` sweep completed
+  across `lib/`, `core/`, and `profiles/*` (deliberately excluding `extras/hardware/*` and
+  `extras/music/*`, same scoping precedent as the P1.2 inertness sweep); `vendor/nvm.zsh`
+  left untouched as vendored upstream code. **Three real bugs found doing this, not in the
+  audit**: `_ga()`/`_gb()` in `git.commit.zsh`/`git.core.zsh` both used `[[ $1 > "" ]]`
+  (string comparison, not a non-empty test) — fixed to `[[ -n "$1" ]]`; `lib/fzf.zsh` ran
+  `git clone` unconditionally at source time on Linux whenever `~/.fzf` was missing, a real
+  P1.2 violation invisible to macOS-only testing — moved into an explicit `install-fzf()`
+  function. `profiles/android/android.banner.zsh`'s raw `\e[33m` escapes replaced with
+  `${_y}${_bold}` to match the rest of the profile banners. `--dry-run` naming audited
+  clean repo-wide. **Deliberately deferred, not attempted this batch**: `echo`/`echo -e` →
+  `print` sweep (wide, behavior-neutral, own pass), confirm-prompt `(y/n)` label
+  normalization (the inconsistency is intentional — destructive prompts have no default on
+  purpose), `main.zsh` section-number cleanup (mid-churn from repeated restructuring), and
+  wiring the two `normalize-*.py` scripts into `pnpm normalize`/CI (tooling, not a
+  correctness fix). Full syntax check (all tracked `.zsh` files) + all 4 test suites +
+  a live interactive-shell boot re-verified clean.

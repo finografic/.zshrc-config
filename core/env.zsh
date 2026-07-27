@@ -10,9 +10,15 @@ if [[ -n "${XPC_SERVICE_NAME:-}" && "${XPC_SERVICE_NAME}" == *"GitHubClient"* ]]
   SKIP_ENV_LOAD=true
 fi
 
-# Load environment variables (skip when flagged above)
+# Load environment variables (skip when flagged above). `set -a` exports
+# every var .env defines instead of leaving them as shell-local parameters —
+# without it, child processes (e.g. `zupdate`, which execs update-config.zsh
+# as a separate process) never see them, even though `echo $VAR` in the
+# current shell looks fine.
 if [[ -z "${SKIP_ENV_LOAD:-}" && -f "$ZSHRC_ROOT/.env" ]]; then
+  set -a
   source "$ZSHRC_ROOT/.env"
+  set +a
 fi
 
 # VSCode memory allocation

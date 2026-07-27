@@ -67,10 +67,19 @@ print "\nAI-drafted commit message (must not hit a real Ollama in CI):"
 
 # No end-to-end test calls run-zupdate with neither a message nor --sync,
 # so the AI path is never reached there — this checks its own guard clause
-# directly instead, against a dir with no zconf build (never a real network call).
+# directly instead, against a dir with no zconf build (never a real network
+# call). Called plainly, not via `$(...)`: it sets $zu_ai_message/$zu_ai_meta
+# directly rather than printing them, since command substitution would fork a
+# subshell in zsh and those assignments would never reach this caller.
 no_build_dir="$(mktemp -d "${TMPDIR:-/tmp}/zupdate-test-nobuild-XXXXXX")"
-check-eq "zu-ai-message is silently unavailable without a zconf build" \
-  "" "$(ZSHRC_ROOT="$no_build_dir" zu-ai-message)"
+zu_ai_message='unset' zu_ai_meta='unset'
+if ZSHRC_ROOT="$no_build_dir" zu-ai-message; then
+  nope "zu-ai-message is silently unavailable without a zconf build" \
+    "non-zero return" "returned 0"
+else
+  ok "zu-ai-message is silently unavailable without a zconf build"
+fi
+check-eq "zu-ai-message clears \$zu_ai_message on failure" "" "$zu_ai_message"
 rm -rf "$no_build_dir"
 
 # ============================================================================ #

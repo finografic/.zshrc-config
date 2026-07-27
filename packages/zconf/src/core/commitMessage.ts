@@ -24,11 +24,13 @@ export const COMMIT_TYPES = [
 export const MAX_SUBJECT_LENGTH = 100;
 
 /**
- * Smallest-first: latency matters more than marginal quality for a task this
- * constrained (one line, fixed format, from a diff). Only consulted when
- * `OLLAMA_DEFAULT_MODEL` isn't set or isn't installed.
+ * Best latency/quality balance first, from local testing (see .agents/memory.md):
+ * `qwen2.5-coder:3b` reliably names the real change (e.g. specific mechanisms,
+ * not just touched files), smaller models frequently don't. Only consulted
+ * when `OLLAMA_DEFAULT_MODEL` isn't set or isn't installed.
  */
 export const MODEL_PREFERENCE: readonly string[] = [
+  'qwen2.5-coder:3b',
   'gemma4:e4b-it-qat',
   'gemma4:e4b-mlx',
   'llama3.2:3b',

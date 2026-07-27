@@ -4,6 +4,9 @@
  * exits non-zero on ANY failure (Ollama not running, no models installed,
  * timeout, empty response) with nothing on stdout, so `zupdate` can fall back
  * to $EDITOR without having to parse an error out of a partial result.
+ *
+ * On success, the model name and generation latency go to stderr (never
+ * stdout) — metadata for the caller to display, not part of the message.
  */
 
 import { execFileSync } from 'node:child_process';
@@ -40,12 +43,15 @@ export async function message(): Promise<number> {
   const diff = trackedDiff(root);
   const prompt = buildPrompt({ files, diff });
 
+  const startedAt = Date.now();
   const raw = await generate(host, model, prompt);
+  const elapsedMs = Date.now() - startedAt;
   if (raw === null) return 1;
 
   const cleaned = cleanResponse(raw);
   if (cleaned.length === 0) return 1;
 
   console.log(cleaned);
+  console.error(`${model}  ${elapsedMs}ms`);
   return 0;
 }

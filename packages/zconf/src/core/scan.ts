@@ -3,9 +3,8 @@
  *
  * This mirrors the `secret-scan` job in `.github/workflows/ci.yml`, with the
  * same allowlist reasoning: loopback and unspecified IPs are not PII, and
- * `docs/todo/**` + `.agents/**` legitimately narrate history ("apnaes was
- * renamed to server-linux"), so they are exempt by path rather than by
- * weakening the pattern for everyone.
+ * `docs/todo/**` + `.agents/**` legitimately narrate old host/profile history,
+ * so they are exempt by path rather than by weakening the pattern for everyone.
  */
 
 export interface ScanPattern {
@@ -116,7 +115,7 @@ export function isExcluded(path: string, excluded: readonly string[]): boolean {
 
 function isAllowedMatch(patternId: string, text: string): boolean {
   if (patternId === 'ipv4') {
-    // Version strings ("1.999.0.1") and the allowlisted addresses are noise.
+    // Dotted version-like numbers and the allowlisted addresses are noise.
     if (IP_ALLOWLIST.has(text)) return true;
     const octets = text.split('.').map((part) => Number.parseInt(part, 10));
     return octets.some((octet) => octet > 255);

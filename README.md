@@ -1,8 +1,13 @@
-# <img src="./zsh.png" alt="zsh logo" height="36"> zshrc-config
+# <img src="./zsh.png" alt="zsh logo" height="36" valign="bottom"> .zshrc-config
 
-**One config tree, eight host profiles, auto-detected.**
+**One config tree, multiple host profiles, auto-detected, across systems.**
 
-Open a terminal on your personal Mac, your work Mac, a Linux box, inside Docker, in VS Code, or as a Codex agent shell, the same repo detects where it's running and loads the right profile, automatically. Startup is measured, not assumed: a Codex agent shell boots in **~56 ms**; a full interactive terminal in **~550 ms**.
+Open a terminal on your personal Mac, your work Mac, a Linux box, inside Docker, in VSCode/Cursor, or as a Codex agent shell... The same repo detects where it's running and loads the right profile, automatically.
+
+Measured startup:
+
+- minimal Codex agent shell boots in **~56 ms**
+- full interactive terminal in **~550 ms**
 
 <table width="100%" bgcolor="#000000"><tr><td align="center">
 <img src="./docs/images/screenshot_zsh-config.png" alt="The splash screen on a full interactive shell" width="800">
@@ -19,35 +24,41 @@ A [maintainer CLI](#zconf---the-maintainer-cli) lints that contract on every pus
 ```
 ~/.zshrc-config/
 ├── bootstrap/            # Ordered early init: profiling → compinit → Antidote/plugins → prompt
-│   ├── 00-profiling.zsh  #   ZSHRC_PROFILE=1 hook for a per-function zprof breakdown
-│   ├── 01-antidote.zsh   #   plugin manager bootstrap (skipped in containers)
-│   ├── 02-plugins.zsh    #   sources the generated plugin bundle
-│   ├── 03-compinit.zsh   #   completion system - must precede plugins
-│   └── 04-prompt.zsh     #   Powerlevel10k config
+│   ├── 00-profiling.zsh  # ZSHRC_PROFILE=1 hook for a per-function zprof breakdown
+│   ├── 01-antidote.zsh   # plugin manager bootstrap (skipped in containers)
+│   ├── 02-plugins.zsh    # sources the generated plugin bundle
+│   ├── 03-compinit.zsh   # completion system - must precede plugins
+│   └── 04-prompt.zsh     # Powerlevel10k config
 │
 ├── core/                 # zsh-level settings only - no output, no side effects
-│   ├── detect.zsh        #   is-agent-shell / is-ide-shell / is-container predicates
-│   ├── env.zsh           #   determine-environment → resolves $ZENV, once
-│   ├── profile.zsh       #   the manifest loader (see Profiles, below)
-│   ├── options.zsh       #   setopt, history, completion styling
+│   ├── detect.zsh        # is-agent-shell / is-ide-shell / is-container predicates
+│   ├── env.zsh           # determine-environment → resolves $ZENV, once
+│   ├── profile.zsh       # the manifest loader (see Profiles, below)
+│   ├── options.zsh       # setopt, history, completion styling
 │   └── locale.zsh
 │
 ├── lib/                  # Definitions only. Sourcing a file here must do NOTHING.
-│   ├── colors.zsh        #   ${_c}-style ANSI vars, guarded so re-sourcing is free
-│   ├── git/              #   git.core, .commit, .rebase, .maintenance, .stashes, .tags, .submodule
-│   ├── node/             #   nvm-autoload, pnpm, npm/global-install helpers
-│   ├── clean/            #   node_modules / browser cache / IDE cache cleanup (all --dry-run capable)
-│   ├── macos/            #   Homebrew prefix detection, Time Machine, dock, media
-│   ├── utils/            #   disk usage, and the rest of lib/utils.zsh (ports, tar, IP)
-│   ├── cli/              #   listing (eza/tree), navigation
-│   ├── dev/, paths/      #   dev workflow helpers; per-OS PATH ownership
+│   ├── colors.zsh        # ${_c}-style ANSI vars, guarded so re-sourcing is free
+│   ├── git/              # git.core, .commit, .rebase, .maintenance, .stashes, .tags, .submodule
+│   ├── node/             # nvm-autoload, pnpm, npm/global-install helpers
+│   ├── clean/            # node_modules / browser cache / IDE cache cleanup (all --dry-run capable)
+│   ├── macos/            # Homebrew prefix detection, Time Machine, dock, media
+│   ├── utils/            # disk usage, and the rest of lib/utils.zsh (ports, tar, IP)
+│   ├── cli/              # listing (eza/tree), navigation
+│   ├── dev/, paths/      # dev workflow helpers; per-OS PATH ownership
 │   └── fzf.zsh, doctor.zsh, splash.zsh, zconf.zsh, ...
 │
 ├── vendor/               # Third-party runtime init: nvm, pnpm PATH - nothing else may touch PATH here
 │
-├── profiles/             # One directory per host. See Profiles, below.
-│   ├── home-macos/, office-macos/, home-linux/, server-linux/
-│   └── docker-dev/, vscode/, codex/, android/
+├── profiles/             # One directory per host profile.
+│   ├── android/
+│   ├── codex/
+│   ├── docker-dev/
+│   ├── home-linux/
+│   ├── home-macos/
+│   ├── office-macos/
+│   ├── server-linux/
+│   └── vscode/
 │
 ├── packages/zconf/       # Maintainer CLI (TypeScript) - doctor, scan, graph, bench, normalize
 │

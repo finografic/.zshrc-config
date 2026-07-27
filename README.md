@@ -130,7 +130,7 @@ formatted. Full reference and the worked walkthrough:
 
 A few things in `lib/` worth knowing about, the full inventory is the source itself, but these are the ones people ask about.
 
-**Git.** `lib/git/` is a whole small toolkit: `_gc`/`_gca` (commit helpers), `_grb`/`_grbs` (rebase), `_gclean` (delete merged branches, with a confirmation prompt), `_gtag` (create and push a version tag that matches
+**Git.** `lib/git/` is a whole small toolkit: `_gc`/`_gca` (commit helpers), `_gcai` (`_gca`, but drafts the message via a local Ollama model — same shared helper `zupdate` uses, see below), `_grb`/`_grbs` (rebase), `_gclean` (delete merged branches, with a confirmation prompt), `_gtag` (create and push a version tag that matches
 `package.json`), `_greset`/`_greset-origin`. The standout is `_stashes`, a formatted stash list with per-stash insertion/deletion counts and a small colored change meter, not just `git stash list`'s bare `WIP on branch: ...`.
 
 **Disk & processes.** `space` (a trimmed `df`, ignoring noise like `tmpfs` and `squashfs`), `_du`/`_du-scan` (usage summary, or a full `ncdu` scan), `ports` (every listening socket, cleanly columned, no more parsing raw `lsof -i`).
@@ -141,33 +141,6 @@ A few things in `lib/` worth knowing about, the full inventory is the source its
 knowing about because an earlier version of this alias baked in whatever directory the _shell_ started in, not where you ran it from, which is the kind of bug `zconf doctor`'s side-effect rule now catches automatically.
 
 **Node.** `.nvmrc`-aware auto-switching, but lazily: the default version's `bin/` goes on `PATH` directly without sourcing `nvm.sh` at all, so `nvm.sh` itself (the expensive part) only loads the first time you actually need a _different_ version. See the change log in [`docs/PERFORMANCE.md`](./docs/PERFORMANCE.md) for the numbers.
-
----
-
-## `zconf` - the maintainer CLI
-
-A small TypeScript CLI at `packages/zconf`, invoked deliberately, never on
-the startup path, and the shell works fine with no Node installed at all.
-
-```console
-$ pnpm zconf doctor
-✔ doctor: clean (119 zsh files, 180 load edges)
-
-$ pnpm zconf scan
-✔ scan: no secrets or PII found (241 tracked files)
-```
-
-| Command                       | What it does                                                                                                                                                                                                       |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `zconf doctor`                | Lints the repo against the load-model contract - orphaned modules, broken `source` targets, side effects at the top of `lib/`, unknown manifest names, missing barrels, function naming, shebangs in sourced files |
-| `zconf scan`                  | Secret/PII scan across tracked files                                                                                                                                                                               |
-| `zconf graph [--profile <n>]` | The load graph as mermaid, or one profile's resolved load order                                                                                                                                                    |
-| `zconf bench [--profile <n>]` | Wraps the startup benchmark and diffs against the recorded baseline                                                                                                                                                |
-| `zconf normalize`             | Applies the comment-block and function-naming conventions repo-wide                                                                                                                                                |
-| `zconf new-profile <name>`    | Scaffolds a new host profile from templates that already pass `doctor`                                                                                                                                             |
-
-Both `doctor` and `scan` run in CI on every push. Full style guide, explained
-for a human: [`docs/CONVENTIONS.md`](./docs/CONVENTIONS.md).
 
 ---
 
@@ -252,6 +225,31 @@ unset -f _register-repo-aliases
 ```
 
 Each key becomes the alias name; each value becomes the `cd ... && l` target.
+
+---
+
+## `zconf` - the maintainer CLI
+
+A small TypeScript CLI at `packages/zconf`, invoked deliberately, never on the startup path, and the shell works fine with no Node installed at all.
+
+Both `doctor` and `scan` run in CI on every push. Full style guide: [`docs/CONVENTIONS.md`](./docs/CONVENTIONS.md).
+
+```console
+$ pnpm zconf doctor
+✔ doctor: clean (119 zsh files, 180 load edges)
+
+$ pnpm zconf scan
+✔ scan: no secrets or PII found (241 tracked files)
+```
+
+| Command                       | What it does                                                                                                                                                                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `zconf doctor`                | Lints the repo against the load-model contract - orphaned modules, broken `source` targets, side effects at the top of `lib/`, unknown manifest names, missing barrels, function naming, shebangs in sourced files |
+| `zconf scan`                  | Secret/PII scan across tracked files                                                                                                                                                                               |
+| `zconf graph [--profile <n>]` | The load graph as mermaid, or one profile's resolved load order                                                                                                                                                    |
+| `zconf bench [--profile <n>]` | Wraps the startup benchmark and diffs against the recorded baseline                                                                                                                                                |
+| `zconf normalize`             | Applies the comment-block and function-naming conventions repo-wide                                                                                                                                                |
+| `zconf new-profile <name>`    | Scaffolds a new host profile from templates that already pass `doctor`                                                                                                                                             |
 
 ---
 

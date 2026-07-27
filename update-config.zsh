@@ -41,6 +41,7 @@
 
 ZSHRC_ROOT="${ZSHRC_ROOT:-$HOME/.zshrc-config}"
 source "$ZSHRC_ROOT/lib/colors.zsh"
+source "$ZSHRC_ROOT/lib/llms.zsh"
 
 # Conventional-commit types accepted by commitlint.config.mjs. Kept in sync by
 # `zconf doctor`? No — deliberately duplicated, because this script must run
@@ -114,37 +115,6 @@ function zu-scan() {
   fi
 
   return 0
-}
-
-# Best-effort AI-drafted commit message, from the pending diff, via a local
-# Ollama model (`zconf message`). This project only, trial basis — silently
-# unavailable (both outputs empty, non-zero return) when Node/the build/Ollama
-# itself aren't there, so callers just check for output rather than parsing
-# errors. OLLAMA_HOST/OLLAMA_DEFAULT_MODEL are forwarded explicitly: .env is
-# sourced, not exported, so the node subprocess would not otherwise see them.
-#
-# Sets $zu_ai_message/$zu_ai_meta directly (a "model  123ms" line from
-# `zconf message`'s stderr) rather than printing them — this must be called
-# plainly, NOT as `x="$(zu-ai-message)"`, because command substitution forks
-# a subshell in zsh and these assignments would never reach the caller.
-function zu-ai-message() {
-  zu_ai_message=''
-  zu_ai_meta=''
-  command -v node > /dev/null 2>&1 || return 1
-  [[ -f "$ZSHRC_ROOT/packages/zconf/dist/index.js" ]] || return 1
-
-  local err_file exit_code
-  err_file="$(mktemp "${TMPDIR:-/tmp}/zu-ai-message-err.XXXXXX")"
-  zu_ai_message="$(OLLAMA_HOST="${OLLAMA_HOST:-}" OLLAMA_DEFAULT_MODEL="${OLLAMA_DEFAULT_MODEL:-}" \
-    node "$ZSHRC_ROOT/packages/zconf/dist/index.js" message 2> "$err_file")"
-  exit_code=$?
-  zu_ai_meta="$(< "$err_file")"
-  rm -f "$err_file"
-
-  if (( exit_code != 0 )) || [[ -z "$zu_ai_message" ]]; then
-    zu_ai_message=''
-    return 1
-  fi
 }
 
 # Prints the usage half of this file's own header, stopping at the sentinel
@@ -237,17 +207,17 @@ function zupdate-main() {
   fi
 
   # ----------------------------------------------------------------- message
-  local commit_message='' zu_ai_message='' zu_ai_meta=''
+  local commit_message='' ollama_commit_message='' ollama_commit_meta=''
   if $sync; then
     commit_message="chore(sync): update from ${ZENV:-$(hostname -s 2> /dev/null || print unknown)}"
   elif [[ -n "$message" ]]; then
     commit_message="$(zu-normalize-message "$message")"
   elif ! $dry_run; then
-    if zu-ai-message; then
+    if ollama-commit-message; then
       local ai_message
-      ai_message="$(zu-normalize-message "$zu_ai_message")"
+      ai_message="$(zu-normalize-message "$ollama_commit_message")"
       print "\n${_bold}AI-suggested commit message:${_0} $ai_message"
-      [[ -n "$zu_ai_meta" ]] && print "${_grey}$zu_ai_meta${_0}"
+      [[ -n "$ollama_commit_meta" ]] && print "${_grey}$ollama_commit_meta${_0}"
       if $assume_yes; then
         commit_message="$ai_message"
       else

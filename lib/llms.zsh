@@ -1,6 +1,41 @@
 (( ${+_ZSHRC_LLMS_LOADED} )) && return 0
 typeset -g _ZSHRC_LLMS_LOADED=1
 
+# Best-effort AI-drafted commit message, from the pending diff, via a local
+# Ollama model (`zconf message`). Trial basis — silently unavailable (both
+# outputs empty, non-zero return) when Node/the build/Ollama itself aren't
+# there, so callers just check for output rather than parsing errors.
+# OLLAMA_HOST/OLLAMA_DEFAULT_MODEL are forwarded explicitly: .env is exported
+# (see core/env.zsh) but this may run from a non-interactive subshell that
+# never sourced it, so the values are passed through the environment as-is.
+#
+# Sets $ollama_commit_message/$ollama_commit_meta directly (the latter a
+# "model  123ms" line from `zconf message`'s stderr) rather than printing
+# them — this must be called plainly, NOT as `x="$(ollama-commit-message)"`,
+# because command substitution forks a subshell in zsh and these assignments
+# would never reach the caller.
+#
+# Shared by `zupdate` (update-config.zsh) and `_gcai` (lib/git/git.commit.zsh).
+function ollama-commit-message() {
+  ollama_commit_message=''
+  ollama_commit_meta=''
+  command -v node > /dev/null 2>&1 || return 1
+  [[ -f "$ZSHRC_ROOT/packages/zconf/dist/index.js" ]] || return 1
+
+  local err_file exit_code
+  err_file="$(mktemp "${TMPDIR:-/tmp}/ollama-commit-message-err.XXXXXX")"
+  ollama_commit_message="$(OLLAMA_HOST="${OLLAMA_HOST:-}" OLLAMA_DEFAULT_MODEL="${OLLAMA_DEFAULT_MODEL:-}" \
+    node "$ZSHRC_ROOT/packages/zconf/dist/index.js" message 2> "$err_file")"
+  exit_code=$?
+  ollama_commit_meta="$(< "$err_file")"
+  rm -f "$err_file"
+
+  if (( exit_code != 0 )) || [[ -z "$ollama_commit_message" ]]; then
+    ollama_commit_message=''
+    return 1
+  fi
+}
+
 function ollama-reset-check() {
   local models_dir="/Volumes/SSD.DEV/.ollama/models"
 

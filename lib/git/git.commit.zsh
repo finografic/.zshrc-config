@@ -3,6 +3,7 @@
 # ============================================================================ #
 
 source "$ZSHRC_ROOT/lib/colors.zsh"
+source "$ZSHRC_ROOT/lib/llms.zsh"
 
 function _is-finografic-repo() {
   local root
@@ -88,6 +89,88 @@ function _gca() {
   else
     echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
     return 1
+  fi
+}
+
+# Git, commit, AI (drafts the message via a local Ollama model, `_gca`'s
+# staging/confirmation behaviour otherwise unchanged). Trial basis: if Ollama
+# isn't running, no model is installed, or the draft is declined, this falls
+# back to the same "NO COMMIT MESSAGE SUPPLIED" behaviour as `_gca` rather
+# than opening $EDITOR — pass a message explicitly (as `_gca` does) when you
+# want that. Shared `ollama-commit-message` helper lives in `lib/llms.zsh`,
+# also used by `zupdate`.
+function _gcai() {
+  local message="$1"
+  [[ -n "$message" ]] && shift
+
+  if [[ -z "$message" ]]; then
+    if ollama-commit-message; then
+      message="$ollama_commit_message"
+      echo "\n${_bold}AI-suggested commit message:${_0} $message"
+      [[ -n "$ollama_commit_meta" ]] && echo "${_grey}$ollama_commit_meta${_0}"
+
+      echo -e "${_m}Use this message? ${_grey}(Y/n)${_0}"
+      read -r response
+      response=${response:-Y}
+
+      [[ "$response" =~ ^[Yy]$ ]] || message=''
+    fi
+  fi
+
+  if [[ -z "$message" ]]; then
+    echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
+    return 1
+  fi
+
+  if _is-finografic-repo && _has-build-artifact-changes; then
+    echo "\n${_y}⚠️  Finografic repo detected with build artifact changes.${_0}"
+    echo "${_grey}This commit will include dist/ or bin/.${_0}"
+    echo "${_grey}Recommended flow:${_0}"
+    echo "  pnpm build"
+    echo "  git add dist bin"
+    echo "  git commit -m \"build: update artifacts\""
+    echo
+
+    echo -e "${_m}Proceed anyway? ${_grey}(y/N)${_0}"
+    read -r response
+    response=${response:-N}
+
+    [[ "$response" =~ ^[Yy]$ ]] || {
+      echo "\n${_y}⚠️  Commit aborted.${_0}"
+      return 1
+    }
+  fi
+
+  if [[ "$ZENV" == "office-macos" ]]; then
+    echo -e "${_m}Are you sure? ${_grey}(y/N)${_0}"
+    read -r response
+    response=${response:-N}
+
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+      git add -A || return 1
+
+      if git diff --cached --quiet; then
+        echo "\n${_y}⚠️  No staged changes to commit.${_0}"
+        return 1
+      fi
+
+      git commit -m "$message" "$@" || return 1
+      echo "\n${_g}✅ DONE${_0}\n"
+    else
+      echo "\n${_y}⚠️  Operation aborted.${_0}"
+      return 1
+    fi
+  else
+    git add -A || return 1
+
+    if git diff --cached --quiet; then
+      echo "\n${_y}⚠️  No staged changes to commit.${_0}"
+      return 1
+    fi
+
+    if git commit -m "$message" "$@"; then
+      echo "\n${_g}✅ DONE${_0}\n"
+    fi
   fi
 }
 

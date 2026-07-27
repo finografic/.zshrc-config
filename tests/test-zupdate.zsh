@@ -68,18 +68,19 @@ print "\nAI-drafted commit message (must not hit a real Ollama in CI):"
 # No end-to-end test calls run-zupdate with neither a message nor --sync,
 # so the AI path is never reached there — this checks its own guard clause
 # directly instead, against a dir with no zconf build (never a real network
-# call). Called plainly, not via `$(...)`: it sets $zu_ai_message/$zu_ai_meta
-# directly rather than printing them, since command substitution would fork a
-# subshell in zsh and those assignments would never reach this caller.
+# call). Called plainly, not via `$(...)`: it sets
+# $ollama_commit_message/$ollama_commit_meta directly rather than printing
+# them, since command substitution would fork a subshell in zsh and those
+# assignments would never reach this caller.
 no_build_dir="$(mktemp -d "${TMPDIR:-/tmp}/zupdate-test-nobuild-XXXXXX")"
-zu_ai_message='unset' zu_ai_meta='unset'
-if ZSHRC_ROOT="$no_build_dir" zu-ai-message; then
-  nope "zu-ai-message is silently unavailable without a zconf build" \
+ollama_commit_message='unset' ollama_commit_meta='unset'
+if ZSHRC_ROOT="$no_build_dir" ollama-commit-message; then
+  nope "ollama-commit-message is silently unavailable without a zconf build" \
     "non-zero return" "returned 0"
 else
-  ok "zu-ai-message is silently unavailable without a zconf build"
+  ok "ollama-commit-message is silently unavailable without a zconf build"
 fi
-check-eq "zu-ai-message clears \$zu_ai_message on failure" "" "$zu_ai_message"
+check-eq "ollama-commit-message clears \$ollama_commit_message on failure" "" "$ollama_commit_message"
 rm -rf "$no_build_dir"
 
 # ============================================================================ #

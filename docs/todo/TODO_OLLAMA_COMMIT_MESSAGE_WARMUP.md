@@ -42,30 +42,30 @@ small repo-side improvements to make the workflow feel warm when a commit is lik
 
 ### Phase 3 — Optional opportunistic preload
 
-- [ ] Add `ollama-model-loaded` using Ollama's loaded-model state (`/api/ps` or
+- [x] Add `ollama-model-loaded` using Ollama's loaded-model state (`/api/ps` or
       equivalent CLI/API behavior).
-- [ ] Add `ollama-preload-default-model` that sends a tiny/no-output preload request
+- [x] Add `ollama-preload-default-model` that sends a tiny/no-output preload request
       for `${OLLAMA_DEFAULT_MODEL:-gemma4:e4b-it-qat}`.
-- [ ] Add a debounce guard, e.g. one preload attempt per model every five minutes.
-- [ ] Trigger the preload in the background from `listing-eza` only when `is-git-root`
+- [x] Add a debounce guard, e.g. one preload attempt per model every five minutes.
+- [x] Trigger the preload in the background from `listing-eza` only when `is-git-root`
       succeeds.
-- [ ] Do not hijack `l`; keep the hook inside the existing listing function and make
+- [x] Do not hijack `l`; keep the hook inside the existing listing function and make
       failures silent.
 
 ### Phase 4 — Manual unload only
 
-- [ ] Do not auto-unload when leaving a repository; multiple terminals make that too
+- [x] Do not auto-unload when leaving a repository; multiple terminals make that too
       surprising.
-- [ ] Optionally add a manual `ollama-unload-default-model` helper for explicit memory
+- [x] Optionally add a manual `ollama-unload-default-model` helper for explicit memory
       cleanup.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] First `_gcai` / `zupdate` call can warm the model and keep it resident for the
+- [x] First `_gcai` / `zupdate` call can warm the model and keep it resident for the
       configured window.
-- [ ] Running `l` at a git repo root can start a silent background preload.
-- [ ] Running `l` outside a repo root never calls Ollama.
-- [ ] Repeated listings do not spam Ollama.
-- [ ] No user-visible listing output changes unless there is an existing listing error.
+- [x] Running `l` at a git repo root can start a silent background preload.
+- [x] Running `l` outside a repo root never calls Ollama.
+- [x] Repeated listings do not spam Ollama.
+- [x] No user-visible listing output changes unless there is an existing listing error.

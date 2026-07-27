@@ -36,6 +36,56 @@ function ollama-commit-message() {
   fi
 }
 
+function ollama-default-model() {
+  print -r -- "${1:-${OLLAMA_DEFAULT_MODEL:-gemma4:e4b-it-qat}}"
+}
+
+function ollama-model-loaded() {
+  local model host body
+  model="$(ollama-default-model "$1")"
+  host="${OLLAMA_HOST:-http://localhost:11434}"
+
+  command -v curl >/dev/null 2>&1 || return 1
+  body="$(curl -fsS "$host/api/ps" 2>/dev/null)" || return 1
+  print -r -- "$body" | grep -Fq "\"model\":\"$model\"" || \
+    print -r -- "$body" | grep -Fq "\"name\":\"$model\""
+}
+
+function should-preload-ollama() {
+  local model stamp now last
+  model="$(ollama-default-model "$1")"
+  stamp="${TMPDIR:-/tmp}/zshrc-ollama-preload-${model//[:\/]/_}"
+  now="$(date +%s)"
+  last="$(< "$stamp" 2>/dev/null || print 0)"
+
+  (( now - last > 300 )) || return 1
+  print -r -- "$now" > "$stamp"
+}
+
+function ollama-preload-default-model() {
+  local model host keep_alive
+  model="$(ollama-default-model "$1")"
+  host="${OLLAMA_HOST:-http://localhost:11434}"
+  keep_alive="${OLLAMA_KEEP_ALIVE:-30m}"
+
+  command -v curl >/dev/null 2>&1 || return 1
+  ollama-model-loaded "$model" && return 0
+  should-preload-ollama "$model" || return 0
+
+  curl -fsS "$host/api/generate" \
+    -d "{\"model\":\"$model\",\"keep_alive\":\"$keep_alive\"}" >/dev/null 2>&1
+}
+
+function ollama-unload-default-model() {
+  local model host
+  model="$(ollama-default-model "$1")"
+  host="${OLLAMA_HOST:-http://localhost:11434}"
+
+  command -v curl >/dev/null 2>&1 || return 1
+  curl -fsS "$host/api/generate" \
+    -d "{\"model\":\"$model\",\"keep_alive\":0}" >/dev/null
+}
+
 function ollama-reset-check() {
   local models_dir="/Volumes/SSD.DEV/.ollama/models"
 

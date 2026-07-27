@@ -28,6 +28,10 @@ function listing-eza() {
   EZA_IGNORES=".DS_Store|Icon*|.directory"
   eza --long --all --ignore-glob="${EZA_IGNORES}" --group-directories-first --accessed --time-style=long-iso --git $1
   [[ -d .git ]] && git status -uno
+
+  if (( ${+functions[is-git-root]} )) && (( ${+functions[ollama-preload-default-model]} )) && is-git-root; then
+    ollama-preload-default-model >/dev/null 2>&1 &!
+  fi
 }
 
 function lr() {
@@ -76,4 +80,3 @@ function tree() {
 function tree2() {
 	find . | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
 }
-

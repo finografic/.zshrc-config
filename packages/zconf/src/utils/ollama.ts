@@ -16,6 +16,26 @@ export function resolveOllamaHost(): string {
   return process.env.OLLAMA_HOST?.trim() || DEFAULT_HOST;
 }
 
+export function resolveOllamaKeepAlive(
+  value: string | undefined = process.env.OLLAMA_KEEP_ALIVE,
+): string | undefined {
+  const keepAlive = value?.trim();
+  return keepAlive === '' ? undefined : keepAlive;
+}
+
+export function buildGeneratePayload(
+  model: string,
+  prompt: string,
+  keepAlive: string | undefined = resolveOllamaKeepAlive(),
+): { model: string; prompt: string; stream: false; keep_alive?: string } {
+  return {
+    model,
+    prompt,
+    stream: false,
+    ...(keepAlive === undefined ? {} : { keep_alive: keepAlive }),
+  };
+}
+
 async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), ms);
@@ -49,7 +69,7 @@ export async function generate(host: string, model: string, prompt: string): Pro
       fetch(`${host}/api/generate`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ model, prompt, stream: false }),
+        body: JSON.stringify(buildGeneratePayload(model, prompt)),
         signal: AbortSignal.timeout(GENERATE_TIMEOUT_MS),
       }),
       GENERATE_TIMEOUT_MS,

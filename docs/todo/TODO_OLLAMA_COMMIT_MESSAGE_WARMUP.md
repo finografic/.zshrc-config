@@ -26,19 +26,19 @@ small repo-side improvements to make the workflow feel warm when a commit is lik
 
 ### Phase 1 — Respect keep-alive in the message path
 
-- [ ] Confirm `zconf message` forwards `OLLAMA_KEEP_ALIVE` or sets an explicit
+- [x] Confirm `zconf message` forwards `OLLAMA_KEEP_ALIVE` or sets an explicit
       `keep_alive` value on Ollama API requests.
-- [ ] Prefer an explicit request-level `keep_alive` only if needed; otherwise keep
+- [x] Prefer an explicit request-level `keep_alive` only if needed; otherwise keep
       the global `OLLAMA_KEEP_ALIVE=30m` behavior.
-- [ ] Keep the timeout/load timeout concept separate from keep-alive: timeout is for
+- [x] Keep the timeout/load timeout concept separate from keep-alive: timeout is for
       slow loading or generation, keep-alive is for model residency after use.
 
 ### Phase 2 — Add reusable git-root helpers
 
-- [ ] Add a shell helper named `git-root` that prints `git rev-parse --show-toplevel`
+- [x] Add a shell helper named `git-root` that prints `git rev-parse --show-toplevel`
       and returns non-zero outside a worktree.
-- [ ] Add `is-git-root` that succeeds only when `$PWD` is exactly the repo root.
-- [ ] Reuse the helpers where current modules inline repo-root checks.
+- [x] Add `is-git-root` that succeeds only when `$PWD` is exactly the repo root.
+- [x] Reuse the helpers where current modules inline repo-root checks.
 
 ### Phase 3 — Optional opportunistic preload
 

@@ -7,7 +7,7 @@ source "$ZSHRC_ROOT/lib/llms.zsh"
 
 function _is-finografic-repo() {
   local root
-  root=$(git rev-parse --show-toplevel 2>/dev/null) || return 1
+  root="$(git-root)" || return 1
 
   [[ -f "$root/package.json" ]] || return 1
   grep -q '"@finografic/' "$root/package.json"

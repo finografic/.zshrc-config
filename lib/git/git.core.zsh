@@ -4,6 +4,16 @@
 
 source "$ZSHRC_ROOT/lib/colors.zsh"
 
+function git-root() {
+  git rev-parse --show-toplevel 2>/dev/null
+}
+
+function is-git-root() {
+  local root
+  root="$(git-root)" || return 1
+  [[ "$PWD" == "$root" ]]
+}
+
 # Checkout master
 function master() {
   git checkout master
@@ -39,7 +49,7 @@ function _gcurrent() {
 
 # Fetch and pull
 function _gf() {
-  if [[ ! -d "./.git" ]]; then
+  if ! git-root >/dev/null; then
     echo "\n${_y}⚠️  Not inside of git repository\n${_0}"
     return 1
   fi
@@ -89,4 +99,3 @@ alias s="git status"
 
 # Git identity is a one-time machine-setup step, not a shell-start step.
 # Run scripts/setup/configure-git-identity.zsh once per machine instead.
-

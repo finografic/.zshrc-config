@@ -1,7 +1,7 @@
-# TODO — Ollama Commit Message Warmup
+# DONE — Ollama Commit Message Warmup
 
-> **Status:** Planned (2026-07-28). Small follow-up for reducing Ollama warm-up time in
-> `zupdate` and `_gcai` without making ordinary shell commands surprising.
+> **Completed:** 2026-07-28 — Ollama keep-alive, repo-root preload, and manual
+> unload helpers shipped for `zupdate` and `_gcai`.
 
 ---
 
@@ -17,12 +17,12 @@ Private local configuration now includes:
 OLLAMA_KEEP_ALIVE=30m
 ```
 
-That should reduce repeated cold starts once the model has been used. This TODO tracks
-small repo-side improvements to make the workflow feel warm when a commit is likely.
+The repo-side implementation now respects that keep-alive value, can opportunistically
+warm the default model from a git repo root, and keeps unload behavior manual.
 
 ---
 
-## Plan
+## Completed Work
 
 ### Phase 1 — Respect keep-alive in the message path
 

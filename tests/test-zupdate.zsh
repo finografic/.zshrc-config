@@ -63,6 +63,16 @@ check-eq "a word that merely starts with a type is not mistaken for one" \
 check-eq "a type without the colon-space is not treated as a prefix" \
   "chore: fix that bug" "$(zu-normalize-message 'fix that bug')"
 
+print "\nAI-drafted commit message (must not hit a real Ollama in CI):"
+
+# No end-to-end test calls run-zupdate with neither a message nor --sync,
+# so the AI path is never reached there — this checks its own guard clause
+# directly instead, against a dir with no zconf build (never a real network call).
+no_build_dir="$(mktemp -d "${TMPDIR:-/tmp}/zupdate-test-nobuild-XXXXXX")"
+check-eq "zu-ai-message is silently unavailable without a zconf build" \
+  "" "$(ZSHRC_ROOT="$no_build_dir" zu-ai-message)"
+rm -rf "$no_build_dir"
+
 # ============================================================================ #
 # End-to-end, against a throwaway repo with a local remote.
 # ============================================================================ #

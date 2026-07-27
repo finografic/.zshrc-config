@@ -34,13 +34,13 @@ A [maintainer CLI](#zconf---the-maintainer-cli) lints that contract on every pus
 │
 ├── lib/                  # Definitions only. Sourcing a file here must do NOTHING.
 │   ├── colors.zsh        #   ${_c}-style ANSI vars, guarded so re-sourcing is free
-│   ├── git/               #   git.core, .commit, .rebase, .maintenance, .stashes, .tags, .submodule
-│   ├── node/               #   nvm-autoload, pnpm, npm/global-install helpers
-│   ├── clean/              #   node_modules / browser cache / IDE cache cleanup (all --dry-run capable)
-│   ├── macos/              #   Homebrew prefix detection, Time Machine, dock, media
-│   ├── utils/              #   disk usage, and the rest of lib/utils.zsh (ports, tar, IP)
-│   ├── cli/                #   listing (eza/tree), navigation
-│   ├── dev/, paths/        #   dev workflow helpers; per-OS PATH ownership
+│   ├── git/              #   git.core, .commit, .rebase, .maintenance, .stashes, .tags, .submodule
+│   ├── node/             #   nvm-autoload, pnpm, npm/global-install helpers
+│   ├── clean/            #   node_modules / browser cache / IDE cache cleanup (all --dry-run capable)
+│   ├── macos/            #   Homebrew prefix detection, Time Machine, dock, media
+│   ├── utils/            #   disk usage, and the rest of lib/utils.zsh (ports, tar, IP)
+│   ├── cli/              #   listing (eza/tree), navigation
+│   ├── dev/, paths/      #   dev workflow helpers; per-OS PATH ownership
 │   └── fzf.zsh, doctor.zsh, splash.zsh, zconf.zsh, ...
 │
 ├── vendor/               # Third-party runtime init: nvm, pnpm PATH - nothing else may touch PATH here
@@ -54,10 +54,10 @@ A [maintainer CLI](#zconf---the-maintainer-cli) lints that contract on every pus
 ├── extras/               # Opt-in only, never auto-sourced: music/, hardware/, examples/
 │
 ├── themes/               # Powerlevel10k config + prompt/theme switching
-├── scripts/               # Setup, cleanup, and one-off maintenance scripts
-├── tests/                 # 5 zsh test suites - all run in CI
-├── docs/                  # ARCHITECTURE.md, PROFILES.md, PERFORMANCE.md, CONVENTIONS.md, benchmarks/
-├── .agents/               # AI-agent memory: handoff.md (tracked state), memory.md (local, gitignored)
+├── scripts/              # Setup, cleanup, and one-off maintenance scripts
+├── tests/                # 5 zsh test suites - all run in CI
+├── docs/                 # ARCHITECTURE.md, PROFILES.md, PERFORMANCE.md, CONVENTIONS.md, benchmarks/
+├── .agents/              # AI-agent memory: handoff.md (tracked state), memory.md (local, gitignored)
 │
 ├── main.zsh              # Orchestrator: env detection → theme → profile manifest → splash
 ├── main-splash.zsh       # The banner (ZSHRC_SPLASH=0 to disable)

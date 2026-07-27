@@ -13,6 +13,7 @@ import { pc } from './utils/picocolors.js';
 import { bench } from './commands/bench.js';
 import { doctor } from './commands/doctor.js';
 import { graph } from './commands/graph.js';
+import { message } from './commands/message.js';
 import { newProfile } from './commands/newProfile.js';
 import { normalize } from './commands/normalize.js';
 import { scan } from './commands/scan.js';
@@ -29,6 +30,7 @@ ${pc.bold('Commands')}
   bench                     Measure startup and diff against the baseline
   normalize                 Normalise comment blocks and function style
   new-profile <name>        Scaffold a new profile from templates
+  message                   Generate a commit message from the pending diff (Ollama)
   help                      Show this message
 
 ${pc.bold('Options')}
@@ -51,7 +53,7 @@ function normalizeOnly(args: ParsedArgs): 'comments' | 'functions' | null {
   return null;
 }
 
-export function run(argv: readonly string[]): number {
+export async function run(argv: readonly string[]): Promise<number> {
   const args = parseArgs(argv);
 
   if (args.flags.has('-h') || args.flags.has('--help') || args.command === 'help') {
@@ -67,6 +69,9 @@ export function run(argv: readonly string[]): number {
 
     case 'scan':
       return scan();
+
+    case 'message':
+      return message();
 
     case 'graph':
       return graph({
@@ -107,4 +112,4 @@ export function run(argv: readonly string[]): number {
   }
 }
 
-process.exitCode = run(process.argv.slice(2));
+process.exitCode = await run(process.argv.slice(2));

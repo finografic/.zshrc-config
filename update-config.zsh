@@ -7,7 +7,8 @@
 # Usage:
 #   zupdate "<message>"    commit with this message (gets `chore: ` if it has
 #                          no conventional-commit type prefix)
-#   zupdate                open $EDITOR for a real message, like `git commit`
+#   zupdate                try an AI-drafted message (local Ollama, this repo
+#                          only — confirm Y/n), else open $EDITOR like `git commit`
 #   zupdate --sync         the only auto-message path:
 #                          `chore(sync): update from <profile>`
 #   zupdate --dry-run      show what would happen; change nothing
@@ -115,6 +116,20 @@ function zu-scan() {
   return 0
 }
 
+# Best-effort AI-drafted commit message, from the pending diff, via a local
+# Ollama model (`zconf message`). This project only, trial basis — silently
+# unavailable (empty stdout, non-zero exit) when Node/the build/Ollama itself
+# aren't there, so callers just check for output rather than parsing errors.
+# OLLAMA_HOST/OLLAMA_DEFAULT_MODEL are forwarded explicitly: .env is sourced,
+# not exported, so the node subprocess would not otherwise see them.
+function zu-ai-message() {
+  command -v node > /dev/null 2>&1 || return 1
+  [[ -f "$ZSHRC_ROOT/packages/zconf/dist/index.js" ]] || return 1
+
+  OLLAMA_HOST="${OLLAMA_HOST:-}" OLLAMA_DEFAULT_MODEL="${OLLAMA_DEFAULT_MODEL:-}" \
+    node "$ZSHRC_ROOT/packages/zconf/dist/index.js" message 2> /dev/null
+}
+
 # Prints the usage half of this file's own header, stopping at the sentinel
 # below so the rationale section is not dumped at the user. Anchored to text
 # rather than line numbers, which would silently drift as the header is edited.
@@ -205,15 +220,28 @@ function zupdate-main() {
   fi
 
   # ----------------------------------------------------------------- message
-  local commit_message=''
+  local commit_message='' ai_message=''
   if $sync; then
     commit_message="chore(sync): update from ${ZENV:-$(hostname -s 2> /dev/null || print unknown)}"
   elif [[ -n "$message" ]]; then
     commit_message="$(zu-normalize-message "$message")"
+  elif ! $dry_run; then
+    ai_message="$(zu-ai-message)"
+    if [[ -n "$ai_message" ]]; then
+      ai_message="$(zu-normalize-message "$ai_message")"
+      if $assume_yes; then
+        commit_message="$ai_message"
+      else
+        print "\n${_bold}AI-suggested commit message:${_0} $ai_message"
+        zu-confirm "Use this message?" && commit_message="$ai_message"
+      fi
+    fi
   fi
 
   if [[ -n "$commit_message" ]]; then
     print "\n${_bold}Commit message:${_0} $commit_message"
+  elif $dry_run; then
+    print "\n${_bold}Commit message:${_0} ${_grey}would try an AI-generated message (Ollama), falling back to \$EDITOR${_0}"
   else
     print "\n${_bold}Commit message:${_0} ${_grey}\$EDITOR will open${_0}"
   fi

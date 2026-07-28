@@ -266,10 +266,7 @@ zupdate --dry-run                   # show what would happen; change nothing
 
 It stages **tracked changes only** (`git add -u`). Untracked files are listed with their sizes and require `--all`, so a stray large file cannot be swept in, that's exactly how a previous version of this repo ended up with 66 MB of vendored binaries committed. Every message it produces satisfies the commitlint hook, and it runs a secret scan before pushing, `zconf scan` when Node is available, a dependency-free `grep` fallback otherwise, so the check still runs on a bare server.
 
-**AI commit drafts.** A bare `zupdate` or `_gcai` can draft a conventional commit
-message from the pending diff with a local Ollama model. Set `OLLAMA_DEFAULT_MODEL`
-to choose the model and `OLLAMA_KEEP_ALIVE=30m` to keep it warm between commits;
-running `l` at a git repo root quietly preloads the default model in the background.
+**AI commit drafts.** A bare `zupdate` or `_gcai` can draft a conventional commit message from the pending diff with a local Ollama model. Set `OLLAMA_DEFAULT_MODEL` to choose the model and `OLLAMA_KEEP_ALIVE=30m` to keep it warm between commits; running `l` at a git repo root quietly preloads the default model in the background.
 
 ---
 

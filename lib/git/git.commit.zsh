@@ -92,18 +92,24 @@ function _gca() {
   fi
 }
 
-# Git, commit, AI (drafts the message via a local Ollama model, `_gca`'s
-# staging/confirmation behaviour otherwise unchanged). Trial basis: if Ollama
-# isn't running, no model is installed, or the draft is declined, this falls
-# back to the same "NO COMMIT MESSAGE SUPPLIED" behaviour as `_gca` rather
-# than opening $EDITOR — pass a message explicitly (as `_gca` does) when you
-# want that. Shared `ollama-commit-message` helper lives in `lib/llms.zsh`,
-# also used by `zupdate`.
+# Git, commit, add, AI. Same add-all semantics as `_gca`, but drafts the
+# message via a local Ollama model when none is supplied. Trial basis: if
+# Ollama isn't running, no model is installed, or the draft is declined, this
+# falls back to the same "NO COMMIT MESSAGE SUPPLIED" behaviour as `_gca`.
+# Shared `ollama-commit-message` helper lives in `lib/llms.zsh`, also used by
+# `zupdate`.
 function _gcai() {
   local message="$1"
   [[ -n "$message" ]] && shift
 
   if [[ -z "$message" ]]; then
+    git add -A || return 1
+
+    if git diff --cached --quiet; then
+      echo "\n${_y}⚠️  No staged changes to commit.${_0}"
+      return 1
+    fi
+
     if ollama-commit-message; then
       message="$ollama_commit_message"
       echo "\n${_bold}AI-suggested commit message:${_0} $message"

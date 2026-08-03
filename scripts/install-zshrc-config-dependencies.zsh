@@ -26,11 +26,11 @@ else
 
   if [[ $(uname -m) == 'arm64' ]]; then
     echo "🔧 Configuring Homebrew for Apple Silicon..."
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>~/.zprofile
     eval "$(/opt/homebrew/bin/brew shellenv)"
   else
     echo "🔧 Configuring Homebrew for Intel..."
-    echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zprofile
+    echo 'eval "$(/usr/local/bin/brew shellenv)"' >>~/.zprofile
     eval "$(/usr/local/bin/brew shellenv)"
   fi
   echo "✅ Homebrew installed successfully"
@@ -96,17 +96,13 @@ else
   brew install fzf
   echo "✅ fzf installed successfully"
 fi
-
 echo ""
-echo "🔧 Setting up fzf shell integrations..."
-if [[ -f ~/.fzf.zsh ]]; then
-  echo "✅ fzf shell integrations already configured"
-else
-  if [[ -f "$(brew --prefix)/opt/fzf/install" ]]; then
-    $(brew --prefix)/opt/fzf/install --key-bindings --completion --no-update-rc
-    echo "✅ fzf shell integrations installed"
-  fi
-fi
+echo "ℹ️  Shell integration (key bindings + completion) is handled by"
+echo "   lib/fzf.zsh via 'source <(fzf --zsh)' — no separate setup needed."
+
+# ============================================================================ #
+# 5. FINISH
+# ============================================================================ #
 
 echo ""
 echo "============================================================="

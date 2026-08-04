@@ -1,5 +1,5 @@
 return {
-    -- fuzzy finder for files/grep, near essential
+  -- fuzzy finder for files/grep, near essential
   "nvim-telescope/telescope.nvim",
   dependencies = { "nvim-lua/plenary.nvim" },
   config = function()

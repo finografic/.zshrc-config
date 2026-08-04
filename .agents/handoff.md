@@ -39,14 +39,16 @@ Highlights of what shipped, for anyone picking this up cold:
 
 A recurring pattern worth knowing: **most of the real bugs found this refactor were not in the original audit** — they surfaced from building tooling that actually checks the rules (`zconf doctor`'s first run alone found six), or from writing tests that exercise the actual failure path (`zupdate`'s own test suite caught a stranded-commit bug in the rewrite itself). Trust the tools over the plan when they disagree.
 
+Since the refactor: `configs/nvim/` is now a tracked kitchen-sink Neovim config, symlinked from `~/.config/nvim` (real folder lives in the repo so it syncs across machines like the rest of `configs/`). `scripts/setup/` gained a numbered install sequence (`00-install.index.zsh` runs `01`–`06` in order: Homebrew, Antidote, Powerlevel10k+font, fzf, small CLI tools, Neovim+symlink) replacing the old single `scripts/install-zshrc-config-dependencies.zsh` — each numbered script also runs standalone. `configure-git-identity.zsh` stays outside the numbering (a one-time identity setup, not a package install).
+
 ### Recent commits
 
-- `9596c65` docs(readme): rewrite the pitch for a stranger
-- `b6c5915` ci(p7.4): add commitlint and shell-format jobs, fix the ESM warning
-- `8d257aa` docs(agent-rules): make .github/instructions relevant to a zsh repo
-- `1fbab25` docs(architecture): write ARCHITECTURE.md, PROFILES.md, PERFORMANCE.md, CONVENTIONS.md
-- `6eacb2b` feat(zupdate): rewrite update-config.zsh with safe staging and a pre-push scan
-- `0d4cfee` docs(handoff): record phase 3 completion
+- `fb503a0` fix(nvim): call setup() on plugins that silently no-op without it
+- `1196d10` feat(scripts): split install script into numbered setup steps, add nvim install
+- `d67962f` feat(zsh): enhance fzf defaults + nvim configuration and custom bindings
+- `9e999c7` fix(config): standardize fzf setup across platforms
+- `a8dbac3` feat(git): automatically stage pending changes before ai drafting
+- `b288808` docs: document ai commit drafts
 
 ## Key Decisions
 

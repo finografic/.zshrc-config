@@ -189,10 +189,13 @@ source "$ZSHRC_ROOT/main.zsh"
 **2. Install dependencies (fresh Mac)**
 
 ```zsh
-zsh ~/.zshrc-config/scripts/install-zshrc-config-dependencies.zsh
+zsh ~/.zshrc-config/scripts/setup/00-install.index.zsh
 ```
 
-Installs: Homebrew, Antidote, Powerlevel10k, Meslo Nerd Font, fzf.
+Runs every numbered `scripts/setup/NN-install-*.zsh` script in order: Homebrew,
+Antidote, Powerlevel10k + Meslo Nerd Font, fzf, small CLI tools (fastfetch,
+bat, eza, rclone), and Neovim (installed + symlinked from `configs/nvim`).
+Each script also runs standalone, e.g. `scripts/setup/06-install-nvim.zsh`.
 
 **3. Environment file**
 
@@ -272,19 +275,20 @@ It stages **tracked changes only** (`git add -u`). Untracked files are listed wi
 
 ## Scripts
 
-| Command                                         | Purpose                                                              |
-| ----------------------------------------------- | -------------------------------------------------------------------- |
-| `scripts/install-zshrc-config-dependencies.zsh` | Install Homebrew, Antidote, p10k, fzf, Meslo font                    |
-| `zupdate`                                       | Commit and push with `fetch` + `pull --rebase` for multi-system sync |
-| `pnpm zconf doctor`                             | Lint the repo against the load-model contract                        |
-| `pnpm zconf scan`                               | Scan tracked files for secrets and PII                               |
-| `pnpm zconf graph --profile <name>`             | Show a profile's resolved load order (or mermaid for the whole tree) |
-| `pnpm zconf new-profile <name>`                 | Scaffold a new host profile                                          |
-| `pnpm zconf normalize`                          | Normalise comment blocks and function style                          |
-| `pnpm zconf bench --profile <name>`             | Measure startup and diff against the recorded baseline               |
-| `pnpm lint` / `pnpm lint:fix`                   | Run `oxlint` (optionally with `--fix`)                               |
-| `pnpm format:check` / `pnpm format:fix`         | Run `oxfmt` in check or write mode                                   |
-| `pnpm lint:md` / `pnpm lint:md:fix`             | Markdown lint via `@finografic/md-lint`                              |
+| Command                                    | Purpose                                                                |
+| ------------------------------------------ | ---------------------------------------------------------------------- |
+| `scripts/setup/00-install.index.zsh`       | Run all numbered installs (Homebrew, Antidote, p10k, fzf, tools, nvim) |
+| `scripts/setup/configure-git-identity.zsh` | Interactive one-time global git identity setup                         |
+| `zupdate`                                  | Commit and push with `fetch` + `pull --rebase` for multi-system sync   |
+| `pnpm zconf doctor`                        | Lint the repo against the load-model contract                          |
+| `pnpm zconf scan`                          | Scan tracked files for secrets and PII                                 |
+| `pnpm zconf graph --profile <name>`        | Show a profile's resolved load order (or mermaid for the whole tree)   |
+| `pnpm zconf new-profile <name>`            | Scaffold a new host profile                                            |
+| `pnpm zconf normalize`                     | Normalise comment blocks and function style                            |
+| `pnpm zconf bench --profile <name>`        | Measure startup and diff against the recorded baseline                 |
+| `pnpm lint` / `pnpm lint:fix`              | Run `oxlint` (optionally with `--fix`)                                 |
+| `pnpm format:check` / `pnpm format:fix`    | Run `oxfmt` in check or write mode                                     |
+| `pnpm lint:md` / `pnpm lint:md:fix`        | Markdown lint via `@finografic/md-lint`                                |
 
 ---
 

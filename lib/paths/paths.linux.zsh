@@ -18,7 +18,6 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 
 # MISC PROGRAMS + CONFIGS
 export PATH=$PATH:/snap/bin
-export PATH=$PATH:$HOME/.vimpkg/bin # VIM EXTENSIONS !!
 export PATH=$PATH:$HOME/.fzf
 export PATH=$PATH:$ZSHRC_ROOT/zupdate
 

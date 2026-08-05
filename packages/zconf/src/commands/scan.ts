@@ -21,7 +21,6 @@ const TEXT_EXTENSIONS = new Set([
   '.toml',
   '.conf',
   '.config',
-  '.vim',
   '.theme',
   '.zsh-theme',
   '.py',

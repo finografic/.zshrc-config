@@ -7,7 +7,7 @@ export ZENV_PATH="$ZSHRC_ROOT/profiles/$ZENV"
 export NVM="true"
 
 # EDITOR + IDE OVERRIDES (set originally in main.zsh)
-export EDITOR="vim"
+export EDITOR="nvim"
 export IDE="false"
 function edit() { "$EDITOR" "$@"; }
 function code() { jmate "$@"; }

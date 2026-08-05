@@ -21,9 +21,6 @@ export PATH=$PATH:$ZSHRC_ROOT/bin
 # SSH PATH
 export SSH_KEY_PATH="~/.ssh/id_ed25519"
 
-# MISC PROGRAMS + CONFIGS
-export PATH=$PATH:$HOME/.vimpkg/bin # VIM EXTENSIONS !!
-
 # ESSENTIALS
 export PATH=$PATH:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin
 

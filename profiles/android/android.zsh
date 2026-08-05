@@ -14,7 +14,7 @@ export STORAGE_ROOT="${STORAGE_ROOT:-/storage/emulated/0/termux}"
 export SSH_CONFIG="$STORAGE_ROOT/.zshrc-config"
 
 # EDITOR + IDE OVERRIDES (set originally in main.zsh)
-export EDITOR="vi"
+export EDITOR="nvim"
 export IDE="false"
 function edit() { "$EDITOR" "$@"; }
 

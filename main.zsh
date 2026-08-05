@@ -86,10 +86,6 @@ export EDITOR="nvim"
 export VISUAL="nvim"
 export IDE="code"
 
-# NOTE: `$@` in an alias expands at DEFINITION time (to nothing), not at call
-# time — the argument passing this looked like it did never worked.
-alias vim="$EDITOR"
-
 function edit() { $EDITOR "$@"; }
 
 # VSCode alias (macOS specific). PATH belongs to lib/paths/paths.macos.zsh —

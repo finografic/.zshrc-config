@@ -148,7 +148,7 @@ Independent of D1 — the working tree must be clean regardless.
 - [x] `_zenvs/home-macos/home-macos.dev.zsh:219` — the `ssh` aliases. Host/user/port/key now come from `.env` (`SERVER_SSH_HOST`, `SERVER_SSH_USER`, `SERVER_SSH_PORT`, `SERVER_SSH_KEY`), documented in `.env.example`. The `.pub`-as-identity-file bug is fixed (`SERVER_SSH_KEY` is the private key). The second host in `home-linux.dev.zsh:17` got the same treatment via `TUNNEL_SSH_*`.
 - [x] Root `.gitconfig` and `configs/.gitconfig` — root one deleted outright (it was a copy of this repo's `.git/config`, only used by the office `cp` removed in P0.3); `configs/.gitconfig` → `configs/gitconfig.example` with placeholders.
 - [x] `themes/p10k/$HOME.cache/p10k-*justin.rankin*` (6 tracked files, incl. `.zwc`) — untracked, and `.gitignore` now covers `*.zwc` + `themes/p10k/**/*.cache/`.
-- [x] `configs/.zshrc.OFFICE:1-5` — deleted (confirmed it carried `CYPRESS_SBS_USER_PASSWORD`, `CYPRESS_CF_ACCESS_CLIENT_SECRET`, `AWS_CONFIG_FILE`). The remaining `configs/.zshrc.{HOME,SERVER,DOCKER}` are [P1.5](#p15--collapse-the-configs-reference-zshrc-files).
+- [x] `configs/zshrc/office.zshrc:1-5` — deleted (confirmed it carried `CYPRESS_SBS_USER_PASSWORD`, `CYPRESS_CF_ACCESS_CLIENT_SECRET`, `AWS_CONFIG_FILE`). The remaining `configs/.zshrc.{HOME,SERVER,DOCKER}` are [P1.5](#p15--collapse-the-configs-reference-zshrc-files).
 - [x] Hardcoded absolute home paths made portable: `home-macos.paths.zsh:9` (bun), `home-linux.zsh:21` (konsole), `home-macos.zsh:53` (pm2 comment), and the djay LaunchAgent plist + its inline copy, which are templates and now use a `__HOME__` placeholder (launchd cannot expand `$HOME`).
 - [x] `_zenvs/docker-dev/configs/` deleted — `.zshrc-docker`, `.zshrc-docker-V2` (carried a `/Users/justin.rankin` path), and the stray `z` file. Also a [P1.5](#p15--collapse-the-configs-reference-zshrc-files) item.
 - [x] Untrack `Icon\r`, `scripts/Icon\r`, `scripts/Icon?-_DJ-BAG`, `.main.zsh.swp`, `package-lock.json` (repo uses pnpm); all now gitignored. `.DS_Store` was already untracked and ignored.
@@ -259,13 +259,12 @@ Every item is "wrap in a function; let a profile or the user call it" (D8):
 
 ### P1.5 — Collapse the `configs/` reference zshrc files
 
-`configs/` holds five near-duplicate reference `.zshrc` files (`.HOME`, `.OFFICE`, `.SERVER`,
-`.DOCKER`, `.zshrc-docker-orig`) plus a root `.zshrc` template, plus two more under
+`configs/zshrc/` holds five near-duplicate reference `.zshrc` files (`home.zshrc`, `office.zshrc`, `server.zshrc`,
+`docker.zshrc`) plus a root `.zshrc` template, plus two more under
 `_zenvs/docker-dev/configs/`. Eight copies of a three-line file.
 
 - [ ] Keep exactly one: `.zshrc` at the repo root, as the reference template (already the documented convention).
-- [ ] Delete `configs/.zshrc.{HOME,SERVER,DOCKER}`, `configs/.zshrc-docker-orig`. (`configs/.zshrc.OFFICE` and all of `_zenvs/docker-dev/configs/` — incl. the stray `z` file — already deleted in [P0.2](#p02--scrub-secrets-and-pii-from-the-working-tree).)
-- [ ] Keep `configs/{ghostty.config,kitty.conf,.vimrc,plug.vim}` — those are real reference configs. Consolidate `.vimrc.V1`/`.vimrc.V2` to one and drop `ghostty.config.office` if it differs only in font size.
+- [ ] Delete `configs/zshrc/{home,server,docker}.zshrc`, `configs/.zshrc-docker-orig`. (`configs/zshrc/office.zshrc` and all of `_zenvs/docker-dev/configs/` — incl. the stray `z` file — already deleted in [P0.2](#p02--scrub-secrets-and-pii-from-the-working-tree).)
 - [x] Delete `_zenvs/docker-dev/configs/z` (stray file).
 
 **Exit criteria:** `source`-ing any `lib/**.zsh` in a bare `zsh -f` produces no output and
@@ -281,7 +280,7 @@ touches no files; `docs/ARCHITECTURE.md` matches reality.
 
 **`office-macos` → generic office profile** (515 lines across 8 files → **118 lines across 5**):
 
-- [x] Remove all employer-specific content: the `SBS-` branch-prefix helper `_gb` (`office-macos.zsh:66-76`), `parse-coverage` / `gen-test-summary` / `gen-todo-coverage` PATH hacks, `office-macos.dev.jest.zsh`, `parse-test-coverage.zsh`, the Cypress/CF secrets in `configs/.zshrc.OFFICE`, and everything in [P0.3](#p03--stop-mutating-global-git-config-and-authenticating-on-shell-start). Also deleted as dead + personal (not called out by name here, but same rationale): `office-macos.backups.zsh` (hardcoded a Sage OneDrive path, sourced nowhere) and `office-macos.hardware.zsh` (Spanish-keyboard locale settings, its `source` line was already commented out).
+- [x] Remove all employer-specific content: the `SBS-` branch-prefix helper `_gb` (`office-macos.zsh:66-76`), `parse-coverage` / `gen-test-summary` / `gen-todo-coverage` PATH hacks, `office-macos.dev.jest.zsh`, `parse-test-coverage.zsh`, the Cypress/CF secrets in `configs/zshrc/office.zshrc`, and everything in [P0.3](#p03--stop-mutating-global-git-config-and-authenticating-on-shell-start). Also deleted as dead + personal (not called out by name here, but same rationale): `office-macos.backups.zsh` (hardcoded a Sage OneDrive path, sourced nowhere) and `office-macos.hardware.zsh` (Spanish-keyboard locale settings, its `source` line was already commented out).
 - [x] Replace the banner with a plain `OFFICE` figlet (`office-macos.banner.zsh`).
 - [x] Strip the commented-out dead blocks: PM2/launchd, Docker Desktop autostart, `lsof` security scan, iTerm2 integration, Loupedeck paths.
 - [x] Keep the genuinely reusable bones: dynamic Homebrew prefix detection … should be **promoted to a shared helper** used by every macOS profile. — New `lib/macos/macos.brew.zsh` (`macos-brew-shellenv`), used by both `home-macos.zsh` and `office-macos.zsh`.
@@ -651,7 +650,7 @@ Findings from the 2026-07-25 scan, combined with the earlier 2026-07-24 audit
 | Personal email set as global git identity                  | `_zenvs/home-linux/home-linux.dev.zsh:51`, `lib/git/git.core.zsh:92`                                                                                                          |
 | Repo's own `.git/config` overwritten on every office shell | `_zenvs/office-macos/office-macos.zsh:90-99`                                                                                                                                  |
 | `gh auth login --with-token` on every interactive shell    | `main.zsh:153`                                                                                                                                                                |
-| Employer secret variable names                             | `configs/.zshrc.OFFICE:1-5`                                                                                                                                                   |
+| Employer secret variable names                             | `configs/zshrc/office.zshrc:1-5`                                                                                                                                              |
 | Personal identity in tracked git configs                   | `.gitconfig:10,15`, `configs/.gitconfig:6`                                                                                                                                    |
 | Username-bearing p10k caches tracked (6 files)             | `themes/p10k/$HOME.cache/…justin.rankin…`                                                                                                                                     |
 | Outbound `curl ipinfo.io` on every shell start             | `core/env.zsh:45,47`                                                                                                                                                          |
@@ -755,7 +754,7 @@ Removed: `tools/bin-*` (70 MB) · `packages/node` · `lib/template-tool` · `lib
   host details moved to `.env`; **a hardcoded SMB password** (`//touch:1234@…`) and a
   deploy alias carrying a real server IP were found and removed; tracked `.gitconfig`s,
   p10k username caches, `package-lock.json`, vim swapfile and `Icon\r` files untracked;
-  `configs/.zshrc.OFFICE` + `_zenvs/docker-dev/configs/` deleted. **Zero IPv4 literals and
+  `configs/zshrc/office.zshrc` + `_zenvs/docker-dev/configs/` deleted. **Zero IPv4 literals and
   zero personal identifiers remain** under the CI `secret-scan` pattern. Residual `apnaes`
   / `finografic` organisational names are owned by P2.1 and P7.3 and are deliberately not
   yet in the CI pattern.

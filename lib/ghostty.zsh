@@ -2,17 +2,17 @@
 # GHOSTTY
 # ============================================================================ #
 
-(( ${+_ZSHRC_GHOSTTY_LOADED} )) && return 0
+((${+_ZSHRC_GHOSTTY_LOADED})) && return 0
 typeset -g _ZSHRC_GHOSTTY_LOADED=1
 
 GHOSTTY_CONFIG_FILE_PATH="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
 
 # Resolves which tracked ghostty config this environment should use.
 function ghostty-config-source() {
-  if [[ "$ZENV" == "office-macos" && -f "$ZSHRC_ROOT/configs/ghostty.config.office" ]]; then
-    print "$ZSHRC_ROOT/configs/ghostty.config.office"
+  if [[ "$ZENV" == "office-macos" && -f "$ZSHRC_ROOT/configs/ghostty/office.ghostty.config" ]]; then
+    print "$ZSHRC_ROOT/configs/ghostty/office.ghostty.config"
   else
-    print "$ZSHRC_ROOT/configs/ghostty.config"
+    print "$ZSHRC_ROOT/configs/gghostty/ghostty.config"
   fi
 }
 

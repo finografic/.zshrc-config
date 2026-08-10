@@ -130,7 +130,7 @@ formatted. Full reference and the worked walkthrough:
 
 A few things in `lib/` worth knowing about, the full inventory is the source itself, but these are the ones people ask about.
 
-**Git.** `lib/git/` is a whole small toolkit: `_gc`/`_gca` (commit helpers), `_gcai` (`_gca`, but drafts the message via a local Ollama model — same shared helper `zupdate` uses, see below), `_grb`/`_grbs` (rebase), `_gclean` (delete merged branches, with a confirmation prompt), `_gtag` (create and push a version tag that matches
+**Git.** `lib/git/` is a whole small toolkit: `_gc`/`_gca` (commit helpers), `_gcai` (`_gca`, but drafts the message via a local Ollama model — same shared helper `zupdate` uses, see below), `_grb`/`_grbs` (rebase), `_gmff` (merge a feature branch into master via rebase + fast-forward only — no merge commit, so history stays freely squashable/revertable/reorderable), `_gclean` (delete merged branches, with a confirmation prompt), `_gtag` (create and push a version tag that matches
 `package.json`), `_greset`/`_greset-origin`. The standout is `_stashes`, a formatted stash list with per-stash insertion/deletion counts and a small colored change meter, not just `git stash list`'s bare `WIP on branch: ...`.
 
 **Disk & processes.** `space` (a trimmed `df`, ignoring noise like `tmpfs` and `squashfs`), `_du`/`_du-scan` (usage summary, or a full `ncdu` scan), `ports` (every listening socket, cleanly columned, no more parsing raw `lsof -i`).

@@ -112,8 +112,13 @@ function _gcai() {
 
     if ollama-commit-message; then
       message="$ollama_commit_message"
-      echo "\n${_bold}AI-suggested commit message:${_0} $message"
-      [[ -n "$ollama_commit_meta" ]] && echo "${_grey}$ollama_commit_meta${_0}"
+
+      # Label, blank line, then the message on its own in yellow — it is what you are
+      # judging — with the model/latency receding to grey underneath.
+      echo "\n${_w}Suggested commit message:${_0}\n"
+      echo "${_y}${message}${_0}"
+      ollama-commit-meta-line
+      echo ""
 
       echo -e "${_m}Use this message? ${_grey}(Y/n)${_0}"
       read -r response

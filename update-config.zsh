@@ -176,7 +176,29 @@ function zupdate-main() {
 
   if [[ -n "$tracked" ]]; then
     print "\n${_bold}Tracked changes to be staged:${_0}"
-    print "$tracked"
+    # `--porcelain` is a machine-readable format, so git emits it uncolored — colorize it
+    # here to match `genx managed status`: one dimmed status letter, then a muted path.
+    # The two columns (staged, unstaged) collapse to one because zupdate stages everything
+    # anyway, making that distinction irrelevant to the decision being made here.
+    print "$tracked" | while IFS= read -r line; do
+      # NB: not `path` — that name is tied to the PATH array in zsh and cannot be a scalar.
+      local code="${line:0:2}" file="${line:3}"
+      local flag="${code:0:1}"
+      [[ "$flag" == ' ' ]] && flag="${code:1:1}"
+
+      # Must be initialized: a bare `local color` re-run in the same scope makes zsh
+      # print the existing value, which would leak into the listing on every line but one.
+      local color=''
+      case "$flag" in
+        A) color="$_g" ;;
+        M) color="$_y" ;;
+        D) color="$_r" ;;
+        R | C) color="$_c" ;;
+        *) color="$_w" ;;
+      esac
+
+      print "  ${_d}${color}${flag}${_0}  ${_grey}${file}${_0}"
+    done
   fi
 
   if [[ -n "$untracked" ]]; then
@@ -207,7 +229,9 @@ function zupdate-main() {
   fi
 
   # ----------------------------------------------------------------- message
-  local commit_message='' ollama_commit_message='' ollama_commit_meta=''
+  # $shown_message tracks whether the message has already been displayed, so the AI path
+  # (which prints it in full above the confirm) does not repeat itself afterwards.
+  local commit_message='' ollama_commit_message='' ollama_commit_meta='' shown_message=false
   if $sync; then
     commit_message="chore(sync): update from ${ZENV:-$(hostname -s 2> /dev/null || print unknown)}"
   elif [[ -n "$message" ]]; then
@@ -216,8 +240,12 @@ function zupdate-main() {
     if ollama-commit-message; then
       local ai_message
       ai_message="$(zu-normalize-message "$ollama_commit_message")"
-      print "\n${_bold}AI-suggested commit message:${_0} $ai_message"
-      [[ -n "$ollama_commit_meta" ]] && print "${_grey}$ollama_commit_meta${_0}"
+      # Same layout as `_gcai` — see `ollama-commit-meta-line` in lib/llms.zsh.
+      print "\n${_w}Suggested commit message:${_0}\n"
+      print "${_y}${ai_message}${_0}"
+      ollama-commit-meta-line
+      print ""
+      shown_message=true
       if $assume_yes; then
         commit_message="$ai_message"
       else
@@ -227,7 +255,10 @@ function zupdate-main() {
   fi
 
   if [[ -n "$commit_message" ]]; then
-    print "\n${_bold}Commit message:${_0} $commit_message"
+    # Only echo messages not already on screen (-m, --sync): the AI path printed this one
+    # in full above the confirm. The branch itself must still be taken, or an accepted AI
+    # message would fall through to the "$EDITOR will open" case below.
+    $shown_message || print "\n${_bold}Commit message:${_0} $commit_message"
   elif $dry_run; then
     print "\n${_bold}Commit message:${_0} ${_grey}would try an AI-generated message (Ollama), falling back to \$EDITOR${_0}"
   else

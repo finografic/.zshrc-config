@@ -36,6 +36,26 @@ function ollama-commit-message() {
   fi
 }
 
+# Grey provenance line shown BELOW a drafted commit message: model and latency, bullet
+# separated. Reads $ollama_commit_meta ("model  123ms", two spaces) as set by
+# `ollama-commit-message`, and prints nothing at all when it is empty.
+#
+# Unlike `ollama-commit-message` this DOES print rather than assign, so it is meant to be
+# called as `$(ollama-commit-meta-line)` — nothing needs to reach the caller but stdout.
+#
+# Shared by `_gcai` (lib/git/git.commit.zsh) and `zupdate` (update-config.zsh) so both
+# render identically.
+function ollama-commit-meta-line() {
+  [[ -n "$ollama_commit_meta" ]] || return 0
+
+  local model="${ollama_commit_meta%% *}"
+  local latency="${ollama_commit_meta##* }"
+
+  # NOT `print -r`: colors.zsh stores literal "\033[..." strings, so the escapes have to be
+  # interpreted here now that this prints directly rather than through a caller's echo.
+  print -- "${_grey}${model} • ${latency}${_0}"
+}
+
 function ollama-default-model() {
   print -r -- "${1:-${OLLAMA_DEFAULT_MODEL:-gemma4:e4b-it-qat}}"
 }

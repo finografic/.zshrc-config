@@ -14,7 +14,7 @@ export GRAPHIFY_PYTHON_PINNED="$HOME/.local/pipx/venvs/graphifyy/bin/python"
 
 ZENV_PRESET=full
 ZENV_MODULES=(llms macos ghostty)
-ZENV_FEATURES=(backups aliases dev)
+ZENV_FEATURES=(backups aliases dev ollama)
 ZENV_OPT_IN=(music/backup-dj-crate music/djay_icloud_sync)
 
 zenv-load

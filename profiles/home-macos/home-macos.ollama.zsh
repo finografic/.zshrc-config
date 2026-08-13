@@ -15,10 +15,18 @@ function ollama-api-ready() {
 	curl -fsS --max-time 0.3 "$host/api/tags" >/dev/null 2>&1
 }
 
+function ollama-sync-launchctl-env() {
+	[[ -n "${OLLAMA_MODELS:-}" ]] || return 0
+	command -v launchctl >/dev/null 2>&1 || return 0
+
+	launchctl setenv OLLAMA_MODELS "$OLLAMA_MODELS" >/dev/null 2>&1 || true
+}
+
 function ollama-start-server() {
 	[[ "$OSTYPE" == darwin* ]] || return 0
 	[[ -o interactive ]] || return 0
 	ollama-local-host || return 0
+	ollama-sync-launchctl-env
 	ollama-api-ready && return 0
 	pgrep -x ollama >/dev/null 2>&1 && return 0
 

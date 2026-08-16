@@ -1,7 +1,7 @@
 {
   "name": "zshrc-config",
   "description": "Superior ZSH configuration and startup, supporting multiple dynamic hosts and environments.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "license": "MIT",
   "author": "Justin Rankin",
   "private": true,

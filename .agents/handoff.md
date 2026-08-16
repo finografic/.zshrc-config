@@ -56,7 +56,8 @@ Since the refactor: `configs/nvim/` is now a tracked kitchen-sink Neovim config,
 - `oxlint` + `oxfmt` are the linting/formatting tools; `dprint` is not used.
 - Commit messages follow Conventional Commits (`commitlint.config.mjs`), enforced locally via husky and in CI (`commitlint` job) — a fork's PR runs the CI check even without the local hook installed.
 - `.agents/memory.md` is intentionally gitignored (session-local scratch); `.agents/handoff.md` is tracked and is the durable state snapshot.
-- AI-drafted commit messages render identically in `_gcai` and `zupdate`, via the shared `ollama-commit-meta-line` helper in `lib/llms.zsh`. `@finografic/genx` renders the same block from its own TypeScript port of `zconf message` — the two are kept visually in sync deliberately, but neither depends on the other at runtime.
+- AI-drafted commit messages render identically for `_gc --ai`/`_gca --ai` and `zupdate`, via the shared `ollama-commit-meta-line` helper in `lib/llms.zsh`. `@finografic/genx` renders the same block from its own TypeScript port of `zconf message` — the two are kept visually in sync deliberately, but neither depends on the other at runtime.
+- `_gcai` was removed 2026-08-16: its logic moved to `_git-ai-commit-message`/`_git-add-all-and-commit` helpers in `lib/git/git.commit.zsh`, invoked via `_gc --ai`/`_gca --ai` instead of a separate command.
 - Two git remotes exist: `origin` (Bitbucket) and `github` (`finografic/.zshrc-config`, currently private). `master` tracks `github`.
 
 ## Open Questions

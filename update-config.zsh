@@ -240,7 +240,7 @@ function zupdate-main() {
     if ollama-commit-message; then
       local ai_message
       ai_message="$(zu-normalize-message "$ollama_commit_message")"
-      # Same layout as `_gcai` — see `ollama-commit-meta-line` in lib/llms.zsh.
+      # Same layout as `_gc --ai`/`_gca --ai` — see `ollama-commit-meta-line` in lib/llms.zsh.
       print "\n${_w}Suggested commit message:${_0}\n"
       print "${_y}${ai_message}${_0}"
       ollama-commit-meta-line

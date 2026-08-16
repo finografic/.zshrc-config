@@ -17,121 +17,39 @@ function _has-build-artifact-changes() {
   git status --porcelain | grep -E '^( M|A |AM|MM).* (dist/|bin/)' >/dev/null
 }
 
-# Commit (staged files only)
-function _gc() {
-  if [[ -n "$1" ]]; then
-    message="$1"
-    shift # Remove first argument (message)
+# Drafts a commit message via a local Ollama model (`ollama-commit-message` in
+# lib/llms.zsh) from the current staged diff and asks for confirmation. Sets
+# $ai_commit_message on accept, empty otherwise (Ollama unavailable or draft
+# declined) — callers just check for output, same trial-basis contract as
+# `ollama-commit-message` itself. Caller is responsible for making sure there
+# IS a staged diff first.
+#
+# Shared by `_gc --ai` and `_gca --ai` (lib/git/git.commit.zsh).
+function _git-ai-commit-message() {
+  ai_commit_message=''
+  ollama-commit-message || return 1
+  ai_commit_message="$ollama_commit_message"
 
-    if git commit -m "$message" "$@"; then
-      echo "\n${_g}✅ DONE${_0}\n"
-    fi
-  else
-    echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
-  fi
+  # Label, blank line, then the message on its own in yellow — it is what you are
+  # judging — with the model/latency receding to grey underneath.
+  echo "\n${_w}Suggested commit message:${_0}\n"
+  echo "${_y}${ai_commit_message}${_0}"
+  ollama-commit-meta-line
+  echo ""
+
+  echo -e "${_m}Use this message? ${_grey}(Y/n)${_0}"
+  read -r response
+  response=${response:-Y}
+
+  [[ "$response" =~ ^[Yy]$ ]] || ai_commit_message=''
 }
 
-function _gca() {
-  if [[ -n "$1" ]]; then
-    message="$1"
-    shift
-
-    if _is-finografic-repo && _has-build-artifact-changes; then
-      echo "\n${_y}⚠️  Finografic repo detected with build artifact changes.${_0}"
-      echo "${_grey}This commit will include dist/ or bin/.${_0}"
-      echo "${_grey}Recommended flow:${_0}"
-      echo "  pnpm build"
-      echo "  git add dist bin"
-      echo "  git commit -m \"build: update artifacts\""
-      echo
-
-      echo -e "${_m}Proceed anyway? ${_grey}(y/N)${_0}"
-      read -r response
-      response=${response:-N}
-
-      [[ "$response" =~ ^[Yy]$ ]] || {
-        echo "\n${_y}⚠️  Commit aborted.${_0}"
-        return 1
-      }
-    fi
-
-    if [[ "$ZENV" == "office-macos" ]]; then
-      echo -e "${_m}Are you sure? ${_grey}(y/N)${_0}"
-      read -r response
-      response=${response:-N}
-
-      if [[ "$response" =~ ^[Yy]$ ]]; then
-        git add -A || return 1
-
-        if git diff --cached --quiet; then
-          echo "\n${_y}⚠️  No staged changes to commit.${_0}"
-          return 1
-        fi
-
-        git commit -m "$message" "$@" || return 1
-        echo "\n${_g}✅ DONE${_0}\n"
-      else
-        echo "\n${_y}⚠️  Operation aborted.${_0}"
-        return 1
-      fi
-    else
-      git add -A || return 1
-
-      if git diff --cached --quiet; then
-        echo "\n${_y}⚠️  No staged changes to commit.${_0}"
-        return 1
-      fi
-
-      if git commit -m "$message" "$@"; then
-        echo "\n${_g}✅ DONE${_0}\n"
-      fi
-    fi
-  else
-    echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
-    return 1
-  fi
-}
-
-# Git, commit, add, AI. Same add-all semantics as `_gca`, but drafts the
-# message via a local Ollama model when none is supplied. Trial basis: if
-# Ollama isn't running, no model is installed, or the draft is declined, this
-# falls back to the same "NO COMMIT MESSAGE SUPPLIED" behaviour as `_gca`.
-# Shared `ollama-commit-message` helper lives in `lib/llms.zsh`, also used by
-# `zupdate`.
-function _gcai() {
+# Shared "add everything, then commit" flow: finografic build-artifact guard,
+# office-macos confirmation, `git add -A`, staged-diff check, and the commit
+# itself. Used by `_gca` for both its plain and `--ai` message paths.
+function _git-add-all-and-commit() {
   local message="$1"
-  [[ -n "$message" ]] && shift
-
-  if [[ -z "$message" ]]; then
-    git add -A || return 1
-
-    if git diff --cached --quiet; then
-      echo "\n${_y}⚠️  No staged changes to commit.${_0}"
-      return 1
-    fi
-
-    if ollama-commit-message; then
-      message="$ollama_commit_message"
-
-      # Label, blank line, then the message on its own in yellow — it is what you are
-      # judging — with the model/latency receding to grey underneath.
-      echo "\n${_w}Suggested commit message:${_0}\n"
-      echo "${_y}${message}${_0}"
-      ollama-commit-meta-line
-      echo ""
-
-      echo -e "${_m}Use this message? ${_grey}(Y/n)${_0}"
-      read -r response
-      response=${response:-Y}
-
-      [[ "$response" =~ ^[Yy]$ ]] || message=''
-    fi
-  fi
-
-  if [[ -z "$message" ]]; then
-    echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
-    return 1
-  fi
+  shift
 
   if _is-finografic-repo && _has-build-artifact-changes; then
     echo "\n${_y}⚠️  Finografic repo detected with build artifact changes.${_0}"
@@ -157,21 +75,81 @@ function _gcai() {
     read -r response
     response=${response:-N}
 
-    if [[ "$response" =~ ^[Yy]$ ]]; then
-      git add -A || return 1
-
-      if git diff --cached --quiet; then
-        echo "\n${_y}⚠️  No staged changes to commit.${_0}"
-        return 1
-      fi
-
-      git commit -m "$message" "$@" || return 1
-      echo "\n${_g}✅ DONE${_0}\n"
-    else
+    [[ "$response" =~ ^[Yy]$ ]] || {
       echo "\n${_y}⚠️  Operation aborted.${_0}"
       return 1
+    }
+  fi
+
+  git add -A || return 1
+
+  if git diff --cached --quiet; then
+    echo "\n${_y}⚠️  No staged changes to commit.${_0}"
+    return 1
+  fi
+
+  if git commit -m "$message" "$@"; then
+    echo "\n${_g}✅ DONE${_0}\n"
+  fi
+}
+
+# Commit (staged files only). With `--ai` and no message, drafts one via
+# `_git-ai-commit-message` from the staged diff — no `git add` involved either
+# way. Trial basis: if the draft is unavailable or declined, falls back to the
+# same "NO COMMIT MESSAGE SUPPLIED" behaviour as a plain call with no message.
+function _gc() {
+  local -a args=()
+  local use_ai=0 arg
+  for arg in "$@"; do
+    if [[ "$arg" == "--ai" ]]; then
+      use_ai=1
+    else
+      args+=("$arg")
+    fi
+  done
+
+  local message="${args[1]}"
+  (( $#args )) && args[1]=()
+
+  if [[ -z "$message" && "$use_ai" -eq 1 ]]; then
+    if git diff --cached --quiet; then
+      echo "\n${_y}⚠️  No staged changes to commit.${_0}"
+      return 1
+    fi
+
+    _git-ai-commit-message
+    message="$ai_commit_message"
+  fi
+
+  if [[ -n "$message" ]]; then
+    if git commit -m "$message" "${args[@]}"; then
+      echo "\n${_g}✅ DONE${_0}\n"
     fi
   else
+    echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
+  fi
+}
+
+# Commit (stages everything first via `git add -A`). With `--ai` and no
+# message, drafts one via `_git-ai-commit-message` from the staged diff (after
+# the add-all). Trial basis: if the draft is unavailable or declined, falls
+# back to the same "NO COMMIT MESSAGE SUPPLIED" behaviour as a plain call with
+# no message.
+function _gca() {
+  local -a args=()
+  local use_ai=0 arg
+  for arg in "$@"; do
+    if [[ "$arg" == "--ai" ]]; then
+      use_ai=1
+    else
+      args+=("$arg")
+    fi
+  done
+
+  local message="${args[1]}"
+  (( $#args )) && args[1]=()
+
+  if [[ -z "$message" && "$use_ai" -eq 1 ]]; then
     git add -A || return 1
 
     if git diff --cached --quiet; then
@@ -179,10 +157,16 @@ function _gcai() {
       return 1
     fi
 
-    if git commit -m "$message" "$@"; then
-      echo "\n${_g}✅ DONE${_0}\n"
-    fi
+    _git-ai-commit-message
+    message="$ai_commit_message"
   fi
+
+  if [[ -z "$message" ]]; then
+    echo "\n${_y}⚠️  NO COMMIT MESSAGE SUPPLIED\n"
+    return 1
+  fi
+
+  _git-add-all-and-commit "$message" "${args[@]}"
 }
 
 # Git, commit, COPY (LAST) (reuses last commit message; supports multi-line)

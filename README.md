@@ -130,7 +130,7 @@ formatted. Full reference and the worked walkthrough:
 
 A few things in `lib/` worth knowing about, the full inventory is the source itself, but these are the ones people ask about.
 
-**Git.** `lib/git/` is a whole small toolkit: `_gc`/`_gca` (commit helpers), `_gcai` (`_gca`, but drafts the message via a local Ollama model — same shared helper `zupdate` uses, see below), `_grb`/`_grbs` (rebase), `_gmff` (merge a feature branch into master via rebase + fast-forward only — no merge commit, so history stays freely squashable/revertable/reorderable), `_gclean` (delete merged branches, with a confirmation prompt), `_gtag` (create and push a version tag that matches
+**Git.** `lib/git/` is a whole small toolkit: `_gc`/`_gca` (commit helpers; `--ai` drafts the message via a local Ollama model when none is supplied — same shared helper `zupdate` uses, see below), `_grb`/`_grbs` (rebase), `_gmff` (merge a feature branch into master via rebase + fast-forward only — no merge commit, so history stays freely squashable/revertable/reorderable), `_gclean` (delete merged branches, with a confirmation prompt), `_gtag` (create and push a version tag that matches
 `package.json`), `_greset`/`_greset-origin`. The standout is `_stashes`, a formatted stash list with per-stash insertion/deletion counts and a small colored change meter, not just `git stash list`'s bare `WIP on branch: ...`.
 
 **Disk & processes.** `space` (a trimmed `df`, ignoring noise like `tmpfs` and `squashfs`), `_du`/`_du-scan` (usage summary, or a full `ncdu` scan), `ports` (every listening socket, cleanly columned, no more parsing raw `lsof -i`).
@@ -269,7 +269,7 @@ zupdate --dry-run                   # show what would happen; change nothing
 
 It stages **tracked changes only** (`git add -u`). Untracked files are listed with their sizes and require `--all`, so a stray large file cannot be swept in, that's exactly how a previous version of this repo ended up with 66 MB of vendored binaries committed. Every message it produces satisfies the commitlint hook, and it runs a secret scan before pushing, `zconf scan` when Node is available, a dependency-free `grep` fallback otherwise, so the check still runs on a bare server.
 
-**AI commit drafts.** A bare `zupdate` or `_gcai` can draft a conventional commit message from the pending diff with a local Ollama model. Set `OLLAMA_DEFAULT_MODEL` to choose the model and `OLLAMA_KEEP_ALIVE=30m` to keep it warm between commits; running `l` at a git repo root quietly preloads the default model in the background.
+**AI commit drafts.** A bare `zupdate`, or `_gc --ai`/`_gca --ai` with no message, can draft a conventional commit message from the pending diff with a local Ollama model. Set `OLLAMA_DEFAULT_MODEL` to choose the model and `OLLAMA_KEEP_ALIVE=30m` to keep it warm between commits; running `l` at a git repo root quietly preloads the default model in the background.
 
 ---
 

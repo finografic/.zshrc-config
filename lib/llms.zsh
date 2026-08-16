@@ -15,7 +15,7 @@ typeset -g _ZSHRC_LLMS_LOADED=1
 # because command substitution forks a subshell in zsh and these assignments
 # would never reach the caller.
 #
-# Shared by `zupdate` (update-config.zsh) and `_gcai` (lib/git/git.commit.zsh).
+# Shared by `zupdate` (update-config.zsh) and `_gc --ai`/`_gca --ai` (lib/git/git.commit.zsh).
 function ollama-commit-message() {
   ollama_commit_message=''
   ollama_commit_meta=''
@@ -43,8 +43,8 @@ function ollama-commit-message() {
 # Unlike `ollama-commit-message` this DOES print rather than assign, so it is meant to be
 # called as `$(ollama-commit-meta-line)` — nothing needs to reach the caller but stdout.
 #
-# Shared by `_gcai` (lib/git/git.commit.zsh) and `zupdate` (update-config.zsh) so both
-# render identically.
+# Shared by `_gc --ai`/`_gca --ai` (lib/git/git.commit.zsh) and `zupdate` (update-config.zsh)
+# so both render identically.
 function ollama-commit-meta-line() {
   [[ -n "$ollama_commit_meta" ]] || return 0
 

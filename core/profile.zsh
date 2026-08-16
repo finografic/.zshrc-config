@@ -168,11 +168,18 @@ function zenv-modules() {
 		# vscode, codex and docker-dev each hand-rolled this, three slightly
 		# different ways; it lives here now so it cannot be got wrong.
 		if [[ "$name" == node ]]; then
-			# pnpm PATH / PNPM_HOME
-			zenv-source "$ZSHRC_ROOT/vendor/pnpm-path.zsh"
 			# nvm must be initialised BEFORE lib/node.zsh: nvm-autoload
 			# early-returns (silently) if nvm_find_nvmrc doesn't exist yet.
 			[[ "${NVM:-false}" == true ]] && zenv-source "$ZSHRC_ROOT/vendor/nvm.zsh"
+			# pnpm PATH / PNPM_HOME — sourced AFTER nvm.zsh on purpose: nvm.zsh
+			# prepends $NVM_BIN to PATH (lazy-path `path=("$NVM_BIN" $path)`
+			# and the eager fallback both do this), and an NVM Node version's
+			# bin/ can itself contain a pnpm (npm-installed, or a Corepack
+			# shim). Sourcing pnpm-path.zsh last means its prepend of
+			# $PNPM_HOME/bin lands in front of $NVM_BIN, so pnpm's own
+			# self-managed binary (`pnpm self-update`) always wins instead of
+			# whatever happens to be sitting in the active Node version's bin/.
+			zenv-source "$ZSHRC_ROOT/vendor/pnpm-path.zsh"
 		fi
 
 		zenv-source "$ZSHRC_ROOT/${ZENV_MODULE_PATHS[$name]}"

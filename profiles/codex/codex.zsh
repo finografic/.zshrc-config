@@ -43,7 +43,10 @@ if command -v node >/dev/null 2>&1; then
 else
   PATH_NODE=""
 fi
-export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:$PATH_NODE:$PNPM_HOME:$PATH"
+# $PNPM_HOME/bin and $PNPM_HOME go before $PATH_NODE/homebrew so pnpm's
+# self-managed binary always wins over a stray npm/Corepack pnpm sitting in
+# an NVM Node version's bin/ or in Homebrew's bin/ (see vendor/pnpm-path.zsh).
+export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PNPM_HOME/bin:$PNPM_HOME:/opt/homebrew/bin:$PATH_NODE:$PATH"
 
 # Keep Codex shells quiet and predictable.
 export PROMPT='%~ %# '

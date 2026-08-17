@@ -56,6 +56,22 @@ function ollama-commit-meta-line() {
   print -- "${_grey}${model} • ${latency}${_0}"
 }
 
+# Y/n prompt under a drafted commit message. Default is Y.
+# Returns 0 to accept, 1 to regenerate (`n`). Invalid replies re-prompt.
+# A failed `read` (rare; Ctrl+C usually SIGINT) returns 2 so callers abort
+# instead of regenerating. Shared by `_gc --ai`/`_gca --ai` and `zupdate`.
+function ollama-commit-confirm() {
+  local response
+  while true; do
+    echo -e "${_m}Use this message? ${_grey}(Y/n)${_0}"
+    echo "${_grey}n to regenerate · Ctrl+C to cancel${_0}"
+    read -r response || return 2
+    response=${response:-Y}
+    [[ "$response" =~ ^[Yy]$ ]] && return 0
+    [[ "$response" =~ ^[Nn]$ ]] && return 1
+  done
+}
+
 function ollama-default-model() {
   print -r -- "${1:-${OLLAMA_DEFAULT_MODEL:-gemma4:e4b-it-qat}}"
 }
@@ -191,3 +207,4 @@ function ollama-reset-check() {
     ;;
   esac
 }
+

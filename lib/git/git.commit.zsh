@@ -18,30 +18,33 @@ function _has-build-artifact-changes() {
 }
 
 # Drafts a commit message via a local Ollama model (`ollama-commit-message` in
-# lib/llms.zsh) from the current staged diff and asks for confirmation. Sets
-# $ai_commit_message on accept, empty otherwise (Ollama unavailable or draft
-# declined) — callers just check for output, same trial-basis contract as
-# `ollama-commit-message` itself. Caller is responsible for making sure there
+# lib/llms.zsh) from the current staged diff and asks for confirmation. `n`
+# regenerates; Ctrl+C aborts. Sets $ai_commit_message on accept, empty otherwise
+# (Ollama unavailable) — callers just check for output, same trial-basis contract
+# as `ollama-commit-message` itself. Caller is responsible for making sure there
 # IS a staged diff first.
 #
 # Shared by `_gc --ai` and `_gca --ai` (lib/git/git.commit.zsh).
 function _git-ai-commit-message() {
+  local confirm_status
   ai_commit_message=''
-  ollama-commit-message || return 1
-  ai_commit_message="$ollama_commit_message"
 
-  # Label, blank line, then the message on its own in yellow — it is what you are
-  # judging — with the model/latency receding to grey underneath.
-  echo "\n${_w}Suggested commit message:${_0}\n"
-  echo "${_y}${ai_commit_message}${_0}"
-  ollama-commit-meta-line
-  echo ""
+  while true; do
+    ollama-commit-message || return 1
+    ai_commit_message="$ollama_commit_message"
 
-  echo -e "${_m}Use this message? ${_grey}(Y/n)${_0}"
-  read -r response
-  response=${response:-Y}
+    # Label, blank line, then the message on its own in yellow — it is what you are
+    # judging — with the model/latency receding to grey underneath.
+    echo "\n${_w}Suggested commit message:${_0}\n"
+    echo "${_y}${ai_commit_message}${_0}"
+    ollama-commit-meta-line
+    echo ""
 
-  [[ "$response" =~ ^[Yy]$ ]] || ai_commit_message=''
+    confirm_status=0
+    ollama-commit-confirm || confirm_status=$?
+    (( confirm_status == 0 )) && return 0
+    (( confirm_status == 2 )) && return 1
+  done
 }
 
 # Shared "add everything, then commit" flow: finografic build-artifact guard,
@@ -95,8 +98,8 @@ function _git-add-all-and-commit() {
 
 # Commit (staged files only). With `--ai` and no message, drafts one via
 # `_git-ai-commit-message` from the staged diff — no `git add` involved either
-# way. Trial basis: if the draft is unavailable or declined, falls back to the
-# same "NO COMMIT MESSAGE SUPPLIED" behaviour as a plain call with no message.
+# way. Trial basis: if the draft is unavailable, falls back to the same
+# "NO COMMIT MESSAGE SUPPLIED" behaviour as a plain call with no message.
 function _gc() {
   local -a args=()
   local use_ai=0 arg
@@ -132,9 +135,8 @@ function _gc() {
 
 # Commit (stages everything first via `git add -A`). With `--ai` and no
 # message, drafts one via `_git-ai-commit-message` from the staged diff (after
-# the add-all). Trial basis: if the draft is unavailable or declined, falls
-# back to the same "NO COMMIT MESSAGE SUPPLIED" behaviour as a plain call with
-# no message.
+# the add-all). Trial basis: if the draft is unavailable, falls back to the
+# same "NO COMMIT MESSAGE SUPPLIED" behaviour as a plain call with no message.
 function _gca() {
   local -a args=()
   local use_ai=0 arg
@@ -308,3 +310,4 @@ function _grm() {
 # if [ -f .cursor ]; then
 #   echo ".cursor is file"
 # fi
+

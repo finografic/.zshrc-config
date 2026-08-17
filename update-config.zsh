@@ -8,7 +8,8 @@
 #   zupdate "<message>"    commit with this message (gets `chore: ` if it has
 #                          no conventional-commit type prefix)
 #   zupdate                try an AI-drafted message (local Ollama, this repo
-#                          only — confirm Y/n), else open $EDITOR like `git commit`
+#                          only — Y to accept, n to regenerate, Ctrl+C to cancel),
+#                          else open $EDITOR like `git commit`
 #   zupdate --sync         the only auto-message path:
 #                          `chore(sync): update from <profile>`
 #   zupdate --dry-run      show what would happen; change nothing
@@ -237,8 +238,9 @@ function zupdate-main() {
   elif [[ -n "$message" ]]; then
     commit_message="$(zu-normalize-message "$message")"
   elif ! $dry_run; then
-    if ollama-commit-message; then
-      local ai_message
+    local ai_message confirm_status=0
+    while true; do
+      ollama-commit-message || break
       ai_message="$(zu-normalize-message "$ollama_commit_message")"
       # Same layout as `_gc --ai`/`_gca --ai` — see `ollama-commit-meta-line` in lib/llms.zsh.
       print "\n${_w}Suggested commit message:${_0}\n"
@@ -248,10 +250,20 @@ function zupdate-main() {
       shown_message=true
       if $assume_yes; then
         commit_message="$ai_message"
-      else
-        zu-confirm "Use this message?" && commit_message="$ai_message"
+        break
       fi
-    fi
+      # `||` so a regenerate (1) does not trip `err_exit`.
+      confirm_status=0
+      ollama-commit-confirm || confirm_status=$?
+      case "$confirm_status" in
+        0)
+          commit_message="$ai_message"
+          break
+          ;;
+        1) continue ;;
+        *) return 1 ;;
+      esac
+    done
   fi
 
   if [[ -n "$commit_message" ]]; then
@@ -358,3 +370,4 @@ function zu-pull-rebase() {
 if [[ "${zsh_eval_context[-1]}" != file ]]; then
   zupdate-main "$@"
 fi
+

@@ -24,13 +24,16 @@ function _has-build-artifact-changes() {
 # as `ollama-commit-message` itself. Caller is responsible for making sure there
 # IS a staged diff first.
 #
+# Pass `--staged` to describe only the staged diff — used by `_gc --ai`, which
+# commits staged files only (see `ollama-commit-message` in lib/llms.zsh).
+#
 # Shared by `_gc --ai` and `_gca --ai` (lib/git/git.commit.zsh).
 function _git-ai-commit-message() {
   local confirm_status
   ai_commit_message=''
 
   while true; do
-    ollama-commit-message || return 1
+    ollama-commit-message "$1" || return 1
     ai_commit_message="$ollama_commit_message"
 
     # Label, blank line, then the message on its own in yellow — it is what you are
@@ -120,7 +123,7 @@ function _gc() {
       return 1
     fi
 
-    _git-ai-commit-message
+    _git-ai-commit-message --staged
     message="$ai_commit_message"
   fi
 

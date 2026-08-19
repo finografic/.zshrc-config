@@ -15,8 +15,15 @@ typeset -g _ZSHRC_LLMS_LOADED=1
 # because command substitution forks a subshell in zsh and these assignments
 # would never reach the caller.
 #
+# Pass `--staged` to diff only the staged changes (`git diff --cached`) rather than
+# all tracked changes against HEAD — required by `_gc --ai`, which commits staged
+# files only and must not describe unstaged changes it won't be committing.
+#
 # Shared by `zupdate` (update-config.zsh) and `_gc --ai`/`_gca --ai` (lib/git/git.commit.zsh).
 function ollama-commit-message() {
+  local -a zconf_args=(message)
+  [[ "$1" == "--staged" ]] && zconf_args+=(--staged)
+
   ollama_commit_message=''
   ollama_commit_meta=''
   command -v node > /dev/null 2>&1 || return 1
@@ -25,7 +32,7 @@ function ollama-commit-message() {
   local err_file exit_code
   err_file="$(mktemp "${TMPDIR:-/tmp}/ollama-commit-message-err.XXXXXX")"
   ollama_commit_message="$(OLLAMA_HOST="${OLLAMA_HOST:-}" OLLAMA_DEFAULT_MODEL="${OLLAMA_DEFAULT_MODEL:-}" \
-    node "$ZSHRC_ROOT/packages/zconf/dist/index.js" message 2> "$err_file")"
+    node "$ZSHRC_ROOT/packages/zconf/dist/index.js" "${zconf_args[@]}" 2> "$err_file")"
   exit_code=$?
   ollama_commit_meta="$(< "$err_file")"
   rm -f "$err_file"

@@ -35,6 +35,7 @@ ${pc.bold('Commands')}
 
 ${pc.bold('Options')}
   --strict                  doctor: treat warnings as failures
+  --staged                  message: diff staged changes only, not all tracked changes
   --profile <name>          graph/bench: restrict to one profile
   --write                   graph: write into docs/ARCHITECTURE.md
   --grouped                 graph: group nodes into subgraphs by directory
@@ -71,7 +72,7 @@ export async function run(argv: readonly string[]): Promise<number> {
       return scan();
 
     case 'message':
-      return message();
+      return message({ staged: args.flags.has('--staged') });
 
     case 'graph':
       return graph({

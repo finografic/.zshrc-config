@@ -15,18 +15,30 @@ import { buildPrompt, cleanResponse, selectModel } from '../core/commitMessage.j
 import { generate, listInstalledModels, resolveOllamaHost } from '../utils/ollama.js';
 import { findRepoRoot } from '../utils/repo.js';
 
-function trackedChangedFiles(root: string): string[] {
-  const out = execFileSync('git', ['diff', 'HEAD', '--name-only'], { cwd: root, encoding: 'utf8' });
+function trackedChangedFiles(root: string, staged: boolean): string[] {
+  const base = staged ? ['diff', '--cached'] : ['diff', 'HEAD'];
+  const out = execFileSync('git', [...base, '--name-only'], { cwd: root, encoding: 'utf8' });
   return out.split('\n').filter((line) => line.length > 0);
 }
 
-function trackedDiff(root: string): string {
-  return execFileSync('git', ['diff', 'HEAD'], { cwd: root, encoding: 'utf8', maxBuffer: 1024 * 1024 });
+function trackedDiff(root: string, staged: boolean): string {
+  const base = staged ? ['diff', '--cached'] : ['diff', 'HEAD'];
+  return execFileSync('git', base, { cwd: root, encoding: 'utf8', maxBuffer: 1024 * 1024 });
 }
 
-export async function message(): Promise<number> {
+export interface MessageOptions {
+  /**
+   * Diff staged changes only (`git diff --cached`) instead of all tracked changes
+   * against HEAD. Used by `_gc --ai`, which commits staged files only — describing
+   * unstaged tracked changes too would draft a message for files not being committed.
+   */
+  readonly staged?: boolean;
+}
+
+export async function message(options: MessageOptions = {}): Promise<number> {
+  const staged = options.staged ?? false;
   const root = findRepoRoot();
-  const files = trackedChangedFiles(root);
+  const files = trackedChangedFiles(root, staged);
 
   if (files.length === 0) {
     // Nothing staged/changed to describe — not an error, just nothing to do.
@@ -40,7 +52,7 @@ export async function message(): Promise<number> {
   const model = selectModel(installed, process.env.OLLAMA_DEFAULT_MODEL);
   if (model === null) return 1;
 
-  const diff = trackedDiff(root);
+  const diff = trackedDiff(root, staged);
   const prompt = buildPrompt({ files, diff });
 
   const startedAt = Date.now();

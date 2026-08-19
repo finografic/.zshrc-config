@@ -4,7 +4,7 @@ source "$ZSHRC_ROOT/lib/colors.zsh"
 # GIT TAG OPERATIONS
 # ============================================================================ #
 
-# List every tag on the remote, newest first.
+# List every tag on the remote, oldest first — the newest ends up nearest the prompt.
 #
 # Reads the remote rather than local refs: a tag pushed from elsewhere shows up,
 # and a local tag that was never pushed cannot masquerade as released.
@@ -27,10 +27,11 @@ function _gtag_list() {
   [[ -f "$GIT_ROOT/package.json" ]] && \
     PKG_VERSION=$(node -p "require('$GIT_ROOT/package.json').version" 2>/dev/null)
 
-  # `--sort=-v:refname` is git's own version sort — BSD sort on macOS has no `-V`.
+  # `--sort=v:refname` is git's own version sort — BSD sort on macOS has no `-V`.
+  # Ascending, so the newest tag lands at the bottom of a long list, next to the prompt.
   # `--refs` drops the `^{}` peeled line annotated tags also emit.
   local REMOTE_TAGS
-  REMOTE_TAGS=$(git -C "$GIT_ROOT" ls-remote --tags --refs --sort=-v:refname origin 2>/dev/null \
+  REMOTE_TAGS=$(git -C "$GIT_ROOT" ls-remote --tags --refs --sort=v:refname origin 2>/dev/null \
     | sed 's|.*refs/tags/||')
   if [[ $? -ne 0 ]]; then
     echo "\n${_r}❌ Unable to reach ${_c}origin${_0}\n"
@@ -89,7 +90,7 @@ function _gtag() {
       -h|--help)
         echo "\n${_bold}Usage:${_0} _gtag [ls]\n"
         echo "  ${_c}_gtag${_0}     Creates and pushes ${_c}v<package.json version>${_0} at HEAD."
-        echo "  ${_c}_gtag ls${_0}  Lists every tag on ${_c}origin${_0}, newest first.\n"
+        echo "  ${_c}_gtag ls${_0}  Lists every tag on ${_c}origin${_0}, oldest first.\n"
         return 0;;
       *)
         echo "\n${_y}⚠️  Unknown option: $1${_0}"

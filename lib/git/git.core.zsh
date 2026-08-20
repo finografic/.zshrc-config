@@ -93,7 +93,6 @@ function _gpatch() {
 }
 
 # Common aliases
-alias b="branch"
 alias .="git status"
 alias s="git status"
 

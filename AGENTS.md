@@ -99,15 +99,15 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - Define zsh functions with the `function` keyword and kebab-case names (never snake_case)
 - Sourced modules: omit shebang; wrap top-level logic in named functions with a short top-of-file annotation
 - Prefer `--dry-run` over `--dry` for CLI dry-run flags
-- Interactive confirm prompts: put the default last as `(Y/n)` / `(n/Y)` so Enter accepts the default
+- Interactive confirm prompts: put the default last as `(Y/n)` / `(n/Y)` so Enter accepts the default; AI commit confirms (`_gc`/`_gca`/`zupdate --ai`) add a grey hint below (n regenerates, ctrl+c cancels)
 - Keep `~/.zshrc` section headers as `NOTE: {STEP_DESCRIPTION}` inside the canonical boxed comment style
 - Refer to sourced `.zsh` files as "modules"
 - Use color variables from `lib/colors.zsh` (e.g. `${_c}`, `${_0}`) for terminal output
 - Editor formatters: oxfmt for JS/TS/JSON/jsonc/YAML/TOML/CSS/SCSS/HTML/Markdown; mkhl.shfmt for shellscript with tabs (`editor.insertSpaces: false`, `editor.detectIndentation: false`)
-- Prefer `pnpm -C "$path"` when running pnpm scripts in another repo without changing the shell PWD
-- Prefer root/`pnpm --filter` scripts over `cd <pkg> && pnpm …` for workspace packages
+- Prefer `pnpm -C "$path"` when not changing PWD; prefer root/`pnpm --filter` over `cd <pkg> && pnpm …` for workspace packages
 - Use `docs/todo/TODO_PUBLIC_RELEASE_REFACTOR.md` for the current refactor plan and `docs/todo/ROADMAP.md` for selected, sequenced work
 - Prefer deleting unused helpers entirely rather than leaving them commented out
+- fzf file pickers: shallow (cwd-only) list, directories first, folders in cyan (`${_c}`)
 
 ## Learned Workspace Facts
 
@@ -120,3 +120,5 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - Two git remotes: `origin` (Bitbucket, `bitbucket.org:justin-rankin/.zshrc-config.git`) and `github` (`github.com:finografic/.zshrc-config.git`); `master` tracks `github`
 - `$REPOS_FINO` in `profiles/home-macos/` points at Finografic repos (e.g. `_@finografic-deps-policy`)
 - `lib/` uses concern barrels (`lib/<area>.zsh`) that source modules under matching `lib/<area>/` subfolders
+- `function b` in `lib/fzf.zsh` is a full-height fzf+bat cwd browser (left list ~33%, bat preview ~66%); `_gb` is git `checkout -b` — do not reuse that name
+- AI commit confirm UX is shared across `_gc`, `_gca`, and `zupdate --ai`

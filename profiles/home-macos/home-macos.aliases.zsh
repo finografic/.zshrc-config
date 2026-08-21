@@ -2,6 +2,7 @@
 REPOS_FINO="$HOME/repos-finografic"
 REPOS_FINO_REF="$HOME/repos-finografic-ref"
 REPOS="$REPOS_FINO"
+REPOS_AI="$HOME/repos-ai"
 REPOS_NEXT="$HOME/repos-next"
 REPOS_SERVER="$HOME/repos-server"
 REPOS_LOUPEDECK="$HOME/repos-loupedeck"
@@ -38,18 +39,6 @@ function _lab() {
 # MY REPOS (NEXT!)
 # ============================================================================ #
 
-REPO_SCRIPTS="$REPOS_FINO/@finografic-project-scripts"
-REPO_PLATE="$REPOS_FINO/@finografic-plate-editor"
-REPO_ZUSTAND_CONTEXT="$REPOS_FINO/@finografic-zustand-context-creator"
-
-REPO_IOX_LOUPEDECK="$REPOS_FINO/iox-loupedeck"
-REPO_FNX_MONOREPO="$REPOS_FINO/fnx-monorepo"
-REPO_TOUCH_MONOREPO="$REPOS_FINO/touch-monorepo"
-REPO_TOUCH_MONOREPO_ORIG="$REPOS_FINO_REF/touch-monorepo"
-
-alias fnx="cd $REPO_FNX_MONOREPO && l"
-alias iox="cd $REPO_IOX_LOUPEDECK && l"
-
 # The server-linux client-side shortcuts (repo root, "mono"/"admin"/"api" nav)
 # are just local paths to a personal project, not shell logic — they live in
 # .env via REPO_ALIASES (see README "Make it yours") instead of being
@@ -69,23 +58,19 @@ function my() {
 }
 
 @zust() {
-  cd "$REPO_ZUSTAND_CONTEXT" && l
+  cd "$REPOS_FINO/@finografic-zustand-context-creator" && l
 }
 
 @plate() {
-  cd "$REPO_PLATE" && l
+  cd "$REPOS_FINO/@finografic-plate-editor" && l
 }
 
 @touch() {
-  cd "$REPO_TOUCH_MONOREPO" && l
+  cd "$REPOS_FINO/touch-monorepo" && l
 }
 
-@touch_orig() {
-  cd "$REPO_TOUCH_MONOREPO_ORIG" && l
-}
-
-@prod() {
-  cd "$REPO_TOUCH_MONOREPO/dist-production" && l
+@ai() {
+  cd "$REPOS_AI" && l
 }
 
 # ============================================================================ #

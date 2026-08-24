@@ -44,6 +44,9 @@ typeset -g _p="\033[35m"       # Purple
 typeset -g _m="\033[35m"       # Magenta
 typeset -g _c="\033[36m"       # Cyan
 typeset -g _w="\033[37m"       # White
+# Orange is not in the basic 8-color ANSI set (30–37). Use xterm-256 color 208
+# (#ff8700) — closest match to brand orange (~#FF8000). Needs 256-color term.
+typeset -g _o="\033[38;5;208m" # Orange (256-color)
 
 # BOLD / BRIGHT — the bold variant of each color, named as its uppercase letter.
 #
@@ -66,6 +69,7 @@ typeset -g _P="$_bold\033[35m"       # Purple
 typeset -g _M="$_bold\033[35m"       # Magenta
 typeset -g _C="$_bold\033[36m"       # Cyan
 typeset -g _W="$_bold\033[37m"       # White
+typeset -g _O="$_bold\033[38;5;208m" # Orange (256-color)
 
 # Force-strip the export attribute from every var above.
 #
@@ -78,8 +82,8 @@ typeset -g _W="$_bold\033[37m"       # White
 # processes on exactly the machines this change is meant to help — a fresh
 # `zsh -f` cannot reproduce the bug, since it starts with a clean environment,
 # but a real long-lived session can and does.
-typeset +x _d _0 _bold _grey _gray _r _g _y _b _p _m _c _w \
-  _GREY _GRAY _R _G _Y _B _P _M _C _W
+typeset +x _d _0 _bold _grey _gray _r _g _y _b _p _m _c _w _o \
+  _GREY _GRAY _R _G _Y _B _P _M _C _W _O
 
 # FROM ZGEN:
 function setup-color() {

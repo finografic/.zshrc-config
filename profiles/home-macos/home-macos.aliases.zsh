@@ -189,6 +189,10 @@ function _deps() {
   cd "$REPOS_FINO/cv-justin-rankin" && l
 }
 
+@_djay() {
+  cd "$REPOS_FINO/djay-midi-config" && l
+}
+
 @_kit() {
   cd "$REPOS_FINO/@finografic-cli-kit" && l
 }

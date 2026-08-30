@@ -169,7 +169,8 @@ print "\nreal profile manifests must validate:"
 
 # Extracts just the manifest assignments from a profile and validates them,
 # without executing the rest of the profile body.
-cat > "$TMPDIR/zenv-validate-profile.zsh" <<'VALIDATOR'
+validator="${TMPDIR:-/tmp}/zenv-validate-profile-$$.zsh"
+cat > "$validator" <<'VALIDATOR'
 export ZENV="$1"
 export ZENV_PATH="$ZSHRC_ROOT/profiles/$ZENV"
 source "$ZSHRC_ROOT/core/profile.zsh"
@@ -180,10 +181,10 @@ zenv-validate "${mods[*]}" "${ZENV_FEATURES[*]}" && print OK
 VALIDATOR
 
 for profile in home-macos office-macos home-linux server-linux docker-dev vscode codex android; do
-  out="$(ZSHRC_ROOT="$ZSHRC_ROOT" zsh -f "$TMPDIR/zenv-validate-profile.zsh" "$profile" 2>&1)"
+  out="$(ZSHRC_ROOT="$ZSHRC_ROOT" zsh -f "$validator" "$profile" 2>&1)"
   check-contains "$profile manifest validates" "OK" "$out"
 done
-rm -f "$TMPDIR/zenv-validate-profile.zsh"
+rm -f "$validator"
 
 print "\n$pass passed, $fail failed"
 (( fail == 0 ))

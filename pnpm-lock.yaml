@@ -30,12 +30,6 @@ importers:
       '@commitlint/config-conventional':
         specifier: latest
         version: 21.2.0
-      '@finografic/md-lint':
-        specifier: ^0.16.6
-        version: 0.16.6
-      '@finografic/oxc-config':
-        specifier: ^2.8.2
-        version: 2.8.2(oxfmt@0.58.0)(oxlint@1.75.0(oxlint-tsgolint@0.24.0))
       husky:
         specifier: latest
         version: 9.1.7
@@ -54,6 +48,10 @@ importers:
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
+    optionalDependencies:
+      '@finografic/md-lint':
+        specifier: ^0.16.6
+        version: 0.16.6
 
   packages/zconf:
     dependencies:
@@ -510,13 +508,6 @@ packages:
   '@finografic/md-lint@0.16.6':
     resolution: {integrity: sha512-5GA8M3HV75wGEXfAc8lwmBYlQSY8KtIdA9IReePNspBPR0dWxg6AjYHKC9qzw0USzrj8uM/easqvB8BrxmOihQ==, tarball: https://npm.pkg.github.com/download/@finografic/md-lint/0.16.6/11d3bc70cfddd72ef6b21fe398a4ea407ef60e2c}
     hasBin: true
-
-  '@finografic/oxc-config@2.8.2':
-    resolution: {integrity: sha512-BfzCm71s79bltOVjXJtN6LPN2/pxid+hui2/W9J2CxzCmzbF4BBTb4kDfaE1szBA1LLbYfjxpnEiRxxIZ56IUA==, tarball: https://npm.pkg.github.com/download/@finografic/oxc-config/2.8.2/27abb3c38e1ff9f232b8702dec86db8e93bd1c48}
-    engines: {node: '>=24.3.0'}
-    peerDependencies:
-      oxfmt: '>=0.41.0'
-      oxlint: '>=1.69.0'
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -1145,9 +1136,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sec-ant/readable-stream@0.4.1':
-    resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
-
   '@simple-libs/child-process-utils@2.0.0':
     resolution: {integrity: sha512-dvNoRKLijXnD0XoJAz94pbNuB5GQgDr55UhpSPhffDkTT0Cmcqh9jSCOtwfT2d4H6MI9E7c4SgtMuJXZ6F3c6A==}
     engines: {node: '>=22'}
@@ -1418,10 +1406,6 @@ packages:
       typescript:
         optional: true
 
-  cross-spawn@7.0.6:
-    resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
-    engines: {node: '>= 8'}
-
   cycle@1.0.3:
     resolution: {integrity: sha512-TVF6svNzeQCOpjCqsy0/CSy8VgObG3wXusJ73xW2GbG5rGx7lC8zxDSURicsXI2UsGdi2L0QNRCi745/wUDvsA==}
     engines: {node: '>=0.4.0'}
@@ -1545,10 +1529,6 @@ packages:
   estree-walker@3.0.3:
     resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
 
-  execa@9.6.1:
-    resolution: {integrity: sha512-9Be3ZoN4LmYR90tUoVu2te2BsbzHfhJyfEiAVfz7N5/zv+jduIfLrV2xdQXOHbaD6KgpGdO9PRPM1Y4Q9QkPkA==}
-    engines: {node: ^18.19.0 || >=20.5.0}
-
   expect-type@1.4.0:
     resolution: {integrity: sha512-KfYbmpRm0VbLjEvVa9yGwCi9GI34xvi7A/HXYWQO65CSD2u3MczUJSuwXKFIxlGsgBQizV9q5J9NHj4VG0n+pA==}
     engines: {node: '>=12.0.0'}
@@ -1578,10 +1558,6 @@ packages:
     peerDependenciesMeta:
       picomatch:
         optional: true
-
-  figures@6.1.0:
-    resolution: {integrity: sha512-d+l3qxjSesT4V7v2fh+QnmFnUWv9lSpjarhShNTgBOfA0ttejbQUAlHLitbjkoRiDulW0OPoQPYIGhIC8ohejg==}
-    engines: {node: '>=18'}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -1624,10 +1600,6 @@ packages:
   get-proto@1.0.1:
     resolution: {integrity: sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==}
     engines: {node: '>= 0.4'}
-
-  get-stream@9.0.1:
-    resolution: {integrity: sha512-kVCxPF3vQM/N0B1PmoqVUqgHP+EeVjmZSQn+1oCRPxd2P21P2F19lIgbR3HBosbB1PUhOAoctJnfEn2GbN2eZA==}
-    engines: {node: '>=18'}
 
   get-tsconfig@4.13.6:
     resolution: {integrity: sha512-shZT/QMiSHc/YBLxxOkMtgSid5HFoauqCE3/exfsEcwg1WkeqjG+V40yBbBrsD+jW2HDXcs28xOfcbm2jI8Ddw==}
@@ -1685,10 +1657,6 @@ packages:
 
   hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
-
-  human-signals@8.0.1:
-    resolution: {integrity: sha512-eKCa6bwnJhvxj14kZk5NCPc6Hb6BdsU9DZcOnmQKSnO1VKrfV0zCvtttPZUsBvjmNDn8rpcJfpwSYnHBjc95MQ==}
-    engines: {node: '>=18.18.0'}
 
   husky@9.1.7:
     resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
@@ -1805,10 +1773,6 @@ packages:
     resolution: {integrity: sha512-ISWac8drv4ZGfwKl5slpHG9OwPNty4jOWPRIhBpxOoD+hqITiwuipOQ2bNthAzwA3B4fIjO4Nln74N0S9byq8A==}
     engines: {node: '>= 0.4'}
 
-  is-stream@4.0.1:
-    resolution: {integrity: sha512-Dnz92NInDqYckGEUJv689RbRiTSEHCQ7wOVeALbkOz999YpqT46yMRIGtSNl2iCL1waAZSx40+h59NV/EwzV/A==}
-    engines: {node: '>=18'}
-
   is-string@1.1.1:
     resolution: {integrity: sha512-BtEeSsoaQjlSPBemMQIrY1MY0uM6vnS1g5fmufYOtnxLGUZM2178PKbhsk7Ffv58IX+ZtcvoGwccYsh0PglkAA==}
     engines: {node: '>= 0.4'}
@@ -1816,10 +1780,6 @@ packages:
   is-symbol@1.1.1:
     resolution: {integrity: sha512-9gGx6GTtCQM73BgmHQXfDmLtfjjTUDSyoxTCbp5WtoixAhfgsDirWIcVQ/IHpvI5Vgd5i/J5F7B9cN/WlVbC/w==}
     engines: {node: '>= 0.4'}
-
-  is-unicode-supported@2.1.0:
-    resolution: {integrity: sha512-mE00Gnza5EEB3Ds0HfMyllZzbBrmLOX3vfWoj9A9PEnTfratQ/BcaJOuMhnkhjXvb2+FkY3VuHqtAGpTPmglFQ==}
-    engines: {node: '>=18'}
 
   is-weakmap@2.0.2:
     resolution: {integrity: sha512-K5pXYOm9wqY1RgjpL3YTkF39tni1XajUIkawTLUo9EZEVUFga5gSQJF8nNS7ZwJQ02y+1YCNYcMh+HIf1ZqE+w==}
@@ -1831,9 +1791,6 @@ packages:
 
   isarray@2.0.5:
     resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
-
-  isexe@2.0.0:
-    resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
   isstream@0.1.2:
     resolution: {integrity: sha512-Yljz7ffyPbrLpLngrMtZ7NduUgVvi6wG9RJ9IUcyCd59YQ911PBJphODUcbOVbqYfxe1wuYf/LJ8PauMRwsM/g==}
@@ -2028,10 +1985,6 @@ packages:
     resolution: {integrity: sha512-PfGU8jYWdRl4FqJfCy0IzbkGyFHntfWygZg46nFk/dJD/XRrk2cj0SsKSX9n5u5gE0E0YfEpKWrEkfjnlZSTXA==}
     hasBin: true
 
-  npm-run-path@6.0.0:
-    resolution: {integrity: sha512-9qny7Z9DsQU8Ou39ERsPU4OZQlSTP47ShQzuKZ6PRXpYLtIFgl/DEBYEXKlvcEa+9tHVcK8CF81Y2V72qaZhWA==}
-    engines: {node: '>=18'}
-
   object-inspect@1.13.4:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
     engines: {node: '>= 0.4'}
@@ -2107,21 +2060,9 @@ packages:
     resolution: {integrity: sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg==}
     engines: {node: '>=8'}
 
-  parse-ms@4.0.0:
-    resolution: {integrity: sha512-TXfryirbmq34y8QBwgqCVLi+8oA3oWx2eAnSn62ITyEhEYaWRlVZ2DvMM9eZbMs/RfxPu/PK/aBLyGj4IrqMHw==}
-    engines: {node: '>=18'}
-
   path-is-absolute@1.0.1:
     resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
     engines: {node: '>=0.10.0'}
-
-  path-key@3.1.1:
-    resolution: {integrity: sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==}
-    engines: {node: '>=8'}
-
-  path-key@4.0.0:
-    resolution: {integrity: sha512-haREypq7xkM7ErfgIyA0z+Bj4AGKlMSdlQE2jvJo6huWD1EdkKYV+G/T4nq0YEF2vgTT8kqMFKo1uHn950r4SQ==}
-    engines: {node: '>=12'}
 
   pathe@2.0.3:
     resolution: {integrity: sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==}
@@ -2159,10 +2100,6 @@ packages:
   postcss@8.5.23:
     resolution: {integrity: sha512-g50586zr4bZmwFiTlflMu8E0bDTb5I5gertgwAKmsdUlTQIhZtunzUlD1WSzwcVWPoAVpsrA6vlfCD7oXvRwgg==}
     engines: {node: ^10 || ^12 || >=14}
-
-  pretty-ms@9.3.0:
-    resolution: {integrity: sha512-gjVS5hOP+M3wMm5nmNOucbIrqudzs9v/57bWRHQWLYklXqoXKrVfYW2W9+glfGsqtPgpiz5WwyEEB+ksXIx3gQ==}
-    engines: {node: '>=18'}
 
   prompt@0.2.14:
     resolution: {integrity: sha512-jDK5yEbAakJmNm+260gZG1+PuzX3jT5Jy0VZAUGrrW9RQ1JEWEDEVNnhO70mL3+U5r6bSJo02xsE34wOS/LnrA==}
@@ -2280,14 +2217,6 @@ packages:
     resolution: {integrity: sha512-7PGFlmtwsEADb0WYyvCMa1t+yke6daIG4Wirafur5kcf+MhUnPms1UeR0CKQdTZD81yESwMHbtn+TR+dMviakQ==}
     engines: {node: '>= 0.4'}
 
-  shebang-command@2.0.0:
-    resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
-    engines: {node: '>=8'}
-
-  shebang-regex@3.0.0:
-    resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
-    engines: {node: '>=8'}
-
   side-channel-list@1.0.0:
     resolution: {integrity: sha512-FCLHtRD/gnpCiCHEiJLOwdmFP+wzCmDEkc9y7NsYxeF4u7Btsn1ZuwgwJGxImImHicJArLP4R0yX4c2KCrMrTA==}
     engines: {node: '>= 0.4'}
@@ -2361,10 +2290,6 @@ packages:
     resolution: {integrity: sha512-gmBGslpoQJtgnMAvOVqGZpEz9dyoKTCzy2nfz/n8aIFhN/jCE/rCmcxabB6jOOHV+0WNnylOxaxBQPSvcWklhA==}
     engines: {node: '>=12'}
 
-  strip-final-newline@4.0.0:
-    resolution: {integrity: sha512-aulFJcD6YK8V1G7iRB5tigAP4TsHBZZrOV8pjV++zdUwmeV8uzbY7yn6h9MswN62adStNZFuCIx4haBnRuMDaw==}
-    engines: {node: '>=18'}
-
   strip-literal@3.1.0:
     resolution: {integrity: sha512-8r3mkIM/2+PpjHoOtiAW8Rg3jJLHaV7xPwG+YRGrv6FP0wwk/toTpATxWYOW0BKdWwl82VT2tFYi5DlROa0Mxg==}
 
@@ -2379,10 +2304,6 @@ packages:
   synckit@0.11.12:
     resolution: {integrity: sha512-Bh7QjT8/SuKUIfObSXNHNSK6WHo6J1tHCqJsuaFDP7gP0fkzSfTxI8y85JrppZ0h8l0maIgc2tfuZQ6/t3GtnQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
-
-  tagged-tag@1.0.0:
-    resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
-    engines: {node: '>=20'}
 
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
@@ -2464,10 +2385,6 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  type-fest@5.8.0:
-    resolution: {integrity: sha512-YGYEVz3Fm5iy/AybuA0oyNFq7H4CgQNfRp/qfe8nurE1kuCeNm3/vfm9X4Mtl+qLyaKJUh5xrFZwogr41SMjYA==}
-    engines: {node: '>=20'}
-
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
@@ -2481,10 +2398,6 @@ packages:
 
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
-
-  unicorn-magic@0.3.0:
-    resolution: {integrity: sha512-+QBBXBCvifc56fsbuxZQ6Sic3wqqc3WWaqxs58gvJrcOuN83HGTCwz3oS5phzU9LthRNE9VrJCFCLUgHeeFnfA==}
-    engines: {node: '>=18'}
 
   unicorn-magic@0.4.0:
     resolution: {integrity: sha512-wH590V9VNgYH9g3lH9wWjTrUoKsjLF6sGLjhR4sH1LWpLmCOH0Zf7PukhDA8BiS7KHe4oPNkcTHqYkj7SOGUOw==}
@@ -2592,11 +2505,6 @@ packages:
     resolution: {integrity: sha512-LYfpUkmqwl0h9A2HL09Mms427Q1RZWuOHsukfVcKRq9q95iQxdw0ix1JQrqbcDR9PH1QDwf5Qo8OZb5lksZ8Xg==}
     engines: {node: '>= 0.4'}
 
-  which@2.0.2:
-    resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
-    engines: {node: '>= 8'}
-    hasBin: true
-
   why-is-node-running@2.3.0:
     resolution: {integrity: sha512-hUrmaWBdVDcxvYqnyh09zunKzROWjbZTiNy8dBEjkS7ehEDQibXJ7XvlmtbwuTclUiIyN+CyXQD4Vmko8fNm8w==}
     engines: {node: '>=8'}
@@ -2629,10 +2537,6 @@ packages:
   yargs@18.0.0:
     resolution: {integrity: sha512-4UEqdc2RYGHZc7Doyqkrqiln3p9X2DZVxaGbwhn2pi7MrRagKaOcIKe8L3OxYcbhXLgLFUS3zAYuQjKBQgmuNg==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=23}
-
-  yoctocolors@2.1.2:
-    resolution: {integrity: sha512-CzhO+pFNo8ajLM2d2IW/R93ipy99LWjtwblvC1RsoSUMZgyLbYFr221TnSNT7GjGdYui6P459mw9JH/g/zW2ug==}
-    engines: {node: '>=18'}
 
 snapshots:
 
@@ -2965,14 +2869,7 @@ snapshots:
       tsx: 4.23.1
     transitivePeerDependencies:
       - supports-color
-
-  '@finografic/oxc-config@2.8.2(oxfmt@0.58.0)(oxlint@1.75.0(oxlint-tsgolint@0.24.0))':
-    dependencies:
-      execa: 9.6.1
-      oxfmt: 0.58.0
-      oxlint: 1.75.0(oxlint-tsgolint@0.24.0)
-      picocolors: 1.1.1
-      type-fest: 5.8.0
+    optional: true
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -2999,13 +2896,16 @@ snapshots:
     dependencies:
       '@nodelib/fs.stat': 2.0.5
       run-parallel: 1.2.0
+    optional: true
 
-  '@nodelib/fs.stat@2.0.5': {}
+  '@nodelib/fs.stat@2.0.5':
+    optional: true
 
   '@nodelib/fs.walk@1.2.8':
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
+    optional: true
 
   '@oxc-project/types@0.112.0':
     optional: true
@@ -3316,15 +3216,14 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.62.2':
     optional: true
 
-  '@sec-ant/readable-stream@0.4.1': {}
-
   '@simple-libs/child-process-utils@2.0.0':
     dependencies:
       '@simple-libs/stream-utils': 2.0.0
 
   '@simple-libs/stream-utils@2.0.0': {}
 
-  '@sindresorhus/merge-streams@4.0.0': {}
+  '@sindresorhus/merge-streams@4.0.0':
+    optional: true
 
   '@tybys/wasm-util@0.10.1':
     dependencies:
@@ -3339,6 +3238,7 @@ snapshots:
   '@types/debug@4.1.12':
     dependencies:
       '@types/ms': 2.1.0
+    optional: true
 
   '@types/deep-eql@4.0.2': {}
 
@@ -3346,15 +3246,18 @@ snapshots:
 
   '@types/estree@1.0.9': {}
 
-  '@types/katex@0.16.8': {}
+  '@types/katex@0.16.8':
+    optional: true
 
-  '@types/ms@2.1.0': {}
+  '@types/ms@2.1.0':
+    optional: true
 
   '@types/node@24.13.3':
     dependencies:
       undici-types: 7.18.2
 
-  '@types/unist@2.0.11': {}
+  '@types/unist@2.0.11':
+    optional: true
 
   '@vitest/expect@3.2.7':
     dependencies:
@@ -3461,6 +3364,7 @@ snapshots:
   braces@3.0.3:
     dependencies:
       fill-range: 7.1.1
+    optional: true
 
   cac@6.7.14: {}
 
@@ -3502,11 +3406,14 @@ snapshots:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
-  character-entities-legacy@3.0.0: {}
+  character-entities-legacy@3.0.0:
+    optional: true
 
-  character-entities@2.0.2: {}
+  character-entities@2.0.2:
+    optional: true
 
-  character-reference-invalid@2.0.1: {}
+  character-reference-invalid@2.0.1:
+    optional: true
 
   check-error@2.1.3: {}
 
@@ -3548,7 +3455,8 @@ snapshots:
 
   commander@2.3.0: {}
 
-  commander@8.3.0: {}
+  commander@8.3.0:
+    optional: true
 
   concat-map@0.0.1: {}
 
@@ -3581,12 +3489,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  cross-spawn@7.0.6:
-    dependencies:
-      path-key: 3.1.1
-      shebang-command: 2.0.0
-      which: 2.0.2
-
   cycle@1.0.3: {}
 
   debug@4.4.3:
@@ -3596,6 +3498,7 @@ snapshots:
   decode-named-character-reference@1.3.0:
     dependencies:
       character-entities: 2.0.2
+    optional: true
 
   deep-eql@5.0.2: {}
 
@@ -3638,11 +3541,13 @@ snapshots:
 
   defu@6.1.4: {}
 
-  dequal@2.0.3: {}
+  dequal@2.0.3:
+    optional: true
 
   devlop@1.1.0:
     dependencies:
       dequal: 2.0.3
+    optional: true
 
   diff@8.0.4: {}
 
@@ -3756,21 +3661,6 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.8
 
-  execa@9.6.1:
-    dependencies:
-      '@sindresorhus/merge-streams': 4.0.0
-      cross-spawn: 7.0.6
-      figures: 6.1.0
-      get-stream: 9.0.1
-      human-signals: 8.0.1
-      is-plain-obj: 4.1.0
-      is-stream: 4.0.1
-      npm-run-path: 6.0.0
-      pretty-ms: 9.3.0
-      signal-exit: 4.1.0
-      strip-final-newline: 4.0.0
-      yoctocolors: 2.1.2
-
   expect-type@1.4.0: {}
 
   eyes@0.1.8: {}
@@ -3784,24 +3674,23 @@ snapshots:
       glob-parent: 5.1.2
       merge2: 1.4.1
       micromatch: 4.0.8
+    optional: true
 
   fast-uri@3.1.4: {}
 
   fastq@1.20.1:
     dependencies:
       reusify: 1.1.0
+    optional: true
 
   fdir@6.5.0(picomatch@4.0.5):
     optionalDependencies:
       picomatch: 4.0.5
 
-  figures@6.1.0:
-    dependencies:
-      is-unicode-supported: 2.1.0
-
   fill-range@7.1.1:
     dependencies:
       to-regex-range: 5.0.1
+    optional: true
 
   for-each@0.3.5:
     dependencies:
@@ -3840,11 +3729,6 @@ snapshots:
       dunder-proto: 1.0.1
       es-object-atoms: 1.1.1
 
-  get-stream@9.0.1:
-    dependencies:
-      '@sec-ant/readable-stream': 0.4.1
-      is-stream: 4.0.1
-
   get-tsconfig@4.13.6:
     dependencies:
       resolve-pkg-maps: 1.0.0
@@ -3858,6 +3742,7 @@ snapshots:
   glob-parent@5.1.2:
     dependencies:
       is-glob: 4.0.3
+    optional: true
 
   glob@7.2.3:
     dependencies:
@@ -3880,6 +3765,7 @@ snapshots:
       is-path-inside: 4.0.0
       slash: 5.1.0
       unicorn-magic: 0.4.0
+    optional: true
 
   gopd@1.2.0: {}
 
@@ -3905,13 +3791,12 @@ snapshots:
 
   hookable@5.5.3: {}
 
-  human-signals@8.0.1: {}
-
   husky@9.1.7: {}
 
   i@0.3.7: {}
 
-  ignore@7.0.6: {}
+  ignore@7.0.6:
+    optional: true
 
   import-fresh@3.3.1:
     dependencies:
@@ -3933,12 +3818,14 @@ snapshots:
       hasown: 2.0.2
       side-channel: 1.1.0
 
-  is-alphabetical@2.0.1: {}
+  is-alphabetical@2.0.1:
+    optional: true
 
   is-alphanumerical@2.0.1:
     dependencies:
       is-alphabetical: 2.0.1
       is-decimal: 2.0.1
+    optional: true
 
   is-arguments@1.2.0:
     dependencies:
@@ -3969,15 +3856,19 @@ snapshots:
       call-bound: 1.0.4
       has-tostringtag: 1.0.2
 
-  is-decimal@2.0.1: {}
+  is-decimal@2.0.1:
+    optional: true
 
-  is-extglob@2.1.1: {}
+  is-extglob@2.1.1:
+    optional: true
 
   is-glob@4.0.3:
     dependencies:
       is-extglob: 2.1.1
+    optional: true
 
-  is-hexadecimal@2.0.1: {}
+  is-hexadecimal@2.0.1:
+    optional: true
 
   is-interactive@1.0.0: {}
 
@@ -3988,9 +3879,11 @@ snapshots:
       call-bound: 1.0.4
       has-tostringtag: 1.0.2
 
-  is-number@7.0.0: {}
+  is-number@7.0.0:
+    optional: true
 
-  is-path-inside@4.0.0: {}
+  is-path-inside@4.0.0:
+    optional: true
 
   is-plain-obj@4.1.0: {}
 
@@ -4007,8 +3900,6 @@ snapshots:
     dependencies:
       call-bound: 1.0.4
 
-  is-stream@4.0.1: {}
-
   is-string@1.1.1:
     dependencies:
       call-bound: 1.0.4
@@ -4020,8 +3911,6 @@ snapshots:
       has-symbols: 1.1.0
       safe-regex-test: 1.1.0
 
-  is-unicode-supported@2.1.0: {}
-
   is-weakmap@2.0.2: {}
 
   is-weakset@2.0.4:
@@ -4030,8 +3919,6 @@ snapshots:
       get-intrinsic: 1.3.0
 
   isarray@2.0.5: {}
-
-  isexe@2.0.0: {}
 
   isstream@0.1.2: {}
 
@@ -4063,11 +3950,13 @@ snapshots:
 
   json-schema-traverse@1.0.0: {}
 
-  jsonc-parser@3.3.1: {}
+  jsonc-parser@3.3.1:
+    optional: true
 
   katex@0.16.28:
     dependencies:
       commander: 8.3.0
+    optional: true
 
   kleur@3.0.3: {}
 
@@ -4104,10 +3993,12 @@ snapshots:
       string-width: 8.1.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   math-intrinsics@1.1.0: {}
 
-  merge2@1.4.1: {}
+  merge2@1.4.1:
+    optional: true
 
   micromark-core-commonmark@2.0.3:
     dependencies:
@@ -4127,6 +4018,7 @@ snapshots:
       micromark-util-subtokenize: 2.1.0
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
+    optional: true
 
   micromark-extension-directive@4.0.0:
     dependencies:
@@ -4137,6 +4029,7 @@ snapshots:
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
       parse-entities: 4.0.2
+    optional: true
 
   micromark-extension-gfm-autolink-literal@2.1.0:
     dependencies:
@@ -4144,6 +4037,7 @@ snapshots:
       micromark-util-sanitize-uri: 2.0.1
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
+    optional: true
 
   micromark-extension-gfm-footnote@2.1.0:
     dependencies:
@@ -4155,6 +4049,7 @@ snapshots:
       micromark-util-sanitize-uri: 2.0.1
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
+    optional: true
 
   micromark-extension-gfm-table@2.1.1:
     dependencies:
@@ -4163,6 +4058,7 @@ snapshots:
       micromark-util-character: 2.1.1
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
+    optional: true
 
   micromark-extension-math@3.1.0:
     dependencies:
@@ -4173,12 +4069,14 @@ snapshots:
       micromark-util-character: 2.1.1
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
+    optional: true
 
   micromark-factory-destination@2.0.1:
     dependencies:
       micromark-util-character: 2.1.1
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
+    optional: true
 
   micromark-factory-label@2.0.1:
     dependencies:
@@ -4186,11 +4084,13 @@ snapshots:
       micromark-util-character: 2.1.1
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
+    optional: true
 
   micromark-factory-space@2.0.1:
     dependencies:
       micromark-util-character: 2.1.1
       micromark-util-types: 2.0.1
+    optional: true
 
   micromark-factory-title@2.0.1:
     dependencies:
@@ -4198,6 +4098,7 @@ snapshots:
       micromark-util-character: 2.1.1
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
+    optional: true
 
   micromark-factory-whitespace@2.0.1:
     dependencies:
@@ -4205,48 +4106,59 @@ snapshots:
       micromark-util-character: 2.1.1
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.1
+    optional: true
 
   micromark-util-character@2.1.1:
     dependencies:
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
+    optional: true
 
   micromark-util-chunked@2.0.1:
     dependencies:
       micromark-util-symbol: 2.0.1
+    optional: true
 
   micromark-util-classify-character@2.0.1:
     dependencies:
       micromark-util-character: 2.1.1
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
+    optional: true
 
   micromark-util-combine-extensions@2.0.1:
     dependencies:
       micromark-util-chunked: 2.0.1
       micromark-util-types: 2.0.1
+    optional: true
 
   micromark-util-decode-numeric-character-reference@2.0.2:
     dependencies:
       micromark-util-symbol: 2.0.1
+    optional: true
 
-  micromark-util-encode@2.0.1: {}
+  micromark-util-encode@2.0.1:
+    optional: true
 
-  micromark-util-html-tag-name@2.0.1: {}
+  micromark-util-html-tag-name@2.0.1:
+    optional: true
 
   micromark-util-normalize-identifier@2.0.1:
     dependencies:
       micromark-util-symbol: 2.0.1
+    optional: true
 
   micromark-util-resolve-all@2.0.1:
     dependencies:
       micromark-util-types: 2.0.1
+    optional: true
 
   micromark-util-sanitize-uri@2.0.1:
     dependencies:
       micromark-util-character: 2.1.1
       micromark-util-encode: 2.0.1
       micromark-util-symbol: 2.0.1
+    optional: true
 
   micromark-util-subtokenize@2.1.0:
     dependencies:
@@ -4254,12 +4166,16 @@ snapshots:
       micromark-util-chunked: 2.0.1
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.1
+    optional: true
 
-  micromark-util-symbol@2.0.1: {}
+  micromark-util-symbol@2.0.1:
+    optional: true
 
-  micromark-util-types@2.0.1: {}
+  micromark-util-types@2.0.1:
+    optional: true
 
-  micromark-util-types@2.0.2: {}
+  micromark-util-types@2.0.2:
+    optional: true
 
   micromark@4.0.2:
     dependencies:
@@ -4282,11 +4198,13 @@ snapshots:
       micromark-util-types: 2.0.2
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   micromatch@4.0.8:
     dependencies:
       braces: 3.0.3
       picomatch: 2.3.2
+    optional: true
 
   mimic-fn@2.1.0: {}
 
@@ -4309,11 +4227,6 @@ snapshots:
   nanoid@3.3.16: {}
 
   ncp@0.4.2: {}
-
-  npm-run-path@6.0.0:
-    dependencies:
-      path-key: 4.0.0
-      unicorn-magic: 0.3.0
 
   object-inspect@1.13.4: {}
 
@@ -4427,6 +4340,7 @@ snapshots:
       is-alphanumerical: 2.0.1
       is-decimal: 2.0.1
       is-hexadecimal: 2.0.1
+    optional: true
 
   parse-json@5.2.0:
     dependencies:
@@ -4435,13 +4349,7 @@ snapshots:
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
 
-  parse-ms@4.0.0: {}
-
   path-is-absolute@1.0.1: {}
-
-  path-key@3.1.1: {}
-
-  path-key@4.0.0: {}
 
   pathe@2.0.3: {}
 
@@ -4451,7 +4359,8 @@ snapshots:
 
   picocolors@1.1.1: {}
 
-  picomatch@2.3.2: {}
+  picomatch@2.3.2:
+    optional: true
 
   picomatch@4.0.5: {}
 
@@ -4466,10 +4375,6 @@ snapshots:
       nanoid: 3.3.16
       picocolors: 1.1.1
       source-map-js: 1.2.1
-
-  pretty-ms@9.3.0:
-    dependencies:
-      parse-ms: 4.0.0
 
   prompt@0.2.14:
     dependencies:
@@ -4486,7 +4391,8 @@ snapshots:
 
   quansync@1.0.0: {}
 
-  queue-microtask@1.2.3: {}
+  queue-microtask@1.2.3:
+    optional: true
 
   read@1.0.7:
     dependencies:
@@ -4521,7 +4427,8 @@ snapshots:
       onetime: 7.0.0
       signal-exit: 4.1.0
 
-  reusify@1.1.0: {}
+  reusify@1.1.0:
+    optional: true
 
   revalidator@0.1.8: {}
 
@@ -4620,6 +4527,7 @@ snapshots:
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
+    optional: true
 
   safe-regex-test@1.1.0:
     dependencies:
@@ -4644,12 +4552,6 @@ snapshots:
       es-errors: 1.3.0
       functions-have-names: 1.2.3
       has-property-descriptors: 1.0.2
-
-  shebang-command@2.0.0:
-    dependencies:
-      shebang-regex: 3.0.0
-
-  shebang-regex@3.0.0: {}
 
   side-channel-list@1.0.0:
     dependencies:
@@ -4687,7 +4589,8 @@ snapshots:
 
   sisteransi@1.0.5: {}
 
-  slash@5.1.0: {}
+  slash@5.1.0:
+    optional: true
 
   source-map-js@1.2.1: {}
 
@@ -4716,6 +4619,7 @@ snapshots:
     dependencies:
       get-east-asian-width: 1.4.0
       strip-ansi: 7.1.2
+    optional: true
 
   strip-ansi@6.0.1:
     dependencies:
@@ -4724,8 +4628,6 @@ snapshots:
   strip-ansi@7.1.2:
     dependencies:
       ansi-regex: 6.2.2
-
-  strip-final-newline@4.0.0: {}
 
   strip-literal@3.1.0:
     dependencies:
@@ -4743,8 +4645,6 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.2.9
     optional: true
-
-  tagged-tag@1.0.0: {}
 
   tinybench@2.9.0: {}
 
@@ -4770,6 +4670,7 @@ snapshots:
   to-regex-range@5.0.1:
     dependencies:
       is-number: 7.0.0
+    optional: true
 
   tree-kill@1.2.2: {}
 
@@ -4814,10 +4715,7 @@ snapshots:
       esbuild: 0.28.1
     optionalDependencies:
       fsevents: 2.3.3
-
-  type-fest@5.8.0:
-    dependencies:
-      tagged-tag: 1.0.0
+    optional: true
 
   typescript@5.9.3: {}
 
@@ -4836,9 +4734,8 @@ snapshots:
 
   undici-types@7.18.2: {}
 
-  unicorn-magic@0.3.0: {}
-
-  unicorn-magic@0.4.0: {}
+  unicorn-magic@0.4.0:
+    optional: true
 
   unrun@0.2.27(synckit@0.11.12):
     dependencies:
@@ -4963,10 +4860,6 @@ snapshots:
       gopd: 1.2.0
       has-tostringtag: 1.0.2
 
-  which@2.0.2:
-    dependencies:
-      isexe: 2.0.0
-
   why-is-node-running@2.3.0:
     dependencies:
       siginfo: 2.0.0
@@ -5005,5 +4898,3 @@ snapshots:
       string-width: 7.2.0
       y18n: 5.0.8
       yargs-parser: 22.0.0
-
-  yoctocolors@2.1.2: {}

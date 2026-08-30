@@ -25,6 +25,7 @@ typeset -A sentinel=(
 # have to LOAD without error, which is what we assert.
 for profile in ${(ko)sentinel}; do
   out="$(
+    HOME="${ZSHRC_ROOT:h}" \
     ZENV_FORCE="$profile" \
     ZSHRC_ROOT="$ZSHRC_ROOT" \
     ZSHRC_SPLASH=0 \

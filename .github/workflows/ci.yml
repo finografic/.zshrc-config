@@ -5,6 +5,9 @@ on:
     branches: [master]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   zsh-syntax:
     runs-on: ubuntu-latest
@@ -126,7 +129,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint:ci
       - run: pnpm format:check
-      - run: pnpm lint:md
+      - name: Markdown lint
+        run: |
+          if pnpm exec md-lint --version >/dev/null 2>&1; then
+            pnpm lint:md
+          else
+            echo "::warning::md-lint is private optional tooling; skipping on public CI"
+          fi
 
   commitlint:
     runs-on: ubuntu-latest

@@ -441,8 +441,8 @@ $ pnpm zconf graph --profile codex
 codex resolved load order:
 
   ✔  1. lib/colors.zsh
-  ✔  2. vendor/pnpm-path.zsh
-  ✔  3. vendor/nvm.zsh
+  ✔  2. vendor/nvm.zsh
+  ✔  3. vendor/pnpm-path.zsh
   ✔  4. lib/node.zsh
   ✔  5. profiles/codex/codex.dev.zsh
 ```

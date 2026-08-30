@@ -91,7 +91,7 @@ describe('resolveManifest', () => {
   it('injects the nvm/pnpm boot sequence around the node module', () => {
     const manifest = parseManifest('ZENV_PRESET=none\nZENV_MODULES=(node)\nzenv-load\n');
     const { files } = resolveManifest(manifest, registry, 'demo');
-    expect(files).toEqual(['vendor/pnpm-path.zsh', 'vendor/nvm.zsh', 'lib/node.zsh']);
+    expect(files).toEqual(['vendor/nvm.zsh', 'vendor/pnpm-path.zsh', 'lib/node.zsh']);
   });
 
   it('resolves features to the profile-local path', () => {

@@ -70,9 +70,9 @@ out="$(trace-load '
   NVM=true
   zenv-modules "node"
 ')"
-check "NVM=true sources pnpm-path, then nvm, then lib/node.zsh" \
-  "vendor/pnpm-path.zsh
-vendor/nvm.zsh
+check "NVM=true sources nvm, then pnpm-path, then lib/node.zsh" \
+  "vendor/nvm.zsh
+vendor/pnpm-path.zsh
 lib/node.zsh" "$out"
 
 out="$(trace-load '
@@ -89,6 +89,7 @@ out="$(trace-load '
 ')"
 check-contains "nvm still precedes lib/node.zsh when other modules present" \
   "vendor/nvm.zsh
+vendor/pnpm-path.zsh
 lib/node.zsh" "$out"
 
 print "\npresets:"

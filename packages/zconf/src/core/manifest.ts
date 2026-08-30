@@ -109,8 +109,10 @@ export function resolveManifest(
     if (!requested.has(name)) continue;
 
     // `zenv-modules` wraps the `node` module in a mandatory boot sequence.
+    // nvm first, then pnpm-path: pnpm-path's force-prepend of $PNPM_HOME/bin
+    // must land in front of $NVM_BIN so pnpm's self-managed binary wins.
     if (name === 'node') {
-      files.push('vendor/pnpm-path.zsh', 'vendor/nvm.zsh');
+      files.push('vendor/nvm.zsh', 'vendor/pnpm-path.zsh');
     }
 
     const path = registry.modulePaths[name];

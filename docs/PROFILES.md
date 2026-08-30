@@ -34,9 +34,10 @@ things a profile is not trusted with:
 - **Load order.** Modules load in the registry's canonical order regardless of
   how you listed them — `colors` always precedes anything using `${_c}`.
 - **The nvm invariant.** Requesting the `node` module gets you the
-  `vendor/pnpm-path.zsh` → `vendor/nvm.zsh` → `lib/node.zsh` sequence, in that
-  order, every time. Three profiles used to hand-roll this differently; now it
-  can't be gotten wrong per-profile.
+  `vendor/nvm.zsh` → `vendor/pnpm-path.zsh` → `lib/node.zsh` sequence, in that
+  order, every time (pnpm-path last, so its prepend of `$PNPM_HOME/bin` lands
+  in front of `$NVM_BIN` and pnpm's self-managed binary wins). Three profiles
+  used to hand-roll this differently; now it can't be gotten wrong per-profile.
 
 An unknown module, feature, or preset name is a loud failure at shell start,
 never a silent skip.

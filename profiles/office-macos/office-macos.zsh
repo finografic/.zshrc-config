@@ -14,7 +14,7 @@ export NVM="true"
 
 ZENV_PRESET=full
 ZENV_MODULES=(macos ghostty)
-ZENV_FEATURES=(aliases dev)
+ZENV_FEATURES=(aliases dev git)
 
 zenv-load
 

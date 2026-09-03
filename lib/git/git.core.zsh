@@ -17,7 +17,11 @@ function is-git-root() {
 # Checkout master
 function master() {
   git checkout master
-  [[ "$1" == "ci" ]] && npm ci
+}
+
+# Checkout main
+function main() {
+  git checkout main
 }
 
 # Basic checkout/status

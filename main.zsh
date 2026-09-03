@@ -91,7 +91,7 @@ function edit() { $EDITOR "$@"; }
 # VSCode alias (macOS specific). PATH belongs to lib/paths/paths.macos.zsh —
 # see the PATH-ownership rule in docs/ARCHITECTURE.md.
 if [[ "$OS_NAME" = "macOS" ]]; then
-  alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
+  path=("/Applications/Visual Studio Code.app/Contents/Resources/app/bin" $path)
 fi
 
 # ============================================================================ #

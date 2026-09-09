@@ -4,7 +4,6 @@ export REPOS="$HOME/repos"
 alias dev="echo 'CHOOSE AN ALIAS!'"
 
 # COMMANDS
-
 function repos() {
   # MOVED !!
   cd "$REPOS" && l

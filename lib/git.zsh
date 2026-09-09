@@ -25,3 +25,6 @@ source "$ZSHRC_ROOT/lib/git/git.stashes.zsh"
 
 # Source tags operations
 source "$ZSHRC_ROOT/lib/git/git.tags.zsh"
+
+# Source checkout operations
+source "$ZSHRC_ROOT/lib/git/git.checkout.zsh"

@@ -25,3 +25,14 @@ function _register-office-repo-aliases() {
 
 _register-office-repo-aliases
 unset -f _register-office-repo-aliases
+
+# ============================================================================ #
+# NOTE: REPO PATHS etc..
+# ============================================================================ #
+
+# COMMANDS
+function repos() {
+  # MOVED !!
+  cd "$REPOS" && l
+}
+

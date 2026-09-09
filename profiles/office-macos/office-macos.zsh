@@ -8,6 +8,14 @@ export ZSHRC_ROOT="$HOME/.zshrc-config"
 export ZENV_PATH="$ZSHRC_ROOT/profiles/${ZENV}"
 export NVM="true"
 
+# Base branch for rebase/merge operations (lib/git/git.rebase.zsh).
+#
+# `:=` assigns only when unset or empty, so an explicit value from .env wins —
+# this is the profile default, not a hard override. Consumers fall back to
+# "master" on their own, so nothing breaks if this is never set.
+: "${PROFILE_GIT_BASE_BRANCH:=main}"
+export PROFILE_GIT_BASE_BRANCH
+
 # ============================================================================ #
 # NOTE: MANIFEST
 # ============================================================================ #

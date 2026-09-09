@@ -4,6 +4,16 @@
 
 source "$ZSHRC_ROOT/lib/colors.zsh"
 
+# The branch feature work is rebased onto and merged into.
+#
+# Reads $PROFILE_GIT_BASE_BRANCH (set per profile — office-macos uses "main")
+# and falls back to "master" when unset or empty. The fallback lives here and
+# only here, so no caller has to know the var exists and nothing depends on it
+# being set: an unconfigured shell behaves exactly as it did before.
+function git-base-branch() {
+  print -r -- "${PROFILE_GIT_BASE_BRANCH:-master}"
+}
+
 # Fetch and rebase
 # Usage: _grb [-y]
 #   -y  Non-interactive rebase (skips editor) and auto-accepts force-push
@@ -17,21 +27,24 @@ function _grb() {
     return 1
   fi
 
-  # Ensure origin/master exists
-  if ! git show-ref --verify --quiet refs/remotes/origin/master; then
-    echo "\n${_y}⚠️  Missing origin/master. This repo may not use master as the base branch.${_0}"
+  local base
+  base="$(git-base-branch)"
+
+  # Ensure origin/<base> exists
+  if ! git show-ref --verify --quiet "refs/remotes/origin/${base}"; then
+    echo "\n${_y}⚠️  Missing origin/${base}. This repo may not use ${base} as the base branch.${_0}"
     return 1
   fi
 
-  # Fetch and "pull" origin/master into local master (without leaving current branch)
-  # This is effectively: checkout master; git pull --ff-only origin master
-  git fetch origin master:master
+  # Fetch and "pull" origin/<base> into local <base> (without leaving current branch)
+  # This is effectively: checkout <base>; git pull --ff-only origin <base>
+  git fetch origin "${base}:${base}"
 
   # Rebase current feature branch onto the updated remote base
   if (( auto )); then
-    git rebase origin/master
+    git rebase "origin/${base}"
   else
-    git rebase -i origin/master
+    git rebase -i "origin/${base}"
   fi
 
   # Exit if rebase fails
@@ -69,23 +82,26 @@ function _grbs() {
     return 1
   fi
 
+  local base
+  base="$(git-base-branch)"
+
   # Fetch and rebase with squash
   git fetch
   local CURRENT_BRANCH=$(_gcurrent)
-  local COMMIT_COUNT=$(git rev-list --count origin/master..HEAD)
+  local COMMIT_COUNT=$(git rev-list --count "origin/${base}..HEAD")
 
   if [[ "$COMMIT_COUNT" -gt 1 ]]; then
     # export EDITOR="sed -i -e '/^# This is the [2-9].*commit message:/,/^#$/d'"
     # If more than 1 commit, do an automatic rebase with squash
-    GIT_SEQUENCE_EDITOR="sed -i -e '2,\$s/^pick/squash/'" git rebase -i origin/master
+    GIT_SEQUENCE_EDITOR="sed -i -e '2,\$s/^pick/squash/'" git rebase -i "origin/${base}"
   elif [[ "$COMMIT_COUNT" -eq 1 ]]; then
     # If only 1 commit, just do a regular rebase
-    git rebase origin/master
+    git rebase "origin/${base}"
   else
     echo "No commits to rebase"
   fi
 
-  # git rebase -i origin/master
+  # git rebase -i origin/<base>
   if [[ $? -eq 0 ]]; then
     echo -e "\n${_m}Force-push with lease $CURRENT_BRANCH to origin? ${_grey}(y/N)${_0}"
     read -r response
@@ -103,11 +119,11 @@ function _grbs() {
 
 # ============================================================================ #
 
-# Merge a feature branch into master via rebase + fast-forward only.
-# Rebases <branch> onto master first (linearizes it, individual commits kept
-# as-is), then fast-forwards master onto the rebased tip. No merge commit is
-# ever created, so the resulting history on master is freely squashable,
-# revertable, and reorderable later — nothing to untangle.
+# Merge a feature branch into the base branch via rebase + fast-forward only.
+# Rebases <branch> onto the base first (linearizes it, individual commits kept
+# as-is), then fast-forwards the base onto the rebased tip. No merge commit is
+# ever created, so the resulting history is freely squashable, revertable, and
+# reorderable later — nothing to untangle.
 #
 # Usage: _gmff <branch> [-y]
 #   -y  Non-interactive: auto-confirms push + branch deletion
@@ -128,6 +144,9 @@ function _gmff() {
     return 1
   fi
 
+  local base
+  base="$(git-base-branch)"
+
   if [[ -z "$branch" ]]; then
     echo "\n${_y}⚠️  No feature branch specified${_0}"
     echo "${_grey}Usage:${_0} _gmff <branch> [-y]\n"
@@ -135,8 +154,8 @@ function _gmff() {
   fi
 
   local CURRENT_BRANCH=$(_gcurrent)
-  if [[ "$CURRENT_BRANCH" != "master" ]]; then
-    echo "\n${_y}⚠️  _gmff must be run from master (currently on '${CURRENT_BRANCH}')${_0}"
+  if [[ "$CURRENT_BRANCH" != "$base" ]]; then
+    echo "\n${_y}⚠️  _gmff must be run from ${base} (currently on '${CURRENT_BRANCH}')${_0}"
     return 1
   fi
 
@@ -146,45 +165,45 @@ function _gmff() {
   fi
 
   if [[ -n "$(git status --porcelain)" ]]; then
-    echo "\n${_y}⚠️  Uncommitted changes on master. Commit or stash before running _gmff.${_0}"
+    echo "\n${_y}⚠️  Uncommitted changes on ${base}. Commit or stash before running _gmff.${_0}"
     return 1
   fi
 
-  # Keep local master current with origin before rebasing onto it, if a remote exists
-  if git show-ref --verify --quiet refs/remotes/origin/master; then
-    echo "\n${_grey}Updating local master from origin...${_0}"
-    if ! git pull --ff-only origin master; then
-      echo "\n${_r}❌ Could not fast-forward master from origin. Resolve manually first.${_0}"
+  # Keep local base current with origin before rebasing onto it, if a remote exists
+  if git show-ref --verify --quiet "refs/remotes/origin/${base}"; then
+    echo "\n${_grey}Updating local ${base} from origin...${_0}"
+    if ! git pull --ff-only origin "$base"; then
+      echo "\n${_r}❌ Could not fast-forward ${base} from origin. Resolve manually first.${_0}"
       return 1
     fi
   fi
 
-  echo "\n${_m}Rebasing '${branch}' onto master...${_0}"
+  echo "\n${_m}Rebasing '${branch}' onto ${base}...${_0}"
   git checkout "$branch" || return 1
 
-  if ! git rebase master; then
+  if ! git rebase "$base"; then
     echo "\n${_y}⚠️  Rebase conflicts on '${branch}'. Resolve them, then re-run: _gmff ${branch}${_0}"
     return 1
   fi
 
-  echo "\n${_m}Fast-forwarding master to '${branch}'...${_0}"
-  git checkout master || return 1
+  echo "\n${_m}Fast-forwarding ${base} to '${branch}'...${_0}"
+  git checkout "$base" || return 1
 
   if ! git merge --ff-only "$branch"; then
     echo "\n${_r}❌ Fast-forward failed unexpectedly after rebase. Aborting.${_0}"
     return 1
   fi
 
-  echo "\n${_g}✅ master now includes '${branch}' — fast-forward only, no merge commit, full history kept.${_0}"
+  echo "\n${_g}✅ ${base} now includes '${branch}' — fast-forward only, no merge commit, full history kept.${_0}"
 
   if (( auto )); then
-    git push origin master
+    git push origin "$base"
   else
-    echo "\n${_m}Push master to origin? ${_grey}(y/N)${_0}"
+    echo "\n${_m}Push ${base} to origin? ${_grey}(y/N)${_0}"
     read -r response
     response=${response:-N}
     if [[ "$response" =~ ^[Yy]$ ]]; then
-      git push origin master
+      git push origin "$base"
     else
       echo "\n${_grey}Push skipped.${_0}"
     fi

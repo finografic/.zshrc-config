@@ -14,6 +14,27 @@ function is-git-root() {
   [[ "$PWD" == "$root" ]]
 }
 
+# The branch feature work is rebased onto and merged into.
+#
+# Reads $PROFILE_GIT_BASE_BRANCH (set per profile — office-macos uses "main")
+# and falls back to "master" when unset or empty. The fallback lives here and
+# only here, so no caller has to know the var exists and nothing depends on it
+# being set: an unconfigured shell behaves exactly as it did before.
+#
+# Lives in git.core.zsh rather than git.rebase.zsh because consumers now span
+# modules (rebase, checkout). Core is sourced by the git feature regardless, so
+# there is no load-order dependency between sibling modules.
+function git-base-branch() {
+  print -r -- "${PROFILE_GIT_BASE_BRANCH:-master}"
+}
+
+# Checkout the profile's base branch — master at home, main at the office.
+# Use this in muscle memory and scripts; `master` and `main` below stay as
+# literal escape hatches for repos that disagree with the profile.
+function base() {
+  git checkout "$(git-base-branch)"
+}
+
 # Checkout master
 function master() {
   git checkout master
@@ -36,7 +57,7 @@ function _g() {
 # New branch checkout
 function _gb() {
   if [[ -n "$1" ]]; then
-    branch="$1"
+    local branch="$1"
     # NOTE: DO NOT AUTO-ADD FOR OFFICE..
     [[ "$ZENV" != "office-macos" ]] && git add .
     git checkout -b "$branch"

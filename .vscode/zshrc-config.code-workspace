@@ -7,6 +7,9 @@
   "settings": {
     "chat.tools.terminal.autoApprove": {
       "command": true,
+      "./update-config.zsh": true,
+      "git config": true,
+      "setopt": true
     },
   },
 }

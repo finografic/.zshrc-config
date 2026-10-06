@@ -12,6 +12,7 @@
 #                          else open $EDITOR like `git commit`
 #   zupdate --sync         the only auto-message path:
 #                          `chore(sync): update from <profile>`
+#   zupdate -o|--office    skip the AI draft; commit as `chore: office update`
 #   zupdate --dry-run      show what would happen; change nothing
 #
 # Options:
@@ -132,12 +133,13 @@ function zupdate-main() {
   # caller's shell.
   setopt local_options err_exit pipe_fail
 
-  local message='' sync=false dry_run=false stage_all=false assume_yes=false do_scan=true
+  local message='' sync=false office=false dry_run=false stage_all=false assume_yes=false do_scan=true
   local remote=''
 
   while (( $# > 0 )); do
     case "$1" in
       --sync) sync=true; shift ;;
+      -o | --office) office=true; shift ;;
       --dry-run) dry_run=true; shift ;;
       --all) stage_all=true; shift ;;
       -y | --yes) assume_yes=true; shift ;;
@@ -154,6 +156,8 @@ function zupdate-main() {
   done
 
   $sync && [[ -n "$message" ]] && zu-die "--sync takes no message"
+  $office && [[ -n "$message" ]] && zu-die "--office takes no message"
+  $office && $sync && zu-die "--office and --sync cannot be combined"
 
   builtin cd "$ZSHRC_ROOT" || zu-die "cannot cd to $ZSHRC_ROOT"
   git rev-parse --is-inside-work-tree > /dev/null 2>&1 || zu-die "$ZSHRC_ROOT is not a git repository"
@@ -235,6 +239,8 @@ function zupdate-main() {
   local commit_message='' ollama_commit_message='' ollama_commit_meta='' shown_message=false
   if $sync; then
     commit_message="chore(sync): update from ${ZENV:-$(hostname -s 2> /dev/null || print unknown)}"
+  elif $office; then
+    commit_message='chore: office update'
   elif [[ -n "$message" ]]; then
     commit_message="$(zu-normalize-message "$message")"
   elif ! $dry_run; then

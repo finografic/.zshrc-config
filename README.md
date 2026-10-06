@@ -264,6 +264,7 @@ Run from anywhere, `ln -sf ~/.zshrc-config/bin/zupdate ~/bin/zupdate`.
 zupdate "tidy up the git aliases"   # gets a `chore: ` prefix if it has no type
 zupdate                             # opens $EDITOR, like `git commit`
 zupdate --sync                      # chore(sync): update from <profile>
+zupdate -o                          # skip AI draft; chore: office update
 zupdate --dry-run                   # show what would happen; change nothing
 ```
 

@@ -80,7 +80,7 @@ function zu-normalize-message() {
 # Resolves the remote to push to: the branch's own upstream, else origin.
 function zu-remote-for-branch() {
   local branch="$1" upstream
-  upstream="$(git rev-parse --abbrev-ref --symbolic-full-name "${branch}@{upstream}" 2> /dev/null || true)"
+  upstream="$(git rev-parse --abbrev-ref --symbolic-full-name "${branch}@{upstream}" 2>/dev/null || true)"
 
   if [[ -n "$upstream" ]]; then
     print -r -- "${upstream%%/*}"
@@ -95,7 +95,7 @@ function zu-remote-for-branch() {
 # it falls back to a dependency-free grep mirroring the CI `secret-scan` job.
 # The check is never silently skipped — only skipped when you ask for it.
 function zu-scan() {
-  if command -v node > /dev/null 2>&1 && [[ -f "$ZSHRC_ROOT/packages/zconf/dist/index.js" ]]; then
+  if command -v node >/dev/null 2>&1 && [[ -f "$ZSHRC_ROOT/packages/zconf/dist/index.js" ]]; then
     zu-info "scanning for secrets (zconf)"
     node "$ZSHRC_ROOT/packages/zconf/dist/index.js" scan || return 1
     return 0
@@ -107,8 +107,8 @@ function zu-scan() {
   local hits
   hits="$(
     git grep -InE "$pattern" -- . ':!docs/todo/**' ':!.agents/**' ':!pnpm-lock.yaml' \
-      ':!package-lock.json' ':!.github/workflows/ci.yml' 2> /dev/null \
-      | grep -vE '127\.0\.0\.1|0\.0\.0\.0|255\.255\.255\.255' || true
+      ':!package-lock.json' ':!.github/workflows/ci.yml' 2>/dev/null |
+      grep -vE '127\.0\.0\.1|0\.0\.0\.0|255\.255\.255\.255' || true
   )"
 
   if [[ -n "$hits" ]]; then
@@ -136,22 +136,47 @@ function zupdate-main() {
   local message='' sync=false office=false dry_run=false stage_all=false assume_yes=false do_scan=true
   local remote=''
 
-  while (( $# > 0 )); do
+  while (($# > 0)); do
     case "$1" in
-      --sync) sync=true; shift ;;
-      -o | --office) office=true; shift ;;
-      --dry-run) dry_run=true; shift ;;
-      --all) stage_all=true; shift ;;
-      -y | --yes) assume_yes=true; shift ;;
-      --no-scan) do_scan=false; shift ;;
-      --remote) remote="${2:-}"; [[ -n "$remote" ]] || zu-die "--remote needs a value"; shift 2 ;;
-      -h | --help) zu-usage; return 0 ;;
-      -*) zu-die "unknown option: $1 (try --help)" ;;
-      *)
-        [[ -z "$message" ]] || zu-die "more than one message given"
-        message="$1"
-        shift
-        ;;
+    --sync)
+      sync=true
+      shift
+      ;;
+    -o | --office)
+      office=true
+      shift
+      ;;
+    --dry-run)
+      dry_run=true
+      shift
+      ;;
+    --all)
+      stage_all=true
+      shift
+      ;;
+    -y | --yes)
+      assume_yes=true
+      shift
+      ;;
+    --no-scan)
+      do_scan=false
+      shift
+      ;;
+    --remote)
+      remote="${2:-}"
+      [[ -n "$remote" ]] || zu-die "--remote needs a value"
+      shift 2
+      ;;
+    -h | --help)
+      zu-usage
+      return 0
+      ;;
+    -*) zu-die "unknown option: $1 (try --help)" ;;
+    *)
+      [[ -z "$message" ]] || zu-die "more than one message given"
+      message="$1"
+      shift
+      ;;
     esac
   done
 
@@ -160,7 +185,7 @@ function zupdate-main() {
   $office && $sync && zu-die "--office and --sync cannot be combined"
 
   builtin cd "$ZSHRC_ROOT" || zu-die "cannot cd to $ZSHRC_ROOT"
-  git rev-parse --is-inside-work-tree > /dev/null 2>&1 || zu-die "$ZSHRC_ROOT is not a git repository"
+  git rev-parse --is-inside-work-tree >/dev/null 2>&1 || zu-die "$ZSHRC_ROOT is not a git repository"
 
   local branch
   branch="$(git rev-parse --abbrev-ref HEAD)"
@@ -195,11 +220,11 @@ function zupdate-main() {
       # print the existing value, which would leak into the listing on every line but one.
       local color=''
       case "$flag" in
-        A) color="$_g" ;;
-        M) color="$_y" ;;
-        D) color="$_r" ;;
-        R | C) color="$_c" ;;
-        *) color="$_w" ;;
+      A) color="$_g" ;;
+      M) color="$_y" ;;
+      D) color="$_r" ;;
+      R | C) color="$_c" ;;
+      *) color="$_w" ;;
       esac
 
       print "  ${_d}${color}${flag}${_0}  ${_grey}${file}${_0}"
@@ -210,11 +235,11 @@ function zupdate-main() {
     print "\n${_y}Untracked files${_0} ${_grey}(NOT staged unless you pass --all)${_0}"
     # Sizes shown so a stray large file is obvious rather than silently added.
     print "$untracked" | while IFS= read -r file; do
-      print "  ${_grey}$(du -h "$file" 2> /dev/null | cut -f1)${_0}\t$file"
+      print "  ${_grey}$(du -h "$file" 2>/dev/null | cut -f1)${_0}\t$file"
     done
   fi
 
-  if [[ -z "$tracked" && ( -z "$untracked" || $stage_all == false ) ]]; then
+  if [[ -z "$tracked" && (-z "$untracked" || $stage_all == false) ]]; then
     zu-info "no tracked changes to commit"
     if [[ -n "$untracked" ]]; then
       zu-info "untracked files exist — use ${_bold}--all${_0} or \`git add\` them to include them"
@@ -238,7 +263,7 @@ function zupdate-main() {
   # (which prints it in full above the confirm) does not repeat itself afterwards.
   local commit_message='' ollama_commit_message='' ollama_commit_meta='' shown_message=false
   if $sync; then
-    commit_message="chore(sync): update from ${ZENV:-$(hostname -s 2> /dev/null || print unknown)}"
+    commit_message="chore(sync): update from ${ZENV:-$(hostname -s 2>/dev/null || print unknown)}"
   elif $office; then
     commit_message='chore: office update'
   elif [[ -n "$message" ]]; then
@@ -262,12 +287,12 @@ function zupdate-main() {
       confirm_status=0
       ollama-commit-confirm || confirm_status=$?
       case "$confirm_status" in
-        0)
-          commit_message="$ai_message"
-          break
-          ;;
-        1) continue ;;
-        *) return 1 ;;
+      0)
+        commit_message="$ai_message"
+        break
+        ;;
+      1) continue ;;
+      *) return 1 ;;
       esac
     done
   fi
@@ -328,9 +353,9 @@ function zupdate-main() {
 function zu-push-if-ahead() {
   local remote="$1" branch="$2" do_scan="$3" ahead
 
-  ahead="$(git rev-list --count "${remote}/${branch}..${branch}" 2> /dev/null || print 0)"
+  ahead="$(git rev-list --count "${remote}/${branch}..${branch}" 2>/dev/null || print 0)"
 
-  if (( ahead == 0 )); then
+  if ((ahead == 0)); then
     zu-info "${_g}up to date — nothing to push${_0}"
     return 0
   fi
@@ -376,4 +401,3 @@ function zu-pull-rebase() {
 if [[ "${zsh_eval_context[-1]}" != file ]]; then
   zupdate-main "$@"
 fi
-

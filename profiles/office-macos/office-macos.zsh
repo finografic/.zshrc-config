@@ -20,8 +20,8 @@ export PROFILE_GIT_BASE_BRANCH
 # NOTE: DOCS CODE EDITOR
 # ============================================================================ #
 
-# export IDE_DOCS="code"
-export IDE_DOCS="/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin/code"
+export IDE_DOCS="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
+# export IDE_DOCS="/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin/code"
 
 # ============================================================================ #
 # NOTE: MANIFEST

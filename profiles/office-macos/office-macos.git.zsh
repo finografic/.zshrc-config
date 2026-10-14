@@ -8,6 +8,7 @@ source "$ZSHRC_ROOT/lib/llms.zsh"
 #   _docs -c                    sync + commit all + push (default message)
 #   _docs -c "some message"     sync + commit all + push (custom message)
 #   _docs -u                    open latest standup note in $IDE_DOCS (repo + file)
+#   _docs -p | --pull           stash changes, pull, pop stash, refocus $IDE_DOCS
 #   _docs -h | --help           usage
 #
 # Requires (from .env):
@@ -15,7 +16,7 @@ source "$ZSHRC_ROOT/lib/llms.zsh"
 #   ZDIR_DOCS_STANDUP    directory holding the dated standup notes
 # -----------------------------------------------------------------------------
 function _docs() {
-  local commit=0 update=0 msg=""
+  local commit=0 update=0 pull=0 msg=""
 
   while (($#)); do
     case "$1" in
@@ -27,8 +28,12 @@ function _docs() {
       update=1
       shift
       ;;
+    -p | --pull)
+      pull=1
+      shift
+      ;;
     -h | --help)
-      print "usage: _docs [-c|--commit [message]] [-u|--update]"
+      print "usage: _docs [-c|--commit [message]] [-u|--update] [-p|--pull]"
       return 0
       ;;
     --)
@@ -49,6 +54,11 @@ function _docs() {
 
   if ((! commit)) && [[ -n $msg ]]; then
     print -u2 "_docs: message given without -c/--commit"
+    return 2
+  fi
+
+  if ((pull && (commit || update))); then
+    print -u2 "_docs: -p/--pull cannot be combined with -c or -u"
     return 2
   fi
 
@@ -82,6 +92,43 @@ function _docs() {
     print -u2 "_docs: not a git repo"
     return 1
   }
+
+  # --- pull path: stash, pull, restore, refocus ----------------------------
+  if ((pull)); then
+    local before stashed=0
+    before=$(git rev-parse HEAD)
+
+    # 1. Stash local changes (including untracked) as a temp stash
+    if [[ -n $(git status --porcelain) ]]; then
+      git stash push --include-untracked -m "_docs: temp stash" || return 1
+      stashed=1
+    fi
+
+    # 2. Pull (git pull fetches first, so no separate fetch)
+    git pull --rebase || {
+      ((stashed)) && print -u2 "_docs: pull failed — your changes are in the stash ('git stash pop')"
+      return 1
+    }
+
+    # 3. Restore the temp stash
+    if ((stashed)); then
+      git stash pop || {
+        print -u2 "_docs: stash pop conflicted — resolve, then 'git stash drop'"
+        return 1
+      }
+    fi
+
+    if [[ $before == $(git rev-parse HEAD) ]]; then
+      print "_docs: already up to date"
+    else
+      print "_docs: pulled —"
+      git log --oneline --no-decorate "${before}..HEAD"
+    fi
+
+    # 4. Refocus the docs IDE on the repo
+    ${IDE_DOCS:-code} "$(git rev-parse --show-toplevel)"
+    return 0
+  fi
 
   # --- commit path: stage and commit before touching the remote ------------
   if ((commit)); then

@@ -14,12 +14,32 @@ function git-base-branch() {
   print -r -- "${PROFILE_GIT_BASE_BRANCH:-master}"
 }
 
+# Committer-date handling for every rebase in this module.
+#
+# By default rebases pass --committer-date-is-author-date, so replayed commits
+# keep their original dates (GitHub's PR commit list shows the committer date).
+# Callers opt out with --fresh-dates, which leaves git's default: committer
+# date = time of the rebase. Author date is preserved either way.
+#
+# Usage: git-rebase-date-opts <fresh-dates 0|1>   → prints the flag (or nothing)
+function git-rebase-date-opts() {
+  (( $1 )) || print -r -- "--committer-date-is-author-date"
+}
+
 # Fetch and rebase
-# Usage: _grb [-y]
-#   -y  Non-interactive rebase (skips editor) and auto-accepts force-push
+# Usage: _grb [-y] [--fresh-dates]
+#   -y             Non-interactive rebase (skips editor) and auto-accepts force-push
+#   --fresh-dates  Use git's default committer date (now) instead of the author date
 function _grb() {
-  local auto=0
-  [[ "$1" == "-y" ]] && { auto=1; shift; }
+  local auto=0 fresh=0 arg
+  for arg in "$@"; do
+    case "$arg" in
+      -y) auto=1 ;;
+      --fresh-dates) fresh=1 ;;
+      *) echo "${_y}⚠️  Unknown option: ${arg}${_0}\n${_grey}Usage:${_0} _grb [-y] [--fresh-dates]"; return 1 ;;
+    esac
+  done
+  local -a date_opts=( $(git-rebase-date-opts $fresh) )
 
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -42,9 +62,9 @@ function _grb() {
 
   # Rebase current feature branch onto the updated remote base
   if (( auto )); then
-    git rebase "origin/${base}"
+    git rebase "${date_opts[@]}" "origin/${base}"
   else
-    git rebase -i "origin/${base}"
+    git rebase -i "${date_opts[@]}" "origin/${base}"
   fi
 
   # Exit if rebase fails
@@ -75,7 +95,17 @@ function _grb() {
 }
 
 # Fetch, rebase, and push with squash
+# Usage: _grbs [--fresh-dates]
 function _grbs() {
+  local fresh=0 arg
+  for arg in "$@"; do
+    case "$arg" in
+      --fresh-dates) fresh=1 ;;
+      *) echo "${_y}⚠️  Unknown option: ${arg}${_0}\n${_grey}Usage:${_0} _grbs [--fresh-dates]"; return 1 ;;
+    esac
+  done
+  local -a date_opts=( $(git-rebase-date-opts $fresh) )
+
   # Check if inside a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "Not inside a git repository."
@@ -93,10 +123,10 @@ function _grbs() {
   if [[ "$COMMIT_COUNT" -gt 1 ]]; then
     # export EDITOR="sed -i -e '/^# This is the [2-9].*commit message:/,/^#$/d'"
     # If more than 1 commit, do an automatic rebase with squash
-    GIT_SEQUENCE_EDITOR="sed -i -e '2,\$s/^pick/squash/'" git rebase -i "origin/${base}"
+    GIT_SEQUENCE_EDITOR="sed -i -e '2,\$s/^pick/squash/'" git rebase -i "${date_opts[@]}" "origin/${base}"
   elif [[ "$COMMIT_COUNT" -eq 1 ]]; then
     # If only 1 commit, just do a regular rebase
-    git rebase "origin/${base}"
+    git rebase "${date_opts[@]}" "origin/${base}"
   else
     echo "No commits to rebase"
   fi
@@ -125,19 +155,24 @@ function _grbs() {
 # ever created, so the resulting history is freely squashable, revertable, and
 # reorderable later — nothing to untangle.
 #
-# Usage: _gmff <branch> [-y]
-#   -y  Non-interactive: auto-confirms push + branch deletion
+# Usage: _gmff <branch> [-y] [--fresh-dates]
+#   -y             Non-interactive: auto-confirms push + branch deletion
+#   --fresh-dates  Use git's default committer date (now) instead of the author date
 function _gmff() {
   local branch=""
   local auto=0
+  local fresh=0
 
   for arg in "$@"; do
     if [[ "$arg" == "-y" ]]; then
       auto=1
+    elif [[ "$arg" == "--fresh-dates" ]]; then
+      fresh=1
     else
       branch="$arg"
     fi
   done
+  local -a date_opts=( $(git-rebase-date-opts $fresh) )
 
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "\n${_y}⚠️  Not inside a git repository.${_0}"
@@ -149,7 +184,7 @@ function _gmff() {
 
   if [[ -z "$branch" ]]; then
     echo "\n${_y}⚠️  No feature branch specified${_0}"
-    echo "${_grey}Usage:${_0} _gmff <branch> [-y]\n"
+    echo "${_grey}Usage:${_0} _gmff <branch> [-y] [--fresh-dates]\n"
     return 1
   fi
 
@@ -181,7 +216,7 @@ function _gmff() {
   echo "\n${_m}Rebasing '${branch}' onto ${base}...${_0}"
   git checkout "$branch" || return 1
 
-  if ! git rebase "$base"; then
+  if ! git rebase "${date_opts[@]}" "$base"; then
     echo "\n${_y}⚠️  Rebase conflicts on '${branch}'. Resolve them, then re-run: _gmff ${branch}${_0}"
     return 1
   fi

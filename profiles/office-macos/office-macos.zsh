@@ -43,6 +43,8 @@ macos-brew-shellenv
 # NOTE: UPDATE GHOSTTY CONFIG
 update-ghostty-config
 
+brew services start colima
+
 # ============================================================================ #
 
 # Git identity is a one-time machine-setup step, not a shell-start step.

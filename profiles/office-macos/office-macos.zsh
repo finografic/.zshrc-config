@@ -29,7 +29,7 @@ export IDE_DOCS="/Applications/Visual Studio Code.app/Contents/Resources/app/bin
 
 ZENV_PRESET=full
 ZENV_MODULES=(macos ghostty)
-ZENV_FEATURES=(aliases dev git)
+ZENV_FEATURES=(aliases dev docs)
 
 zenv-load
 

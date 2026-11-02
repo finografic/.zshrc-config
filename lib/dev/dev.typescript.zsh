@@ -416,3 +416,130 @@ _ts_usage_one() {
   print -r -- "  ${c_dim2}${summary}${c_0}"
   return 0
 }
+
+# ============================================================================ #
+# ============================================================================ #
+
+# ts-related: for every file that imports <package>, show how it relates to <wrapper-file>.
+#
+#   wrapper   the wrapper file itself
+#   internal  the wrapper imports it (any depth, relative imports)
+#   user      it imports the wrapper (via ts-usage)
+#   helper    a wrapper user imports it (any depth, relative imports)
+#   separate  no link to the wrapper: its own table
+#
+# Usage: ts-related <wrapper-file> <package>
+#   ts-related packages/libs/common/table-common/src/components/table.tsx @tanstack/react-table
+#
+# Needs: ts-usage (dev.typescript.zsh), git, rg
+
+ts-related() {
+  emulate -L zsh
+  setopt extended_glob
+
+  (($# == 2)) || {
+    print -u2 "usage: ts-related <wrapper-file> <package>"
+    return 2
+  }
+  # Plain command form on purpose: formatters (shfmt) add spaces inside (( ))
+  # and [ ] subscripts, which turns ts-usage into "ts - usage".
+  typeset -f ts-usage >/dev/null 2>&1 || {
+    print -u2 "ts-related: needs ts-usage (source dev.typescript.zsh)"
+    return 1
+  }
+
+  local root
+  root=$(git rev-parse --show-toplevel 2>/dev/null) || {
+    print -u2 "ts-related: run inside a git repo"
+    return 1
+  }
+  root=${root:A}
+  local wrapper=${1:A} pkg=$2
+  [[ -f $wrapper ]] || {
+    print -u2 "ts-related: no such file: $1"
+    return 1
+  }
+
+  # wrapper users
+  local -A users
+  local f abs out
+  out=$(ts-usage -l $wrapper)
+  for f in ${(f)out}; do
+    abs="$root/$f" # build the key first: shfmt adds spaces around / inside [ ]
+    users[$abs]=1
+  done
+
+  # files reached by relative imports
+  local -A internal helper
+  out=$(_ts_related_walk $wrapper)
+  for f in ${(f)out}; do internal[$f]=1; done
+  out=$(_ts_related_walk ${(k)users})
+  for f in ${(f)out}; do helper[$f]=1; done
+
+  # every file that imports the package
+  local re_pkg="from\\s*['\"]$(_ts_usage_re $pkg)['\"]"
+  local -a files
+  local glob='*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}'
+  out=$(rg -l -g $glob -e $re_pkg $root 2>/dev/null)
+  files=(${(f)out})
+  files=(${(o)files})
+
+  local -A group
+  local kind
+  for f in $files; do
+    f=${f:A}
+    if [[ $f == $wrapper ]]; then
+      kind=wrapper
+    elif [[ -n ${internal[$f]} ]]; then
+      kind=internal
+    elif [[ -n ${users[$f]} ]]; then
+      kind=user
+    elif [[ -n ${helper[$f]} ]]; then
+      kind=helper
+    else
+      kind=separate
+    fi
+    group[$kind]+="${f#$root/}"$'\n'
+  done
+
+  local -A why=(
+    wrapper 'the wrapper itself'
+    internal 'the wrapper imports it'
+    user 'imports the wrapper'
+    helper 'a wrapper user imports it'
+    separate 'no link to the wrapper'
+  )
+  local -a list
+  print
+  print -r -- "${#files} files import $pkg"
+  for kind in wrapper internal user helper separate; do
+    list=(${(f)group[$kind]})
+    (($#list)) || continue
+    print
+    print -r -- "$kind  (${#list})  ${why[$kind]}"
+    for f in $list; do print -r -- "  $f"; done
+  done
+  print
+}
+
+# Print every file reached from the given files by relative imports (any depth).
+_ts_related_walk() {
+  emulate -L zsh
+  local -A seen
+  local -a queue=($@)
+  local f spec r out
+  local re='(?:from|import)\s*[(]?\s*[\x27"](\.[^\x27"]+)[\x27"]'
+  while (($#queue)); do
+    f=$queue[1]
+    shift queue
+    out=$(rg -o --no-filename -r '$1' -e $re $f 2>/dev/null)
+    for spec in ${(f)out}; do
+      r=$(_ts_usage_resolve ${f:h}/$spec) || continue
+      [[ $r == *.(ts|tsx|mts|cts|js|jsx|mjs|cjs) ]] || continue
+      [[ -n ${seen[$r]} ]] && continue
+      seen[$r]=1
+      queue+=($r)
+      print -r -- $r
+    done
+  done
+}

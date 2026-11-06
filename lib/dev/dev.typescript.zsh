@@ -8,8 +8,12 @@ source "$ZSHRC_ROOT/lib/colors.zsh"
 #
 # Follows:
 #   - relative imports           import { X } from '../components/table'
-#   - barrel re-exports          export * from './table'  (any depth)
+#   - barrel re-exports          export * from './table'  (any depth, also when <file> is a barrel)
 #   - package / path-alias names import { X } from '@scope/table-common'
+#   - wildcard path aliases      import { X } from 'components/table'  (tsconfig paths 'components/*')
+#
+# Tags: [test] test/story file · [type] type-only import · [maybe] require/mock through a barrel
+# Lines are printed as repo-relative path:line, so Cmd+click opens them in VS Code.
 #
 # Usage:
 #   ts-usage [-s <name>] [-l] <file> [<file>...]
@@ -54,11 +58,10 @@ ts-usage() {
   # Colors: off when output is piped, when NO_COLOR is set, or with -l.
   # colors.zsh stores codes as text ("\033[0m"). echo turns that into a real
   # escape code, but print -r does not. (g::) does the same job as echo, once.
-  local c_title= c_dim= c_dim2= c_path= c_name= c_proj= c_warn= c_0=
+  local c_title= c_dim2= c_path= c_name= c_proj= c_warn= c_0=
   if [[ -t 1 && -z ${NO_COLOR-} ]] && ((! list_only)); then
     c_title=$(_ts_usage_color _C $'\e[1;36m')                            # bold cyan  : main title
     c_dim2=$(_ts_usage_color _d $'\e[2m')$(_ts_usage_color _c $'\e[36m') # dim cyan : labels, footer
-    c_dim=$(_ts_usage_color _c $'\e[36m')                                # cyan       : labels, footer
     c_path=$(_ts_usage_color _grey $'\e[2;37m')                          # grey       : paths, line numbers
     c_name=$(_ts_usage_color _w $'\e[37m')                               # white      : imported names
     c_proj=$(_ts_usage_color _W $'\e[1;37m')                             # bold white : project headers
@@ -187,6 +190,23 @@ _ts_usage_clause() {
   done
 }
 
+# True when an import clause brings in types only:
+#   'type { A } from'   'type A from'   '{ type A, type B } from'
+_ts_usage_is_type() {
+  emulate -L zsh
+  setopt extended_glob
+  local c=${1%%[[:space:]]#from} item lb='{' rb='}'
+  [[ $c == type[[:space:]]* ]] && return 0
+  [[ $c == [[:space:]]#${lb}*${rb}[[:space:]]# ]] || return 1 # a default or '* as' import is a value
+  local -a items=(${(s:,:)${${c#*$lb}%%$rb*}})
+  (($#items)) || return 1
+  for item in $items; do
+    item=${item##[[:space:]]#}
+    [[ -z $item || $item == type[[:space:]]* ]] || return 1
+  done
+  return 0
+}
+
 _ts_usage_one() {
   emulate -L zsh
   setopt extended_glob
@@ -202,14 +222,22 @@ _ts_usage_one() {
   proj=$(_ts_usage_project $target $root)
 
   # --- import aliases (package name + tsconfig paths) that point into the project
-  local -A alias_entry
+  #   alias_entry  exact alias  -> entry file   '@scope/table-common' -> .../src/index.ts
+  #   alias_dir    alias prefix -> folder       'components/'         -> .../www/src/components
+  local -A alias_entry alias_dir
   local key val e pkgname=
   local tsbase=$root/tsconfig.base.json
   [[ -f $tsbase ]] || tsbase=$root/tsconfig.json
   if [[ -f $tsbase ]]; then
-    jq -r '.compilerOptions.paths // {} | to_entries[]
-           | select(.key | contains("*") | not) | "\(.key)\t\(.value[0])"' $tsbase 2>/dev/null |
+    jq -r '.compilerOptions.paths // {} | to_entries[] | "\(.key)\t\(.value[0])"' $tsbase 2>/dev/null |
       while IFS=$'\t' read -r key val; do
+        if [[ $key == *'*' ]]; then
+          # wildcard: 'components/*' -> './packages/.../components/*'
+          [[ $key == *'*'*'*' || $val != *'/*' ]] && continue
+          e=$root/${${val#./}%/\*}
+          [[ -d $e ]] && alias_dir[${key%\*}]=$e
+          continue
+        fi
         e=$(_ts_usage_resolve $root/${val#./}) || continue
         [[ $e == $proj/* ]] && alias_entry[$key]=$e
       done
@@ -233,9 +261,12 @@ _ts_usage_one() {
     for e in $reply; do own+=(${e#* }); done
   done
   rg -q '^\s*export\s+default\b' $target 2>/dev/null && own+=(default)
+  # target is (partly) a barrel: 'export * from' passes on names we can't list, so '*' = any name
+  rg -q '^\s*export\s+\*\s+from\b' $target 2>/dev/null && own+=('*')
   own=(${(u)own})
 
-  if [[ -n $symbol && ${own[(Ie)$symbol]} -eq 0 ]]; then
+  local any='*'
+  if [[ -n $symbol && ${own[(Ie)$symbol]} -eq 0 && ${own[(Ie)$any]} -eq 0 ]]; then
     _ts_usage_warn "'$symbol' is not exported by ${target#$root/}" "exports: ${(j:, :)own:-none found}"
     return 1
   fi
@@ -245,8 +276,9 @@ _ts_usage_one() {
   chain[$target]=1
   names_at[$target]=${symbol:-${(j: :)own}}
 
-  local -a stems aliases
+  local -a stems aliases wild
   for key in ${(k)alias_entry}; do aliases+=($(_ts_usage_re $key)); done
+  for key in ${(k)alias_dir}; do wild+=($(_ts_usage_re $key)); done
 
   local jqprog='
     select(.type == "match") | .data as $d | $d.submatches[]
@@ -255,7 +287,7 @@ _ts_usage_one() {
     | capture("^(?<kw>\\w+)(?<clause>[^\"\\x27]*)[\"\\x27](?<spec>[^\"\\x27]+)[\"\\x27]$")
     | [$d.path.text, ($ln | tostring), .kw, .spec, (.clause | gsub("^ +| +$"; ""))] | @tsv'
 
-  local changed=1 f s stem pat specpat file ln kw spec clause resolved sub
+  local changed=1 f s stem pat specpat file ln kw spec clause resolved sub flag
   local -a hit passed have
   while ((changed)); do
     changed=0
@@ -276,6 +308,7 @@ _ts_usage_one() {
 
     specpat="\\.{1,2}/(?:[^'\"\\n]*/)?(?:${(j:|:)stems})(?:\\.[cm]?[jt]sx?)?"
     (($#aliases)) && specpat+="|(?:${(j:|:)aliases})(?:/[^'\"\\n]*)?"
+    (($#wild)) && specpat+="|(?:${(j:|:)wild})(?:[^'\"\\n]*/)?(?:${(j:|:)stems})(?:\\.[cm]?[jt]sx?)?"
     pat="\\b(?:import|export|require|mock)\\b[^;'\"]*?['\"](?:$specpat)['\"]"
 
     rg --json -U -g '*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}' -e "$pat" $root 2>/dev/null |
@@ -299,6 +332,12 @@ _ts_usage_one() {
               break
             fi
           done
+          if [[ -z $resolved ]]; then
+            for key in ${(k)alias_dir}; do
+              [[ $spec == $key* ]] || continue
+              resolved=$(_ts_usage_resolve $alias_dir[$key]/${spec#$key}) && break
+            done
+          fi
         fi
         [[ -n $resolved && -n ${chain[$resolved]} ]] || continue
 
@@ -311,7 +350,7 @@ _ts_usage_one() {
           for s in $reply; do
             if [[ ${s% *} == '*' ]]; then
               [[ ${s#* } == '*' ]] && passed+=($have) || passed+=(${s#* })
-            elif ((${have[(Ie)${s% *}]})); then
+            elif ((${have[(Ie)${s% *}]} || ${have[(Ie)$any]})); then
               passed+=(${s#* })
             fi
           done
@@ -330,24 +369,26 @@ _ts_usage_one() {
         fi
 
         # usage
-        hit=()
+        hit=() flag=
         if [[ $kw == import && ($clause == *from || -z $clause) ]]; then
           _ts_usage_clause $clause
           for s in $reply; do
             if [[ ${s% *} == '*' ]]; then
               hit+=("* as ${s#* }")
-            elif ((${have[(Ie)${s% *}]})); then
+            elif ((${have[(Ie)${s% *}]} || ${have[(Ie)$any]})); then
               hit+=(${s% *})
             fi
           done
           # direct import of the file (no -s): any import counts
           [[ -z $symbol && $resolved == $target && $#hit -eq 0 ]] && hit=("${clause:-side effect}")
+          _ts_usage_is_type $clause && flag=type
         else
           # require / mock / dynamic import: names unknown when it goes through a barrel
-          [[ $resolved == $target ]] && hit=("$kw(…)") || hit=("$kw(…)  [maybe]")
+          hit=("$kw(…)")
+          [[ $resolved == $target ]] || flag=maybe
         fi
         (($#hit)) || continue
-        importers[$file]+="$ln|${(j:, :)hit}"$'\n'
+        importers[$file]+="$ln|$flag|${(j:, :)hit}"$'\n'
       done
   done
 
@@ -363,7 +404,9 @@ _ts_usage_one() {
   print
   print -r -- "${c_title}${rel}${c_0}${symbol:+  ${c_dim2}symbol:${c_0} ${c_name}${symbol}${c_0}}"
   [[ -n $pkgname ]] && print -r -- "  ${c_dim2}package${c_0}  ${pkgname}"
-  print -r -- "  ${c_dim2}exports${c_0}  ${c_name}${names_at[$target]// /, }${c_0}"
+  local -a exp=(${=names_at[$target]})
+  exp=(${exp/#%\*/* (export * from …)})
+  print -r -- "  ${c_dim2}exports${c_0}  ${c_name}${(j:, :)exp}${c_0}"
   local -a barrels=(${(ok)chain})
   barrels=(${barrels:#$target})
   local b label="barrels"
@@ -386,7 +429,7 @@ _ts_usage_one() {
     by_proj[$p]+="$f"$'\n'
   done
 
-  local tag entry names
+  local tag entry names ntype=0 all_type
   for p in ${(ok)by_proj}; do
     local -a pf=(${(f)by_proj[$p]})
     print -r -- "  ${c_proj}${p#$root/}${c_0}  ${c_path}(${#pf})${c_0}"
@@ -396,15 +439,16 @@ _ts_usage_one() {
         tag="  ${c_warn}[test]${c_0}"
         ((ntest++))
       fi
+      all_type=1
       for entry in ${(f)importers[$f]}; do
-        names=${entry#*|}
-        if [[ $names == *'[maybe]' ]]; then
-          names="${c_name}${names%  \[maybe\]}${c_0}  ${c_warn}[maybe]${c_0}"
-        else
-          names="${c_name}${names}${c_0}"
-        fi
-        print -r -- "    ${c_path}${f#$p/}:${entry%%|*}${c_0}  ${names}${tag}"
+        ln=${entry%%|*} entry=${entry#*|}
+        flag=${entry%%|*} names=${entry#*|}
+        [[ $flag == type ]] || all_type=0
+        names="${c_name}${names}${c_0}${flag:+  ${c_warn}[$flag]${c_0}}"
+        # repo-relative path:line, so VS Code can open it with Cmd+click
+        print -r -- "    ${c_path}${f#$root/}:${ln}${c_0}  ${names}${tag}"
       done
+      ((all_type)) && ((ntype++))
     done
     print
   done
@@ -413,6 +457,7 @@ _ts_usage_one() {
   local nf=${#users} np=${#by_proj}
   local summary="$nf file$( ((nf == 1)) || print s) · $np project$( ((np == 1)) || print s)"
   ((ntest)) && summary+=" · $ntest tests/stories"
+  ((ntype)) && summary+=" · $ntype type-only"
   print -r -- "  ${c_dim2}${summary}${c_0}"
   return 0
 }
@@ -476,8 +521,8 @@ ts-related() {
   out=$(_ts_related_walk ${(k)users})
   for f in ${(f)out}; do helper[$f]=1; done
 
-  # every file that imports the package
-  local re_pkg="from\\s*['\"]$(_ts_usage_re $pkg)['\"]"
+  # every file that imports the package: 'pkg', 'pkg/sub', import(), require(), vi.mock(), side-effect imports
+  local re_pkg="(?:\\bfrom|\\bimport|\\brequire|\\bmock)\\s*\\(?\\s*['\"]$(_ts_usage_re $pkg)(?:/[^'\"]*)?['\"]"
   local -a files
   local glob='*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}'
   out=$(rg -l -g $glob -e $re_pkg $root 2>/dev/null)

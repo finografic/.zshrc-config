@@ -5,8 +5,9 @@ source "$ZSHRC_ROOT/lib/llms.zsh"
 # _docs — work with the shared docs/notes repo (single branch, no merge commits).
 #
 #   _docs                       sync only: pull --rebase, report what landed
-#   _docs -c                    sync + commit all + push (default message)
-#   _docs -c "some message"     sync + commit all + push (custom message)
+#   _docs -c                    commit all + sync + push, then fix + commit locally
+#   _docs -c "some message"     same flow with a custom initial commit message
+#   _docs -f | --fix            pnpm all:fix + commit all locally (no sync/push)
 #   _docs -u | --update         sync, then open latest standup note in $IDE_DOCS (repo + file)
 #   _docs -p | --pull           stash changes, pull, pop stash, refocus $IDE_DOCS
 #   _docs -h | --help           usage
@@ -16,12 +17,16 @@ source "$ZSHRC_ROOT/lib/llms.zsh"
 #   ZDIR_DOCS_STANDUP    directory holding the dated standup notes
 # -----------------------------------------------------------------------------
 function _docs() {
-  local commit=0 update=0 pull=0 msg=""
+  local commit=0 update=0 pull=0 fix=0 msg=""
 
   while (($#)); do
     case "$1" in
     -c | --commit)
       commit=1
+      shift
+      ;;
+    -f | --fix)
+      fix=1
       shift
       ;;
     -u | --update)
@@ -33,7 +38,9 @@ function _docs() {
       shift
       ;;
     -h | --help)
-      print "usage: _docs [-c|--commit [message]] [-u|--update] [-p|--pull]"
+      print "usage: _docs [-c|--commit [message]] [-f|--fix] [-u|--update] [-p|--pull]"
+      print "  -c: commit, sync and push, then fix and commit locally"
+      print "  -f: run pnpm all:fix and commit locally (no sync/push)"
       return 0
       ;;
     --)
@@ -59,6 +66,11 @@ function _docs() {
 
   if ((pull && (commit || update))); then
     print -u2 "_docs: -p/--pull cannot be combined with -c or -u"
+    return 2
+  fi
+
+  if ((fix && (pull || update))); then
+    print -u2 "_docs: -f/--fix cannot be combined with -p or -u"
     return 2
   fi
 
@@ -114,6 +126,24 @@ function _docs() {
     return 1
   }
 
+  if ((fix && ! commit)); then
+    pnpm all:fix || {
+      print -u2 "_docs: pnpm all:fix failed — no fix commit created"
+      return 1
+    }
+
+    local changes
+    changes=$(git status --porcelain) || return 1
+    if [[ -z $changes ]]; then
+      print "_docs: nothing to commit"
+      return 0
+    fi
+
+    git add -A || return 1
+    git commit -m "lint + format fixes" || return 1
+    return 0
+  fi
+
   # --- pull path: stash, pull, restore, refocus ----------------------------
   if ((pull)); then
     local before stashed=0
@@ -155,7 +185,8 @@ function _docs() {
   if ((commit)); then
     if [[ -z $(git status --porcelain) ]]; then
       print "_docs: nothing to commit"
-      return 0
+      _docs --fix
+      return $?
     fi
 
     : ${msg:="add daily update"}
@@ -188,5 +219,7 @@ function _docs() {
   if ((commit)); then
     git push || return 1
     print "_docs: pushed — $msg"
+    _docs --fix
+    return $?
   fi
 }

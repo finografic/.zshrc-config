@@ -7,7 +7,7 @@ source "$ZSHRC_ROOT/lib/llms.zsh"
 #   _docs                       sync only: pull --rebase, report what landed
 #   _docs -c                    commit all + sync + push, then fix + commit locally
 #   _docs -c "some message"     same flow with a custom initial commit message
-#   _docs -f | --fix            pnpm all:fix + commit all locally (no sync/push)
+#   _docs -f | --fix            pnpm fix:all + commit all locally (no sync/push)
 #   _docs -u | --update         sync, then open latest standup note in $IDE_DOCS (repo + file)
 #   _docs -p | --pull           stash changes, pull, pop stash, refocus $IDE_DOCS
 #   _docs -h | --help           usage
@@ -40,7 +40,7 @@ function _docs() {
     -h | --help)
       print "usage: _docs [-c|--commit [message]] [-f|--fix] [-u|--update] [-p|--pull]"
       print "  -c: commit, sync and push, then fix and commit locally"
-      print "  -f: run pnpm all:fix and commit locally (no sync/push)"
+      print "  -f: run pnpm fix:all and commit locally (no sync/push)"
       return 0
       ;;
     --)
@@ -127,8 +127,8 @@ function _docs() {
   }
 
   if ((fix && ! commit)); then
-    pnpm all:fix || {
-      print -u2 "_docs: pnpm all:fix failed — no fix commit created"
+    pnpm fix:all || {
+      print -u2 "_docs: pnpm fix:all failed — no fix commit created"
       return 1
     }
 
